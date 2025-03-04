@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+        /* Your existing CSS styles */
+        /* Add new styles for the waffle menu */
+        .waffle-menu {
+            display: none; /* Initially hide the waffle menu */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            background-color: #333;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .waffle-menu a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .waffle-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .waffle-menu-toggle span {
+            display: block;
+            width: 30px;
+            height: 5px;
+            background-color: #fff;
+            margin-bottom: 5px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        header {
+            background: #003366;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #0779e4 3px solid;
+            text-align: center;
+        }
+
+
+        header img {
+            max-height: 60px; /* Adjust the size of your logo */
+        }
+
+        .video-container {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the video */
+        }
+
+        video {
+            width: 400px; /* Set the width of the video to 400 pixels */
+            border-radius: 5px;
+        }
+
+        p {
+            margin-top: 5px;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<header>
+    <img src="../images/bdu.png" alt="Company Logo">
+    <h1>BDU Practice</h1>
+</header>
+
+<!-- Add the waffle menu toggle button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<!-- The waffle menu -->
+<div class="waffle-menu" id="waffleMenu">
+    <p><br></p>
+    <a href="../index.html">Home</a>
+    <a href="../practices.html">Practice</a>
+    <a href="../warmup.html">Warm Up</a>
+    <a href="../offsides.html">Rules Explained</a>
+    <a href="../drills.html">Drills</a>
+    <a href="../offense.html">Offense</a>
+    <a href="../defense.html">Defense</a>
+    <a href="../footskils.html">Foot Skills</a>
+    <a href="../fitness.html">Fitness</a>
+    <a href="../turns.html">Turns</a>
+    <a href="../camp.html">Camp</a>
+    <a href="../indoor/index.html">Indoor</a>
+    <a href="../plan/index.html">Planning</a>
+</div>
+<div class="container">
+
+
+    <hr>
+
+    <b>Goals in next two weeks</b>
+    <ul>
+        <li><input type="checkbox" checked>Warmup</li>
+<!--        <li><input type="checkbox" checked>Corners</li>-->
+<!--        <li><input type="checkbox" checked>Goal Kicks</li>-->
+<!--        <li><input type="checkbox" checked>Punts</li>-->
+<!--        <li><input type="checkbox" checked>Trapping</li>-->
+<!--        <li><input type="checkbox">Keep away, 4 v 4 or 3 v 3 or 4 v 3</li>-->
+    </ul>
+
+    <b>Warmup</b>
+
+    <div class="container">
+        <ul>
+            <li>1, 2, 3, Touch Toe</li>
+            1, 2, 3, Blue Devils
+            <li>Lunges</li>
+            Blue, Devils, Blue, Devils
+            <li>Hug knee to Chest</li>
+            Blue, Devils, Blue, Devils
+            <li>Cradle Leg and Ankle</li>
+            Blue, Devils, Blue, Devils
+            <li>Criss cross quad</li>
+            Blue, Devils, Blue, Devils
+            <li>Skips</li>
+            <li>Stand in place X 10 - Count</li>
+            <ul>
+                <li>Scissors * 10</li>
+                <li>Front to Back Hop * 10</li>
+                <li>Side to Side * 10</li>
+                <li>Criss Cross * 10</li>
+                <li>Hops * 10</li>
+            </ul>
+            <li>Sprint</li>
+            <li>Flip Run</li>
+            <ul>
+                <li>R Only</li>
+                <li>L Only</li>
+                <li>Both</li>
+                <li>Feint</li>
+                <li>Give and Go</li>
+                <li>Head Up</li>
+                <li>simple trap/touch 10X each</li>
+            </ul>
+            <li>25 Touches R, 25 Touches (start to work on some distance)L</li>
+
+        </ul>
+
+        <div>
+        <h3>Passing Warmup with some backwards and forward movement</h3>
+<div class="video-container">
+    <video controls>
+        <source src="../vid/wamup_pass_move_forward_backward.mp4" type="video/mp4">
+    </video>
+
+    </div>
+
+
+
+        <hr>
+
+
+        <b>today</b>
+        <ul>
+            <li>Clear and Shoot drill</li>
+            <div class="video-container">
+                <video controls>
+                    <source src="../practice/speedupshot_longpass.mp4" type="video/mp4">
+                </video>
+            </div>
+            <li>Switch Drill</li>
+            <li>Grid Work</li>
+            <li>Scrimmage</li>
+        </ul>
+
+        <ul>
+            <ul>
+                <li>Team 1</li>
+                <ul>
+                    <li>LD: Ella</li>
+                    <li>CD:Hannah</li>
+                    <li>RD: Mara</li>
+                    <li>LM: Evie</li>
+                    <li>CML: Claire S</li>
+                    <li>CMR: Jordan</li>
+                    <li>RM: Emery</li>
+                    <li>S: Charlie</li>
+                </ul>
+
+                <li>Team 2</li>
+                <ul>
+                    <li>LD: JoJo</li>
+                    <li>CD:Emma</li>
+                    <li>RD: Isabelle</li>
+                    <li>LM: Ava</li>
+                    <li>CM: Clair B</li>
+                    <li>RM: Whitney</li>
+                    <li>LF: Josie</li>
+                    <li>RF: Audrey</li>
+                </ul>
+
+            </ul>
+
+
+            <br>
+            <ul>
+                <li>Team 1</li>
+                <ul>
+                    <li>LD: Ella</li>
+                    <li>CD:Hannah</li>
+                    <li>RD: JoJo/Isabelle</li>
+                    <li>LM: Mara</li>
+                    <li>CML: Whitney</li>
+                    <li>CMR: Clarie S</li>
+                    <li>RM: Emery</li>
+                    <li>S: Charlie</li>
+                </ul>
+
+                <li>Team 2</li>
+                <ul>
+                    <li>LD: JoJo</li>
+                    <li>CD:Emma</li>
+                    <li>RD: Isabelle</li>
+                    <li>LM: Ava</li>
+                    <li>CM: Audrey</li>
+                    <li>RM: Emery</li>
+                    <li>LF: Josie</li>
+                    <li>RF: Claire B</li>
+                </ul>
+
+            </ul>
+
+
+        </ul>
+
+    </div>
+
+
+</div>
+
+
+<hr>
+
+</div>
+</div>
+
+<!-- Your existing scripts -->
+<script>
+    // JavaScript function to toggle the waffle menu
+    function toggleWaffleMenu() {
+        var waffleMenu = document.getElementById("waffleMenu");
+        if (waffleMenu.style.display === "block") {
+            waffleMenu.style.display = "none";
+        } else {
+            waffleMenu.style.display = "block";
+        }
+    }
+</script>
+
+
+</body>
+
+<footer class="footer">
+    <a href="../turns.html" target="_self">Turns</a> |
+    <a href="../tryout.html" target="_self">Tryout</a> |
+    <a href="../touch.html" target="_self">Touch</a> |
+     <a href="../formations.html" target="_self">Formations</a> |
+</footer>
+</html>
