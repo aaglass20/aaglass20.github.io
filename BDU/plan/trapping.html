@@ -80,8 +80,17 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        .video-container {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the video */
+        }
+
         video {
-            width: 100%;
+            width: 400px; /* Set the width of the video to 400 pixels */
             border-radius: 5px;
         }
 
@@ -130,11 +139,17 @@
 
     <!-- Main Section -->
     <main>
-         <h1>Trapping Techniques</h1>
+        <h1>Trapping Techniques</h1>
         <!-- Simple Trapping Section -->
         <section id="simple-trapping">
             <h2>Simple Trapping</h2>
             <p>Learn the fundamentals of basic trapping techniques and their uses in different scenarios.</p>
+            <h3>Snapback touch</h3>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/snap_back_touch.mp4" type="video/mp4">
+                </video>
+            </div>
         </section>
 
         <!-- Action Trapping Section -->
@@ -155,7 +170,6 @@
             <p>Explore strategies to gain the upper hand in 50/50 situations through effective trapping.</p>
         </section>
     </main>
-
 
 
 </div>
