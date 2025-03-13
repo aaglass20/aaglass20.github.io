@@ -5,81 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BDU Soccer</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
 
-        header {
-            background: #003366;
-            color: #fff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #0779e4 3px solid;
-            text-align: center;
-        }
-
-        header img {
-            max-height: 60px;
-        }
-
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        /* Updated Waffle Menu Styles */
+        /* Your existing CSS styles */
+        /* Add new styles for the waffle menu */
         .waffle-menu {
-            display: flex;
-            flex-direction: column;
+            display: none; /* Initially hide the waffle menu */
             position: fixed;
             top: 0;
             left: 0;
-            width: 230px;
+            width: 200px;
+            background-color: #333;
             padding: 20px;
-            background: linear-gradient(135deg, #003366, #0779e4);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            height: 100%;
-            overflow-y: auto;
-            border-right: 2px solid #00509e;
             z-index: 1000;
         }
 
         .waffle-menu a {
-            display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
+            display: block;
+            color: #fff;
             text-decoration: none;
-            color: white;
-            margin: 10px 0;
-            padding: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            border-radius: 5px;
-        }
-
-        .waffle-menu a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(10px);
-        }
-
-        .waffle-menu a i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-            color: #a3d8f4;
-            transition: transform 0.3s;
-        }
-
-        .waffle-menu a:hover i {
-            transform: rotate(15deg);
+            margin-bottom: 10px;
         }
 
         .waffle-menu-toggle {
@@ -98,21 +43,56 @@
             margin-bottom: 5px;
         }
 
-        /* For smaller screens */
-        @media screen and (max-width: 600px) {
-            .waffle-menu {
-                width: 180px;
-            }
-
-            .waffle-menu a {
-                font-size: 1rem;
-            }
-
-            .waffle-menu a i {
-                font-size: 1.2rem;
-            }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
         }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        header {
+            background: #003366;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #0779e4 3px solid;
+            text-align: center;
+        }
+
+
+        header img {
+            max-height: 60px; /* Adjust the size of your logo */
+        }
+
+        .video-container {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the video */
+        }
+
+        video {
+            width: 400px; /* Set the width of the video to 400 pixels */
+            border-radius: 5px;
+        }
+
+        p {
+            margin-top: 5px;
+        }
+
     </style>
+
+
 </head>
 <body>
 <header>
@@ -120,30 +100,30 @@
     <h1>BDU Practice</h1>
 </header>
 
-<!-- Waffle Menu Toggle Button -->
+<!-- Add the waffle menu toggle button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
     <span></span>
     <span></span>
     <span></span>
 </div>
-
-<!-- Waffle Menu -->
+<!-- The waffle menu -->
 <div class="waffle-menu" id="waffleMenu">
-    <a href="index.html"><i class="fas fa-home"></i> Home</a>
-    <a href="practices.html"><i class="fas fa-futbol"></i> Practice</a>
-    <a href="warmup.html"><i class="fas fa-fire"></i> Warm Up</a>
-    <a href="offsides.html"><i class="fas fa-flag"></i> Rules Explained</a>
-    <a href="drills.html"><i class="fas fa-dumbbell"></i> Drills</a>
-    <a href="offense.html"><i class="fas fa-forward"></i> Offense</a>
-    <a href="defense.html"><i class="fas fa-shield-alt"></i> Defense</a>
-    <a href="footskils.html"><i class="fas fa-shoe-prints"></i> Foot Skills</a>
-    <a href="fitness.html"><i class="fas fa-heartbeat"></i> Fitness</a>
-    <a href="turns.html"><i class="fas fa-sync-alt"></i> Turns</a>
-    <a href="camp.html"><i class="fas fa-campground"></i> Camp</a>
-    <a href="indoor/index.html"><i class="fas fa-futbol"></i> Indoor</a>
-    <a href="plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+    <p><br></p>
+    <a href="index.html">Home</a>
+    <a href="practices.html">Practice</a>
+    <a href="warmup.html">Warm Up</a>
+    <a href="offsides.html">Rules Explained</a>
+    <a href="drills.html">Drills</a>
+    <a href="offense.html">Offense</a>
+    <a href="defense.html">Defense</a>
+    <a href="footskils.html">Foot Skills</a>
+    <a href="fitness.html">Fitness</a>
+    <a href="turns.html">Turns</a>
+    <a href="camp.html">Camp</a>
+    <a href="indoor/index.html">Indoor</a>
+    <a href="plan/index.html">Planning</a>
 </div>
-
+<div class="container">
 
 
     <hr>
@@ -309,12 +289,16 @@
 
 <!-- Your existing scripts -->
 <script>
+    // JavaScript function to toggle the waffle menu
     function toggleWaffleMenu() {
-        const menu = document.getElementById('waffleMenu');
-        menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+        var waffleMenu = document.getElementById("waffleMenu");
+        if (waffleMenu.style.display === "block") {
+            waffleMenu.style.display = "none";
+        } else {
+            waffleMenu.style.display = "block";
+        }
     }
 </script>
-
 
 
 </body>
