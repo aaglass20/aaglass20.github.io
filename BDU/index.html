@@ -12,7 +12,7 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background: #f4f4f4;
+            background: #eef2f3; /* Light modern background */
             color: #333;
             line-height: 1.6;
         }
@@ -20,21 +20,128 @@
         header {
             background: #003366;
             color: #fff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #0779e4 3px solid;
+            padding: 20px 0;
             text-align: center;
+            border-bottom: 5px solid #0779e4;
         }
 
         header img {
             max-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
         }
 
         .container {
-            width: 80%;
-            margin: 0 auto;
-            overflow: hidden;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #003366;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0779e4;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 10px;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        b {
+            color: #003366;
+        }
+
+        /* Modernize checkboxes */
+        input[type="checkbox"] {
+            accent-color: #003366;
+            transform: scale(1.3);
+            margin-right: 10px;
+        }
+
+        .highlight-banner {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #003366, #0779e4);
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-banner h2 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+        }
+
+        /*.video-container {*/
+        /*    text-align: center;*/
+        /*    margin: 20px auto;*/
+        /*}*/
+
+        /*video {*/
+        /*    width: 100%;*/
+        /*    max-width: 600px;*/
+        /*    border-radius: 8px;*/
+        /*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
+        /*}*/
+
+        .footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #a3d8f4;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .highlight-banner h2 {
+                font-size: 1.5rem;
+            }
+        }
+
 
         /* Updated Waffle Menu Styles */
         .waffle-menu {
@@ -112,6 +219,24 @@
                 font-size: 1.2rem;
             }
         }
+
+        .video-container {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the video */
+        }
+
+        video {
+            width: 400px; /* Set the width of the video to 400 pixels */
+            border-radius: 5px;
+        }
+
+        p {
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -119,6 +244,7 @@
     <img src="images/bdu.png" alt="Company Logo">
     <h1>BDU Practice</h1>
 </header>
+
 
 <!-- Waffle Menu Toggle Button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
@@ -144,185 +270,133 @@
     <a href="plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
 </div>
 
+<!-- Highlight Banner -->
+<div class="highlight-banner">
+    <h2>Welcome to BDU Soccer Training</h2>
+    <p>Enhance your skills with modern drills and techniques!</p>
+</div>
 
-
-    <hr>
-
-    <b>Locker</b>
-    <ul>
-        <li>Turn Right 3 Times, stop on 15</li>
-        <li>Turn Left 1 Full turn passing the 15, stop on 36</li>
-        <li>Turn Right and stop on 09</li>
-    </ul>
-
-    <b>Goals in next two weeks</b>
-    <ul>
-        <li><input type="checkbox" checked>Warmup</li>
-        <li><input type="checkbox" checked>Scanning</li>
-        <li><input type="checkbox" checked>Defense Scrum</li>
-    </ul>
-
-    <b>Warmup</b>
-
-    <div class="container">
+<div class="container">
+    <!-- Locker Section -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-lock"></i> Locker Instructions</h2>
         <ul>
-            <li>1, 2, 3, Touch Toe</li>
-            1, 2, 3, Blue Devils
-            <li>Lunges</li>
-            Blue, Devils, Blue, Devils
-            <li>Hug knee to Chest</li>
-            Blue, Devils, Blue, Devils
-            <li>Cradle Leg and Ankle</li>
-            Blue, Devils, Blue, Devils
-            <li>Criss cross quad</li>
-            Blue, Devils, Blue, Devils
-            <li>Skips</li>
-            <li>Stand in place X 10 - Count</li>
-            <ul>
-                <li>Scissors * 10</li>
-                <li>Front to Back Hop * 10</li>
-                <li>Side to Side * 10</li>
-                <li>Criss Cross * 10</li>
-                <li>Hops * 10</li>
-            </ul>
-            <li>Sprint</li>
-            <li>Flip Run</li>
-            <ul>
-                <li>R Only (inside, outside)</li>
-                <li>L Only (inside, outside)</li>
-                <li>Both feet</li>
-                <li>Inside out/Rollovers/Sole Roles</li>
-                <li>Feint</li>
-                <li>Fake Shot</li>
-                <li>Head Up</li>
-                <li>simple trap/touch 10X each</li>
-            </ul>
-            <li>25 Touches R, 25 Touches (start to work on some distance)</li>
+            <li>Turn Right 3 Times, stop on 15</li>
+            <li>Turn Left 1 Full turn, passing the 15, stop on 36</li>
+            <li>Turn Right and stop on 09</li>
+        </ul>
+    </section>
 
+    <!-- Goals Section -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-list-alt"></i> Goals in the Next Two Weeks</h2>
+        <ul>
+            <li><input type="checkbox" checked> Warmup</li>
+            <li><input type="checkbox" checked> Scanning</li>
+            <li><input type="checkbox" checked> Defense Scrum</li>
+        </ul>
+    </section>
+
+    <!-- Warmup Section -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-dumbbell"></i> Warmup Routine</h2>
+        <ul>
+            <li>1, 2, 3, Touch Toe
+                <ul>
+                    <li>1, 2, 3, Blue Devils</li>
+                </ul>
+            </li>
+            <li>Lunges
+                <ul>
+                    <li>Blue, Devils, Blue, Devils</li>
+                </ul>
+            </li>
+            <li>Hug Knee to Chest
+                <ul>
+                    <li>Blue, Devils, Blue, Devils</li>
+                </ul>
+            </li>
+            <li>Cradle Leg and Ankle
+                <ul>
+                    <li>Blue, Devils, Blue, Devils</li>
+                </ul>
+            </li>
+            <li>Criss Cross Quad
+                <ul>
+                    <li>Blue, Devils, Blue, Devils</li>
+                </ul>
+            </li>
+            <li>Skips</li>
+            <li>Stand in Place (10 Counts)
+                <ul>
+                    <li>Scissors * 10</li>
+                    <li>Front to Back Hop * 10</li>
+                    <li>Side to Side * 10</li>
+                    <li>Criss Cross * 10</li>
+                    <li>Hops * 10</li>
+                </ul>
+            </li>
+            <li>Sprint</li>
+            <li>Flip Run
+                <ul>
+                    <li>Right Only (inside, outside)</li>
+                    <li>Left Only (inside, outside)</li>
+                    <li>Both Feet</li>
+                    <li>Inside Out/Rollovers/Sole Rolls</li>
+                    <li>Feint</li>
+                    <li>Fake Shot</li>
+                    <li>Head Up</li>
+                    <li>Simple Trap/Touch (10x each)</li>
+                </ul>
+            </li>
+            <li>fascia training</li>
+            <li>25 Touches Right, 25 Touches Left (Work on Distance)</li>
         </ul>
 
-        <hr>
 
+    </section>
 
-        <div>
-            <H3>Scanning</H3>
-            <p>Why are we scanning? </p>
-            <ul>
-                <li>Awareness</li>
-                <li>Engagement</li>
-                <li>Planning your Next move</li>
-            </ul>
-            <p>Summary on what we are scanning for:</p>
-            <ul>
-                <li>Ball</li>
-                <li>Opposition</li>
-                <li>Teammates</li>
-                <li>Space</li>
-            </ul>
+    <!-- Scanning Section -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-eye"></i> Scanning Exercises</h2>
+        <ul>
+            <li>Why Scan? For Awareness, Engagement, and Planning the Next Move.</li>
+            <li>Focus on Ball, Teammates, Opposition, and Space.</li>
+        </ul>
+        <div class="video-container">
+            <video controls>
+                <source src="vid/scannin_no_your_move_before_you_move.mp4" type="video/mp4">
+            </video>
         </div>
+    </section>
 
-        <div>
-            <h3>Scanning Exercises</h3>
-
-            <section>
-                <h4>Scanning for Color</h4>
-                <ul>
-                    <li>Player 1 (or coach) holds two cones, each in a different color.</li>
-                    <li>Player 1 raises one cone to indicate the color.</li>
-                    <li>Player 2 identifies and calls out the color.</li>
-                    <li>Player 1 passes the ball to Player 2.</li>
-                    <li>Player 2 controls the ball and returns the pass to Player 1.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h4>Scanning for Direction</h4>
-                <ul>
-                    <li>Player 1 (or coach) holds two cones, each in a different color.</li>
-                    <li>Player 2 identifies and calls out the color of the raised cone.</li>
-                    <li>When Player 1 raises one hand, Player 2 moves in the opposite direction.</li>
-                    <li>The raised hand is used to simulate the side of the pressure.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h3>Know your move before you move - scan</h3>
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/scannin_no_your_move_before_you_move.mp4" type="video/mp4">
-                    </video>
-
-                </div>
-                <ul>
-                    <li>Never stop or keep the ball in neutral</li>
-                    <li>Move with a direction and be confident</li>
-                    <li>Adjust</li>
-                    <li>Read the pressure</li>
-                </ul>
-            </section>
-
-
-            <section>
-
-                <article>
-                    <h3>Protect the Egg</h3>
-                    <p>Works on Shielding, physical, grit<br>
-                    </p>
-                    <ul>
-                        <li>Make a small square with cones</li>
-                        <li>On player stands on ball and keeps away from other player</li>
-                        <li>Other Player physically and legally attempts to steal the ball</li>
-                        <li>Player with ball is goal is to stay in middle of square</li>
-                    </ul>
-            </section>
-
-
-            <section>
-
-                <article>
-                    <h3>Interception Drill</h3>
-                    <p>Simulates reading or anticipating a pass to intercept<br>
-                    </p>
-                    <div class="video-container">
-                        <video controls>
-                            <source src="vid/def/interceptionDrill.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <ul>
-                        <li>Two sides to this drill, teaching anticipation</li>
-                        <li>Second is scanning</li>
-                        <li>Shield the player from intercepting</li>
-                        <li>Interceptor fights off the shield</li>
-                    </ul>
-            </section>
-
+    <!-- Custom Drills Section -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-futbol"></i> Custom Drills</h2>
+        <ul>
+            <li>Protect the Egg (Shielding and Physical Challenges)</li>
+            <li>Interception Drill (Reading Passes or Anticipation)</li>
+        </ul>
+        <div class="video-container">
+            <video controls>
+                <source src="vid/def/interceptionDrill.mp4" type="video/mp4">
+            </video>
         </div>
-
-
-    </div>
-
-
-    <hr>
-
-</div>
+    </section>
 </div>
 
-<!-- Your existing scripts -->
+<footer class="footer">
+    <a href="turns.html">Turns</a> |
+    <a href="tryout.html">Tryout</a> |
+    <a href="touch.html">Touch</a> |
+    <a href="formations.html">Formations</a>
+</footer>
+
 <script>
     function toggleWaffleMenu() {
         const menu = document.getElementById('waffleMenu');
-        menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 </script>
-
-
-
 </body>
-
-<footer class="footer">
-    <a href="turns.html" target="_self">Turns</a> |
-    <a href="tryout.html" target="_self">Tryout</a> |
-    <a href="touch.html" target="_self">Touch</a> |
-    <a href="formations.html" target="_self">Formations</a> |
-</footer>
 </html>
