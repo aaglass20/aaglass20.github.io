@@ -225,6 +225,40 @@
         p {
             margin-top: 5px;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap'); /* Meaningful modern font */
+
+        .modern-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Spacing between icon and text */
+            font-family: 'Poppins', sans-serif; /* Apply modern font */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: 600; /* Make text bold */
+            text-decoration: none; /* Remove default underline */
+            color: #2b2d42; /* Clean modern dark color */
+            padding: 10px 15px; /* Add padding for a clickable area */
+            background-color: #ef233c; /* Modern red button background */
+            border-radius: 8px; /* Rounded corners for a soft modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a modern shadow effect */
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease; /* Smooth hover effects */
+        }
+
+        .modern-link i {
+            color: #ffffff; /* Icon in white to stand out */
+            font-size: 1.4rem; /* Slightly emphasize icon size */
+        }
+
+        .modern-link span {
+            color: #ffffff; /* Text in white to match design */
+        }
+
+        .modern-link:hover {
+            background-color: #d90429; /* Slightly darker red on hover */
+            transform: translateY(-2px); /* Adds a "lift" effect */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow on hover */
+        }
+
     </style>
 </head>
 <body>
@@ -365,6 +399,17 @@
                 <source src="vid/scannin_no_your_move_before_you_move.mp4" type="video/mp4">
             </video>
 
+
+            <h2 class="section-title"><i class="fas fa-binoculars"></i>Simple Scan</h2>
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/simple_scanning_drill.mp4" type="video/mp4">
+                </video>
+                <br>
+                <a href="randomNumber.html" class="modern-link">
+                    <i class="fas fa-number"></i> <span>Random Number</span>
+                </a>
+
     </section>
     <ul>
         <li>Never stop or keep the ball in neutral</li>
@@ -421,22 +466,22 @@
     </section>
 
     <!-- Passing Pressure -->
- <section>
-             <h2 class="section-title"><i class="fas fa-times"></i> Pressure and Delay</h2>
-    <ul>
-        <li>Closing down quickly (but under control) forces attackers to make decisions faster.</li>
-        <li>By pressuring them, you often gain the upper hand physically since they cannot settle and prepare
-            for contact.
-        </li>
-    </ul>
+    <section>
+        <h2 class="section-title"><i class="fas fa-times"></i> Pressure and Delay</h2>
+        <ul>
+            <li>Closing down quickly (but under control) forces attackers to make decisions faster.</li>
+            <li>By pressuring them, you often gain the upper hand physically since they cannot settle and prepare
+                for contact.
+            </li>
+        </ul>
 
-    <div class="video-container">
-        <video controls>
-            <source src="vid/pass_and_press.mp4" type="video/mp4">
-        </video>
+        <div class="video-container">
+            <video controls>
+                <source src="vid/pass_and_press.mp4" type="video/mp4">
+            </video>
 
-    </div>
- </section>
+        </div>
+    </section>
 
 </div>
 

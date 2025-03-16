@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen Random Number</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            background-color: black; /* Black background */
+            overflow: hidden; /* Prevent scrolling */
+            font-family: Arial, sans-serif;
+        }
+
+        .random-number {
+            font-size: 90vh; /* Dynamically adjusts to fill the screen vertically */
+            font-weight: bold;
+            color: green; /* Starting color */
+            text-align: center;
+            line-height: 1; /* Prevent overflow caused by any extra line height */
+            transition: color 0.5s ease, transform 0.5s ease; /* Smooth transitions for color and animation */
+        }
+    </style>
+</head>
+<body>
+<div class="random-number">0</div>
+
+<script>
+    // Function to generate a random number between 1 and 9
+    function getRandomNumber() {
+        return Math.floor(Math.random() * 9) + 1; // Random number between 1 and 9
+    }
+
+    // Function to get the next color from a fixed list
+    function getNextColor(currentColor) {
+        const colors = ['green', 'red', 'blue', 'yellow'];
+        const currentIndex = colors.indexOf(currentColor);
+        return colors[(currentIndex + 1) % colors.length]; // Cycle to the next color
+    }
+
+    // Initial variables
+    const randomNumberElement = document.querySelector('.random-number');
+    let currentColor = 'green'; // Starting color
+
+    // Function to update the number and color
+    function updateNumberAndColor() {
+        // Update the random number
+        const randomNumber = getRandomNumber();
+        randomNumberElement.textContent = randomNumber;
+
+        // Update the color
+        currentColor = getNextColor(currentColor);
+        randomNumberElement.style.color = currentColor;
+
+        // Add a slight scaling animation for visual effect
+        randomNumberElement.style.transform = "scale(1.1)";
+        setTimeout(() => {
+            randomNumberElement.style.transform = "scale(1)";
+        }, 500); // Revert the scale after animation
+    }
+
+    // Start updating every 4 seconds
+    setInterval(updateNumberAndColor, 4000);
+
+    // Run once initially
+    updateNumberAndColor();
+</script>
+</body>
+</html>
