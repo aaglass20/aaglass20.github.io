@@ -17,7 +17,7 @@
             overflow: hidden; /* Prevent scrolling */
             font-family: Arial, sans-serif;
             color: white;
-            transition: transform 0.5s ease; /* Smooth scaling animations */
+            /*transition: transform 0.5s ease; !* Smooth scaling animations *!*/
         }
 
         .random-number {
@@ -59,16 +59,17 @@
     </style>
 </head>
 <body>
+<br><br><br><br>
 <div class="controls">
     <label for="duration-select">Update Interval:</label>
     <select id="duration-select">
         <option value="1000">1 second</option>
-        <option value="2000">2 seconds</option>
-        <option value="3000">3 seconds</option>
-        <option value="4000" selected>4 seconds</option>
+        <option value="2000" selected>2 seconds</option>
+        <option value="3000" >3 seconds</option>
+        <option value="4000">4 seconds</option>
     </select>
 </div>
-
+<br><br><br><br>
 <div class="random-number">0</div>
 
 <script>
