@@ -9,12 +9,14 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh; /* Full viewport height */
             background-color: black; /* Black background */
             overflow: hidden; /* Prevent scrolling */
             font-family: Arial, sans-serif;
+            color: white;
         }
 
         .random-number {
@@ -25,9 +27,33 @@
             line-height: 1; /* Prevent overflow caused by any extra line height */
             transition: color 0.5s ease, transform 0.5s ease; /* Smooth transitions for color and animation */
         }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+<div class="controls">
+    <label for="duration-select" style="margin-right: 10px;">Update Interval:</label>
+    <select id="duration-select">
+        <option value="1000">1 second</option>
+        <option value="2000" selected>2 seconds</option>
+        <option value="3000">3 seconds</option>
+        <option value="4000">4 seconds</option>
+    </select>
+</div>
+
 <div class="random-number">0</div>
 
 <script>
@@ -64,11 +90,23 @@
         }, 500); // Revert the scale after animation
     }
 
-    // Start updating every 4 seconds
-    setInterval(updateNumberAndColor, 4000);
+    // Interval handling
+    let intervalId;
+    const durationSelect = document.getElementById('duration-select');
 
-    // Run once initially
+    // Function to start the interval based on selected duration
+    function startInterval() {
+        const duration = parseInt(durationSelect.value, 10);
+        clearInterval(intervalId); // Clear the previous interval
+        intervalId = setInterval(updateNumberAndColor, duration); // Start a new interval
+    }
+
+    // Listen for changes in the dropdown
+    durationSelect.addEventListener('change', startInterval);
+
+    // Start updating initially with the default value
     updateNumberAndColor();
+    startInterval();
 </script>
 </body>
 </html>
