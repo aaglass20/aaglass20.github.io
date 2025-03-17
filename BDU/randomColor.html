@@ -15,11 +15,47 @@
             justify-content: center;
             align-items: center;
             transition: background-color 0.5s ease; /* Smooth transition between colors */
+            font-family: Arial, sans-serif;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select:hover, select:focus {
+            border-color: #888;
+            outline: none;
         }
     </style>
 </head>
 
 <body>
+<div class="controls">
+    <label for="duration-select" style="margin-right: 10px;">Update Interval:</label>
+    <select id="duration-select">
+        <option value="1000">1 second</option>
+        <option value="2000" selected>2 seconds</option>
+        <option value="3000">3 seconds</option>
+        <option value="4000">4 seconds</option>
+    </select>
+</div>
+
 <script>
     // Define the colors to flip between
     const colors = ['red', 'blue'];
@@ -34,10 +70,25 @@
         document.body.style.backgroundColor = colors[currentColorIndex];
     }
 
-    // Change the color every 4 seconds
-    setInterval(toggleBackgroundColor, 4000);
+    // Interval handling
+    let intervalId;
+    const durationSelect = document.getElementById('duration-select');
 
-    // Start with the initial color set in the CSS
+    // Function to start the interval based on the selected duration
+    function startInterval() {
+        const duration = parseInt(durationSelect.value, 10);
+        clearInterval(intervalId); // Clear the previous interval
+        intervalId = setInterval(toggleBackgroundColor, duration); // Start a new interval
+    }
+
+    // Listen for changes in the dropdown
+    durationSelect.addEventListener('change', () => {
+        startInterval(); // Restart the interval
+        toggleBackgroundColor(); // Force an immediate color toggle when the user changes the duration
+    });
+
+    // Start updating initially with the default value
+    startInterval();
 </script>
 </body>
 
