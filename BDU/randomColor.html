@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen Color Flip</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Full viewport height */
+            background-color: red; /* Starting with red */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s ease; /* Smooth transition between colors */
+        }
+    </style>
+</head>
+
+<body>
+<script>
+    // Define the colors to flip between
+    const colors = ['red', 'blue'];
+    let currentColorIndex = 0;
+
+    // Function to toggle the background color
+    function toggleBackgroundColor() {
+        // Switch to the next color
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+
+        // Set the new background color
+        document.body.style.backgroundColor = colors[currentColorIndex];
+    }
+
+    // Change the color every 4 seconds
+    setInterval(toggleBackgroundColor, 4000);
+
+    // Start with the initial color set in the CSS
+</script>
+</body>
+
+</html>
