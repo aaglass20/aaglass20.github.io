@@ -217,10 +217,12 @@
             text-align: center; /* Center the video */
         }
 
-        video {
-            width: 400px; /* Set the width of the video to 400 pixels */
-            border-radius: 5px;
+        video, iframe {
+            max-width: 100%; /* Constrain video width to the container width */
+            height: auto;   /* Maintain aspect ratio */
+            display: block; /* Avoid inline elements causing inline white space */
         }
+
 
         p {
             margin-top: 5px;
