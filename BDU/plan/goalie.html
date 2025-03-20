@@ -217,14 +217,78 @@
             text-align: center; /* Center the video */
         }
 
-        video {
-            width: 400px; /* Set the width of the video to 400 pixels */
-            border-radius: 5px;
+        video, iframe {
+            max-width: 100%; /* Constrain video width to the container width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Avoid inline elements causing inline white space */
         }
+
 
         p {
             margin-top: 5px;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap'); /* Meaningful modern font */
+
+        .modern-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Spacing between icon and text */
+            font-family: 'Poppins', sans-serif; /* Apply modern font */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: 600; /* Make text bold */
+            text-decoration: none; /* Remove default underline */
+            color: #2b2d42; /* Clean modern dark color */
+            padding: 10px 15px; /* Add padding for a clickable area */
+            background-color: #ef233c; /* Modern red button background */
+            border-radius: 8px; /* Rounded corners for a soft modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a modern shadow effect */
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease; /* Smooth hover effects */
+        }
+
+        .modern-link i {
+            color: #ffffff; /* Icon in white to stand out */
+            font-size: 1.4rem; /* Slightly emphasize icon size */
+        }
+
+        .modern-link span {
+            color: #ffffff; /* Text in white to match design */
+        }
+
+        .modern-link:hover {
+            background-color: #d90429; /* Slightly darker red on hover */
+            transform: translateY(-2px); /* Adds a "lift" effect */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow on hover */
+        }
+
+        .collapsible-section {
+            margin-bottom: 20px;
+        }
+
+        .collapsible-content {
+            display: none; /* Initially collapsed */
+            padding-left: 20px;
+            border-left: 2px solid #0779e4;
+            margin-top: 10px;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-section .toggle-button {
+            border: none;
+            background: none;
+            color: #003366;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-section .toggle-button[aria-expanded="true"] i {
+            transform: rotate(180deg); /* Rotate icon when expanded */
+        }
+
+
     </style>
 
 
@@ -298,28 +362,48 @@
             <li>Landing safely to avoid injury</li>
         </ul>
 
-        <article>
-            <h3>Diving and reaction drill</h3>
+
+        <section>
+            <h2 class="section-title"><i class="fas fa-stopwatch"></i> Scoop and Cover</h2>
+
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/goalie_scoop_cover.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title"><i class="fas fa-stopwatch"></i> Diving and reaction drill</h2>
 
             <div class="video-container">
                 <video controls>
                     <source src="../vid/goalieDivingDrill.mp4" type="video/mp4">
                 </video>
             </div>
-            <!-- Interception Drill End -->
-            <article>
+        </section>
 
-                </p>
+        <section>
+            <h2 class="section-title"><i class="fas fa-stopwatch"></i> Feet and Shoulders</h2>
 
-                <h3>Defending Corners</h3>
-                <p>Be aggressive but smart. Position yourself slightly off the goal line and scan for threats. Decide
-                    early
-                    whether to catch, punch, or stay back.</p>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/goalie_feet_aligned_shoulders.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
 
-                <h3>Defending the Cross</h3>
-                <p>Time your movements and judge the flight of the ball. High balls should be caught at their highest
-                    point,
-                    while dangerous crosses may require punching away to clear danger.</p>
+        </p>
+
+        <h3>Defending Corners</h3>
+        <p>Be aggressive but smart. Position yourself slightly off the goal line and scan for threats. Decide
+            early
+            whether to catch, punch, or stay back.</p>
+
+        <h3>Defending the Cross</h3>
+        <p>Time your movements and judge the flight of the ball. High balls should be caught at their highest
+            point,
+            while dangerous crosses may require punching away to clear danger.</p>
     </section>
 
     <!-- Distribution Section -->
@@ -361,6 +445,185 @@
             defensive recovery.</p>
     </section>
 
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Scoop and Cover</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_scoop_cover.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> 1 V 1 Blocks</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_1v1_blockes.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> 3 Dive Drills</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_3_drills_dive_pro.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> 3 Levels of Diving</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_3_levels_diving.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Angles</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_angles.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Avoid Bridge</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_avoid_bridge_dive.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Corner Kicks</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_cornors.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Dive Activation</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_dive_activation_drill.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Train Reflexes</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_train_relexes.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Spread Wide</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_spread_wide.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Set Position</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_set_position.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Ready Position</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_ready_position_drill.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> How to High Dive</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_how_to_highdive.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Low Dive</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_low_dive.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Punting</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_punting.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Side Volley</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_side_volley_punt.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Drop and Divey</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_drop_dive.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Drop and Divey</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_getup_dive.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Goalie Reflexes</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_reflexes.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Goalie Reflexes</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_dive_pole_drill.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-stopwatch"></i> Goalie Reflexes</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="../vid/goalie_dive_drills.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
 
 </div>
 
