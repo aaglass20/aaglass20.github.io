@@ -217,14 +217,78 @@
             text-align: center; /* Center the video */
         }
 
-        video {
-            width: 400px; /* Set the width of the video to 400 pixels */
-            border-radius: 5px;
+        video, iframe {
+            max-width: 100%; /* Constrain video width to the container width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Avoid inline elements causing inline white space */
         }
+
 
         p {
             margin-top: 5px;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap'); /* Meaningful modern font */
+
+        .modern-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Spacing between icon and text */
+            font-family: 'Poppins', sans-serif; /* Apply modern font */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: 600; /* Make text bold */
+            text-decoration: none; /* Remove default underline */
+            color: #2b2d42; /* Clean modern dark color */
+            padding: 10px 15px; /* Add padding for a clickable area */
+            background-color: #ef233c; /* Modern red button background */
+            border-radius: 8px; /* Rounded corners for a soft modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a modern shadow effect */
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease; /* Smooth hover effects */
+        }
+
+        .modern-link i {
+            color: #ffffff; /* Icon in white to stand out */
+            font-size: 1.4rem; /* Slightly emphasize icon size */
+        }
+
+        .modern-link span {
+            color: #ffffff; /* Text in white to match design */
+        }
+
+        .modern-link:hover {
+            background-color: #d90429; /* Slightly darker red on hover */
+            transform: translateY(-2px); /* Adds a "lift" effect */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow on hover */
+        }
+
+        .collapsible-section {
+            margin-bottom: 20px;
+        }
+
+        .collapsible-content {
+            display: none; /* Initially collapsed */
+            padding-left: 20px;
+            border-left: 2px solid #0779e4;
+            margin-top: 10px;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-section .toggle-button {
+            border: none;
+            background: none;
+            color: #003366;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-section .toggle-button[aria-expanded="true"] i {
+            transform: rotate(180deg); /* Rotate icon when expanded */
+        }
+
+
     </style>
 
 
@@ -278,7 +342,7 @@
         </ul>
     </section>
 
-        <section>
+    <section>
         <h2>Topic of Movement - Every Forward pass needs a supporting player</h2>
         <ul>
             <li>Means, you pass forward, you move foward</li>
@@ -291,12 +355,78 @@
         </ul>
     </section>
 
-            <section>
+    <section>
         <h2>Unstoppable Move</h2>
         <ul>
             <div class="video-container">
                 <video controls>
                     <source src="../vid/untstopable_move.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Stop and Go</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/stopAndGo.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Stop and Go Shooting</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/stopAndGoShooting.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Side Stop and Go</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/sideStopAndGo.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Stop and Go Touch</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/stopAndGoTouch.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Side Stop and Go Exercise</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/stopAndGoExcercise.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section>
+        <h2 class="section-title"><i class="fas fa-list-alt"></i> Stop and Go Cut<</h2>
+        <ul>
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/stopAndGoCut.mp4" type="video/mp4">
                 </video>
             </div>
         </ul>
