@@ -349,16 +349,24 @@
 
 
     <!-- Goals Section -->
-    <section>
-        <h2 class="section-title"><i class="fas fa-list-alt"></i> Goals</h2>
-        <ul>
-            <li><input type="checkbox" checked> Warmup</li>
-            <li><input type="checkbox" checked> Review on Turns</li>
-            <li><input type="checkbox" checked> Moving Forward With Scanning</li>
-            <li><input type="checkbox" checked> Introduce some off ball moving</li>
-            <li><input type="checkbox" checked> Start and Stop</li>
-        </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Goals
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><input type="checkbox" checked> Warmup</li>
+                <li><input type="checkbox" checked> Review on Turns</li>
+                <li><input type="checkbox" checked> Moving Forward With Scanning</li>
+                <li><input type="checkbox" checked> Introduce some off ball moving</li>
+                <li><input type="checkbox" checked> Start and Stop</li>
+            </ul>
+        </div>
     </section>
+
 
     <!-- Warmup Section -->
     <section class="collapsible-section">
@@ -425,140 +433,195 @@
     </section>
 
 
-    <!-- Turns-->
+    <!-- Goalie-->
 
-    <section>
-
-        <h2 class="section-title"><i class="fas fa-binoculars"></i>Turns Dribbling Review</h2>
-        <div class="video-container">
-            <video controls>
-                <source src="vid/turns1.mp4" type="video/mp4">
-            </video>
-            <br>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Goalie Ready Position
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Hand Position</h3>
+            <p>Keep your hands in a “ready” position:</p>
             <ul>
-                <li>Three groups at one time</li>
-                <li>Chop Turn</li>
-                <li>Inside Turn</li>
-                <li>Outside Turn</li>
+                <li>Palms facing slightly forward or at a slight outward angle</li>
+                <li>Fingers naturally curved and slightly spread</li>
+                <li>Thumbs pointing toward each other, forming a relaxed “W” shape</li>
+                <li>Hands positioned just outside shoulder width, at chest height</li>
+            </ul>
+            <p>This posture prepares the goalie to react quickly to high, low, or lateral shots.</p>
+
+            <h3>Foot Positioning & Body Posture</h3>
+            <ul>
+                <li>Feet shoulder-width apart or slightly wider</li>
+                <li>Knees slightly bent</li>
+                <li>Weight on the balls of your feet (not heels)</li>
+                <li>Chest forward, hips slightly back, back straight but relaxed</li>
             </ul>
         </div>
 
     </section>
 
 
-    <section>
-
-        <h2 class="section-title"><i class="fas fa-binoculars"></i>Turns left and right Review</h2>
-        <div class="video-container">
-            <video controls>
-                <source src="vid/wall_move_turns.mp4" type="video/mp4">
-            </video>
-            <br>
-            <ul>
-                <li>Three groups at one time or slow it down and everyone has a ball</li>
-                <li>Turn inside</li>
-                <li>Turn outside</li>
-                <li>Face up turn</li>
-            </ul>
-        </div>
-    </section>
-
-    <section>
-
-        <h2 class="section-title"><i class="fas fa-solid fa-lock"></i>Drill for Scanning, turns, off ball movement</h2>
-
-
-        <div class="video-container">
-            <video controls>
-                <source src="vid/turn_decide_cross.mp4" type="video/mp4">
-            </video>
-            <br>
-            <h1>Vid is ref for drill above</h1>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-stopwatch"></i> Ready Position
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
             <div class="video-container">
                 <video controls>
-                    <source src="vid/overlap_cross.mp4" type="video/mp4">
+                    <source src="vid/goalie_ready_position_drill.mp4" type="video/mp4">
                 </video>
-                <br>
-
             </div>
         </div>
     </section>
 
 
-    <!-- Start + Stop -->
-
-
-    <div class="video-container">
-        <video controls>
-            <source src="vid/stopAndGo.mp4" type="video/mp4">
-        </video>
-
-    </div>
-
-    <section>
-        <h2 class="section-title"><i class="fas fa-binoculars"></i>Line Guarding, stop and start - Physical</h2>
-        <h1>Quick demo and try with start and Stop</h1>
-        <div class="video-container">
-            <video controls>
-                <source src="vid/stopAndGo.mp4" type="video/mp4">
-            </video>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-stopwatch"></i> Dive Activation
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="../vid/goalie_dive_activation_drill.mp4" type="video/mp4">
+                </video>
+            </div>
         </div>
-
-        <ul>
-            <li>Two players</li>
-            <li>one has the ball with foot closest to line</li>
-            <li>shield off defender</li>
-            <li>Stop and cut over</li>
-            <li>Maybe have them work on stop and start dribbling beforehand</li>
-        </ul>
-
-    </section>
-
-    <section>
-        <h2 class="section-title"><i class="fas fa-binoculars"></i>Line Guarding, stop and start - Physical</h2>
-        <ul>
-            <li>Two players</li>
-            <li>one has the ball with foot closest to line</li>
-            <li>shield off defender</li>
-            <li>Stop and cut over</li>
-        </ul>
 
     </section>
 
 
-    <!-- Touch Line Escape -->
-
-    <section>
-
-        <h2 class="section-title"><i class="fas fa-clock"></i>Timing the run</h2>
-        <div class="video-container">
-            <video controls>
-                <source src="vid/throughballTimeRun.mp4" type="video/mp4">
-            </video>
-            <br>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Feet and Shoulders
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/goalie_feet_aligned_shoulders.mp4" type="video/mp4">
+                </video>
+            </div>
         </div>
-        <p>Simulates running accross the line and timing the run. Passer should yell through to signal the forward
-            run. Runner stays onside until the perfect moment<br>
+
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Angles
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+
+            <h3>Angles</h3>
+            <p>Stay off your goal line and cut down angles by stepping forward. The closer you are to the shooter, the
+                less
+                goal they see, forcing a difficult shot.</p>
+
+            <h3>Be on Your Toes</h3>
+            <p>Keep a slight bounce in your stance, weight on the balls of your feet, ready to react quickly to shots,
+                crosses, and through balls.</p>
+
+            <h3>Positioning</h3>
+            <p>Align yourself between the ball and the center of the goal. Always adjust your position with each pass to
+                maintain optimal coverage.</p>
+
+
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/goalie_angles.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Communication
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <p>Goalkeepers must be vocal leaders. Use short, clear, confident commands:</p>
+            <ul>
+                <li><strong>“Keeper!”</strong> – When claiming the ball</li>
+                <li><strong>“Away!”</strong> – Clear the ball</li>
+                <li><strong>“Step!”</strong> – Push the defensive line up</li>
+                <li><strong>“Drop!”</strong> – Fall back into position</li>
+                <li><strong>“Man on!”</strong> – Teammate is under pressure</li>
+                <li><strong>“Mark up!”</strong> – Assign defenders to attackers</li>
+            </ul>
+            <p><em>Be loud, confident, and decisive—your voice prevents confusion and mistakes.</em></p>
+        </div>
+
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Working Shooting technique
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/weekFootTraining.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </section>
+
+
+       <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Nothing but net
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+        <p>Works on long shot with loft<br>
         </p>
-    </section>
-
-    <!-- Passing Pressure -->
-    <section>
-        <h2 class="section-title"><i class="fas fa-times"></i> Pressure and Delay</h2>
-        <ul>
-            <li>Closing down quickly (but under control) forces attackers to make decisions faster.</li>
-            <li>By pressuring them, you often gain the upper hand physically since they cannot settle and prepare
-                for contact.
-            </li>
-        </ul>
-
         <div class="video-container">
             <video controls>
-                <source src="vid/pass_and_press.mp4" type="video/mp4">
+                <source src="vid/shootingGameNothingButNet.mp4" type="video/mp4">
             </video>
-
+        </div>
         </div>
     </section>
+
+           <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Shooting with Power Technique
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+        <div class="video-container">
+            <video controls>
+                <source src="vid/power_technique_shot.mp4" type="video/mp4">
+            </video>
+        </div>
+        </div>
+    </section>
+
 
 </div>
 
