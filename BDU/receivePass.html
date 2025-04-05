@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Add viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Google Sheet Results</title>
+    <style>
+                body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+                        .container {
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            position: relative;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #45a049;
+        }
+
+        th::after {
+            content: '↕';
+            position: absolute;
+            right: 8px;
+            opacity: 0.5;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 20px;
+            cursor: pointer;
+            border: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+
+    </style>
+</head>
+<body>
+<button class="back-button" onclick="window.history.back()">← Back</button>
+
+
+<table id="resultsTable">
+    <thead>
+    <tr id="headerRow"></tr>
+    </thead>
+    <tbody id="tableBody">
+    </tbody>
+</table>
+
+<script>
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnWahRDSpQGCXAKGOPR3GR_T1De-HRjmxqlhllUGujlOYBbZvBBVdUoV6CFexXJz-pmqNmzY7yQ0RM/pub?gid=2056536709&single=true&output=csv';
+
+    let tableData = [];
+    let currentSortColumn = -1;
+    let isAscending = true;
+
+    async function fetchAndDisplayData() {
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
+
+        const rows = csvText.trim().split("\n").map(row => row.split(","));
+
+        const header = rows[0];
+        tableData = rows.slice(1);
+
+        const headerRow = document.getElementById('headerRow');
+        header.forEach((col, index) => {
+            const th = document.createElement('th');
+            th.textContent = col;
+            th.style.cursor = 'pointer';
+            th.addEventListener('click', () => sortTable(index));
+            headerRow.appendChild(th);
+        });
+
+        displayData();
+    }
+
+    function displayData() {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = ''; // Clear existing data
+
+        tableData.forEach(row => {
+            const tr = document.createElement('tr');
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell === '#N/A' ? '' : cell;
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function sortTable(columnIndex) {
+        // Toggle sort direction if clicking the same column
+        if (currentSortColumn === columnIndex) {
+            isAscending = !isAscending;
+        } else {
+            isAscending = true;
+        }
+        currentSortColumn = columnIndex;
+
+        tableData.sort((a, b) => {
+            let valueA = a[columnIndex];
+            let valueB = b[columnIndex];
+
+            // Handle numeric values
+            if (!isNaN(valueA) && !isNaN(valueB)) {
+                return isAscending
+                    ? Number(valueA) - Number(valueB)
+                    : Number(valueB) - Number(valueA);
+            }
+
+            // Handle text values
+            return isAscending
+                ? valueA.localeCompare(valueB)
+                : valueB.localeCompare(valueA);
+        });
+
+        displayData();
+    }
+
+    fetchAndDisplayData();
+
+</script>
+
+</body>
+</html>
