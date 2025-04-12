@@ -288,66 +288,12 @@
             transform: rotate(180deg); /* Rotate icon when expanded */
         }
 
-        .lineup-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 100%;
-        }
 
-        .position-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .position-header {
-            background-color: #003366;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .players {
-            padding: 10px;
-        }
-
-        .player {
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .player:last-child {
-            border-bottom: none;
-        }
-
-        .player-name {
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        .first-half {
-            color: #003366;
-            font-weight: bold;
-        }
-
-        .substitute {
-            color: #666;
-        }
-
-        .legend {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
-        }
     </style>
 </head>
 <body>
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
+    <img src="../images/bdu.png" alt="Company Logo">
     <h1>BDU Practice</h1>
 </header>
 
@@ -361,20 +307,20 @@
 
 <!-- Waffle Menu -->
 <div class="waffle-menu" id="waffleMenu">
-    <a href="index.html"><i class="fas fa-home"></i> Home</a>
-    <a href="practices.html"><i class="fas fa-futbol"></i> Practice</a>
-    <a href="warmup.html"><i class="fas fa-fire"></i> Warm Up</a>
-    <a href="offsides.html"><i class="fas fa-flag"></i> Rules Explained</a>
-    <a href="drills.html"><i class="fas fa-dumbbell"></i> Drills</a>
-    <a href="offense.html"><i class="fas fa-forward"></i> Offense</a>
-    <a href="defense.html"><i class="fas fa-shield-alt"></i> Defense</a>
-    <a href="footskils.html"><i class="fas fa-shoe-prints"></i> Foot Skills</a>
-    <a href="fitness.html"><i class="fas fa-heartbeat"></i> Fitness</a>
-    <a href="turns.html"><i class="fas fa-sync-alt"></i> Turns</a>
-    <a href="camp.html"><i class="fas fa-campground"></i> Camp</a>
-    <a href="indoor/index.html"><i class="fas fa-futbol"></i> Indoor</a>
-    <a href="plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
-    <a href="tools.html"><i class="fas fa-tools"></i> Tools</a>
+    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="../practices.html"><i class="fas fa-futbol"></i> Practice</a>
+    <a href="../warmup.html"><i class="fas fa-fire"></i> Warm Up</a>
+    <a href="../offsides.html"><i class="fas fa-flag"></i> Rules Explained</a>
+    <a href="../drills.html"><i class="fas fa-dumbbell"></i> Drills</a>
+    <a href="../offense.html"><i class="fas fa-forward"></i> Offense</a>
+    <a href="../defense.html"><i class="fas fa-shield-alt"></i> Defense</a>
+    <a href="../footskils.html"><i class="fas fa-shoe-prints"></i> Foot Skills</a>
+    <a href="../fitness.html"><i class="fas fa-heartbeat"></i> Fitness</a>
+    <a href="../turns.html"><i class="fas fa-sync-alt"></i> Turns</a>
+    <a href="../camp.html"><i class="fas fa-campground"></i> Camp</a>
+    <a href="../indoor/index.html"><i class="fas fa-futbol"></i> Indoor</a>
+    <a href="../plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+    <a href="../tools.html"><i class="fas fa-tools"></i> Tools</a>
 </div>
 
 <!-- Highlight Banner -->
@@ -384,6 +330,42 @@
 </div>
 
 <div class="container">
+    <!-- Locker Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lock"></i> Locker Instructions
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li>Turn Right 3 Times, stop on 15</li>
+                <li>Turn Left 1 Full turn, passing the 15, stop on 36</li>
+                <li>Turn Right and stop on 09</li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- Goals Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Goals
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><input type="checkbox" checked> Warmup</li>
+                <li><input type="checkbox" checked> Review on Turns</li>
+                <li><input type="checkbox" checked> Moving Forward With Scanning</li>
+                <li><input type="checkbox" checked> Introduce some off ball moving</li>
+                <li><input type="checkbox" checked> Start and Stop</li>
+            </ul>
+        </div>
+    </section>
 
 
     <!-- Warmup Section -->
@@ -453,7 +435,28 @@
 
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Game Time Warmup
+            <i class="fas fa-binoculars"></i>Simple Defending
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <ul>
+                    <li>Lets run like a defender, for real this time</li>
+                    <li>Lets give them room</li>
+                    <li>Lets narrow the gap</li>
+                    <li>Lets get tight</li>
+                    <li>Lets strike</li>
+                </ul>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 v 2 with turn
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
@@ -462,7 +465,7 @@
             <div class="collapsible-content">
                 <div class="video-container">
                     <video controls>
-                        <source src="vid/gametimewarmup.mp4" type="video/mp4">
+                        <source src="../vid/simpleTurnMoveWDef.mp4" type="video/mp4">
                     </video>
                 </div>
             </div>
@@ -470,187 +473,20 @@
     </section>
 
 
-    <!-- 1st half lineup -->
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i>Lineup 1st Half
+            <i class="fas fa-clock"></i> Extended Scan
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <h1>9v9 Soccer Lineup</h1>
-                <div class="lineup-container">
-                    <div class="position-card">
-                        <div class="position-header">Goalkeeper (G)</div>
-                        <div class="players">
-                            <div class="player first-half">Audrey</div>
-                            <div class="player substitute">Empty</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Defense (LD)</div>
-                        <div class="players">
-                            <div class="player first-half">JoJo</div>
-                            <div class="player substitute">Ella</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Defense (CD)</div>
-                        <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Emma</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Defense (RD)</div>
-                        <div class="players">
-                            <div class="player first-half">Mara</div>
-                            <div class="player substitute">Isabelle</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Midfield (LM)</div>
-                        <div class="players">
-                            <div class="player first-half">Evie</div>
-                            <div class="player substitute">Ava</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Midfield (CM)</div>
-                        <div class="players">
-                            <div class="player first-half">Whitney</div>
-                            <div class="player substitute">Claire S</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Midfield (RM)</div>
-                        <div class="players">
-                            <div class="player first-half">Jordan</div>
-                            <div class="player substitute">Audrey</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Forward (LF)</div>
-                        <div class="players">
-                            <div class="player first-half">Charlie</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Forward (RF)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Josie</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <p>Bold = First Half Players</p>
-                    <p>Gray = Substitutes</p>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-     <!-- 2nd half lineup -->
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i>Lineup 2nd Half
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <h1>9v9 Soccer Lineup</h1>
-                <div class="lineup-container">
-                    <div class="position-card">
-                        <div class="position-header">Goalkeeper (G)</div>
-                        <div class="players">
-                            <div class="player first-half">Whitney</div>
-                            <div class="player substitute">Emma</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Defense (LD)</div>
-                        <div class="players">
-                            <div class="player first-half">Ella</div>
-                            <div class="player substitute">JoJo</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Defense (CD)</div>
-                        <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Emma</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Defense (RD)</div>
-                        <div class="players">
-                            <div class="player first-half">Isabelle</div>
-                            <div class="player substitute">Mara</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Midfield (LM)</div>
-                        <div class="players">
-                            <div class="player first-half">Evie</div>
-                            <div class="player substitute">Ava</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Midfield (CM)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Claire S</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Midfield (RM)</div>
-                        <div class="players">
-                            <div class="player first-half">Jordan</div>
-                            <div class="player substitute">Whitney</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Forward (LF)</div>
-                        <div class="players">
-                            <div class="player first-half">Charlie</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Forward (RF)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Josie</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <p>Bold = Second Half Starter</p>
-                    <p>Gray = Substitutes</p>
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/ext_scan_move_move.mp4" type="video/mp4">
+                    </video>
+                    <br>
                 </div>
             </div>
         </ul>
@@ -659,10 +495,10 @@
 </div>
 
 <footer class="footer">
-    <a href="turns.html">Turns</a> |
-    <a href="tryout.html">Tryout</a> |
-    <a href="touch.html">Touch</a> |
-    <a href="formations.html">Formations</a>
+    <a href="../turns.html">Turns</a> |
+    <a href="../tryout.html">Tryout</a> |
+    <a href="../touch.html">Touch</a> |
+    <a href="../formations.html">Formations</a>
 </footer>
 
 <script>

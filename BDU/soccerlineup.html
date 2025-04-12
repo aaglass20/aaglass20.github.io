@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9v9 Soccer Lineup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            background-color: #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        .halves-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .half {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .half-title {
+            text-align: center;
+            background-color: #003366;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .lineup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .position-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .position-header {
+            background-color: #0779e4;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .player {
+            padding: 10px;
+            text-align: center;
+            color: #003366;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .halves-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .half {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>9v9 Soccer Lineup</h1>
+    <div class="halves-container">
+        <!-- First Half -->
+        <div class="half">
+            <div class="half-title">1st Half</div>
+            <div class="lineup-container">
+                <div class="position-card">
+                    <div class="position-header">Goalkeeper (G)</div>
+                    <div class="player">Audrey</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Defense (LD)</div>
+                    <div class="player">Emma</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Center Defense (CD)</div>
+                    <div class="player">Ella</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Defense (RD)</div>
+                    <div class="player">JoJo</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Midfield (LM)</div>
+                    <div class="player">Evie</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Center Midfield (CM)</div>
+                    <div class="player">Claire B</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Midfield (RM)</div>
+                    <div class="player">Mara</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Forward (LF)</div>
+                    <div class="player">Josie</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Forward (RF)</div>
+                    <div class="player">Whitney</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Half -->
+        <div class="half">
+            <div class="half-title">2nd Half</div>
+            <div class="lineup-container">
+                <div class="position-card">
+                    <div class="position-header">Goalkeeper (G)</div>
+                    <div class="player">Audrey</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Defense (LD)</div>
+                    <div class="player">Emma</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Center Defense (CD)</div>
+                    <div class="player">Hannah</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Defense (RD)</div>
+                    <div class="player">Isabelle</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Midfield (LM)</div>
+                    <div class="player">Ava</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Center Midfield (CM)</div>
+                    <div class="player">Claire S</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Midfield (RM)</div>
+                    <div class="player">Jordan</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Left Forward (LF)</div>
+                    <div class="player">Charlie</div>
+                </div>
+
+                <div class="position-card">
+                    <div class="position-header">Right Forward (RF)</div>
+                    <div class="player">Emery</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
