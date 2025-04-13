@@ -295,47 +295,56 @@
             max-width: 100%;
         }
 
-        .position-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+         .position-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+    }
 
-        .position-header {
-            background-color: #003366;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
+    .position-header {
+        background-color: #003366;
+        color: white;
+        padding: 8px;
+        text-align: center;
+        font-weight: bold;
+    }
 
+    .players {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        align-items: center;
+    }
+
+    .player {
+        flex: 1;
+        padding: 5px 10px;
+        text-align: center;
+    }
+
+    .first-half {
+        color: #003366;
+        font-weight: bold;
+        border-right: 1px solid #eee;
+    }
+
+    .substitute {
+        color: #666;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
         .players {
-            padding: 10px;
+            padding: 5px;
         }
 
         .player {
             padding: 5px;
-            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
         }
+    }
 
-        .player:last-child {
-            border-bottom: none;
-        }
-
-        .player-name {
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        .first-half {
-            color: #003366;
-            font-weight: bold;
-        }
-
-        .substitute {
-            color: #666;
-        }
 
         .legend {
             text-align: center;
