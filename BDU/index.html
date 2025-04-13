@@ -343,6 +343,22 @@
             font-size: 0.9rem;
             color: #666;
         }
+
+        <
+        style >
+        .image-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+
     </style>
 </head>
 <body>
@@ -379,8 +395,7 @@
 
 <!-- Highlight Banner -->
 <div class="highlight-banner">
-    <h2>Welcome to BDU Soccer Training</h2>
-    <p>Enhance your skills with modern drills and techniques!</p>
+    <h2>Welcome to Game Day</h2>
 </div>
 
 <div class="container">
@@ -469,24 +484,75 @@
         </ul>
     </section>
 
-
-    <!-- 1st half lineup -->
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i>Lineup 1st Half
+            <i class="fas fa-futbol"></i> Corner
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <h1>9v9 Soccer Lineup</h1>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/simpleCorner.mov" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Goal Kick for US
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="image-container">
+                    <img src="vid/simpleGoalKickUs.jpg" alt="Soccer Lineup">
+                </div>
+
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Goal Kick for Them
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="image-container">
+                    <img src="vid/simpleDefGoalKickThem.jpg" alt="Soccer Lineup">
+                </div>
+
+            </div>
+        </ul>
+    </section>
+
+
+    <!-- 1st half lineup -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Lineup 1st Half
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
                 <div class="lineup-container">
                     <div class="position-card">
                         <div class="position-header">Goalkeeper (G)</div>
                         <div class="players">
                             <div class="player first-half">Audrey</div>
-                            <div class="player substitute">Empty</div>
+                            <div class="player substitute">Whitney</div>
                         </div>
                     </div>
 
@@ -556,30 +622,30 @@
                 </div>
 
                 <div class="legend">
-                    <p>Bold = First Half Players</p>
+                    <p>Bold = First Half Starter</p>
                     <p>Gray = Substitutes</p>
                 </div>
             </div>
         </ul>
     </section>
 
-     <!-- 2nd half lineup -->
+    <!-- 2nd half lineup -->
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i>Lineup 2nd Half
+            <i class="fas fa-futbol"></i> Lineup 2nd Half
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <h1>9v9 Soccer Lineup</h1>
                 <div class="lineup-container">
                     <div class="position-card">
                         <div class="position-header">Goalkeeper (G)</div>
                         <div class="players">
-                            <div class="player first-half">Whitney</div>
+                            <div class="player first-half">Claire B</div>
                             <div class="player substitute">Emma</div>
+                            <div class="player substitute">Ava</div>
                         </div>
                     </div>
 
@@ -594,16 +660,17 @@
                     <div class="position-card">
                         <div class="position-header">Center Defense (CD)</div>
                         <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Emma</div>
+                            <div class="player first-half">Emma</div>
+                            <div class="player substitute">Claire S</div>
                         </div>
                     </div>
 
                     <div class="position-card">
                         <div class="position-header">Right Defense (RD)</div>
                         <div class="players">
-                            <div class="player first-half">Isabelle</div>
-                            <div class="player substitute">Mara</div>
+                            <div class="player first-half">Josie</div>
+                        <div class="player substitute">Jordan</div>
+                            </div>
                         </div>
                     </div>
 
@@ -618,16 +685,16 @@
                     <div class="position-card">
                         <div class="position-header">Center Midfield (CM)</div>
                         <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Claire S</div>
+                            <div class="player first-half">Hannah</div>
+                            <div class="player substitute">Whitney</div>
                         </div>
                     </div>
 
                     <div class="position-card">
                         <div class="position-header">Right Midfield (RM)</div>
                         <div class="players">
-                            <div class="player first-half">Jordan</div>
-                            <div class="player substitute">Whitney</div>
+                            <div class="player first-half">Mara</div>
+                            <div class="player substitute">Audrey</div>
                         </div>
                     </div>
 
@@ -642,8 +709,8 @@
                     <div class="position-card">
                         <div class="position-header">Right Forward (RF)</div>
                         <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Josie</div>
+                            <div class="player first-half">Isabelle</div>
+                            <div class="player substitute">Claire B</div>
                         </div>
                     </div>
                 </div>
