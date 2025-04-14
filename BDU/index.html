@@ -273,6 +273,7 @@
             transition: max-height 0.3s ease-out;
         }
 
+
         .collapsible-section .toggle-button {
             border: none;
             background: none;
@@ -295,55 +296,55 @@
             max-width: 100%;
         }
 
-         .position-card {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 10px;
-    }
+        .position-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
 
-    .position-header {
-        background-color: #003366;
-        color: white;
-        padding: 8px;
-        text-align: center;
-        font-weight: bold;
-    }
+        .position-header {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-    .players {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        align-items: center;
-    }
-
-    .player {
-        flex: 1;
-        padding: 5px 10px;
-        text-align: center;
-    }
-
-    .first-half {
-        color: #003366;
-        font-weight: bold;
-        border-right: 1px solid #eee;
-    }
-
-    .substitute {
-        color: #666;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 480px) {
         .players {
-            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            align-items: center;
         }
 
         .player {
-            padding: 5px;
-            font-size: 0.9em;
+            flex: 1;
+            padding: 5px 10px;
+            text-align: center;
         }
-    }
+
+        .first-half {
+            color: #003366;
+            font-weight: bold;
+            border-right: 1px solid #eee;
+        }
+
+        .substitute {
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .players {
+                padding: 5px;
+            }
+
+            .player {
+                padding: 5px;
+                font-size: 0.9em;
+            }
+        }
 
 
         .legend {
@@ -409,6 +410,28 @@
 
 <div class="container">
 
+        <!-- Goals Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Goals
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><input type="checkbox" checked> Meaningful Warmup</li>
+                <li><input type="checkbox" > Defensive Recovery</li>
+                <li><input type="checkbox" > Defensive Tactics</li>
+                <li><input type="checkbox" > Keep Scanning</li>
+                <li><input type="checkbox" > Off Ball Movement</li>
+                <li><input type="checkbox" > Set pieces</li>
+                <li><input type="checkbox" > Goal Keeping</li>
+                <li><input type="checkbox" > Trapping</li>
+                <li><input type="checkbox" > Throw-in</li>
+            </ul>
+        </div>
+    </section>
 
     <!-- Warmup Section -->
     <section class="collapsible-section">
@@ -477,24 +500,6 @@
 
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Game Time Warmup
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/gametimewarmup.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
             <i class="far fa-paper-plane"></i> Corner
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
@@ -511,226 +516,47 @@
         </ul>
     </section>
 
+
+
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Goal Kick for US
+            <i class="fas fa-futbol"></i> 3 v 2 with turn
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <div class="image-container">
-                    <img src="vid/simpleGoalKickUs.jpg" alt="Soccer Lineup">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/simpleTurnMoveWDef.mp4" type="video/mp4">
+                    </video>
                 </div>
-
             </div>
         </ul>
     </section>
 
-    <section class="collapsible-section">
+        <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Goal Kick for Them
+            <i class="fas fa-futbol"></i> Feint Cones
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <div class="image-container">
-                    <img src="vid/simpleDefGoalKickThem.jpg" alt="Soccer Lineup">
-                </div>
-
-            </div>
-        </ul>
-    </section>
-
-
-    <!-- 1st half lineup -->
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="far fa-file-alt"></i> Lineup 1st Half
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <div class="lineup-container">
-                    <div class="position-card">
-                        <div class="position-header">Goalkeeper (G)</div>
-                        <div class="players">
-                            <div class="player first-half">Audrey</div>
-                            <div class="player substitute">Whitney</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Defense (LD)</div>
-                        <div class="players">
-                            <div class="player first-half">JoJo</div>
-                            <div class="player substitute">Ella</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Defense (CD)</div>
-                        <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Emma</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Defense (RD)</div>
-                        <div class="players">
-                            <div class="player first-half">Mara</div>
-                            <div class="player substitute">Isabelle</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Midfield (LM)</div>
-                        <div class="players">
-                            <div class="player first-half">Evie</div>
-                            <div class="player substitute">Ava</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Midfield (CM)</div>
-                        <div class="players">
-                            <div class="player first-half">Whitney</div>
-                            <div class="player substitute">Claire S</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Midfield (RM)</div>
-                        <div class="players">
-                            <div class="player first-half">Jordan</div>
-                            <div class="player substitute">Audrey</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Forward (LF)</div>
-                        <div class="players">
-                            <div class="player first-half">Charlie</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Forward (RF)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Josie</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <p>Bold = First Half Starter</p>
-                    <p>Gray = Substitutes</p>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/feintCones.mp4" type="video/mp4">
+                    </video>
                 </div>
             </div>
         </ul>
     </section>
 
-    <!-- 2nd half lineup -->
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="far fa-file-alt"></i> Lineup 2nd Half
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <div class="lineup-container">
-                    <div class="position-card">
-                        <div class="position-header">Goalkeeper (G)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Emma</div>
-                            <div class="player substitute">Ava</div>
-                        </div>
-                    </div>
 
-                    <div class="position-card">
-                        <div class="position-header">Left Defense (LD)</div>
-                        <div class="players">
-                            <div class="player first-half">Ella</div>
-                            <div class="player substitute">JoJo</div>
-                        </div>
-                    </div>
 
-                    <div class="position-card">
-                        <div class="position-header">Center Defense (CD)</div>
-                        <div class="players">
-                            <div class="player first-half">Emma</div>
-                            <div class="player substitute">Claire S</div>
-                        </div>
-                    </div>
 
-                    <div class="position-card">
-                        <div class="position-header">Right Defense (RD)</div>
-                        <div class="players">
-                            <div class="player first-half">Josie</div>
-                        <div class="player substitute">Jordan</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Midfield (LM)</div>
-                        <div class="players">
-                            <div class="player first-half">Evie</div>
-                            <div class="player substitute">Ava</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Midfield (CM)</div>
-                        <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Whitney</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Midfield (RM)</div>
-                        <div class="players">
-                            <div class="player first-half">Mara</div>
-                            <div class="player substitute">Audrey</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Forward (LF)</div>
-                        <div class="players">
-                            <div class="player first-half">Charlie</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Forward (RF)</div>
-                        <div class="players">
-                            <div class="player first-half">Isabelle</div>
-                            <div class="player substitute">Claire B</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <p>Bold = Second Half Starter</p>
-                    <p>Gray = Substitutes</p>
-                </div>
-            </div>
-        </ul>
-    </section>
 
 </div>
 
