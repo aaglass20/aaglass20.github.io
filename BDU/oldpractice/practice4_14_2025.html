@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #eef2f3; /* Light modern background */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #003366;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid #0779e4;
+        }
+
+        header img {
+            max-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #003366;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0779e4;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 10px;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        b {
+            color: #003366;
+        }
+
+        /* Modernize checkboxes */
+        input[type="checkbox"] {
+            accent-color: #003366;
+            transform: scale(1.3);
+            margin-right: 10px;
+        }
+
+        .highlight-banner {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #003366, #0779e4);
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-banner h2 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+        }
+
+        .footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #a3d8f4;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .highlight-banner h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+
+        /* Updated Waffle Menu Styles */
+        .waffle-menu {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            padding: 20px;
+            background: linear-gradient(135deg, #003366, #0779e4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            overflow-y: auto;
+            border-right: 2px solid #00509e;
+            z-index: 1000;
+        }
+
+        .waffle-menu a {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            margin: 10px 0;
+            padding: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            border-radius: 5px;
+        }
+
+        .waffle-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .waffle-menu a i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            color: #a3d8f4;
+            transition: transform 0.3s;
+        }
+
+        .waffle-menu a:hover i {
+            transform: rotate(15deg);
+        }
+
+        .waffle-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .waffle-menu-toggle span {
+            display: block;
+            width: 30px;
+            height: 5px;
+            background-color: #fff;
+            margin-bottom: 5px;
+        }
+
+        /* For smaller screens */
+        @media screen and (max-width: 600px) {
+            .waffle-menu {
+                width: 180px;
+            }
+
+            .waffle-menu a {
+                font-size: 1rem;
+            }
+
+            .waffle-menu a i {
+                font-size: 1.2rem;
+            }
+        }
+
+        .video-container {
+            background: #fff;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center the video */
+        }
+
+        video, iframe {
+            max-width: 100%; /* Constrain video width to the container width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Avoid inline elements causing inline white space */
+        }
+
+
+        p {
+            margin-top: 5px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap'); /* Meaningful modern font */
+
+        .modern-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Spacing between icon and text */
+            font-family: 'Poppins', sans-serif; /* Apply modern font */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: 600; /* Make text bold */
+            text-decoration: none; /* Remove default underline */
+            color: #2b2d42; /* Clean modern dark color */
+            padding: 10px 15px; /* Add padding for a clickable area */
+            background-color: #ef233c; /* Modern red button background */
+            border-radius: 8px; /* Rounded corners for a soft modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a modern shadow effect */
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease; /* Smooth hover effects */
+        }
+
+        .modern-link i {
+            color: #ffffff; /* Icon in white to stand out */
+            font-size: 1.4rem; /* Slightly emphasize icon size */
+        }
+
+        .modern-link span {
+            color: #ffffff; /* Text in white to match design */
+        }
+
+        .modern-link:hover {
+            background-color: #d90429; /* Slightly darker red on hover */
+            transform: translateY(-2px); /* Adds a "lift" effect */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow on hover */
+        }
+
+        .collapsible-section {
+            margin-bottom: 20px;
+        }
+
+        .collapsible-content {
+            display: none; /* Initially collapsed */
+            padding-left: 20px;
+            border-left: 2px solid #0779e4;
+            margin-top: 10px;
+            transition: max-height 0.3s ease-out;
+        }
+
+
+        .collapsible-section .toggle-button {
+            border: none;
+            background: none;
+            color: #003366;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-section .toggle-button[aria-expanded="true"] i {
+            transform: rotate(180deg); /* Rotate icon when expanded */
+        }
+
+        .lineup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+        }
+
+        .position-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .position-header {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .players {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            align-items: center;
+        }
+
+        .player {
+            flex: 1;
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+        .first-half {
+            color: #003366;
+            font-weight: bold;
+            border-right: 1px solid #eee;
+        }
+
+        .substitute {
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .players {
+                padding: 5px;
+            }
+
+            .player {
+                padding: 5px;
+                font-size: 0.9em;
+            }
+        }
+
+
+        .legend {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        <
+        style >
+        .image-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+<header>
+    <img src="../images/bdu.png" alt="Company Logo">
+    <h1>BDU Practice</h1>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Waffle Menu -->
+<div class="waffle-menu" id="waffleMenu">
+    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="../practices.html"><i class="fas fa-futbol"></i> Practice</a>
+    <a href="../warmup.html"><i class="fas fa-fire"></i> Warm Up</a>
+    <a href="../offsides.html"><i class="fas fa-flag"></i> Rules Explained</a>
+    <a href="../drills.html"><i class="fas fa-dumbbell"></i> Drills</a>
+    <a href="../offense.html"><i class="fas fa-forward"></i> Offense</a>
+    <a href="../defense.html"><i class="fas fa-shield-alt"></i> Defense</a>
+    <a href="../footskils.html"><i class="fas fa-shoe-prints"></i> Foot Skills</a>
+    <a href="../fitness.html"><i class="fas fa-heartbeat"></i> Fitness</a>
+    <a href="../turns.html"><i class="fas fa-sync-alt"></i> Turns</a>
+    <a href="../camp.html"><i class="fas fa-campground"></i> Camp</a>
+    <a href="../indoor/index.html"><i class="fas fa-futbol"></i> Indoor</a>
+    <a href="../plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+    <a href="../tools.html"><i class="fas fa-tools"></i> Tools</a>
+</div>
+
+<!-- Highlight Banner -->
+<div class="highlight-banner">
+    <h2>Welcome to Game Day</h2>
+</div>
+
+<div class="container">
+
+    <!-- Goals Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-list-alt"></i> Goals
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><input type="checkbox" checked> Meaningful Warmup</li>
+                <li><input type="checkbox"> Defensive Recovery</li>
+                <li><input type="checkbox"> Defensive Tactics</li>
+                <li><input type="checkbox"> Keep Scanning</li>
+                <li><input type="checkbox"> Off Ball Movement</li>
+                <li><input type="checkbox"> Set pieces</li>
+                <li><input type="checkbox"> Goal Keeping</li>
+                <li><input type="checkbox"> Trapping</li>
+                <li><input type="checkbox"> Throw-in</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Warmup Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-dumbbell"></i> Warmup Routine
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li>1, 2, 3, Touch Toe
+                    <ul>
+                        <li>1, 2, 3, Blue Devils</li>
+                    </ul>
+                </li>
+                <li>Lunges
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Hug Knee to Chest
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Cradle Leg and Ankle
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Criss Cross Quad
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Skips</li>
+                <li>Stand in Place (10 Counts)
+                    <ul>
+                        <li>Scissors * 10</li>
+                        <li>Front to Back Hop * 10</li>
+                        <li>Side to Side * 10</li>
+                        <li>Criss Cross * 10</li>
+                        <li>Hops * 10</li>
+                    </ul>
+                </li>
+                <li>Sprint</li>
+                <li>Flip Run
+                    <ul>
+                        <li>Right Only (inside, outside)</li>
+                        <li>Left Only (inside, outside)</li>
+                        <li>Both Feet</li>
+                        <li>Inside Out/Rollovers/Sole Rolls</li>
+                        <li>Feint</li>
+                        <li>Fake Shot</li>
+                        <li>Head Up</li>
+                        <li>Simple Trap/Touch (10x each)</li>
+                    </ul>
+                </li>
+                <li>Fascia Training</li>
+                <li>25 Touches Right, 25 Touches Left (Work on Distance)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Feint Cones
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/feintCones.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Pass, Move, Communicate
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/passMoveTalk.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <p>Rules</p>
+                <ul>
+                    <li>Start with a Pass</li>
+                    <li>Then a move, player without ball</li>
+                    <li>Then repeat</li>
+                    <li>Goal is to get the ball in the circles</li>
+                    <li>Team is through when all players make it in the circle</li>
+                    <li>Communication is big on who moves and where the pass is going</li>
+                    <li>Start being turn based, then remove that restriction</li>
+                </ul>
+                </li>
+            </div>
+
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Shoulder to Shoulder attack
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <p>Rules</p>
+                <ul>
+                    <li>Match up</li>
+                    <li>Person with ball is trying to dirbble forwad, but slow</li>
+                    <li>Defender is trying to steal the ball</li>
+                    <li>We are looking for body contact</li>
+                    <li>we are looking to make sure we are not just running along side</li>
+                    <li>Have defender come in at an agle, see how they adjust</li>
+                </ul>
+                </li>
+            </div>
+
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="far fa-paper-plane"></i> Corner
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/simpleCorner.mov" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 v 2 with turn
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/simpleTurnMoveWDef.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+</div>
+
+<footer class="footer">
+    <a href="../turns.html">Turns</a> |
+    <a href="../tryout.html">Tryout</a> |
+    <a href="../touch.html">Touch</a> |
+    <a href="../formations.html">Formations</a>
+</footer>
+
+<script>
+    function toggleWaffleMenu() {
+        const menu = document.getElementById('waffleMenu');
+        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleButtons = document.querySelectorAll(".collapsible-section .toggle-button");
+
+        toggleButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const collapsibleContent = this.closest(".collapsible-section").querySelector(".collapsible-content");
+                const isExpanded = this.getAttribute("aria-expanded") === "true";
+
+                this.setAttribute("aria-expanded", !isExpanded); // Toggle ARIA attribute
+                collapsibleContent.style.display = isExpanded ? "none" : "block"; // Show/hide content
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

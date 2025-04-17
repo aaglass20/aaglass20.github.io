@@ -6,7 +6,7 @@
     <title>BDU Soccer</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
+<style>
         /* General Styles */
         body {
             font-family: 'Roboto', sans-serif;
@@ -217,13 +217,155 @@
             text-align: center; /* Center the video */
         }
 
-        video {
-            width: 400px; /* Set the width of the video to 400 pixels */
-            border-radius: 5px;
+        video, iframe {
+            max-width: 100%; /* Constrain video width to the container width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Avoid inline elements causing inline white space */
         }
+
 
         p {
             margin-top: 5px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap'); /* Meaningful modern font */
+
+        .modern-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Spacing between icon and text */
+            font-family: 'Poppins', sans-serif; /* Apply modern font */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: 600; /* Make text bold */
+            text-decoration: none; /* Remove default underline */
+            color: #2b2d42; /* Clean modern dark color */
+            padding: 10px 15px; /* Add padding for a clickable area */
+            background-color: #ef233c; /* Modern red button background */
+            border-radius: 8px; /* Rounded corners for a soft modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a modern shadow effect */
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease; /* Smooth hover effects */
+        }
+
+        .modern-link i {
+            color: #ffffff; /* Icon in white to stand out */
+            font-size: 1.4rem; /* Slightly emphasize icon size */
+        }
+
+        .modern-link span {
+            color: #ffffff; /* Text in white to match design */
+        }
+
+        .modern-link:hover {
+            background-color: #d90429; /* Slightly darker red on hover */
+            transform: translateY(-2px); /* Adds a "lift" effect */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow on hover */
+        }
+
+        .collapsible-section {
+            margin-bottom: 20px;
+        }
+
+        .collapsible-content {
+            display: none; /* Initially collapsed */
+            padding-left: 20px;
+            border-left: 2px solid #0779e4;
+            margin-top: 10px;
+            transition: max-height 0.3s ease-out;
+        }
+
+
+        .collapsible-section .toggle-button {
+            border: none;
+            background: none;
+            color: #003366;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-section .toggle-button[aria-expanded="true"] i {
+            transform: rotate(180deg); /* Rotate icon when expanded */
+        }
+
+        .lineup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+        }
+
+        .position-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .position-header {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .players {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            align-items: center;
+        }
+
+        .player {
+            flex: 1;
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+        .first-half {
+            color: #003366;
+            font-weight: bold;
+            border-right: 1px solid #eee;
+        }
+
+        .substitute {
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .players {
+                padding: 5px;
+            }
+
+            .player {
+                padding: 5px;
+                font-size: 0.9em;
+            }
+        }
+
+
+        .legend {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        <
+        style >
+        .image-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
     </style>
 </head>
@@ -357,18 +499,58 @@
     <p><b>Tap Relay</b></p>
 </div>
 
+ <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Pass, Move, Communicate
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/passMoveTalk.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <p>Rules</p>
+                <ul>
+                    <li>Start with a Pass</li>
+                    <li>Then a move, player without ball</li>
+                    <li>Then repeat</li>
+                    <li>Goal is to get the ball in the circles</li>
+                    <li>Team is through when all players make it in the circle</li>
+                    <li>Communication is big on who moves and where the pass is going</li>
+                    <li>Start being turn based, then remove that restriction</li>
+                </ul>
+                </li>
+            </div>
+
+        </ul>
+    </section>
+
 
 <!-- Your existing scripts -->
 <script>
-    // JavaScript function to toggle the waffle menu
     function toggleWaffleMenu() {
-        var waffleMenu = document.getElementById("waffleMenu");
-        if (waffleMenu.style.display === "block") {
-            waffleMenu.style.display = "none";
-        } else {
-            waffleMenu.style.display = "block";
-        }
+        const menu = document.getElementById('waffleMenu');
+        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleButtons = document.querySelectorAll(".collapsible-section .toggle-button");
+
+        toggleButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const collapsibleContent = this.closest(".collapsible-section").querySelector(".collapsible-content");
+                const isExpanded = this.getAttribute("aria-expanded") === "true";
+
+                this.setAttribute("aria-expanded", !isExpanded); // Toggle ARIA attribute
+                collapsibleContent.style.display = isExpanded ? "none" : "block"; // Show/hide content
+            });
+        });
+    });
+
 </script>
 
 </body>
