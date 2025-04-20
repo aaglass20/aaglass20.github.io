@@ -21,26 +21,7 @@
     <span></span>
     <span></span>
 </div>
-<!-- The waffle menu -->
-<div class="waffle-menu" id="waffleMenu">
-    <p><br></p>
 
-    <a href="index.html"><i class="fas fa-home"></i> Home</a>
-    <a href="practices.html"><i class="fas fa-futbol"></i> Practice</a>
-    <a href="warmup.html"><i class="fas fa-fire"></i> Warm Up</a>
-    <a href="offsides.html"><i class="fas fa-flag"></i> Rules Explained</a>
-    <a href="drills.html"><i class="fas fa-dumbbell"></i> Drills</a>
-    <a href="relays.html"><i class="fas fa-exchange-alt"></i> Relays</a>
-    <a href="offense.html"><i class="fas fa-forward"></i> Offense</a>
-    <a href="finish.html"><i class="fas fa-flag-checkered"></i> Finish</a>
-    <a href="defense.html"><i class="fas fa-shield-alt"></i> Defense</a>
-    <a href="footskils.html"><i class="fas fa-shoe-prints"></i> Foot Skills</a>
-    <a href="fitness.html"><i class="fas fa-heartbeat"></i> Fitness</a>
-    <a href="turns.html"><i class="fas fa-sync-alt"></i> Turns</a>
-    <a href="camp.html"><i class="fas fa-campground"></i> Camp</a>
-    <a href="indoor/index.html"><i class="fas fa-futbol"></i> Indoor</a>
-    <a href="plan/index.html"><i class="fas fa-calendar-alt"></i> Planning</a>
-</div>
 
 
 <div class="video-container">
@@ -170,27 +151,7 @@
 
 
 <!-- Your existing scripts -->
-<script>
-    function toggleWaffleMenu() {
-        const menu = document.getElementById('waffleMenu');
-        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleButtons = document.querySelectorAll(".collapsible-section .toggle-button");
-
-        toggleButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const collapsibleContent = this.closest(".collapsible-section").querySelector(".collapsible-content");
-                const isExpanded = this.getAttribute("aria-expanded") === "true";
-
-                this.setAttribute("aria-expanded", !isExpanded); // Toggle ARIA attribute
-                collapsibleContent.style.display = isExpanded ? "none" : "block"; // Show/hide content
-            });
-        });
-    });
-
-</script>
+<script src="scripts/scripts.js"></script>
 
 </body>
 </html>
