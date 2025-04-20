@@ -41,3 +41,22 @@ function initWaffleMenu() {
 
 // Load the waffle menu when the DOM is ready
 document.addEventListener('DOMContentLoaded', loadWaffleMenu);
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const menuItemWithSubmenu = document.querySelector('.menu-item-with-submenu');
+//     const mainLink = menuItemWithSubmenu.querySelector('a');
+//     const subMenu = menuItemWithSubmenu.querySelector('.sub-menu');
+//
+//     mainLink.addEventListener('click', function(e) {
+//         e.preventDefault(); // Prevent navigation when clicking the main link
+//         const isSubMenuVisible = subMenu.style.display === 'flex';
+//         subMenu.style.display = isSubMenuVisible ? 'none' : 'flex';
+//     });
+//
+//     // Close submenu when clicking outside
+//     document.addEventListener('click', function(e) {
+//         if (!menuItemWithSubmenu.contains(e.target)) {
+//             subMenu.style.display = 'none';
+//         }
+//     });
+// });

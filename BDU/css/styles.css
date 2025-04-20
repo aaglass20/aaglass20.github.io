@@ -134,7 +134,7 @@ input[type="checkbox"] {
     background: linear-gradient(135deg, #003366, #0779e4);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     height: 100%;
-    overflow-y: auto;
+    overflow-y: visible;
     border-right: 2px solid #00509e;
     z-index: 1000;
 }
@@ -392,5 +392,38 @@ p {
 .practice-card a {
     text-decoration: none;
     color: white;
+}
+
+.menu-item-with-submenu {
+    position: relative;
+}
+
+.sub-menu {
+    display: none;
+    position: absolute;
+    left: 100%; /* Position to the right of the main menu */
+    top: 0;
+    background-color: #333; /* Match your main menu color */
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.menu-item-with-submenu:hover .sub-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-menu a {
+    padding: 12px 16px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sub-menu a:hover {
+    background-color: #444; /* Slightly lighter than the menu background */
 }
 
