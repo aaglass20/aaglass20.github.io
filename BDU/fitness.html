@@ -10,8 +10,10 @@
 </head>
 <body>
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
-    <h1>BDU U10 Practice</h1>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Fitness</h1>
+    </div>
 </header>
 
 <!-- Add the waffle menu toggle button -->
@@ -20,98 +22,238 @@
     <span></span>
     <span></span>
 </div>
+
+<!-- Include the menu using JavaScript -->
+<div id="fitness-menu"></div>
+
+<script>
+    fetch('menus/fitness-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('fitness-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
 <div class="container">
 
-    <div class="video-container">
-        <p>Arm Form</p>
-        <video controls>
-            <source src="fit/arm_form.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> High Knee Stretch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/hightknewstretch.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Lunges</p>
-        <video controls>
-            <source src="fit/lunges.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Cross Hops
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/cross_hops.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Cross Leg Stretch</p>
-        <video controls>
-            <source src="fit/cross_leg_stretch.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Cross Leg
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/crossLeg.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Skips</p>
-        <video controls>
-            <source src="fit/skips.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Sit Form
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/sit_form.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>One Leg Hops</p>
-        <video controls>
-            <source src="fit/1leg_hops.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Two Step Toe Stretch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/2step_toe_stretch.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Two Step Toe Stretch</p>
-        <video controls>
-            <source src="fit/2step_toe_stretch.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> One Leg Hops
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/1leg_hops.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Sit Form</p>
-        <video controls>
-            <source src="fit/sit_form.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Skips
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/skips.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Cross Leg</p>
-        <video controls>
-            <source src="fit/crossLeg.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Cross Leg Stretch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/cross_leg_stretch.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Cross Hops</p>
-        <video controls>
-            <source src="fit/cross_hops.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Lunges
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/lunges.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>High Knee Stretch</p>
-        <video controls>
-            <source src="fit/hightknewstretch.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Arm Form
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/arm_form.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <p>Ladder</p>
-        <video controls>
-            <source src="fit/ladder.mp4" type="video/mp4">
-        </video>
-        <hr>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Ladder
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="fit/ladder.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
     <!-- Your existing scripts -->
-<script src="scripts/scripts.js"></script>
+    <script src="scripts/scripts.js"></script>
 
 
 </body>
