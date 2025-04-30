@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Tools & Resources</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="planning-menu"></div>
+
+<script>
+    fetch('menus/planning-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('planning-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <a href="randomNumber.html" class="modern-link">
+        <i class="fas fa-number"></i> <span>Random Number</span>
+    </a>
+
+
+    <a href="randomColor.html" class="modern-link">
+        <i class="fas fa-number"></i> <span>Random Color</span>
+    </a>
+
+    <a href="tryout/tryoutForm.html" class="modern-link">
+        <i class="fas fa-number"></i> <span>Tryout</span>
+    </a>
+
+    <a href="tryout/tryouttool.html" class="modern-link">
+        <i class="fas fa-number"></i> <span>Tryout</span>
+    </a>
+
+    <a href="scanning.html" class="modern-link">
+        <i class="fas fa-number"></i> <span>Scanning</span>
+    </a>
+
+</div>
+
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<!-- Your existing scripts -->
+<script src="scripts/scripts.js"></script>
+</body>
+</html>

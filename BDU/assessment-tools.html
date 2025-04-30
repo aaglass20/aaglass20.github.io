@@ -10,10 +10,11 @@
 </head>
 <body>
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
-    <h1>BDU Practice</h1>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Assesment Tools</h1>
+    </div>
 </header>
-
 
 <!-- Waffle Menu Toggle Button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
@@ -21,12 +22,32 @@
     <span></span>
     <span></span>
 </div>
+<div id="planning-menu"></div>
 
-<!-- Highlight Banner -->
-<div class="highlight-banner">
-    <h2>Welcome to BDU Soccer Tryout Page</h2>
-    <!--    <p>Enhance your skills with modern drills and techniques!</p>-->
-</div>
+<script>
+    fetch('menus/planning-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('planning-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
 
 <div class="container">
 
@@ -196,7 +217,7 @@
 
 <footer class="footer">
     <a href="turns.html">Turns</a> |
-    <a href="tryout.html">Tryout</a> |
+    <a href="assessment-tools.html">Tryout</a> |
     <a href="touch.html">Touch</a> |
     <a href="formations.html">Formations</a>
 </footer>
