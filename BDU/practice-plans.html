@@ -10,8 +10,10 @@
 </head>
 <body>
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
-    <h1>BDU Practice</h1>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Practices</h1>
+    </div>
 </header>
 
 <!-- Add the waffle menu toggle button -->
@@ -20,11 +22,40 @@
     <span></span>
     <span></span>
 </div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
 <div class="container">
     <div>
 
         <div class="practice-container">
-                        <div class="practice-card"><a href="oldpractice/game_4_27_2025.html">4-27-2025 Game</a></div>
+            <div class="practice-card"><a href="oldpractice/game_4_27_2025.html">4-27-2025 Game</a></div>
             <div class="practice-card"><a href="oldpractice/practice4_14_2025.html">4-14-2025 Practice</a></div>
             <div class="practice-card"><a href="oldpractice/game_4_13_2025.html">4-13-2025 Game</a></div>
             <div class="practice-card"><a href="oldpractice/practice4_10_2025.html">4-10-2025 Practice</a></div>
@@ -100,17 +131,21 @@
     </div>
 </div>
 
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
 
 <!-- Your existing scripts -->
 <script src="scripts/scripts.js"></script>
 
-
 </body>
 
-
-<footer class="footer">
-    <a href="../turns.html" target="_self">Turns</a> |
-    <a href="../tryout.html" target="_self">Tryout</a> |
-    <a href="../touch.html" target="_self">Touch</a> |
-</footer>
 </html>
