@@ -9,10 +9,14 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
-    <h1>Turns</h1>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Turns</h1>
+    </div>
 </header>
+
 
 <!-- Add the waffle menu toggle button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
@@ -21,56 +25,174 @@
     <span></span>
 </div>
 
+<!-- Include the menu using JavaScript -->
+<div id="technical-menu"></div>
+
+<script>
+    fetch('menus/technical-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('technical-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
 
 <div class="container">
-    <div class="video-container">
-        <video controls>
-            <source src="vid/turns1.mp4" type="video/mp4">
-        </video>
-        <p>5 Turns</p>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 5 Turns
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turns1.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <video controls>
-            <source src="vid/turns2.mp4" type="video/mp4">
-        </video>
-        <p>3 Turns to Master</p>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 Turns to Master
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turns2.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <video controls>
-            <source src="vid/turn3.mp4" type="video/mp4">
-        </video>
-        <p>Circle Turn</p>
-    </div>
 
-    <div class="video-container">
-        <video controls>
-            <source src="vid/turns4.mp4" type="video/mp4">
-        </video>
-        <p>10 for Center Forwards</p>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Circle Turn
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turn3.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
 
-    <div class="video-container">
-        <video controls>
-            <source src="vid/turn_dribble.mp4" type="video/mp4">
-        </video>
-        <p>10 for Center Forwards</p>
-    </div>
-    <div class="video-container">
-        <video controls>
-            <source src="vid/magicturn.mp4" type="video/mp4">
-        </video>
-        <p>Magic Turn</p>
-    </div>
-    <div class="video-container">
-        <video controls>
-            <source src="vid/wall_move_turns.mp4" type="video/mp4">
-        </video>
-        <p>Magic Turn</p>
-    </div>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 10 for Center FWD
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turns4.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Dribble Turn
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turn_dribble.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Magic Turn
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/magicturn.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Wall Move Turn
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/wall_move_turns.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
 </div>
 
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
 <!-- Your existing scripts -->
 <script src="scripts/scripts.js"></script>
 

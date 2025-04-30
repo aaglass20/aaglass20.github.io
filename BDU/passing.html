@@ -12,7 +12,7 @@
 <header>
     <div class="highlight-banner">
         <img src="images/bdu.png" alt="Company Logo">
-        <h1>Tactical Training</h1>
+        <h1>Passing</h1>
     </div>
 </header>
 
@@ -25,21 +25,28 @@
 </div>
 
 <!-- Include the menu using JavaScript -->
-<div id="tactical-menu"></div>
+<div id="technical-menu"></div>
 
 <script>
-    // Load the tactical menu
-    fetch('menus/tactical-menu.html')
+    fetch('menus/technical-menu.html')
         .then(response => response.text())
         .then(data => {
-            document.getElementById('tactical-menu').innerHTML = data;
+            document.getElementById('technical-menu').innerHTML = data;
 
-            // Highlight current page in menu
+            // Highlight current page in menu and scroll to it
             const currentPage = window.location.pathname.split('/').pop();
             const menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(item => {
                 if (item.getAttribute('href') === currentPage) {
                     item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
                 }
             });
         });
@@ -48,7 +55,7 @@
 
 <div class="container">
 
-      <section class="collapsible-section">
+       <section class="collapsible-section">
         <h2 class="section-title">
             <i class="fas fa-futbol"></i> Sample Title
             <button class="toggle-button" aria-expanded="false">
@@ -65,6 +72,7 @@
             </div>
         </ul>
     </section>
+
 
 </div>
 
