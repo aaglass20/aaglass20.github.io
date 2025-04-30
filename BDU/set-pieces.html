@@ -9,69 +9,63 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
 <header>
     <div class="highlight-banner">
         <img src="images/bdu.png" alt="Company Logo">
-        <h1>BDU U10 Practice</h1>
+    <h1>Set Pieces</h1>
     </div>
 </header>
 
-<!-- Add the waffle menu toggle button -->
+<!-- Waffle Menu Toggle Button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
     <span></span>
     <span></span>
     <span></span>
 </div>
 
-<!-- Include the menu using JavaScript -->
-<div id="tactical-menu"></div>
+ <!-- Include the menu using JavaScript -->
+    <div id="tactical-menu"></div>
 
-<script>
-    // Load the tactical menu
-    fetch('menus/tactical-menu.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('tactical-menu').innerHTML = data;
+    <script>
+        // Load the tactical menu
+        fetch('menus/tactical-menu.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('tactical-menu').innerHTML = data;
 
-            // Highlight current page in menu
-            const currentPage = window.location.pathname.split('/').pop();
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                if (item.getAttribute('href') === currentPage) {
-                    item.classList.add('active');
-                }
+                // Highlight current page in menu
+                const currentPage = window.location.pathname.split('/').pop();
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    if (item.getAttribute('href') === currentPage) {
+                        item.classList.add('active');
+                    }
+                });
             });
-        });
-</script>
+    </script>
+
+
 
 <div class="container">
 
-    <section class="collapsible-section">
+      <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Formations
+            <i class="fas fa-futbol"></i> Set Sample Title
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </h2>
         <ul>
             <div class="collapsible-content">
-                <!-- Formations -->
-                <article>
-                    <h3>4-4-2</h3>
-                    <p>Basic 4-4-2 formation</p>
-
-
-                    <div class="video-container">
-                        <video controls>
-                            <source src="vid/442formation.mp4" type="video/mp4">
-                        </video>
-                    </div>
-
-                </article>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/simpleGridDrill.mp4" type="video/mp4">
+                    </video>
+                </div>
             </div>
         </ul>
     </section>
-
 
 </div>
 
@@ -86,7 +80,6 @@
         });
 </script>
 
-<!-- Your existing scripts -->
 <script src="scripts/scripts.js"></script>
 
 </body>

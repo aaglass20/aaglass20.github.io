@@ -12,7 +12,7 @@
 <header>
     <div class="highlight-banner">
         <img src="images/bdu.png" alt="Company Logo">
-        <h1>Practice 4/28/2025</h1>
+        <h1>Tactical Training</h1>
     </div>
 </header>
 
@@ -24,11 +24,27 @@
     <span></span>
 </div>
 
-<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
-<!--<div class="highlight-banner">-->
-<!--    <h2>Welcome to Practice</h2>-->
-<!--    <h2>4/28/2025</h2>-->
-<!--</div>-->
+<!-- Include the menu using JavaScript -->
+<div id="tactical-menu"></div>
+
+<script>
+    // Load the tactical menu
+    fetch('menus/tactical-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('tactical-menu').innerHTML = data;
+
+            // Highlight current page in menu
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                }
+            });
+        });
+</script>
+
 
 <div class="container">
 
@@ -183,7 +199,6 @@
             document.getElementById('shared-footer').innerHTML = data;
         });
 </script>
-
 
 <script src="scripts/scripts.js"></script>
 
