@@ -13,7 +13,7 @@
 <header>
     <div class="highlight-banner">
         <img src="images/bdu.png" alt="Company Logo">
-    <h1>Set Pieces</h1>
+        <h1>Set Pieces</h1>
     </div>
 </header>
 
@@ -24,34 +24,33 @@
     <span></span>
 </div>
 
- <!-- Include the menu using JavaScript -->
-    <div id="tactical-menu"></div>
+<!-- Include the menu using JavaScript -->
+<div id="tactical-menu"></div>
 
-    <script>
-        // Load the tactical menu
-        fetch('menus/tactical-menu.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('tactical-menu').innerHTML = data;
+<script>
+    // Load the tactical menu
+    fetch('menus/tactical-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('tactical-menu').innerHTML = data;
 
-                // Highlight current page in menu
-                const currentPage = window.location.pathname.split('/').pop();
-                const menuItems = document.querySelectorAll('.menu-item');
-                menuItems.forEach(item => {
-                    if (item.getAttribute('href') === currentPage) {
-                        item.classList.add('active');
-                    }
-                });
+            // Highlight current page in menu
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                }
             });
-    </script>
-
+        });
+</script>
 
 
 <div class="container">
 
-      <section class="collapsible-section">
+    <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Set Sample Title
+            <i class="fas fa-futbol"></i> Simple Kickoff - Drop and go
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
             </button>
@@ -60,12 +59,63 @@
             <div class="collapsible-content">
                 <div class="video-container">
                     <video controls>
-                        <source src="vid/simpleGridDrill.mp4" type="video/mp4">
+                        <source src="practice/simpleDropKickoff.mp4" type="video/mp4">
+                    </video>
+                    <ul>
+                        <li>Forward drops to Mid</li>
+                        <li>Outside Mids take off</li>
+                        <li>Sriker also takes off</li>
+                        <li>Center mid hits left or right corner</li>
+                        <li>Variation: Mid or forward does same without drop</li>
+                    </ul>
+                    <b>Why is this important? </b>
+                    <ul>
+                        <li>Quick way to get down field</li>
+                        <li>Drop back gives time for mids to get down field</li>
+                        <br>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Basic Corner
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="practice/ck.mp4" type="video/mp4">
                     </video>
                 </div>
             </div>
         </ul>
     </section>
+
+    <section class="collapsible-section">
+    <h2 class="section-title">
+        <i class="fas fa-futbol"></i> Basic Goal Kick
+        <button class="toggle-button" aria-expanded="false">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+    </h2>
+    <ul>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/gk.mp4" type="video/mp4">
+                </video>
+            </div>
+
+        </div>
+    </ul>
+</section>
 
 </div>
 
