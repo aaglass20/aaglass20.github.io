@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Trapping</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="technical-menu"></div>
+
+<script>
+    fetch('menus/technical-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('technical-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Trap Control
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/trapcontrol.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Maintain control on each line</li>
+                    <li>Pass back after controlled</li>
+                    <li>line 1, low control</li>
+                    <li>line 2, mid high control</li>
+                    <li>line 2, chest control</li>
+                    <li>Right foot up the ladder</li>
+                    <li>Left foot down the ladder</li>
+                    <li>Shuffle body</li>
+                    <li>don't raise foot, keep it low</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Works on keeping foot in trap position</li>
+                    <li>Works on keeping arms down on higher balls</li>
+                    <li>Proper trap technique</li>
+                    <li>Shuffling body to ball instead of foot to ball</li>
+                    <li>Works on playing the ball immediately after settling</li>
+                    <li>Works on being on toes, ready position</li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+        <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Snapback touch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+            <video controls>
+                <source src="vid/snap_back_touch.mp4" type="video/mp4">
+            </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
