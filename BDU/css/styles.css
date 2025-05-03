@@ -488,3 +488,42 @@ p {
 .menu-item.active i {
     color: white;
 }
+
+.lineup-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.lineup-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.lineup-table th,
+.lineup-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.lineup-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.lineup-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.lineup-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+h2 {
+    color: #333;
+    margin: 20px 0;
+    font-family: 'Roboto', sans-serif;
+}
+
