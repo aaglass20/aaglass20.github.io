@@ -527,3 +527,10 @@ h2 {
     font-family: 'Roboto', sans-serif;
 }
 
+.drill-summary {
+  color: #666;
+  font-size: 0.9em;
+  margin: 0.5em 0;
+  padding: 0 1em;
+  font-style: italic;
+}
