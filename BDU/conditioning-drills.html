@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Conditioning Drills</h1>
+    </div>
+</header>
+
+
+<!-- Add the waffle menu toggle button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+
+<script>
+    fetch('menus/drills-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+<section class="collapsible-section">
+    <h2 class="section-title">
+        <i class="fas fa-futbol"></i> O drills
+        <button class="toggle-button" aria-expanded="false">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+    </h2>
+    <div class="collapsible-content">
+        <div class="video-container">
+            <video controls>
+                <source src="practice/reaction_with_ball.mp4" type="video/mp4">
+            </video>
+            <ul>
+                <li>Play on toes, quick feet, runs in place, facing away from coach</li>
+                <li>Coach yells Left, Right, Drop</li>
+                <li>On call, player turs around as ball is played</li>
+                <li>Right, take to their right, 1 touch out, pass back</li>
+                <li>Left, take to their left, 1 touch out, pass back</li>
+                <li>Drop,1 touch pass back</li>
+            </ul>
+            <b>Why is this important?</b>
+            <ul>
+                <li>Work on communication</li>
+                <li>Reaction</li>
+                <li>Drops</li>
+                <li>touch outside with control</li>
+                <br>
+            </ul>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+<!-- Your existing scripts -->
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
