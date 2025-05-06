@@ -27,443 +27,447 @@
 <!-- Include the menu using JavaScript -->
 <div id="training-menu"></div>
 
-<script>
-    fetch('menus/training-menu.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('training-menu').innerHTML = data;
 
-            // Highlight current page in menu and scroll to it
-            const currentPage = window.location.pathname.split('/').pop();
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                if (item.getAttribute('href') === currentPage) {
-                    item.classList.add('active');
-                    // Scroll the item into view with smooth behavior
-                    setTimeout(() => {
-                        item.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'nearest',
-                            inline: 'center'
-                        });
-                    }, 100);
-                }
+<div class="container">
+
+    <script>
+        fetch('menus/drills-menu.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('training-menu').innerHTML = data;
+
+                // Highlight current page in menu and scroll to it
+                const currentPage = window.location.pathname.split('/').pop();
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    if (item.getAttribute('href') === currentPage) {
+                        item.classList.add('active');
+                        // Scroll the item into view with smooth behavior
+                        setTimeout(() => {
+                            item.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'center'
+                            });
+                        }, 100);
+                    }
+                });
             });
-        });
-</script>
+    </script>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Simple Grid Drill
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="vid/simpleGridDrill.mp4" type="video/mp4">
-            </video>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Simple Grid Drill
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/simpleGridDrill.mp4" type="video/mp4">
+                </video>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> New 50 Touches
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/new%2050%20touches.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Long pass (Dominant foot)</li>
-                <li>Short pass (Dominant foot)</li>
-                <li>Turn</li>
-                <li>Short Pass (Non Dominant foot)</li>
-                <li>Rotate</li>
-            </ul>
-            <b>Why is this important?</b>
-            <ul>
-                <li>Keeping player on toes</li>
-                <li>If done right, constant movement</li>
-                <li>Coming to the ball opposed to waiting</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> New 50 Touches
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/new%2050%20touches.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Long pass (Dominant foot)</li>
+                    <li>Short pass (Dominant foot)</li>
+                    <li>Turn</li>
+                    <li>Short Pass (Non Dominant foot)</li>
+                    <li>Rotate</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Keeping player on toes</li>
+                    <li>If done right, constant movement</li>
+                    <li>Coming to the ball opposed to waiting</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Touch Left, 1 Touch, 2 Touch Right
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/2L%201%202R.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>1st grid, 2 touch left</li>
-                <li>2nd grid, 1 touch</li>
-                <li>3rd Grid 2 touch right</li>
-                <li>2nd grid, 1 touch</li>
-                <li>1st grid, 2 touch left</li>
-                <li>Keep head up</li>
-                <li>Coach can hold up a number, get player to call it out while doing</li>
-                <li>move quick</li>
-            </ul>
-            <b>Why is this important?</b>
-            <ul>
-                <li>Horizontal movement</li>
-                <li>Use of both feet</li>
-                <li>Processing dif skills in different grids</li>
-                <li>Horizontal movement</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Touch Left, 1 Touch, 2 Touch Right
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/2L%201%202R.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>1st grid, 2 touch left</li>
+                    <li>2nd grid, 1 touch</li>
+                    <li>3rd Grid 2 touch right</li>
+                    <li>2nd grid, 1 touch</li>
+                    <li>1st grid, 2 touch left</li>
+                    <li>Keep head up</li>
+                    <li>Coach can hold up a number, get player to call it out while doing</li>
+                    <li>move quick</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Horizontal movement</li>
+                    <li>Use of both feet</li>
+                    <li>Processing dif skills in different grids</li>
+                    <li>Horizontal movement</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> 3 Person line pass and move
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/3%20Person%20Line%20Pass.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Medium long</li>
-                <li>Move</li>
-                <li>Pass Back</li>
-                <li>Short Pass Back</li>
-                <li>Move</li>
-                <li>1 Touch is focus, but use 2 if needed</li>
-            </ul>
-            <b>Why is this important? </b>
-            <ul>
-                <li>Moving every pass, short and medium</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 Person line pass and move
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/3%20Person%20Line%20Pass.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Medium long</li>
+                    <li>Move</li>
+                    <li>Pass Back</li>
+                    <li>Short Pass Back</li>
+                    <li>Move</li>
+                    <li>1 Touch is focus, but use 2 if needed</li>
+                </ul>
+                <b>Why is this important? </b>
+                <ul>
+                    <li>Moving every pass, short and medium</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Pass, Shoot, Defend
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/passshootdefend.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Short pass forward, Communicate to recipient</li>
-                <li>Call for Drop</li>
-                <li>Rush to dropped ball</li>
-                <li>Quick pass over</li>
-                <li>Top player shoots</li>
-                <li>Defender trys to block</li>
-                <li>After shot, shooter becomes defender</li>
-                <li>Initial passer becomes shooter</li>
-                <li>Defender jumps back in line</li>
-            </ul>
-            <b>Why is this important? </b>
-            <ul>
-                <li>Urgency as passer, shooter, defender</li>
-                <li>works on short dump or drop</li>
-                <li>Communications and movement</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Pass, Shoot, Defend
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/passshootdefend.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Short pass forward, Communicate to recipient</li>
+                    <li>Call for Drop</li>
+                    <li>Rush to dropped ball</li>
+                    <li>Quick pass over</li>
+                    <li>Top player shoots</li>
+                    <li>Defender trys to block</li>
+                    <li>After shot, shooter becomes defender</li>
+                    <li>Initial passer becomes shooter</li>
+                    <li>Defender jumps back in line</li>
+                </ul>
+                <b>Why is this important? </b>
+                <ul>
+                    <li>Urgency as passer, shooter, defender</li>
+                    <li>works on short dump or drop</li>
+                    <li>Communications and movement</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Whole Team - Work Sides, Play Through
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/worksideplaytthrough.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <ul>
-                <li>D1 pass to outside</li>
-                <li>D2 Turn to outside</li>
-                <li>D2 takes ball forward</li>
-                <li>Coach then pressures D2 to force pass</li>
-                <li>D2 passes up line or plays through</li>
-                <li>Nears M or F communicates they have it</li>
-                <li>The other separates</li>
-                <li>Work ball down field for shot</li>
-                <li>Could add Goalie</li>
-                <li>Could add Defender</li>
-            </ul>
-            <b> Why is this important?</b>
-            <ul>
-                <li>Works on importance of playing outside</li>
-                <li>Works on turning out, instead of turning in</li>
-                <li>Works on carrying ball when not pressure</li>
-                <li>Works on keeping head up to look for pressure</li>
-                <li>Works on releasing ball with pressure</li>
-                <li>Can have teammates identify pressure to help teammates</li>
-                <li>Works through ball and communicating the intended receiver</li>
-                <li>Works simple pass and finish down the filed</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Whole Team - Work Sides, Play Through
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/worksideplaytthrough.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <ul>
+                    <li>D1 pass to outside</li>
+                    <li>D2 Turn to outside</li>
+                    <li>D2 takes ball forward</li>
+                    <li>Coach then pressures D2 to force pass</li>
+                    <li>D2 passes up line or plays through</li>
+                    <li>Nears M or F communicates they have it</li>
+                    <li>The other separates</li>
+                    <li>Work ball down field for shot</li>
+                    <li>Could add Goalie</li>
+                    <li>Could add Defender</li>
+                </ul>
+                <b> Why is this important?</b>
+                <ul>
+                    <li>Works on importance of playing outside</li>
+                    <li>Works on turning out, instead of turning in</li>
+                    <li>Works on carrying ball when not pressure</li>
+                    <li>Works on keeping head up to look for pressure</li>
+                    <li>Works on releasing ball with pressure</li>
+                    <li>Can have teammates identify pressure to help teammates</li>
+                    <li>Works through ball and communicating the intended receiver</li>
+                    <li>Works simple pass and finish down the filed</li>
+                    <br>
+                </ul>
 
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Defensive Technique as a team
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/defensive%20attack%20technique.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Offence slow dribbles</li>
-                <li>Warm up with "Flip" drill</li>
-                <li>Defense channels with "running like a Defender"</li>
-                <li>Shift hips if Off changes direction</li>
-                <li>Coach yells attack, attack</li>
-                <li>Lunge across Offences body</li>
-                <li>Arm first, post on body</li>
-                <li>Step across body and tackle</li>
-                <li>We look for openings to steal</li>
-                <li>Try it without coach influence</li>
-            </ul>
-            <b>Why is this important?</b>
-            <ul>
-                <li>Stepping across body slows down offence if you miss your tackle attempt</li>
-                <li>We don't poke, we body up</li>
-                <li>Be confident</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Defensive Technique as a team
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/defensive%20attack%20technique.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Offence slow dribbles</li>
+                    <li>Warm up with "Flip" drill</li>
+                    <li>Defense channels with "running like a Defender"</li>
+                    <li>Shift hips if Off changes direction</li>
+                    <li>Coach yells attack, attack</li>
+                    <li>Lunge across Offences body</li>
+                    <li>Arm first, post on body</li>
+                    <li>Step across body and tackle</li>
+                    <li>We look for openings to steal</li>
+                    <li>Try it without coach influence</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Stepping across body slows down offence if you miss your tackle attempt</li>
+                    <li>We don't poke, we body up</li>
+                    <li>Be confident</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i>Whole Team - Hold the line
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/Hold%20the%20line.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i>Whole Team - Hold the line
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/Hold%20the%20line.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
 
-            <ul>
-                <li>Line 3 players up at midfield</li>
-                <li>Line up 3 Defenders</li>
-                <li>Coach playes ball between the lanes to create situations</li>
-                <li>Another Coach behind goalies</li>
-                <li>Scneario 1: play ball through defense, goalie reaction, boot ball to side or out of bounds</li>
-                <li>Scenario 2: play ball to either side, if midfield gets beyond defence, switch off help</li>
-                <li>Coach can help players to indentify backside help</li>
-                <li>backside help should go directly to ball and stat defending closely, attempting to retrieve</li>
-            </ul>
-            <b> Why is this important?</b>
-            <ul>
-                <li>Goalie reacting to bail out defense, goalie should call off D</li>
-                <li>Work on help and communication on defense</li>
-                <li>Defense should get legally handsy</li>
-                <br>
-            </ul>
+                <ul>
+                    <li>Line 3 players up at midfield</li>
+                    <li>Line up 3 Defenders</li>
+                    <li>Coach playes ball between the lanes to create situations</li>
+                    <li>Another Coach behind goalies</li>
+                    <li>Scneario 1: play ball through defense, goalie reaction, boot ball to side or out of bounds</li>
+                    <li>Scenario 2: play ball to either side, if midfield gets beyond defence, switch off help</li>
+                    <li>Coach can help players to indentify backside help</li>
+                    <li>backside help should go directly to ball and stat defending closely, attempting to retrieve</li>
+                </ul>
+                <b> Why is this important?</b>
+                <ul>
+                    <li>Goalie reacting to bail out defense, goalie should call off D</li>
+                    <li>Work on help and communication on defense</li>
+                    <li>Defense should get legally handsy</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> 3 Groups - Ladder, Side to Side, Dribble
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/3%20Group,%20Ladder,%20Side%20to%20Side,%20Dribble.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Side to Side (1 or 2 touch) back and forth to coach - Work both feet</li>
-                <li>Ladder (1 or 2 touch) back and forth to coach - Work both feet</li>
-                <li>Dribble with both feet, speed, 4 rollovers with gate, Long touch with Sprint Form</li>
-            </ul>
-            <b>Why is this important?</b>
-            <ul>
-                <li>General skills</li>
-                <br>
-            </ul>
-            <hr>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 Groups - Ladder, Side to Side, Dribble
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/3%20Group,%20Ladder,%20Side%20to%20Side,%20Dribble.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Side to Side (1 or 2 touch) back and forth to coach - Work both feet</li>
+                    <li>Ladder (1 or 2 touch) back and forth to coach - Work both feet</li>
+                    <li>Dribble with both feet, speed, 4 rollovers with gate, Long touch with Sprint Form</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>General skills</li>
+                    <br>
+                </ul>
+                <hr>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i>Good Pass, Play O, Bad Pass Play D - Transitions
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/Bad%20Pass,%20Transition%20to%20D,%20Good%20Pass%20become%20O.mp4"
-                        type="video/mp4">
-            </video>
-            <ul>
-                <li>Goal throws ball to first player</li>
-                <li>Player attempts to pass through gate</li>
-                <li>If pass goes through gate, take off an become an option for leading pass</li>
-                <li>Try to pass before next gate to teamate that should be moving after the pass</li>
-                <li>If Player misses first gate, Second Player becomes offence</li>
-                <li>First player immediatly had to transition from Offense to Defense</li>
-                <li>P2 is tring to score on keeper</li>
-                <li>P1 is trying to defend, not waiting on it</li>
-            </ul>
-            <b>Why is this important? </b>
-            <ul>
-                <li>P1 is transition to D to O if they make a good pass</li>
-                <li>P1 is transitioning quickly back to D if they make a bad pass</li>
-                <li>Promotes movement on O side if successful</li>
-                <li>There is a consequence for a bad pass</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i>Good Pass, Play O, Bad Pass Play D - Transitions
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/Bad%20Pass,%20Transition%20to%20D,%20Good%20Pass%20become%20O.mp4"
+                            type="video/mp4">
+                </video>
+                <ul>
+                    <li>Goal throws ball to first player</li>
+                    <li>Player attempts to pass through gate</li>
+                    <li>If pass goes through gate, take off an become an option for leading pass</li>
+                    <li>Try to pass before next gate to teamate that should be moving after the pass</li>
+                    <li>If Player misses first gate, Second Player becomes offence</li>
+                    <li>First player immediatly had to transition from Offense to Defense</li>
+                    <li>P2 is tring to score on keeper</li>
+                    <li>P1 is trying to defend, not waiting on it</li>
+                </ul>
+                <b>Why is this important? </b>
+                <ul>
+                    <li>P1 is transition to D to O if they make a good pass</li>
+                    <li>P1 is transitioning quickly back to D if they make a bad pass</li>
+                    <li>Promotes movement on O side if successful</li>
+                    <li>There is a consequence for a bad pass</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Partner Calls
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/partner%20calls.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Partner yells out call</li>
-                <li>1: Go Right, Say Right and point Right. Player touches right, plays back (2 touch)</li>
-                <li>2: Go Left, Say Left and point Left. Player touches left, plays back (2 touch)</li>
-                <li>Pressure: Play back(drop), say pressure (or man on), 1 touch</li>
-                <li>Turn: Say turn, Player uses a turn moves forward and shoots</li>
-                <li>Be urgent</li>
-            </ul>
-            <b>Why is this important? </b>
-            <ul>
-                <li>Works on player to player communication</li>
-                <li>Works on touch, turns, movement</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Partner Calls
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/partner%20calls.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Partner yells out call</li>
+                    <li>1: Go Right, Say Right and point Right. Player touches right, plays back (2 touch)</li>
+                    <li>2: Go Left, Say Left and point Left. Player touches left, plays back (2 touch)</li>
+                    <li>Pressure: Play back(drop), say pressure (or man on), 1 touch</li>
+                    <li>Turn: Say turn, Player uses a turn moves forward and shoots</li>
+                    <li>Be urgent</li>
+                </ul>
+                <b>Why is this important? </b>
+                <ul>
+                    <li>Works on player to player communication</li>
+                    <li>Works on touch, turns, movement</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Simple touch, wall pass, shot
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/simpleTouchWallPassShoot.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Use pole as obstacle</li>
-                <li>Shuffle back an forth on toes behind pole</li>
-                <li>Recieve ball, turn, play wall</li>
-                <li>Go around pole, play back to teamate or coach</li>
-                <li>Repeat</li>
-            </ul>
-            <b>Why is this important? </b>
-            <ul>
-                <li>Keeps constant movement, on toes</li>
-                <li>Works turn, receive</li>
-                <li>Simple first touch</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Simple touch, wall pass, shot
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/simpleTouchWallPassShoot.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Use pole as obstacle</li>
+                    <li>Shuffle back an forth on toes behind pole</li>
+                    <li>Recieve ball, turn, play wall</li>
+                    <li>Go around pole, play back to teamate or coach</li>
+                    <li>Repeat</li>
+                </ul>
+                <b>Why is this important? </b>
+                <ul>
+                    <li>Keeps constant movement, on toes</li>
+                    <li>Works turn, receive</li>
+                    <li>Simple first touch</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<section class="collapsible-section">
-    <h2 class="section-title">
-        <i class="fas fa-futbol"></i> Reaction with Ball
-        <button class="toggle-button" aria-expanded="false">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </h2>
-    <div class="collapsible-content">
-        <div class="video-container">
-            <video controls>
-                <source src="practice/reaction_with_ball.mp4" type="video/mp4">
-            </video>
-            <ul>
-                <li>Play on toes, quick feet, runs in place, facing away from coach</li>
-                <li>Coach yells Left, Right, Drop</li>
-                <li>On call, player turs around as ball is played</li>
-                <li>Right, take to their right, 1 touch out, pass back</li>
-                <li>Left, take to their left, 1 touch out, pass back</li>
-                <li>Drop,1 touch pass back</li>
-            </ul>
-            <b>Why is this important?</b>
-            <ul>
-                <li>Work on communication</li>
-                <li>Reaction</li>
-                <li>Drops</li>
-                <li>touch outside with control</li>
-                <br>
-            </ul>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Reaction with Ball
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/reaction_with_ball.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>Play on toes, quick feet, runs in place, facing away from coach</li>
+                    <li>Coach yells Left, Right, Drop</li>
+                    <li>On call, player turs around as ball is played</li>
+                    <li>Right, take to their right, 1 touch out, pass back</li>
+                    <li>Left, take to their left, 1 touch out, pass back</li>
+                    <li>Drop,1 touch pass back</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Work on communication</li>
+                    <li>Reaction</li>
+                    <li>Drops</li>
+                    <li>touch outside with control</li>
+                    <br>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 
 <div id="shared-footer"></div>
 
