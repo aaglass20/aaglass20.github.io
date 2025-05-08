@@ -215,12 +215,16 @@
 
 </div>
 
-<footer class="footer">
-    <a href="turns.html">Turns</a> |
-    <a href="assessment-tools.html">Tryout</a> |
-    <a href="touch.html">Touch</a> |
-    <a href="formations.html">Formations</a>
-</footer>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
 
 <script src="scripts/scripts.js"></script>
 </body>
