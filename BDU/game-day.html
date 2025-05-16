@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Practice 5/5/2025</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
+<!--<div class="highlight-banner">-->
+<!--    <h2>Welcome to Practice</h2>-->
+<!--    <h2>4/28/2025</h2>-->
+<!--</div>-->
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/index-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Game Time Warmup
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/gametimewarmup.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <!-- 1st half lineup -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="far fa-file-alt"></i> Lineup
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content active">
+                <div class="lineup-container">
+                    <div class="position-card">
+                        <div class="position-header">Goalkeeper (G)</div>
+                        <div class="players">
+                            <div class="player first-half">Audrey</div>
+                            <div class="player substitute">Whitney</div>
+                            <div class="player substitute">Ava/Claire S/ Emma/Claire B</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Left Defense (LD)</div>
+                        <div class="players">
+                            <div class="player first-half">JoJo</div>
+                            <div class="player substitute">Ella</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Center Defense (CD)</div>
+                        <div class="players">
+                            <div class="player first-half">Hannah</div>
+                            <div class="player substitute">Emma</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Right Defense (RD)</div>
+                        <div class="players">
+                            <div class="player first-half">Mara</div>
+                            <div class="player substitute">Josie</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Left Midfield (LM)</div>
+                        <div class="players">
+                            <div class="player first-half">Evie</div>
+                            <div class="player substitute">Ava</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Center Midfield (CM)</div>
+                        <div class="players">
+                            <div class="player first-half">Whitney</div>
+                            <div class="player substitute">Claire S.</div>
+                            <div class="player first-half">Emma/Ella</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Right Midfield (RM)</div>
+                        <div class="players">
+                            <div class="player first-half">Jordan</div>
+                            <div class="player substitute">Emery</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Left Forward (LF)</div>
+                        <div class="players">
+                            <div class="player first-half">Charlie</div>
+                            <div class="player substitute">Audrey</div>
+                        </div>
+                    </div>
+
+                    <div class="position-card">
+                        <div class="position-header">Right Forward (RF)</div>
+                        <div class="players">
+                            <div class="player first-half">Claire B</div>
+                            <div class="player substitute">Isabelle</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <p>Bold = First Half Starter</p>
+                    <p>Gray = Substitutes</p>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Sheet Lineup
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+
+                <div class="lineup-container">
+                    <h2>1st Half</h2>
+                    <table class="lineup-table">
+                        <thead>
+                        <tr>
+                            <th>G</th>
+                            <th>LD</th>
+                            <th>CD</th>
+                            <th>RD</th>
+                            <th>LM</th>
+                            <th>CM</th>
+                            <th>RM</th>
+                            <th>LF</th>
+                            <th>RF</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Audrey</td>
+                            <td>JoJo</td>
+                            <td>Hannah</td>
+                            <td>Mara</td>
+                            <td>Evie</td>
+                            <td>Claire S</td>
+                            <td>Jordan</td>
+                            <td>Charlie</td>
+                            <td>Claire B</td>
+                        </tr>
+                        <tr>
+                            <td>Whitney</td>
+                            <td>Ella</td>
+                            <td>Emma</td>
+                            <td>Josie</td>
+                            <td>Ava</td>
+                            <td>Whitney</td>
+                            <td>Emery</td>
+                            <td>Audrey</td>
+                            <td>Isabelle</td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Emma/Ella</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Depth</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Charlie</td>
+                            <td></td>
+                            <td>Claire B</td>
+                            <td></td>
+                            <td>Audrey</td>
+                            <td></td>
+                            <td>Isabelle</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Evie</td>
+                            <td>Claire S</td>
+                            <td>Jordan</td>
+                            <td></td>
+                            <td>Ava</td>
+                            <td>Whitney</td>
+                            <td>Emery</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>JoJo</td>
+                            <td>Hannah</td>
+                            <td>Mara</td>
+                            <td></td>
+                            <td>Ella</td>
+                            <td>Emma</td>
+                            <td>Josie</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>2nd Half</h2>
+                    <table class="lineup-table">
+                        <thead>
+                        <tr>
+                            <th>G</th>
+                            <th>LD</th>
+                            <th>CD</th>
+                            <th>RD</th>
+                            <th>LM</th>
+                            <th>CM</th>
+                            <th>RM</th>
+                            <th>LF</th>
+                            <th>RF</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Ava/Claire S&B/Emma</td>
+                            <td>JoJo</td>
+                            <td>Hannah</td>
+                            <td>Mara</td>
+                            <td>Evie</td>
+                            <td>Whitney</td>
+                            <td>Jordan</td>
+                            <td>Charlie</td>
+                            <td>Claire B</td>
+                        </tr>
+                        <tr>
+                            <td>Ava/Claire S&B/Emma</td>
+                            <td>Ella</td>
+                            <td>Emma</td>
+                            <td>Josie</td>
+                            <td>Ava</td>
+                            <td>Claire S</td>
+                            <td>Emery</td>
+                            <td></td>
+                            <td>Isabelle</td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Emma/Ella</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Depth</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Charlie</td>
+                            <td></td>
+                            <td>Claire B</td>
+                            <td></td>
+                            <td>Audrey</td>
+                            <td></td>
+                            <td>Isabelle</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td>Evie</td>
+                            <td>Claire S</td>
+                            <td>Jordan</td>
+                            <td></td>
+                            <td>Ava</td>
+                            <td>Whitney</td>
+                            <td>Emery</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>JoJo</td>
+                            <td>Hannah</td>
+                            <td>Mara</td>
+                            <td></td>
+                            <td>Ella</td>
+                            <td>Emma</td>
+                            <td>Josie</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </ul>
+    </section>
+
+
+</div>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

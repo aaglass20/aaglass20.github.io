@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Practice 5/5/2025</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
+<!--<div class="highlight-banner">-->
+<!--    <h2>Welcome to Practice</h2>-->
+<!--    <h2>4/28/2025</h2>-->
+<!--</div>-->
+
+<div class="container">
+
+    <!-- Warmup Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-dumbbell"></i> Warmup Routine
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li>1, 2, 3, Touch Toe
+                    <ul>
+                        <li>1, 2, 3, Blue Devils</li>
+                    </ul>
+                </li>
+                <li>Lunges
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Hug Knee to Chest
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Cradle Leg and Ankle
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Criss Cross Quad
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Skips</li>
+                <li>Stand in Place (10 Counts)
+                    <ul>
+                        <li>Scissors * 10</li>
+                        <li>Front to Back Hop * 10</li>
+                        <li>Side to Side * 10</li>
+                        <li>Criss Cross * 10</li>
+                        <li>Hops * 10</li>
+                    </ul>
+                </li>
+                <li>Sprint</li>
+                <li>Flip Run
+                    <ul>
+                        <li>Right Only (inside, outside)</li>
+                        <li>Left Only (inside, outside)</li>
+                        <li>Both Feet</li>
+                        <li>Inside Out/Rollovers/Sole Rolls</li>
+                        <li>Feint</li>
+                        <li>Fake Shot</li>
+                        <li>Head Up</li>
+                        <li>Simple Trap/Touch (10x each)</li>
+                    </ul>
+                </li>
+                <li>Fascia Training</li>
+                <li>25 Touches Right, 25 Touches Left (Work on Distance)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Intro to Volley
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Step-by-step introduction to basic volley technique. Start with simple height and
+            movement drills, progressing to controlled contact. Perfect for first-time learners
+            building confidence with balls in the air.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/introToVolly.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Triple Threat Throw
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Three attackers set up similar to corner formation: first player breaks near,
+            second attacks center, third drifts wide. Utilizes long throw specialist to
+            deliver ball with corner-kick power into dangerous areas.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <video controls>
+                    <source src="../vid/throwInAsWeapon.mp4" type="video/mp4">
+                </video>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Cross to Volley or 1 timer
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Three attackers time their runs as winger prepares cross: first crashes near post,
+            second attacks center, third drifts back post. Each ready for one-touch finish
+            or volley. Timing and spacing critical for avoiding defenders.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/crossOneTimer.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+</div>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>
