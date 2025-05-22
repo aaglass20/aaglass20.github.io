@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Position Plans</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="tactical-menu"></div>
+
+<script>
+    // Load the tactical menu
+    fetch('menus/position-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('tactical-menu').innerHTML = data;
+
+            // Highlight current page in menu
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Drop-Back Kickoff Attack
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A dynamic kickoff strategy that utilizes a quick drop-back pass to create immediate attacking
+            opportunities. The sequence begins with a forward dropping the ball to the midfielder while
+            outside midfielders and strikers make aggressive forward runs. This coordinated movement
+            creates multiple attacking options as the center midfielder can distribute to either wing.
+            The initial drop-back serves two crucial purposes: it allows time for attacking players to
+            advance into dangerous positions and creates space for effective distribution. This rapid
+            transition from kickoff to attack can catch opposing teams off-guard and immediately
+            establish offensive pressure.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="practice/simpleDropKickoff.mp4" type="video/mp4">
+                    </video>
+                    <ul>
+                        <li>Forward drops to Mid</li>
+                        <li>Outside Mids take off</li>
+                        <li>Sriker also takes off</li>
+                        <li>Center mid hits left or right corner</li>
+                        <li>Variation: Mid or forward does same without drop</li>
+                    </ul>
+                    <b>Why is this important? </b>
+                    <ul>
+                        <li>Quick way to get down field</li>
+                        <li>Drop back gives time for mids to get down field</li>
+                        <br>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
