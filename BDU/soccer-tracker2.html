@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jordan's Soccer Sessions Tracker</title>
+    <style>
+        /* ... (keep the same CSS as before) ... */
+        .save-status {
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            display: none;
+        }
+        .save-status.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .save-status.error {
+            background-color: #ff4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jordan's Soccer Sessions Tracker</h1>
+    <div class="progress-counter">
+        Completed: <span id="completed-count">0</span> / 365
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="save-status" id="save-status"></div>
+    <div class="sessions-grid" id="sessions-grid"></div>
+    <button class="reset-button" onclick="resetProgress()">Reset Progress</button>
+
+    <script>
+        const TOTAL_SESSIONS = 365;
+        let completedSessions = [];
+        // Replace this URL with your Google Apps Script Web App URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzey1623QbrZpZuYA13BWc_TxDww28YybwnqtDELwD4JijI9tRUC8H6RI2n9dB9U2yc/exec';
+
+        // Save progress to Google Sheets
+        async function saveProgress() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ completedSessions })
+                });
+
+                if (response.ok) {
+                    showSaveStatus('Progress saved successfully!', 'success');
+                } else {
+                    showSaveStatus('Error saving progress!', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving progress:', error);
+                showSaveStatus('Error saving progress!', 'error');
+            }
+        }
+
+        // Load progress from Google Sheets
+        async function loadProgress() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+                const data = await response.json();
+                completedSessions = data;
+                updateDisplay();
+            } catch (error) {
+                console.error('Error loading progress:', error);
+                showSaveStatus('Error loading progress!', 'error');
+            }
+        }
+
+        function showSaveStatus(message, type) {
+            const status = document.getElementById('save-status');
+            status.textContent = message;
+            status.className = `save-status ${type}`;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Toggle session completion
+        function toggleSession(sessionId) {
+            const index = completedSessions.indexOf(sessionId);
+            if (index === -1) {
+                completedSessions.push(sessionId);
+            } else {
+                completedSessions.splice(index, 1);
+            }
+            saveProgress();
+            updateDisplay();
+        }
+
+        // Reset all progress
+        async function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                completedSessions = [];
+                await saveProgress();
+                updateDisplay();
+            }
+        }
+
+        // Update the visual display
+        function updateDisplay() {
+            const grid = document.getElementById('sessions-grid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < TOTAL_SESSIONS; i++) {
+                const box = document.createElement('div');
+                box.className = `session-box ${completedSessions.includes(i) ? 'completed' : ''}`;
+                box.textContent = i + 1;
+                box.onclick = () => toggleSession(i);
+                grid.appendChild(box);
+            }
+
+            document.getElementById('completed-count').textContent = completedSessions.length;
+            const progressPercentage = (completedSessions.length / TOTAL_SESSIONS) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
+        }
+
+        // Initialize the tracker
+        loadProgress();
+    </script>
+</body>
+</html>

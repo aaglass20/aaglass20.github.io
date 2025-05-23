@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jordan's Soccer Sessions Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .progress-counter {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 5px;
+        }
+
+        .session-box {
+            aspect-ratio: 1;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .session-box.completed {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .session-box:hover {
+            background-color: #e0e0e0;
+        }
+
+        .session-box.completed:hover {
+            background-color: #45a049;
+        }
+
+        .reset-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .reset-button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jordan's Soccer Sessions Tracker</h1>
+    <div class="progress-counter">
+        Completed: <span id="completed-count">0</span> / 365
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="sessions-grid" id="sessions-grid"></div>
+    <button class="reset-button" onclick="resetProgress()">Reset Progress</button>
+
+    <script>
+        const TOTAL_SESSIONS = 365;
+        let completedSessions = [];
+
+        // Load completed sessions from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('completedSessions');
+            if (saved) {
+                completedSessions = JSON.parse(saved);
+                updateDisplay();
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('completedSessions', JSON.stringify(completedSessions));
+        }
+
+        // Toggle session completion
+        function toggleSession(sessionId) {
+            const index = completedSessions.indexOf(sessionId);
+            if (index === -1) {
+                completedSessions.push(sessionId);
+            } else {
+                completedSessions.splice(index, 1);
+            }
+            saveProgress();
+            updateDisplay();
+        }
+
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                completedSessions = [];
+                saveProgress();
+                updateDisplay();
+            }
+        }
+
+        // Update the visual display
+        function updateDisplay() {
+            const grid = document.getElementById('sessions-grid');
+            grid.innerHTML = '';
+
+            // Create session boxes
+            for (let i = 0; i < TOTAL_SESSIONS; i++) {
+                const box = document.createElement('div');
+                box.className = `session-box ${completedSessions.includes(i) ? 'completed' : ''}`;
+                box.textContent = i + 1;
+                box.onclick = () => toggleSession(i);
+                grid.appendChild(box);
+            }
+
+            // Update progress counter and bar
+            document.getElementById('completed-count').textContent = completedSessions.length;
+            const progressPercentage = (completedSessions.length / TOTAL_SESSIONS) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
+        }
+
+        // Initialize the tracker
+        loadProgress();
+        updateDisplay();
+    </script>
+</body>
+</html>
