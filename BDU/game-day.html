@@ -12,7 +12,15 @@
 <header>
     <div class="highlight-banner">
         <img src="images/bdu.png" alt="Company Logo">
-        <h1>Practice 5/5/2025</h1>
+        <!--        <h1>Practice 5/5/2025</h1>-->
+        <h1>Game Day <span id="currentDate"></span></h1>
+
+        <script>
+            const today = new Date();
+            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+            document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+
     </div>
 </header>
 
