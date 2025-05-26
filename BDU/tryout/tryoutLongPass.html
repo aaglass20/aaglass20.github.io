@@ -398,29 +398,14 @@
       action="https://script.google.com/macros/s/AKfycbykhPFgVT5PnntkDkc0dutSQCDmV5G5TOmg53s0s0e5vXrSCzk6Lg8lRvjhowpuT0UKKw/exec">
 
     <!--    https://script.google.com/macros/s/AKfycby72_eIAKkV6rgglU_1YtzIT8lOmUgU26eBzniOBzfjGelcglFTkCr2fQYyInnPrg6WQg/exec-->
+
+
     <div class="player-selection">
         <select name="playerName" id="playerName" required>
             <option value="">-- Select Player --</option>
-            <option value="Aaron Glass">Aaron Glass</option>
-            <option value="Audrey Van Dyke">Audrey Van Dyke</option>
-            <option value="Isabelle Budzowski">Isabelle Budzowski</option>
-            <option value="Josie DiGeronimo">Josie DiGeronimo</option>
-            <option value="Emma Barwacz">Emma Barwacz</option>
-            <option value="Mara Buntura">Mara Buntura</option>
-            <option value="Josephine Rollins">Josephine Rollins</option>
-            <option value="Genevieve Peters">Genevieve Peters</option>
-            <option value="Charlotte Merker">Charlotte Merker</option>
-            <option value="Whitney Phillips">Whitney Phillips</option>
-            <option value="Emery Osysko">Emery Osysko</option>
-            <option value="Ava Vourliotis">Ava Vourliotis</option>
-            <option value="Claire Suchan">Claire Suchan</option>
-            <option value="Jordan Glass">Jordan Glass</option>
-            <option value="Hannah Bechlem">Hannah Bechlem</option>
-            <option value="Ella Magana">Ella Magana</option>
-            <option value="Claire Brandt">Claire Brandt</option>
             <option value="add_new">+ Add New Player</option>
-
         </select>
+
 
         <div id="newPlayerInput" style="display: none; margin-top: 10px;">
             <input type="text" id="newPlayer" placeholder="Enter new player name">
@@ -563,6 +548,39 @@
             }
         });
     });
+
+
+    async function loadPlayers() {
+        try {
+            const response = await fetch('players.html');
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const playerDataText = doc.getElementById('playerData').textContent;
+            const players = JSON.parse(playerDataText);
+
+            const playerSelect = document.getElementById('playerName');
+            // Clear existing options except the first and last ones
+            while (playerSelect.options.length > 1) {
+                playerSelect.remove(1);
+            }
+
+            // Add players from the data
+            players.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player.name;
+                option.textContent = player.name;
+                // Insert before the "Add New Player" option
+                playerSelect.insertBefore(option, playerSelect.lastElementChild);
+            });
+        } catch (error) {
+            console.error('Error loading players:', error);
+        }
+    }
+
+    // Load players when the page loads
+    document.addEventListener('DOMContentLoaded', loadPlayers);
+
 
 </script>
 </body>
