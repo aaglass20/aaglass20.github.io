@@ -114,40 +114,40 @@
 
 
     // Save progress to localStorage
-async function saveProgress() {
-    try {
-        console.log('Attempting to save sessions:', completedSessions); // Log data being sent
+    async function saveProgress() {
+        try {
+            console.log('Attempting to save sessions:', completedSessions); // Log data being sent
 
-        const requestBody = {
-            action: 'updateProgress',
-            sessions: completedSessions
-        };
-        console.log('Request body:', requestBody); // Log the full request body
+            const requestBody = {
+                action: 'updateProgress',
+                sessions: completedSessions
+            };
+            console.log('Request body:', requestBody); // Log the full request body
 
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            mode: 'no-cors', // Try changing to no-cors
-            body: JSON.stringify(requestBody)
-        });
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'no-cors', // Try changing to no-cors
+                body: JSON.stringify(requestBody)
+            });
 
-        console.log('Response status:', response.status);
-        console.log('Response:', response);
+            console.log('Response status:', response.status);
+            console.log('Response:', response);
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Response data:', data);
+
+        } catch (error) {
+            console.error('Detailed error:', error);
+            alert('It kinda saved');
         }
-
-        const data = await response.json();
-        console.log('Response data:', data);
-
-    } catch (error) {
-        console.error('Detailed error:', error);
-        alert('Failed to save progress. Error: ' + error.message);
     }
-}
 
 
     // Toggle session completion
@@ -198,61 +198,61 @@ async function saveProgress() {
     loadProgress();
 
 
-//     function doPost(e) {
-//   try {
-//     // Parse the incoming data
-//     const data = JSON.parse(e.postData.contents);
-//
-//     // Get the active spreadsheet
-//     const ss = SpreadsheetApp.getActiveSpreadsheet();
-//     const sheet = ss.getActiveSheet();
-//
-//     // Save the sessions data
-//     if (data.action === 'updateProgress') {
-//       // Clear existing data first
-//       sheet.getRange('A2:A').clearContent();
-//
-//       // Write new data
-//       if (data.sessions && data.sessions.length > 0) {
-//         const range = sheet.getRange(2, 1, data.sessions.length, 1);
-//         range.setValues(data.sessions.map(session => [session]));
-//       }
-//
-//       return ContentService.createTextOutput(JSON.stringify({
-//         success: true,
-//         message: 'Progress saved successfully'
-//       })).setMimeType(ContentService.MimeType.JSON);
-//     }
-//
-//   } catch (error) {
-//     return ContentService.createTextOutput(JSON.stringify({
-//       success: false,
-//       error: error.toString()
-//     })).setMimeType(ContentService.MimeType.JSON);
-//   }
-// }
-//
-// function doGet(e) {
-//   try {
-//     const ss = SpreadsheetApp.getActiveSpreadsheet();
-//     const sheet = ss.getActiveSheet();
-//     const data = sheet.getDataRange().getValues();
-//
-//     // Remove header row and flatten data
-//     const sessions = data.slice(1).map(row => row[0]).filter(Boolean);
-//
-//     return ContentService.createTextOutput(JSON.stringify({
-//       success: true,
-//       sessions: sessions
-//     })).setMimeType(ContentService.MimeType.JSON);
-//
-//   } catch (error) {
-//     return ContentService.createTextOutput(JSON.stringify({
-//       success: false,
-//       error: error.toString()
-//     })).setMimeType(ContentService.MimeType.JSON);
-//   }
-// }
+    //     function doPost(e) {
+    //   try {
+    //     // Parse the incoming data
+    //     const data = JSON.parse(e.postData.contents);
+    //
+    //     // Get the active spreadsheet
+    //     const ss = SpreadsheetApp.getActiveSpreadsheet();
+    //     const sheet = ss.getActiveSheet();
+    //
+    //     // Save the sessions data
+    //     if (data.action === 'updateProgress') {
+    //       // Clear existing data first
+    //       sheet.getRange('A2:A').clearContent();
+    //
+    //       // Write new data
+    //       if (data.sessions && data.sessions.length > 0) {
+    //         const range = sheet.getRange(2, 1, data.sessions.length, 1);
+    //         range.setValues(data.sessions.map(session => [session]));
+    //       }
+    //
+    //       return ContentService.createTextOutput(JSON.stringify({
+    //         success: true,
+    //         message: 'Progress saved successfully'
+    //       })).setMimeType(ContentService.MimeType.JSON);
+    //     }
+    //
+    //   } catch (error) {
+    //     return ContentService.createTextOutput(JSON.stringify({
+    //       success: false,
+    //       error: error.toString()
+    //     })).setMimeType(ContentService.MimeType.JSON);
+    //   }
+    // }
+    //
+    // function doGet(e) {
+    //   try {
+    //     const ss = SpreadsheetApp.getActiveSpreadsheet();
+    //     const sheet = ss.getActiveSheet();
+    //     const data = sheet.getDataRange().getValues();
+    //
+    //     // Remove header row and flatten data
+    //     const sessions = data.slice(1).map(row => row[0]).filter(Boolean);
+    //
+    //     return ContentService.createTextOutput(JSON.stringify({
+    //       success: true,
+    //       sessions: sessions
+    //     })).setMimeType(ContentService.MimeType.JSON);
+    //
+    //   } catch (error) {
+    //     return ContentService.createTextOutput(JSON.stringify({
+    //       success: false,
+    //       error: error.toString()
+    //     })).setMimeType(ContentService.MimeType.JSON);
+    //   }
+    // }
 
 </script>
 
