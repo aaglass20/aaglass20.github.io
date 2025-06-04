@@ -10,107 +10,203 @@
 </head>
 <body>
 <header>
-    <img src="images/bdu.png" alt="Company Logo">
-    <h1>Jordan</h1>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Ball Control</h1>
+    </div>
 </header>
 
-<!-- Add the waffle menu toggle button -->
+
+<!-- Waffle Menu Toggle Button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
     <span></span>
     <span></span>
     <span></span>
 </div>
+
+<!-- Include the menu using JavaScript -->
+<div id="technical-menu"></div>
+
+<script>
+    fetch('menus/individual-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('technical-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
 <div class="container">
 
-    <div class="video-container">
-        <video controls>
-            <source src="practice/passing%20ladder.mp4" type="video/mp4">
-        </video>
-        <p><b>Passing Ladder</b></p>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Fast Feet
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A focused agility drill designed to enhance foot speed and ball control through
+            rapid touch sequences. This exercise develops a player's ability to make quick,
+            precise contact with the ball while maintaining balance and coordination. The
+            drill emphasizes rhythmic movement patterns that improve reaction time and
+            technical execution under pace. Essential for developing the quick feet needed
+            in tight game situations, this foundational exercise builds crucial motor skills
+            for advanced ball manipulation and control at speed.
+        </p>
+
         <ul>
-            <li>Right foot Up</li>
-            <li>Left foot back</li>
-            <li>On toes, light feet</li>
-            <li>Move to ball, don't wait</li>
-            <li>Can be 1 touch</li>
-            <li>Can be 2 touch</li>
-            <li>Coach calls out if 1 or 2 touch</li>
-            <li>Urgent and focus</li>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/fast_feet_drill.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </ul>
-        <b>Why is this important?</b>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> First Touch Variations
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Training exercise focused on developing different first touch techniques to control and manipulate the ball
+            effectively.
+        </p>
         <ul>
-            <li>Works on basic skill</li>
-            <li>Accuracy</li>
-            <li>Move to and away from ball</li>
-            <li>Works both feet</li>
-            <li>Works on being on toes, ready position</li>
-            <br>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/first_touch_variations.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </ul>
-    </div>
+    </section>
 
+    
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Figure 8
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Perform Figure 8 movements around cones using various foot techniques:
+            • Left foot only
+            • Right foot only
+            • Inside of both feet
+            • Outside of both feet
+            • Scissors movement
+            • V-turns
+            • Inside of sole
+            Each variation improves close ball control and dribbling skills.
 
-    <div class="video-container">
-        <video controls>
-            <source src="practice/Weave%20to%20Shot.mp4" type="video/mp4">
-        </video>
-        <p>Weave to Shoot</p>
-        <hr>
-
-    </div>
-
-    <div class="video-container">
-        <video controls>
-            <source src="practice/simpleTouchWallPassShoot.mp4" type="video/mp4">
-        </video>
-        <p>Simple touch, wall pass, shot</p>
+        </p>
         <ul>
-            <li>Use pole as obstacle</li>
-            <li>Shuffle back an forth on toes behind pole</li>
-            <li>Recieve ball, turn, play wall</li>
-            <li>Go around pole, play back to teamate or coach</li>
-            <li>Repeat</li>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/figure8_1_4.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/figure8s_5_7.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <ul>
+                    <li>Play to 5</li>
+                    <li>Hit a cone, loose a point</li>
+                    <li>Take more then two touches, loose a point</li>
+                    <li>Must take it outside, pass through middle</li>
+                </ul>
+            </div>
         </ul>
-        <b>Why is this important? </b>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> At Home Ball Mastery Workout
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Using one cone, practice foot movements controlling the ball forward, sideways, and backwards to improve
+            basic ball mastery skills.
+        </p>
         <ul>
-            <li>Keeps constant movement, on toes</li>
-            <li>Works turn, receive</li>
-            <li>Simple first touch</li>
-            <br>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/ball_mastery_workout_home.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </ul>
+    </section>
 
-        <hr>
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Three Types of First Touch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Master three essential first touches on aerial balls: cushion with the sole of your foot for close control,
+            use the instep for directional control, and strike with your laces to redirect the ball with power.
 
-    </div>
-
-    <div class="video-container">
-        <video controls>
-            <source src="practice/partner%20calls.mp4" type="video/mp4">
-        </video>
-        <p>Partner Calls</p>
+        </p>
         <ul>
-            <li>Partner yells out call</li>
-            <li>1: Go Right, Say Right and point Right. Player touches right, plays back (2 touch)</li>
-            <li>2: Go Left, Say Left and point Left. Player touches left, plays back (2 touch)</li>
-            <li>Pressure: Play back(drop), say pressure (or man on), 1 touch</li>
-            <li>Turn: Say turn, Player uses a turn moves forward and shoots</li>
-            <li>Be urgent</li>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/3TypesOfTouchAriel.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </ul>
-        <b>Why is this important? </b>
-        <ul>
-            <li>Works on player to player communication</li>
-            <li>Works on touch, turns, movement</li>
-            <br>
-        </ul>
-
-    </div>
-
+    </section>
 
 </div>
 
+<div id="shared-footer"></div>
 
-<!-- Your existing scripts -->
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
 <script src="scripts/scripts.js"></script>
-
 
 </body>
 </html>
