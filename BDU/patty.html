@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patty Happiness Scale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 20px;
+        }
+
+        .scale-container {
+            width: 200px;
+            height: 600px;
+            border: 3px solid #333;
+            border-radius: 15px;
+            position: relative;
+            background-color: #f0f0f0;
+        }
+
+        .level-markers {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .level {
+            border-bottom: 1px solid #999;
+            padding: 5px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        #patty-image {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 0.5s ease-in-out;
+        }
+
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #game-counter {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        #celebration {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+            animation: celebrationFade 3s forwards;
+        }
+
+        @keyframes celebrationFade {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .happy-level {
+            background-color: #ffeb3b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Patty Happiness Scale</h1>
+    <h2>Cleveland Guardians Road Trip</h2>
+
+    <div class="scale-container">
+        <div class="level-markers">
+            <div class="level">Level 9</div>
+            <div class="level">Level 8</div>
+            <div class="level">Level 7</div>
+            <div class="level">Level 6</div>
+            <div class="level happy-level">Level 5 - Happy Zone!</div>
+            <div class="level">Level 4</div>
+            <div class="level">Level 3</div>
+            <div class="level">Level 2</div>
+            <div class="level">Level 1</div>
+        </div>
+        <img id="patty-image" src="images/patty.jpg" alt="Patty">
+    </div>
+
+    <div class="controls">
+        <div id="game-counter">Game: 1 of 9</div>
+        <button onclick="recordResult('win')">Win</button>
+        <button onclick="recordResult('loss')">Loss</button>
+    </div>
+
+    <div id="celebration">
+        <h2>🎉 Hooray! 🎉</h2>
+        <h3>Patty is now HAPPY!</h3>
+        <p>We've reached Level 5!</p>
+    </div>
+
+    <script>
+        let currentPosition = 0; // Start at bottom (positions 0-8)
+        let currentGame = 1;
+        const maxGames = 9;
+        let celebrationShown = false;
+
+        // Set initial position
+        updatePattyPosition();
+
+        function recordResult(result) {
+            if (currentGame <= maxGames) {
+                if (result === 'win') {
+                    currentPosition = Math.min(currentPosition + 1, 8);
+                } else {
+                    currentPosition = Math.max(currentPosition - 1, 0);
+                }
+
+                updatePattyPosition();
+                checkHappyLevel();
+                currentGame++;
+                updateGameCounter();
+            }
+
+            if (currentGame > maxGames) {
+                disableButtons();
+            }
+        }
+
+        function updatePattyPosition() {
+            const pattyImage = document.getElementById('patty-image');
+            const percentage = (currentPosition * 11.11); // 100/9 ≈ 11.11
+            pattyImage.style.bottom = percentage + '%';
+        }
+
+        function checkHappyLevel() {
+            if (currentPosition >= 4 && !celebrationShown) { // Position 4 corresponds to Level 5
+                showCelebration();
+                celebrationShown = true;
+            } else if (currentPosition < 4) {
+                celebrationShown = false;
+            }
+        }
+
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.style.display = 'block';
+            setTimeout(() => {
+                celebration.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateGameCounter() {
+            const counter = document.getElementById('game-counter');
+            counter.textContent = `Game: ${currentGame} of ${maxGames}`;
+        }
+
+        function disableButtons() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+    </script>
+</body>
+</html>
