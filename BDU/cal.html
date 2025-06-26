@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <!--        <h1>Practice 5/5/2025</h1>-->
+        <h1>Practice <span id="currentDate"></span></h1>
+
+        <script>
+            const today = new Date();
+            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+            document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+
+</head>
+<body>
+<div class="calendar-container">
+    <h1>Soccer Calendar 2025</h1>
+
+    <!-- June 2025 -->
+    <div class="month">
+        <h2>June 2025</h2>
+        <div class="calendar">
+            <div class="day-header">Sun</div>
+            <div class="day-header">Mon</div>
+            <div class="day-header">Tue</div>
+            <div class="day-header">Wed</div>
+            <div class="day-header">Thu</div>
+            <div class="day-header">Fri</div>
+            <div class="day-header">Sat</div>
+
+
+            <div class="day">
+                <div class="date">1</div>
+            </div>
+            <div class="day">
+                <div class="date">2</div>
+            </div>
+            <div class="day">
+                <div class="date">3</div>
+            </div>
+            <div class="day">
+                <div class="date">4</div>
+            </div>
+            <div class="day">
+                <div class="date">5</div>
+            </div>
+            <div class="day">
+                <div class="date">6</div>
+            </div>
+
+            <div class="day">
+                <div class="date">7</div>
+            </div>
+            <div class="day">
+                <div class="date">8</div>
+            </div>
+            <div class="day">
+                <div class="date">9</div>
+            </div>
+            <div class="day">
+                <div class="date">10</div>
+            </div>
+            <div class="day">
+                <div class="date">11</div>
+            </div>
+            <div class="day">
+                <div class="date">12</div>
+            </div>
+            <div class="day">
+                <div class="date">13</div>
+            </div>
+            <div class="day">
+                <div class="date">14</div>
+            </div>
+            <div class="day">
+                <div class="date">15</div>
+            </div>
+            <div class="day">
+                <div class="date">16</div>
+            </div>
+            <div class="day">
+                <div class="date">17</div>
+            </div>
+            <div class="day">
+                <div class="date">18</div>
+            </div>
+            <div class="day">
+                <div class="date">19</div>
+            </div>
+            <div class="day">
+                <div class="date">20</div>
+            </div>
+            <div class="day">
+                <div class="date">21</div>
+            </div>
+            <div class="day">
+                <div class="date">22</div>
+            </div>
+            <div class="day">
+                <div class="date">23</div>
+            </div>
+            <div class="day">
+                <div class="date">24</div>
+            </div>
+            <div class="day">
+                <div class="date">25</div>
+            </div>
+            <div class="day">
+                <div class="date">26</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">27</div>
+            </div>
+            <div class="day">
+                <div class="date">28</div>
+            </div>
+            <div class="day">
+                <div class="date">29</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">30</div>
+                <div class="event block">Softball</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- July 2025 -->
+    <div class="month">
+        <h2>July 2025</h2>
+        <div class="calendar">
+            <div class="day-header">Sun</div>
+            <div class="day-header">Mon</div>
+            <div class="day-header">Tue</div>
+            <div class="day-header">Wed</div>
+            <div class="day-header">Thu</div>
+            <div class="day-header">Fri</div>
+            <div class="day-header">Sat</div>
+
+
+            <div class="day empty"></div>
+            <div class="day empty"></div>
+            <div class="day">
+                <div class="date">1</div>
+            </div>
+            <div class="day">
+                <div class="date">2</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">3</div>
+            </div>
+            <div class="day">
+                <div class="date">4</div>
+            </div>
+            <div class="day">
+                <div class="date">5</div>
+            </div>
+            <div class="day">
+                <div class="date">6</div>
+                <div class="event block">Softball</div>
+            </div>
+
+            <div class="day">
+                <div class="date">7</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">8</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">9</div>
+            </div>
+            <div class="day">
+                <div class="date">10</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">11</div>
+            </div>
+            <div class="day">
+                <div class="date">12</div>
+            </div>
+            <div class="day">
+                <div class="date">13</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">14</div>
+            </div>
+            <div class="day">
+                <div class="date">15</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">16</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">17</div>
+            </div>
+            <div class="day">
+                <div class="date">18</div>
+                <div class="event block">Softball</div>
+            </div>
+            <div class="day">
+                <div class="date">19</div>
+            </div>
+            <div class="day">
+                <div class="date">20</div>
+            </div>
+            <div class="day">
+                <div class="date">21</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">22</div>
+            </div>
+            <div class="day">
+                <div class="date">23</div>
+            </div>
+            <div class="day">
+                <div class="date">24</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">25</div>
+            </div>
+            <div class="day">
+                <div class="date">26</div>
+            </div>
+            <div class="day">
+                <div class="date">27</div>
+            </div>
+            <div class="day">
+                <div class="date">28</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+                <!--                <div class="event game">Game vs Hawks 2PM</div>-->
+            </div>
+            <div class="day">
+                <div class="date">29</div>
+            </div>
+            <div class="day">
+                <div class="date">30</div>
+            </div>
+            <div class="day">
+                <div class="date">31</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- August 2025 -->
+    <div class="month">
+        <h2>August 2025</h2>
+        <div class="calendar">
+            <div class="day-header">Sun</div>
+            <div class="day-header">Mon</div>
+            <div class="day-header">Tue</div>
+            <div class="day-header">Wed</div>
+            <div class="day-header">Thu</div>
+            <div class="day-header">Fri</div>
+            <div class="day-header">Sat</div>
+
+            <div class="day empty"></div>
+            <div class="day empty"></div>
+            <div class="day empty"></div>
+            <div class="day empty"></div>
+            <div class="day empty"></div>
+            <div class="day">
+                <div class="date">1</div>
+            </div>
+            <div class="day">
+                <div class="date">2</div>
+            </div>
+            <div class="day">
+                <div class="date">3</div>
+            </div>
+            <div class="day">
+                <div class="date">4</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">5</div>
+            </div>
+            <div class="day">
+                <div class="date">6</div>
+            </div>
+
+            <div class="day">
+                <div class="date">7</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">8</div>
+            </div>
+            <div class="day">
+                <div class="date">9</div>
+            </div>
+            <div class="day">
+                <div class="date">10</div>
+            </div>
+            <div class="day">
+                <div class="date">11</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">12</div>
+            </div>
+            <div class="day">
+                <div class="date">13</div>
+            </div>
+            <div class="day">
+                <div class="date">14</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">15</div>
+            </div>
+            <div class="day">
+                <div class="date">16</div>
+            </div>
+            <div class="day">
+                <div class="date">17</div>
+                <div class="event game">Soccer Game</div>
+            </div>
+            <div class="day">
+                <div class="date">18</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">19</div>
+            </div>
+            <div class="day">
+                <div class="date">20</div>
+            </div>
+            <div class="day">
+                <div class="date">21</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">22</div>
+            </div>
+            <div class="day">
+                <div class="date">23</div>
+            </div>
+            <div class="day">
+                <div class="date">24</div>
+                <div class="event game">Soccer Game</div>
+            </div>
+            <div class="day">
+                <div class="date">25</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">26</div>
+            </div>
+            <div class="day">
+                <div class="date">27</div>
+            </div>
+            <div class="day">
+                <div class="date">28</div>
+                <div class="event practice">Practice 7PM-8:30PM</div>
+            </div>
+            <div class="day">
+                <div class="date">29</div>
+            </div>
+            <div class="day">
+                <div class="date">30</div>
+            </div>
+            <div class="day">
+                <div class="date">31</div>
+                <div class="event game">Soccer Game</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Continue with remaining months... -->
+
+</div>
+
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
