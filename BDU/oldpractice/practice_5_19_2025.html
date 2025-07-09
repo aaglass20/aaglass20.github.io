@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<!-- Loading Animation -->
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+</div>
+
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Welcome</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to Blue Devils United</h1>
+            <p class="hero-subtitle">Excellence Through Training</p>
+            <a href="../current-practice.html" class="cta-button">Start Training</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="feature-card">
+            <i class="fas fa-running fa-3x"></i>
+            <h3>Training Programs</h3>
+            <p>Structured training sessions for all skill levels</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-users fa-3x"></i>
+            <h3>Team Development</h3>
+            <p>Build stronger team connections</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-trophy fa-3x"></i>
+            <h3>Achievement Tracking</h3>
+            <p>Monitor your progress and success</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scroll to Top Button -->
+<button id="scrollToTop" class="scroll-top-btn">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Existing menu loader
+    fetch('menus/index-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+
+    // Footer loader
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+
+    // Loading animation
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('loader');
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }, 1000);
+    });
+
+    // Scroll to top functionality
+    const scrollBtn = document.getElementById('scrollToTop');
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollBtn.classList.add('visible');
+        } else {
+            scrollBtn.classList.remove('visible');
+        }
+    });
+
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>
