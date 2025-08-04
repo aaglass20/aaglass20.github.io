@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <!--        <h1>Practice 5/5/2025</h1>-->
+        <h1>Practice <span id="currentDate"></span></h1>
+
+        <script>
+            const today = new Date();
+            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+            document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
+<!--<div class="highlight-banner">-->
+<!--    <h2>Welcome to Practice</h2>-->
+<!--    <h2>4/28/2025</h2>-->
+<!--</div>-->
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/index-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <!-- Warmup Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-dumbbell"></i> Warmup Routine
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li>1, 2, 3, Touch Toe
+                    <ul>
+                        <li>1, 2, 3, Blue Devils</li>
+                    </ul>
+                </li>
+                <li>Lunges
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Hug Knee to Chest
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Cradle Leg and Ankle
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Criss Cross Quad
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Skips</li>
+                <li>Stand in Place (10 Counts)
+                    <ul>
+                        <li>Scissors * 10</li>
+                        <li>Front to Back Hop * 10</li>
+                        <li>Side to Side * 10</li>
+                        <li>Criss Cross * 10</li>
+                        <li>Hops * 10</li>
+                    </ul>
+                </li>
+                <li>Sprint</li>
+                <li>Skills Work (Everyone has Ball)
+                    <ul>
+                        <li>Right Only (inside, outside)</li>
+                        <li>Left Only (inside, outside)</li>
+                        <li>Laces Dribbling/Sprint</li>
+                        <li>Both Feet</li>
+                        <li>Rollovers, Snap Forward</li>
+                        <li>Feint</li>
+                        <li>Scissors, Outside Forward</li>
+                        <li>Fake Shot</li>
+                    </ul>
+                </li>
+                <li>Partner Work
+                    <ul>
+                        <li>Flip Run, There and Back</li>
+                        <li>Head Up Run</li>
+                        <li>25 Touches Right, Short Distance</li>
+                        <li>25 Touches Left, Short Distance<</li>
+                        <li>25 long Distance Touches</li>
+                    </ul>
+                </li>
+                <li>Fascia Training</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Want Better 1 Touch Finishes
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A solo finishing drill where the player serves the ball to themselves while running along a half-circle
+            path, finishing with a one-touch shot on goal. This drill develops timing, curved running patterns, and
+            first-time finishing ability while simulating game-like shooting angles.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/wantBetter1TouchFinishes.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Shoulder to Shoulder attack
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <p>Rules</p>
+                <ul>
+                    <li>Match up</li>
+                    <li>Person with ball is trying to dribble forward, but slow</li>
+                    <li>Defender is trying to steal the ball</li>
+                    <li>We are looking for body contact</li>
+                    <li>we are looking to make sure we are not just running along side</li>
+                    <li>Have defender come in at an agle, see how they adjust</li>
+                </ul>
+                </li>
+            </div>
+
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-clock"></i> Extended Scan
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/ext_scan_move_move.mp4" type="video/mp4">
+                    </video>
+                    <br>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3 V 1 Separate
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Not happening today, but we left off with this last season. Want to pick back up on it.
+            Other things to pick back up on, physical 1 on 1 scenarios
+            Bring scanning back. We need to contiue the forward thinking, one step a head of your action
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <h2>Now actually have defender, defend </h2>
+                <h2>Add a Second Defender</h2>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/seperateCont.mov" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+        <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Drill for Scanning, turns, off ball movement
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <h2>Now actually have defender, defend </h2>
+                <h2>Add a Second Defender</h2>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/turn_decide_cross.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+</div>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
