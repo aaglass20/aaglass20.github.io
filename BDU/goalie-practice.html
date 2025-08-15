@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <!--        <h1>Practice 5/5/2025</h1>-->
+        <h1>Practice <span id="currentDate"></span></h1>
+
+        <script>
+            const today = new Date();
+            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+            document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
+<!--<div class="highlight-banner">-->
+<!--    <h2>Welcome to Practice</h2>-->
+<!--    <h2>4/28/2025</h2>-->
+<!--</div>-->
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/index-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <!-- Warmup Section -->
+
+    <h2 class="section-title">
+        <i class="fas"></i> Goalie Day Warmup (15 Minutes)
+        <!--        <button class="toggle-button" aria-expanded="false">-->
+        <!--            <i class="fas fa-chevron-down"></i>-->
+        <!--        </button>-->
+    </h2>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol icon-with-spacing"
+            ></i>Ready Position Warmup
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/goalie_ready_position_drill.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/goalie_set_position.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol icon-with-spacing"></i>Dive Activation Warmup
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/goalie_dive_activation_drill.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-stopwatch"></i> Scoop and Cover
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/goalie_scoop_cover.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Be at the 6 When They Are at 18
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/yourAtthe6WhenTheyAre18.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Communication
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+
+        </h2>
+        <div class="collapsible-content">
+            <p>Goalkeepers must be vocal leaders. Use short, clear, confident commands:</p>
+            <ul>
+                <li><strong>“Keeper!”</strong> – When claiming the ball</li>
+                <li><strong>“Away!”</strong> – Clear the ball</li>
+                <li><strong>“Step!”</strong> – Push the defensive line up</li>
+                <li><strong>“Drop!”</strong> – Fall back into position</li>
+                <li><strong>“Man on!”</strong> – Teammate is under pressure</li>
+                <li><strong>“Mark up!”</strong> – Assign defenders to attackers</li>
+            </ul>
+            <p><em>Be loud, confident, and decisive—your voice prevents confusion and mistakes.</em></p>
+
+            <section class="collapsible-section">
+                <h2 class="section-title">
+                    <i class="fas fa-futbol"></i> Goalie Communication
+                    <button class="toggle-button" aria-expanded="false">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </h2>
+                <p class="drill-summary">
+                    Turn, man on, and directional communication.
+                </p>
+                <div class="collapsible-content">
+                    <div class="video-container">
+                        <video controls>
+                            <source src="vid/goalieCommunication.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+
+</div>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

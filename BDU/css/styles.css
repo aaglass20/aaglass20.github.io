@@ -803,3 +803,7 @@ h1 {
     font-weight: bold;
     margin-bottom: 5px;
 }
+
+.icon-with-spacing {
+    margin-right: 5rem;  /* adjusts spacing between icon and text */
+}
