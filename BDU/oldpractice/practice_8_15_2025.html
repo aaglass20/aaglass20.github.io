@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <!--        <h1>Practice 5/5/2025</h1>-->
+        <h1>Practice <span id="currentDate"></span></h1>
+
+        <script>
+            const today = new Date();
+            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+            document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
+<!--<div class="highlight-banner">-->
+<!--    <h2>Welcome to Practice</h2>-->
+<!--    <h2>4/28/2025</h2>-->
+<!--</div>-->
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/index-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <!-- Warmup Section -->
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-dumbbell"></i> Warmup Routine
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li>1, 2, 3, Touch Toe
+                    <ul>
+                        <li>1, 2, 3, Blue Devils</li>
+                    </ul>
+                </li>
+                <li>Lunges
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Hug Knee to Chest
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Cradle Leg and Ankle
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Criss Cross Quad
+                    <ul>
+                        <li>Blue, Devils, Blue, Devils</li>
+                    </ul>
+                </li>
+                <li>Skips</li>
+                <li>Stand in Place (10 Counts)
+                    <ul>
+                        <li>Scissors * 10</li>
+                        <li>Front to Back Hop * 10</li>
+                        <li>Side to Side * 10</li>
+                        <li>Criss Cross * 10</li>
+                        <li>Hops * 10</li>
+                    </ul>
+                </li>
+                <li>Sprint</li>
+                <li>Skills Work (Everyone has Ball)
+                    <ul>
+                        <li>Right Only (inside, outside)</li>
+                        <li>Left Only (inside, outside)</li>
+                        <li>Laces Dribbling/Sprint</li>
+                        <li>Both Feet</li>
+                        <li>Rollovers, Snap Forward</li>
+                        <li>Feint</li>
+                        <li>Scissors, Outside Forward</li>
+                        <li>Fake Shot</li>
+                    </ul>
+                </li>
+                <li>Partner Work
+                    <ul>
+                        <li>Flip Run, There and Back</li>
+                        <li>Head Up Run</li>
+                        <li>25 Touches Right, Short Distance</li>
+                        <li>25 Touches Left, Short Distance<</li>
+                        <li>25 long Distance Touches</li>
+                    </ul>
+                </li>
+                <li>Fascia Training</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 3-1 Corner Set
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Three attackers line up at far goal box corner: one makes near-post run, one cuts middle,
+            third cleans up loose balls. Center mid hovers at box top for rebounds while defenders
+            fill spaces above for support and coverage.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/3playerCorner.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <p>This corner kick setup utilizes three attackers positioned at the far corner of the goal box
+                    in a coordinated running pattern. The first player makes a near-post run, the second attacks
+                    the middle of the box, while the third player positions as a "garbage man" for any deflections
+                    or loose balls. The center midfielder maintains a strategic position at the top of the box
+                    for secondary balls and defensive coverage. Defensive players systematically fill remaining
+                    spaces above the play, ensuring both attacking support and counter-attack prevention.
+                </p>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Near Defender Run
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A dynamic corner kick variation where the defender makes a well-timed run from the back to attack the near
+            post area. The defender times their run to meet the incoming corner kick with a one-touch finish, catching
+            the opposing defense off-guard. This tactical play is particularly effective as defenders are typically not
+            marked closely, allowing them to exploit the element of surprise.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/def/cornerDefenderRun.mov" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Goal Kick D
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="image-container">
+                    <img src="../vid/goalkick.jpg" alt="Image description">
+                </div>
+            </div>
+        </ul>
+    </section>
+
+        <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Goal Kick O
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="image-container">
+                    <img src="../vid/goalkickO.jpg" alt="Image description">
+                </div>
+            </div>
+        </ul>
+    </section>
+
+            <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Defend Corner Kick
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <div class="image-container">
+                    <img src="../vid/defendCorner.jpg" alt="Image description">
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Cross and Defend Cross
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Simple crossing drill: 3v3+1. Uncontested crosser delivers from both wings. Three attackers make coordinated
+            runs - lead player level with crosser, two trailing in diagonal formation. Focus on one-touch finishing.
+            Defenders work on goal-side positioning and vocal marking at goal box.
+
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/crossAndDefend.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Scrimmage
+            <button class="toggle-button" aria-expanded="false">
+
+            </button>
+        </h2>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Goalie warmup drill?
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Goalie warmup drill. Focus on hand positioning for goalie readiness. Discuss proper hand position for
+            catching. Rapid repetitions to build. Can we turn this in to repetition drill for warmup?
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="../vid/goalie_ready_position_drill.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+</div>
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>
