@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Penetrative Passing</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="passing-menu"></div>
+
+<script>
+    fetch('menus/passing-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('passing-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Dynamic Through Ball: Communication & Movement Drill
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A comprehensive training exercise that combines tactical passing with essential team
+            communication. Players practice executing through balls while developing verbal and
+            non-verbal communication skills. The drill emphasizes timing of runs, pressure-relieving
+            drop passes, and clear player callouts. Key focuses include directional versatility
+            (working both sides), explosive movements after the drop pass, and finishing on the run.
+            This drill builds the fundamental connection between precise passing execution and
+            effective team communication, helping maintain tactical width and creating scoring
+            opportunities through coordinated movement patterns.
+        </p>
+
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="practice/throughball.mp4" type="video/mp4">
+                    </video>
+                    <ul>
+                        <li>Work right or left side</li>
+                        <li>Runner explodes after pass back</li>
+                        <li>receiver of pass back can yell drop></li>
+                        <li>When playing through, say Name and through</li>
+                        <li>When player is receiving drop pass, work on calling for drop</li>
+                        <li>player starting with ball is the main communicator</li>
+                    </ul>
+                    <b>Why is this important?</b>
+                    <ul>
+                        <li>Communicate what type of ball your playing</li>
+                        <li>Communicate to who you are playing to</li>
+                        <li>This allows other teammates to keep width</li>
+                        <li>Works on drop pass</li>
+                        <li>drop passes relieve pressure</li>
+                        <li>Communications is not just words, its gestures, motion</li>
+                        <li>Works on finishing on the run</li>
+                        <br>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> 2 Key Give & Go Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            An advanced variation of the give-and-go drill that emphasizes dual pivot points
+            in the attacking sequence. Players must coordinate with two designated teammates
+            to create more complex passing combinations, requiring enhanced spatial awareness
+            and tactical understanding. This progression builds on basic give-and-go principles
+            while introducing additional decision-making elements, as participants must choose
+            between multiple options for their combinations. The scoring format rewards successful
+            execution of these more intricate patterns, developing both individual technique and
+            team coordination through competitive repetition.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/giveAndGoPoints.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Give and GO Fake
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            An advanced deceptive drill that combines the classic give-and-go with misdirection
+            elements. Players learn to execute convincing fake movements after the initial pass,
+            creating uncertainty for defenders before changing direction unexpectedly. This drill
+            develops quick thinking, body control, and the ability to sell defensive deception
+            while maintaining offensive effectiveness. The fake movement adds an extra layer of
+            sophistication to the standard give-and-go, helping players become more unpredictable
+            in their attacking movements and creating additional space through clever deception.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/giveandgofake.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Triangle Dynamics: Three-Player Give & Go
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A coordinated passing exercise that builds on the give-and-go concept with three
+            players working in harmony. This drill creates natural triangles that enhance passing
+            options and movement patterns, requiring precise timing and communication between all
+            participants. Players rotate positions and maintain fluid movement while executing
+            quick combinations, developing their ability to read teammates' runs and deliver
+            accurately timed passes. This three-person setup provides the perfect foundation
+            for understanding more complex team movements and passing sequences, while improving
+            spatial awareness and collective rhythm.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/3personpassinggiveandgo.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Overlap Runs From Defensive End
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Overlap runs from defensive end.
+        </p>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/overlapRunsFromDef.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

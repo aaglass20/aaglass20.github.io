@@ -25,13 +25,13 @@
 </div>
 
 <!-- Include the menu using JavaScript -->
-<div id="technical-menu"></div>
+<div id="shooting-menu"></div>
 
 <script>
-    fetch('menus/technical-menu.html')
+    fetch('menus/shooting-menu.html')
         .then(response => response.text())
         .then(data => {
-            document.getElementById('technical-menu').innerHTML = data;
+            document.getElementById('shooting-menu').innerHTML = data;
 
             // Highlight current page in menu and scroll to it
             const currentPage = window.location.pathname.split('/').pop();
@@ -122,49 +122,6 @@
                     <li>Works on body placement for D</li>
                     <li>Urgency on closing in for D</li>
                     <li>Works on quick shot</li>
-                    <br>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> One-Touch Finish: Dynamic Strike Drill
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            A high-tempo finishing drill focused on first-time shooting accuracy. Players make
-            coordinated runs across the box while receiving passes from a coach or fellow
-            player, executing immediate one-touch finishes. The drill emphasizes precise timing,
-            clean ball striking, and accurate placement while in motion. Multiple variations
-            enrich the exercise: incorporating player-to-player passing, diagonal crash runs,
-            or multiple attacking runners. This versatile drill develops crucial match skills
-            including shot timing, movement coordination, and clinical finishing under game-like
-            conditions. The progressive variations allow coaches to adjust complexity and match
-            specific tactical scenarios while maintaining focus on quick release shooting
-            technique.
-        </p>
-
-        <div class="collapsible-content">
-            <div class="video-container">
-                <video controls>
-                    <source src="practice/1%20timer%20drill.mp4" type="video/mp4">
-                </video>
-                <ul>
-                    <li>Coach passes ball to moving player</li>
-                    <li>Player 1 touch shot</li>
-                    <li>Move line with pace</li>
-                    <li>Variation would be player passing instead of coach</li>
-                    <li>Variation could be crashing instead of running across</li>
-                    <li>Variation could be more the one player crash</li>
-                </ul>
-                <b>Why is this important? </b>
-                <ul>
-                    <li>Focus on quick strike</li>
-                    <li>Focus on placement</li>
                     <br>
                 </ul>
             </div>
@@ -307,77 +264,6 @@
 
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Intro to Volley
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Step-by-step introduction to basic volley technique. Start with simple height and
-            movement drills, progressing to controlled contact. Perfect for first-time learners
-            building confidence with balls in the air.
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/introToVolly.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Cross to Volley or 1 timer
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Three attackers time their runs as winger prepares cross: first crashes near post,
-            second attacks center, third drifts back post. Each ready for one-touch finish
-            or volley. Timing and spacing critical for avoiding defenders.
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/crossOneTimer.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Want Better 1 Touch Finishes
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            A solo finishing drill where the player serves the ball to themselves while running along a half-circle
-            path, finishing with a one-touch shot on goal. This drill develops timing, curved running patterns, and
-            first-time finishing ability while simulating game-like shooting angles.
-
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/wantBetter1TouchFinishes.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
             <i class="fas fa-futbol"></i> Liverpool Finishing Drill
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
@@ -394,30 +280,6 @@
                 <div class="video-container">
                     <video controls>
                         <source src="vid/liverpoolFinishingDrill.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Proper Plant and Shot
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Demonstrates the critical differences between effective and ineffective plant foot positioning when
-            shooting. Proper technique places the plant foot alongside the ball with correct distance and angle,
-            enabling power and accuracy. Poor positioning, whether too close, far, or misaligned, reduces shot quality
-            and highlights why proper foot placement is fundamental to consistent shooting.
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/properPlantAndShot.mp4" type="video/mp4">
                     </video>
                 </div>
             </div>
@@ -451,47 +313,6 @@
         </ul>
     </section>
 
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Driven Strike
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Drill for Driven Strike that focuses on laces driven shot.
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/drivenStrike.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Donkey Kicks to strengthen your kicking
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Interesting way to teach power
-        </p>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/donkeyKicks.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
 
     <section class="collapsible-section">
         <h2 class="section-title">
@@ -559,27 +380,6 @@
 
     <section class="collapsible-section">
         <h2 class="section-title">
-            <i class="fas fa-futbol"></i> 1 Timer Shooting Drill with two players
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <p class="drill-summary">
-            Form a arc of passers around the goal. The player in the middle take turns receiving passes and shooting one
-            times. Keep count for winner.
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/1TimerShootingDrillWithPaires.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </ul>
-    </section>
-
-    <section class="collapsible-section">
-        <h2 class="section-title">
             <i class="fas fa-futbol"></i> Shooting Drill to work on technique
             <button class="toggle-button" aria-expanded="false">
                 <i class="fas fa-chevron-down"></i>
@@ -598,7 +398,7 @@
         </ul>
     </section>
 
-        <section class="collapsible-section">
+    <section class="collapsible-section">
         <h2 class="section-title">
             <i class="fas fa-futbol"></i> Shooting with Tennis Ball
             <button class="toggle-button" aria-expanded="false">
@@ -606,7 +406,8 @@
             </button>
         </h2>
         <p class="drill-summary">
-            Shoot with a tennis ball to improve your shooting technique. The tennis ball is smaller and works on getting under ball.
+            Shoot with a tennis ball to improve your shooting technique. The tennis ball is smaller and works on getting
+            under ball.
         <ul>
             <div class="collapsible-content">
                 <div class="video-container">
