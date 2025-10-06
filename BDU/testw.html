@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Player Development Pyramid</title>
+  <style>
+    :root{
+      --bg:#0f1a12;         /* deep green background */
+      --tile:#244a2a;       /* tile green */
+      --tile-2:#2e5c35;     /* alternate tile */
+      --tile-3:#356a3d;
+      --text:#f0f7f1;       /* near-white */
+      --muted:#cfe5d4;
+      --accent:#9ad49f;     /* borders & highlights */
+      --stage:#bfe8c3;      /* stage labels */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0c1410, #0f1a12);
+      color:var(--text); display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .wrap{width:min(1200px, 100%);}
+
+    header h1{margin:.2rem 0 0; font-size:clamp(28px, 4vw, 42px)}
+    header p{margin:.25rem 0 1rem; color:var(--stage)}
+
+    .legend{display:flex; gap:10px; flex-wrap:wrap; margin:.5rem 0 1rem}
+    .legend span{background:#15301c; border:1px solid #2b5a33; padding:.35rem .6rem; border-radius:999px; font-size:.9rem}
+
+    /* Pyramid */
+    .pyramid{position:relative; padding:18px; border-radius:18px; background: #102017; box-shadow: 0 20px 60px rgba(0,0,0,.35) inset, 0 6px 18px rgba(0,0,0,.25);}
+
+    /* triangle outline */
+    .pyramid::before{
+      content:""; position:absolute; inset:12px; border:3px solid var(--accent); border-radius:12px; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      pointer-events:none; opacity:.35;
+    }
+
+    .row{display:grid; gap:12px; margin:12px auto}
+
+    /* grid columns per layer */
+    .row.r1{grid-template-columns: repeat(2, 1fr); max-width:820px}
+    .row.r2{grid-template-columns: repeat(3, 1fr); max-width:980px}
+    .row.r3{grid-template-columns: repeat(4, 1fr); max-width:1100px}
+    .row.r4{grid-template-columns: repeat(2, 1fr); max-width:520px}
+
+    .tile{
+      background:var(--tile);
+      border:1px solid #1b3b22; border-radius:14px; padding:14px 14px 12px; position:relative; overflow:hidden;
+      display:flex; flex-direction:column; gap:.4rem; min-height:112px;
+    }
+    .tile:nth-child(odd){background:var(--tile-2)}
+    .tile:nth-child(4n){background:var(--tile-3)}
+
+    .kicker{letter-spacing:.08em; text-transform:uppercase; color:var(--stage); font-size:.78rem; font-weight:700}
+    .title{font-weight:800; font-size:1.02rem; line-height:1.2}
+    .bullets{margin:.25rem 0 0; padding-left:1rem}
+    .bullets li{margin:.15rem 0; color:var(--muted)}
+
+    /* stage ribbons */
+    .stage{position:relative; text-align:center; margin:20px auto 8px; width:fit-content}
+    .stage span{display:inline-block; background:#11351e; border:1px solid #2b5a33; color:var(--stage); font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:.4rem .8rem; border-radius:999px}
+
+    /* base values */
+    .values{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:14px}
+    .values .chip{background:#173b22; border:1px solid #2b5a33; padding:.5rem .9rem; border-radius:999px; font-weight:700}
+
+    footer{margin-top:18px; color:#cfe5d4; opacity:.9; font-size:.92rem}
+    footer small{opacity:.8}
+
+    @media (max-width:780px){
+      .row{grid-template-columns:1fr}
+      .pyramid::before{clip-path:none; border:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap" aria-labelledby="title">
+    <header>
+      <h1 id="title">Player Development Pyramid</h1>
+      <p>Aurora NP WILD</p>
+      <div class="legend" aria-label="Legend of categories">
+        <span>Technical</span>
+        <span>Physical</span>
+        <span>Psychosocial</span>
+        <span>Social</span>
+      </div>
+    </header>
+
+    <section class="pyramid" aria-label="Pyramid">
+      <!-- Stage 4 -->
+      <div class="stage"><span>Stage 4 · U15–U18</span></div>
+      <div class="row r4">
+        <article class="tile" aria-labelledby="playgame"><div class="kicker">Technical</div><div id="playgame" class="title">Playing the Game</div><ul class="bullets"><li>Excelling under pressure</li><li>Achieving winning results</li></ul></article>
+        <article class="tile" aria-labelledby="peak"><div class="kicker">Physical</div><div id="peak" class="title">Peak Conditioning</div><ul class="bullets"><li>Strength, speed, power</li><li>Comprehensive conditioning</li></ul></article>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage"><span>Stage 3 · U13–U14</span></div>
+      <div class="row r1">
+        <article class="tile" aria-labelledby="tech-tact"><div class="kicker">Technical</div><div id="tech-tact" class="title">Technical & Tactical</div><ul class="bullets"><li>Large-sided tactics</li><li>Develop style of play</li><li>Position specific</li></ul></article>
+        <article class="tile" aria-labelledby="leadership"><div class="kicker">Psychosocial</div><div id="leadership" class="title">Leadership</div><ul class="bullets"><li>Respect for coaches & game</li><li>Winning mentality</li></ul></article>
+        <article class="tile" aria-labelledby="ath-dev"><div class="kicker">Physical</div><div id="ath-dev" class="title">Athletic Development</div><ul class="bullets"><li>Power & explosion</li><li>SAQ (speed, agility, quickness)</li><li>Nutrition</li></ul></article>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="stage"><span>Stage 2 · U10–U12</span></div>
+      <div class="row r2">
+        <article class="tile" aria-labelledby="sgt"><div class="kicker">Technical</div><div id="sgt" class="title">Small Group Tactics</div><ul class="bullets"><li>Attacking & defending</li><li>When & where</li></ul></article>
+        <article class="tile" aria-labelledby="skill-pressure"><div class="kicker">Technical</div><div id="skill-pressure" class="title">Skill Under Pressure</div><ul class="bullets"><li>1v1, passing/receiving, shielding</li><li>Shooting, decision making, creativity</li></ul></article>
+        <article class="tile" aria-labelledby="student"><div class="kicker">Psychosocial</div><div id="student" class="title">Student of the Game</div><ul class="bullets"><li>Watch, read & play</li><li>Learning to train & compete</li></ul></article>
+        <article class="tile" aria-labelledby="adv-move"><div class="kicker">Physical</div><div id="adv-move" class="title">Advanced Movement</div><ul class="bullets"><li>Agility, balance, speed</li><li>Coordination</li></ul></article>
+      </div>
+
+      <!-- Stage 1 -->
+      <div class="stage"><span>Stage 1 · U5–U9</span></div>
+      <div class="row r3">
+        <article class="tile" aria-labelledby="love"><div class="kicker">Technical</div><div id="love" class="title">Loving the Game</div><ul class="bullets"><li>Fun with the ball & friends</li></ul></article>
+        <article class="tile" aria-labelledby="ball"><div class="kicker">Technical</div><div id="ball" class="title">Ball Mastery</div><ul class="bullets"><li>Dribbling, turns</li><li>Passing & receiving</li></ul></article>
+        <article class="tile" aria-labelledby="move-fund"><div class="kicker">Physical</div><div id="move-fund" class="title">Movement Fundamentals</div><ul class="bullets"><li>Concentration, balance</li><li>Coordination</li></ul></article>
+        <article class="tile" aria-labelledby="learn"><div class="kicker">Psychosocial</div><div id="learn" class="title">Learning to Learn</div><ul class="bullets"><li>Discipline & focus</li><li>Emotional control & growth mindset</li></ul></article>
+        <article class="tile" aria-labelledby="social"><div class="kicker">Social</div><div id="social" class="title">Social Skills</div><ul class="bullets"><li>Teamwork & empathy</li><li>Winning/Losing</li></ul></article>
+      </div>
+
+      <!-- Core Values -->
+      <div class="values" aria-label="Core values">
+        <div class="chip">Passion</div>
+        <div class="chip">Commitment</div>
+        <div class="chip">Respect</div>
+        <div class="chip">Teamwork</div>
+        <div class="chip">Sportsmanship</div>
+      </div>
+    </section>
+
+    <footer>
+      <small>Built as accessible, responsive HTML/CSS. Collapse to single-column on small screens. Colors can be adjusted by editing <code>:root</code> variables.</small>
+    </footer>
+  </main>
+</body>
+</html>
