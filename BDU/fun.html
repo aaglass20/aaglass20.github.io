@@ -3,160 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blue Devil United U11 Girls – Spring 2025 Player Responsibilities</title>
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Blue Devil United U11 Girls – Spring 2025 Player Responsibilities</h1>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Physical</h1>
+    </div>
+</header>
 
-    <section>
-        <h2>Claire Brandt – Goal Machine / Emergency Goalkeeper</h2>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="fitness-menu"></div>
+
+<script>
+    fetch('menus/fitness-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('fitness-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Roly Poly
+
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Team building game where you kick the ball in the air, do a front summersault, and catch it before it lands.
+        </p>
         <ul>
-            <li>Score clutch goals when the team needs them most</li>
-            <li>Make highlight-reel saves when playing keeper</li>
-            <li>Lead by example with hustle and toughness</li>
-            <li>Take on any position with a fearless mindset</li>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/rollyPolly.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </ul>
     </section>
 
-    <section>
-        <h2>Charlie Merker – Playmaker-in-Chief</h2>
-        <ul>
-            <li>Deliver pinpoint assists with perfect timing</li>
-            <li>Break ankles with slick dribbling and fakes</li>
-            <li>Create chaos in the final third</li>
-            <li>Serve as on-field quarterback with elite vision</li>
-        </ul>
-    </section>
 
-    <section>
-        <h2>Whitney Phillips – Intensity Captain / Finisher</h2>
-        <ul>
-            <li>Apply relentless pressure to defenders</li>
-            <li>Score big-time goals when it matters most</li>
-            <li>Play fearless at forward or in goal</li>
-            <li>Keep the energy high every minute on the pitch</li>
-        </ul>
-    </section>
+</div>
 
-    <section>
-        <h2>Evie Peters – Momentum Shifter</h2>
-        <ul>
-            <li>Make gritty, physical runs through traffic</li>
-            <li>Finish with power when chances appear</li>
-            <li>Lift the team when the energy dips</li>
-            <li>Never back down from a challenge</li>
-        </ul>
-    </section>
+<div id="shared-footer"></div>
 
-    <section>
-        <h2>Claire Suchan – Midfield Engine</h2>
-        <ul>
-            <li>Control the pace and connect play</li>
-            <li>Score from distance with a rocket foot</li>
-            <li>Win possession battles in the midfield</li>
-            <li>Disrupt the other team's rhythm</li>
-        </ul>
-    </section>
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
 
-    <section>
-        <h2>Emma Barwacz – Defensive General</h2>
-        <ul>
-            <li>Lock down the back line with calm decision-making</li>
-            <li>Step up and strike when needed</li>
-            <li>Step into goal and shut it down</li>
-            <li>Anchor the team when pressure mounts</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Audrey Van Dyke – Two-Way Specialist</h2>
-        <ul>
-            <li>Distribute perfectly placed passes from the back</li>
-            <li>Throw-in specialist with assist potential</li>
-            <li>Shift between positions without missing a beat</li>
-            <li>Bring cool under pressure to every role</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Ava Vourliotis – Breakthrough Finisher</h2>
-        <ul>
-            <li>Seize scoring chances with one-touch goals</li>
-            <li>Assist from wide positions with great vision</li>
-            <li>Step into goal when needed</li>
-            <li>Turn momentum with well-timed plays</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Isabelle Budzowski – Clutch Finisher</h2>
-        <ul>
-            <li>Score key goals under pressure</li>
-            <li>Lock down the outside defensively</li>
-            <li>Keep positioning sharp during big moments</li>
-            <li>Rise to the occasion in tight games</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Ella Magana – Wall on the Wing</h2>
-        <ul>
-            <li>Deflect attacks with precision</li>
-            <li>Stay perfectly positioned under pressure</li>
-            <li>Force turnovers with smart reads</li>
-            <li>Silently eliminate threats before they start</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>JoJo Rollins – Edge Enforcer</h2>
-        <ul>
-            <li>Challenge every dribble with tenacity</li>
-            <li>Win balls with strength and determination</li>
-            <li>Push play forward from the back line</li>
-            <li>Deliver dependable minutes every match</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Mara Buntura – Silent Stopper</h2>
-        <ul>
-            <li>Hold the defensive shape with poise</li>
-            <li>Shut down attackers without fanfare</li>
-            <li>Keep composure in the backfield</li>
-            <li>Lead quietly by example</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Josie DiGeronimo – Defensive Spark</h2>
-        <ul>
-            <li>Intercept passes and jump on loose balls</li>
-            <li>Keep pressure high in the defensive third</li>
-            <li>Bring confidence and pace on the outside</li>
-            <li>Back up teammates with heart</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Emery Osyko – Quiet Enforcer</h2>
-        <ul>
-            <li>Stay two steps ahead defensively</li>
-            <li>Be in the right place at the right time—always</li>
-            <li>Play tough, clean, and confidently</li>
-            <li>Support teammates with unshakable reliability</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Jordan Glass – Chaos Coordinator</h2>
-        <ul>
-            <li>Disrupt defenders with endless hustle</li>
-            <li>Win 50/50 balls like it's a championship</li>
-            <li>Add spark when the team needs energy</li>
-            <li>Celebrate teammates' goals like her own</li>
-        </ul>
-    </section>
+<script src="scripts/scripts.js"></script>
 
 </body>
 </html>
