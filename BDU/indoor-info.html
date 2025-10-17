@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/bdu.png" alt="Company Logo">
+        <h1>Training Resources</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+<style>
+  .bdu-indoor { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.45; }
+  .bdu-indoor h2 { margin: 0 0 .5rem; font-size: 1.6rem; }
+  .bdu-indoor p.lead { margin: 0 0 1rem; color: #444; }
+  .bdu-card { background: #fff; border: 1px solid #e6e6e6; border-radius: 12px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .bdu-grid { display: grid; gap: 1rem; }
+  @media (min-width: 900px) { .bdu-grid { grid-template-columns: 1.1fr .9fr; } }
+  .bdu-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  .bdu-table th, .bdu-table td { padding: .6rem .7rem; border-bottom: 1px solid #eee; vertical-align: top; }
+  /*.bdu-table th { text-align: left; white-space: nowrap; background: #fafafa; font-weight: 600; }*/
+  .bdu-badge { display: inline-block; padding: .15rem .5rem; border-radius: 999px; background: #eef5ff; color: #1b4db7; font-size: .8rem; font-weight: 600; }
+  .bdu-kv { margin: .2rem 0; }
+  .bdu-kv strong { display: inline-block; min-width: 10ch; }
+  .bdu-list { margin: .4rem 0 .8rem 1.1rem; }
+  .bdu-note { font-size: .9rem; color: #555; }
+  .bdu-links a { color: #1149d8; text-decoration: none; }
+  .bdu-links a:hover { text-decoration: underline; }
+  .bdu-section h3 { margin: .2rem 0 .5rem; font-size: 1.2rem; }
+  .bdu-pill { display:inline-block; padding:.15rem .5rem; background:#f0f7ff; border:1px solid #e0edff; border-radius:8px; font-size:.85rem; }
+</style>
+
+<div class="bdu-indoor bdu-grid">
+  <!-- Left: Comparison -->
+  <section class="bdu-card">
+    <h2>Indoor Soccer Options – Blue Devil United Girls (Winter 2025–26)</h2>
+    <p class="lead">Quick side-by-side to help families choose the best fit.</p>
+    <table class="bdu-table" role="table" aria-label="Indoor options comparison">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>TOCA Rocky River</th>
+          <th>NC Soccer Hudson</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Location</th>
+          <td>Rocky River / Westlake</td>
+          <td>Hudson (East Side)</td>
+        </tr>
+        <tr>
+          <th>Approx. Drive</th>
+          <td>🚗 ~25 minutes (West)</td>
+          <td>🚗 ~35 minutes (East)</td>
+        </tr>
+        <tr>
+          <th>Season Start</th>
+          <td>Nov 8, 2025</td>
+          <td>U12: Nov 1, 2025<br>U13–U14: Oct 31, 2025</td>
+        </tr>
+        <tr>
+          <th>End Date</th>
+          <td>~Mid-January</td>
+          <td>Jan 3, 2026</td>
+        </tr>
+        <tr>
+          <th>Registration</th>
+          <td>Deadline Fri, Oct 24<br><span class="bdu-note">+$250 deposit</span></td>
+          <td>Deposit required to hold spot<br><span class="bdu-note">Team not registered until deposit received</span></td>
+        </tr>
+        <tr>
+          <th>Game Days</th>
+          <td>Boys Sat • Girls Sun</td>
+          <td>U12 Sat • U13–U14 Fri</td>
+        </tr>
+        <tr>
+          <th>Games / Length</th>
+          <td>8 games • standard indoor</td>
+          <td>~8 weeks • 2×25′ halves</td>
+        </tr>
+        <tr>
+          <th>Field Size / Players</th>
+          <td>U8: 5v5 • U9–U11: 6v6 • U12–U15: 7v7</td>
+          <td>U8–U12: 6+GK • U13+: 5+GK</td>
+        </tr>
+        <tr>
+          <th>Team Fee</th>
+          <td>U8: $375 • U9–U11: $715 • U12–U15: $900</td>
+          <td>All listed girls divisions: $775</td>
+        </tr>
+        <tr>
+          <th>Referee Fees</th>
+          <td>$15/game (not included)</td>
+          <td>$15/game (U8–U16)</td>
+        </tr>
+        <tr>
+          <th>Rescheduling</th>
+          <td>One reschedule; no time prefs; forfeits if missed</td>
+          <td>Requests only if added in registration comments</td>
+        </tr>
+        <tr>
+          <th>Surface / Footwear</th>
+          <td>Blue: Cleats • Yellow: Turf/Indoor</td>
+          <td>Standard indoor turf</td>
+        </tr>
+        <tr>
+          <th>Notable Rules</th>
+          <td>—</td>
+          <td>Slide tackling allowed (most divisions)<br>No GK passbacks • All kicks direct</td>
+        </tr>
+        <tr>
+          <th>Conduct</th>
+          <td>Positive, respectful environment</td>
+          <td>Fighting = removal, no refund</td>
+        </tr>
+        <tr>
+          <th>Age Groups (Girls)</th>
+          <td>U8 (2018) ➝ U15 (2011)</td>
+          <td>U12 (2014) • U13 (2013) • U14 (2012)</td>
+        </tr>
+        <tr>
+          <th>Register</th>
+          <td class="bdu-links"><a href="https://apps.daysmartrecreation.com/dash/x/#/online/toca_force/leagues?location=2" target="_blank" rel="noopener">TOCA Registration</a></td>
+          <td class="bdu-links"><a href="https://www.ncsoccerhudson.com" target="_blank" rel="noopener">NC Soccer Hudson</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+<!--  &lt;!&ndash; Right: Details Cards &ndash;&gt;-->
+<!--  <section class="bdu-grid">-->
+<!--    &lt;!&ndash; TOCA Card &ndash;&gt;-->
+<!--    <div class="bdu-card bdu-section">-->
+<!--      <h3>Option 1: TOCA Rocky River <span class="bdu-badge">Girls on Sundays</span></h3>-->
+<!--      <div class="bdu-kv"><strong>Season Start:</strong> Nov 8, 2025</div>-->
+<!--      <div class="bdu-kv"><strong>Reg. Deadline:</strong> Fri, Oct 24</div>-->
+<!--      <div class="bdu-kv"><strong>Fees:</strong> U8 $375 • U9–U11 $715 • U12–U15 $900</div>-->
+<!--      <div class="bdu-kv"><strong>Ref Fees:</strong> $15/game (separate)</div>-->
+<!--      <div class="bdu-kv"><strong>Reschedules:</strong> 1 per session; times randomized</div>-->
+<!--      <div class="bdu-kv"><strong>Divisions:</strong> Min 4 teams; may shift or refund if not met</div>-->
+<!--      <p class="bdu-note">Footwear: Blue field = cleats, Yellow field = turf/indoor shoes.</p>-->
+<!--      <p class="bdu-links"><a href="https://apps.daysmartrecreation.com/dash/x/#/online/toca_force/leagues?location=2" target="_blank" rel="noopener">Register at TOCA →</a></p>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; NC Soccer Hudson Card &ndash;&gt;-->
+<!--    <div class="bdu-card bdu-section">-->
+<!--      <h3>Option 2: NC Soccer Hudson <span class="bdu-badge">Fri/Sat Games</span></h3>-->
+<!--      <div class="bdu-kv"><strong>Start Dates:</strong> U12 Sat Nov 1 • U13–U14 Fri Oct 31</div>-->
+<!--      <div class="bdu-kv"><strong>End Date:</strong> Jan 3, 2026</div>-->
+<!--      <div class="bdu-kv"><strong>Fee:</strong> $775 per team (girls divisions listed)</div>-->
+<!--      <div class="bdu-kv"><strong>Ref Fees:</strong> $15/game (U8–U16)</div>-->
+<!--      <div class="bdu-kv"><strong>Rules Highlights:</strong></div>-->
+<!--      <ul class="bdu-list">-->
+<!--        <li>2×25′ halves • Subs on the fly</li>-->
+<!--        <li>Slide tackling allowed (except Coed/30+/Women)</li>-->
+<!--        <li>No GK passbacks • All kicks are direct</li>-->
+<!--        <li>PK can be taken even after time expires</li>-->
+<!--        <li>Ceiling/three-line restarts as posted</li>-->
+<!--        <li>Lopsided games (6+): trailing team may add a player</li>-->
+<!--      </ul>-->
+<!--      <p class="bdu-note">Scheduling requests must be placed in the registration comments. Deposit required; team not registered until received by the NC office.</p>-->
+<!--      <p class="bdu-links"><a href="https://www.ncsoccerhudson.com" target="_blank" rel="noopener">Register at NC Soccer Hudson →</a></p>-->
+<!--    </div>-->
+<!--  </section>-->
+<!--</div>-->
+
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
