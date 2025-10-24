@@ -123,6 +123,19 @@ header::before {
     box-shadow: 0 6px 16px rgba(0, 255, 136, 0.6);
 }
 
+/* Animated hamburger to X */
+.waffle-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.waffle-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.waffle-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
 .waffle-menu-toggle span {
     display: block;
     width: 24px;
@@ -133,49 +146,200 @@ header::before {
 }
 
 .waffle-menu {
-    display: none;
+    display: flex;
     flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
-    width: 230px;
-    padding: 20px;
+    width: 280px;
+    padding: 80px 20px 20px 20px;
     background: linear-gradient(135deg, #003366, #0779e4);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    height: 100%;
+    height: 100vh; /* Changed from 100% to 100vh */
+    max-height: 100vh; /* Add this */
     overflow-y: auto;
+    overflow-x: hidden; /* Add this */
     border-right: 2px solid #00509e;
     z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    visibility: hidden;
 }
 
-.waffle-menu a {
+.waffle-menu.active {
+  transform: translateX(0);
+    visibility: visible; /* Add this */
+}
+
+/* Smooth scrollbar styling */
+.waffle-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.waffle-menu::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.waffle-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.waffle-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Main menu items */
+.waffle-menu > a,
+.menu-item-with-submenu > a {
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     text-decoration: none;
     color: white;
-    margin: 10px 0;
-    padding: 10px;
-    transition: background-color 0.3s, transform 0.3s;
-    border-radius: 5px;
+    margin: 5px 0;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
 }
 
-.waffle-menu a:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(10px);
+.waffle-menu > a:hover,
+.menu-item-with-submenu > a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    padding-left: 20px;
 }
 
-.waffle-menu a i {
-    margin-right: 10px;
-    font-size: 1.5rem;
+.waffle-menu > a i,
+.menu-item-with-submenu > a i {
+    margin-right: 12px;
+    font-size: 1.3rem;
     color: #a3d8f4;
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
+    min-width: 24px;
 }
 
-.waffle-menu a:hover i {
-    transform: rotate(15deg);
+.waffle-menu > a:hover i,
+.menu-item-with-submenu > a:hover i {
+    color: var(--primary-color);
+    transform: scale(1.15);
 }
+
+/* Submenu container */
+.menu-item-with-submenu {
+    margin: 5px 0;
+}
+
+.menu-item-with-submenu > a::after {
+    content: '\f078'; /* FontAwesome chevron-down */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    color: #a3d8f4;
+}
+
+.menu-item-with-submenu.active > a::after {
+    transform: rotate(180deg);
+}
+
+/* Submenu styling */
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+    padding-left: 15px;
+    margin-left: 15px;
+    border-left: 2px solid rgba(163, 216, 244, 0.3);
+}
+
+.menu-item-with-submenu.active .sub-menu {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.sub-menu a {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #e0e9f2;
+    margin: 3px 0;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.sub-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding-left: 18px;
+}
+
+.sub-menu a i {
+    margin-right: 10px;
+    font-size: 1rem;
+    color: #a3d8f4;
+    min-width: 20px;
+}
+
+.sub-menu a:hover i {
+    color: var(--primary-color);
+}
+
+/* Active page highlight */
+.waffle-menu a.active,
+.sub-menu a.active {
+    background: rgba(0, 255, 136, 0.2);
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Menu header with logo */
+.waffle-menu-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    background: linear-gradient(135deg, #002244, #003366);
+    padding: 15px;
+    text-align: center;
+    border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+    z-index: 1001;
+    /*    transform: translateX(-100%); !* Add this *!*/
+    /*transition: transform 0.3s ease; !* Add this *!*/
+    /*visibility: hidden; !* Add this *!*/
+}
+
+.waffle-menu.active ~ .waffle-menu-header,
+.waffle-menu-header.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.waffle-menu-header img {
+    max-width: 60px;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.waffle-menu-header h3 {
+    color: white;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+
 
 /* ============================================
    CONTAINER & LAYOUT
@@ -954,19 +1118,74 @@ b {
     header h1 {
         font-size: 1.5rem;
     }
+
+    /* Mobile waffle menu adjustments */
+    .waffle-menu {
+        width: 85vw; /* Use viewport width instead of fixed pixels */
+        max-width: 320px;
+        padding: 70px 15px 20px 15px; /* Reduce top padding slightly */
+    }
+
+    .waffle-menu-header {
+        width: 85vw;
+        max-width: 320px;
+        padding: 12px;
+    }
+
+    .waffle-menu-header img {
+        max-width: 50px;
+    }
+
+    .waffle-menu-header h3 {
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 600px) {
     .waffle-menu {
-        width: 180px;
+        width: 75vw; /* Smaller on very small screens */
+        max-width: 280px;
+    }
+
+    .waffle-menu-header {
+        width: 75vw;
+        max-width: 280px;
     }
 
     .waffle-menu a {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        padding: 10px 12px;
     }
 
     .waffle-menu a i {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .sub-menu a {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .players {
+        padding: 5px;
+    }
+
+    .player {
+        padding: 5px;
+        font-size: 0.9em;
+    }
+
+    /* Extra small screens */
+    .waffle-menu {
+        width: 80vw;
+        max-width: 260px;
+    }
+
+    .waffle-menu-header {
+        width: 80vw;
+        max-width: 260px;
     }
 }
 

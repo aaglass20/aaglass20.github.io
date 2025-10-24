@@ -2,30 +2,82 @@
 // BDU Soccer - Enhanced Interactive Scripts
 // ============================================
 
-// Waffle Menu Toggle - Keep your existing function
+// Waffle Menu Toggle with Animation
 function toggleWaffleMenu() {
     const menu = document.getElementById('waffleMenu');
-    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    const toggle = document.querySelector('.waffle-menu-toggle');
+    const header = document.querySelector('.waffle-menu-header');
+
+    if (!menu || !toggle) return;
+
+    const isActive = menu.classList.contains('active');
+
+    if (isActive) {
+        // Closing
+        menu.classList.remove('active');
+        toggle.classList.remove('active');
+        if (header) header.classList.remove('active');
+    } else {
+        // Opening
+        menu.classList.add('active');
+        toggle.classList.add('active');
+        if (header) header.classList.add('active');
+    }
 }
 
-// Initialize waffle menu (keep existing)
-function initWaffleMenu() {
-    window.toggleWaffleMenu = function () {
+// Submenu Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers to menu items with submenus
+    const menuItemsWithSubmenu = document.querySelectorAll('.menu-item-with-submenu > a');
+
+    menuItemsWithSubmenu.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const parent = this.parentElement;
+            const wasActive = parent.classList.contains('active');
+
+            // Close all other submenus
+            document.querySelectorAll('.menu-item-with-submenu').forEach(menu => {
+                menu.classList.remove('active');
+            });
+
+            // Toggle current submenu (unless it was already active)
+            if (!wasActive) {
+                parent.classList.add('active');
+            }
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
         const menu = document.getElementById('waffleMenu');
-        menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    };
-}
+        const toggle = document.querySelector('.waffle-menu-toggle');
 
-// Load waffle menu (keep existing)
-function loadWaffleMenu() {
-    fetch('menus/waffle-menu.html')
-        .then(response => response.text())
-        .then(data => {
-            document.body.insertAdjacentHTML('afterbegin', data);
-            initWaffleMenu();
-        })
-        .catch(error => console.error('Error loading waffle menu:', error));
-}
+        if (menu && toggle &&
+            !menu.contains(e.target) &&
+            !toggle.contains(e.target) &&
+            menu.classList.contains('active')) {
+            menu.classList.remove('active');
+            toggle.classList.remove('active');
+        }
+    });
+
+    // Highlight active page in waffle menu
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop();
+
+    document.querySelectorAll('.waffle-menu a, .sub-menu a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage) {
+            link.classList.add('active');
+            // Expand parent submenu if in submenu
+            const parentSubmenu = link.closest('.menu-item-with-submenu');
+            if (parentSubmenu) {
+                parentSubmenu.classList.add('active');
+            }
+        }
+    });
+});
 
 // ============================================
 // ENHANCED FEATURES - NEW CODE STARTS HERE
@@ -228,8 +280,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Load waffle menu when DOM is ready (keep existing)
-document.addEventListener('DOMContentLoaded', loadWaffleMenu);
+// // Load waffle menu when DOM is ready (keep existing)
+// document.addEventListener('DOMContentLoaded', loadWaffleMenu);
+
+
+// Load waffle menu
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('menus/waffle-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('waffleMenuContainer').innerHTML = data;
+
+            // Make sure the header is accessible for toggle function
+            const header = document.querySelector('.waffle-menu-header');
+            if (header) {
+                // Set initial state
+                header.classList.remove('active');
+            }
+        })
+        .catch(error => console.error('Error loading waffle menu:', error));
+});
 
 // ====== Console Message (Optional - shows site is loaded) ======
 console.log('⚽ BDU Soccer Training Platform Loaded Successfully!');
