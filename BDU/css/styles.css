@@ -403,6 +403,29 @@ b {
     overflow: hidden;
     padding: 10px 0;
     background-color: #f5f5f5;
+    position: relative;
+}
+
+/* Add fade indicators on edges */
+.scroll-menu-container::before,
+.scroll-menu-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.scroll-menu-container::before {
+    left: 0;
+    background: linear-gradient(to right, #f5f5f5, transparent);
+}
+
+.scroll-menu-container::after {
+    right: 0;
+    background: linear-gradient(to left, #f5f5f5, transparent);
 }
 
 .scroll-menu {
@@ -430,8 +453,47 @@ b {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle background animation on hover */
+.menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.menu-item:hover::before {
+    left: 100%;
+}
+
+.menu-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.menu-item:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.menu-item i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover i {
+    transform: scale(1.15);
+    color: #0056b3;
 }
 
 .menu-item:active {
@@ -450,12 +512,45 @@ b {
 }
 
 .menu-item.active {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+    transform: translateY(-2px);
 }
 
 .menu-item.active i {
     color: white;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.menu-item.active span {
+    font-weight: 700;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-item-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff6b6b;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
 }
 
 /* ============================================
@@ -786,6 +881,48 @@ b {
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
+/* This will make the sroll menu smaller
+/*@media (max-width: 768px) {*/
+/*    .scroll-menu {*/
+/*        gap: 10px;*/
+/*        padding: 0 10px;*/
+/*    }*/
+
+/*    .menu-item {*/
+/*        min-width: 85px;*/
+/*        padding: 10px 8px;*/
+/*    }*/
+
+/*    .menu-item i {*/
+/*        font-size: 20px;*/
+/*        margin-bottom: 6px;*/
+/*    }*/
+
+/*    .menu-item span {*/
+/*        font-size: 12px;*/
+/*    }*/
+/*}*/
+
+/*@media (max-width: 480px) {*/
+/*    .scroll-menu {*/
+/*        gap: 8px;*/
+/*    }*/
+
+/*    .menu-item {*/
+/*        min-width: 75px;*/
+/*        padding: 8px;*/
+/*    }*/
+
+/*    .menu-item i {*/
+/*        font-size: 18px;*/
+/*    }*/
+
+/*    .menu-item span {*/
+/*        font-size: 11px;*/
+/*    }*/
+/*}*/
+
+
 
 @media (max-width: 768px) {
     .container {

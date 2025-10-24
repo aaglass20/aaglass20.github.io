@@ -233,3 +233,39 @@ document.addEventListener('DOMContentLoaded', loadWaffleMenu);
 
 // ====== Console Message (Optional - shows site is loaded) ======
 console.log('⚽ BDU Soccer Training Platform Loaded Successfully!');
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollMenus = document.querySelectorAll('.scroll-menu');
+
+    scrollMenus.forEach(menu => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        menu.addEventListener('mousedown', (e) => {
+            isDown = true;
+            menu.style.cursor = 'grabbing';
+            startX = e.pageX - menu.offsetLeft;
+            scrollLeft = menu.scrollLeft;
+        });
+
+        menu.addEventListener('mouseleave', () => {
+            isDown = false;
+            menu.style.cursor = 'grab';
+        });
+
+        menu.addEventListener('mouseup', () => {
+            isDown = false;
+            menu.style.cursor = 'grab';
+        });
+
+        menu.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - menu.offsetLeft;
+            const walk = (x - startX) * 2;
+            menu.scrollLeft = scrollLeft - walk;
+        });
+    });
+});
