@@ -89,6 +89,70 @@
         .then(data => {
             document.getElementById('shared-footer').innerHTML = data;
         });
+
+    // Password protection for planning menu access
+function checkMenuPassword() {
+    const correctPassword = "BDU2025"; // Change this to your desired password
+    const userPassword = prompt("Please enter the password to access this menu:");
+
+    if (userPassword === correctPassword) {
+        return true;
+    } else if (userPassword === null) {
+        // User clicked cancel
+        return false;
+    } else {
+        alert("Incorrect password. Access denied.");
+        return false;
+    }
+}
+
+// Load menu with password protection
+fetch('menus/planning-menu.html')
+    .then(response => response.text())
+    .then(data => {
+        const menuContainer = document.getElementById('planning-menu');
+
+        // Hide menu initially
+        menuContainer.style.display = 'none';
+
+        // Check password
+        if (checkMenuPassword()) {
+            menuContainer.innerHTML = data;
+            menuContainer.style.display = 'block';
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        } else {
+            // Show access denied message
+            menuContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; background: #f8d7da; border-radius: 10px; margin: 20px 0;">
+                    <i class="fas fa-lock" style="font-size: 3rem; color: #721c24; margin-bottom: 20px;"></i>
+                    <h3 style="color: #721c24; margin-bottom: 10px;">Access Restricted</h3>
+                    <p style="color: #721c24;">This menu requires password authentication.</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #721c24; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Try Again
+                    </button>
+                </div>
+            `;
+            menuContainer.style.display = 'block';
+        }
+    });
+</script>
+
 </script>
 
 <!-- Your existing scripts -->
