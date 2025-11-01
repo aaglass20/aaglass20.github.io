@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Training Resources</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+    <!-- Introduction Section -->
+    <div class="intro-section">
+        <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--secondary-color);">
+            <i class="fas fa-home"></i> Winter Indoor Training: Keep Developing Year-Round
+        </h2>
+
+        <div class="skills-overview">
+            <p>
+                Winter doesn't mean your development has to stop. In fact, some of the most significant improvements
+                happen during the off-season when players commit to consistent at-home training. I often emphasize
+                keeping a ball near your feet during idle time—it's a habit that transforms good players into great
+                ones.
+            </p>
+
+            <p>
+                Even today, when I'm on the phone, I still pass a ball against the couch just as I did when developing
+                my own skills. The real magic happens when technical work becomes so natural that you can do it while
+                multitasking. Watching TV with a ball at your feet, doing footwork drills during commercial breaks, or
+                practicing wall touches while listening to music—these "invisible" training sessions add up to thousands
+                of touches over a season.
+            </p>
+
+            <p>
+                Below, I've included training videos and equipment recommendations that can help you maximize your
+                indoor
+                development while protecting your furniture and walls from getting damaged. Think of these as holiday
+                gift ideas that keep giving all year long.
+            </p>
+
+            <p>
+                <strong>These are starter sessions to build your foundation.</strong> If you feel like you've progressed
+                beyond these drills, let me know and I'll add more advanced content. That said, here's an important
+                truth:
+                these skills are never truly "mastered"—they're disciplines we continuously refine. Even professional
+                players return to these fundamentals regularly.
+            </p>
+
+            <p>
+                <strong>The commitment is simple:</strong> If you can dedicate just 15 minutes a day to these exercises,
+                you're going to see real improvements. Consistency beats intensity every time. And if you only do this
+                once in the next three months? That's still one more time than you did before—and that's progress.
+                Every touch counts. Every session matters.
+            </p>
+        </div>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-border-all"></i> Wall Session for Pro Touch
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Wall work is, in my opinion, one of the most underutilized training methods. You don't need a training
+            partner—the wall never gets tired, never complains, and is always available. Any skill you learn can be
+            incorporated into wall work, making it infinitely adaptable to your development needs.
+        </p>
+        <p class="drill-summary">
+            This video starts with the basics and can be done in a surprisingly small space. Notice the pace in the
+            video—that's the goal, but don't rush it. Start slow, master the technique, then gradually work up to
+            game speed. The video also includes functional juggling exercises that translate directly to game
+            situations. While traditional juggling has its place, these game-like variations are an excellent
+            foundation for developing real touch and control under pressure.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/wallSessionForProTouch.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-running"></i> 5 Beginner Footwork Drills To Master
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            These fundamental footwork drills will improve your speed of play and ball control. The beauty of these
+            exercises? You don't even need cones—any household objects work perfectly. Scatter toys around the room,
+            use water bottles, or place shoes as markers to create your own dribbling obstacle course. Start slow,
+            focus on technique, then gradually increase your pace.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/5BeginnerFootworkDrillsToMaster.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-shopping-bag"></i> Recommended Training Equipment
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Protect your home while maximizing your training. These two products are game-changers for indoor
+            development—saving your walls, furniture, and parents' sanity while giving you the tools to train
+            effectively year-round.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="equipment-grid">
+                    <div class="equipment-card">
+                        <div class="equipment-image">
+                            <img src="images/rebounder.png" alt="QUICKPLAY Rebounder Wall Station">
+                        </div>
+                        <div class="equipment-info">
+                            <h3>QUICKPLAY Rebounder Wall Station</h3>
+                            <p>
+                                A solid rebounder option for those without access to a wall or who want a portable
+                                training solution. I own this model and it's held up well. While there are cheaper
+                                alternatives available, this one offers good quality and adjustable angles for varied
+                                training. Perfect for passes, first touch work, and shooting practice in limited space.
+                            </p>
+                            <a href="https://www.amazon.com/QUICKPLAY-Station-Professional-Features-Adjustable/dp/B085T917GC/ref=sr_1_1_sspa?crid=2C2IQW597LWWB&dib=eyJ2IjoiMSJ9.TZcE_mx6U1Rx72e_K0PhSDo9y02ZWXcuHqJOXOMd3cAv8jJ8NHGiSHwryxxo21Qx5tyOsxmWCWa522C7mASLtQgu6Hm8_xAxj4B2y-9inKcXtuYiVEsLOHGJPNdJ9789P_jOTC6T_I6-tsZuXouQVunvE5RoRurZcT2gsZa0LI_au5y177Kw9gZuMZSOUD-jHAMeZB3Y1C55D09V6SIO30b4zTE7bczM4prGGLQeceqgVPmSIRvTCT5C33m3GIkxkjoS-jaikx4EhNwdfIgs8e46VT1wr-cjS_8h9LgfhTo.JINlznv6Dg2tE1yrHYnrwmcCzSr10_QQgfvYn51uiW4&dib_tag=se&keywords=soccer%2Bquickplay%2Bwall&qid=1761877078&sprefix=soccer%2Bquickplay%2Bwall%2Caps%2C119&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"
+                               target="_blank" rel="noopener noreferrer" class="equipment-btn">
+                                <i class="fab fa-amazon"></i> View on Amazon
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="equipment-card">
+                        <div class="equipment-image">
+                            <img src="images/houseball.png" alt="The House Ball">
+                        </div>
+                        <div class="equipment-info">
+                            <h3>The House Ball</h3>
+                            <p>
+                                This is a game-changer for indoor training. It provides an authentic ball feel with
+                                realistic touch and control, but it's safe enough to use barefoot and won't damage
+                                walls, furniture, or floors. Train in your living room without worry. Perfect for
+                                footwork, juggling, and close control work when you can't get outside.
+                            </p>
+                            <a href="https://www.amazon.com/House-Ball-Designed-Addictive-Realistic/dp/B0BM892H45/ref=sr_1_1_sspa?crid=132Y5AH2X43QM&dib=eyJ2IjoiMSJ9.HzUW-53WluSQbi2MsouJwsTI989CRx60puSqkIqPRHNGV4eNutoH-0VKCOF3_wSst3j5vV-lNXt40HKUe0Mlw8zDCZ98k43LklQ1jDB1yD4JO6qwNJzjp82JxRiJolgorjt02HzCLiKc0hdNXM5WbT8t-Ly42WxZnbIMG_nqPbae_jKJ4n9FeivtV0ToGMWk0OSSjs5a6wF0OtmH3ZmueUt0_203TiWKuyq5-8tHNVJJsP7AxvKwYeLFdd8Ugy572LQLhE0CI9ojtRF0DlbGFCUUB1oio5pQ41AXgMysprY.P-gYfNx2QzWna0q6biGvMUD-FaBpyhb1LT76ZmqFkro&dib_tag=se&keywords=in%2Bhome%2Bsoccer%2Bball&qid=1762008989&sprefix=in%2Bhome%2Bsoccer%2Bball%2Caps%2C125&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"
+                               target="_blank" rel="noopener noreferrer" class="equipment-btn">
+                                <i class="fab fa-amazon"></i> View on Amazon
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </section>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

@@ -1801,4 +1801,132 @@ b {
     .skills-overview {
         padding: 1.5rem;
     }
+
+/* ============================================
+   EQUIPMENT SECTION STYLES
+   ============================================ */
+
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.equipment-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.equipment-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 123, 228, 0.2);
+    border-color: var(--primary-color);
+}
+
+.equipment-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.equipment-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.equipment-card:hover .equipment-image img {
+    transform: scale(1.05);
+}
+
+.equipment-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.equipment-info h3 {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.equipment-info p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.equipment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #FF9900, #FF6600);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+    width: 100%;
+    text-align: center;
+}
+
+.equipment-btn:hover {
+    background: linear-gradient(135deg, #FF6600, #FF9900);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 153, 0, 0.4);
+}
+
+.equipment-btn i {
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .equipment-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .equipment-image {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .equipment-info {
+        padding: 1rem;
+    }
+
+    .equipment-info h3 {
+        font-size: 1.1rem;
+    }
+
+    .equipment-info p {
+        font-size: 0.9rem;
+    }
+
+    .equipment-image {
+        height: 130px;
+    }
 }
