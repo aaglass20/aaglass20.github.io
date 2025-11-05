@@ -12,6 +12,7 @@
     --bg-light: #f7fafc;
     --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-headings: 'Rajdhani', 'Roboto', sans-serif; /* Add this */
 }
 
 /* Reset & Base Styles */
@@ -839,7 +840,7 @@ b {
 
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('images/INDEPENDENCE BDU_CREST.jpg');
+    url('images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png'); /* Changed from INDEPENDENCE BDU_CREST.jpg */
     background-size: cover;
     background-position: center;
     display: flex;
@@ -1790,17 +1791,18 @@ b {
 }
 
 @media (max-width: 480px) {
-    .intro-section {
-        padding: 1.5rem 1rem;
-    }
+        .intro-section {
+            padding: 1.5rem 1rem;
+        }
 
-    .intro-text {
-        font-size: 1rem;
-    }
+        .intro-text {
+            font-size: 1rem;
+        }
 
-    .skills-overview {
-        padding: 1.5rem;
-    }
+        .skills-overview {
+            padding: 1.5rem;
+        }
+    } /* Add this closing brace */
 
 /* ============================================
    EQUIPMENT SECTION STYLES
@@ -1930,3 +1932,41 @@ b {
         height: 130px;
     }
 }
+
+    .mental-toughness-content {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .highlight-block {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .highlight-block h3 {
+        margin-top: 0;
+        color: #fff;
+        font-size: 1.5em;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .highlight-block ul {
+        margin: 10px 0;
+        padding-left: 20px;
+    }
+
+    .highlight-block li {
+        margin: 10px 0;
+        line-height: 1.6;
+    }
+
+    .highlight-block strong {
+        /*color: #ffd700;*/
+    }
