@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Positioning & Off-Ball Runs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+         <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Positioning & Off-Ball Runs</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+    <hr>
+
+    <p>
+        Indoor soccer demands constant movement, intelligent positioning, and relentless energy. With limited space
+        and fast-paced action, understanding how to position yourself both offensively and defensively is crucial
+        to dominating the game. Let's press the pace and make every second on the field count!
+    </p>
+
+    <h2>Our Playing Philosophy: All-Out Attack, All-Out Defense</h2>
+    <p>
+        We play with <strong>6 field players</strong>—and here's the key: <strong>even the defense plays offense</strong>.
+        Everyone contributes to both phases of the game. When we have possession, we attack with numbers. When we lose
+        possession, we defend with intensity.
+    </p>
+
+    <hr>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-running"></i> Offensive Positioning: Press and Attack
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Force Them to Play Our Game</h3>
+            <p>
+                When we're on offense, if there's no one to guard, <strong>we should be pressing</strong>. Push up the
+                field and become an offensive weapon. We want to force the opposing team to play at our pace—fast,
+                relentless, and overwhelming.
+            </p>
+
+            <h3>Key Offensive Positioning Principles:</h3>
+            <ul>
+                <li><strong>At least one defender back:</strong> Maintain defensive balance with one player staying home</li>
+                <li><strong>Everyone else attacks:</strong> The rest of the team pushes into space and creates offensive pressure</li>
+                <li><strong>Press high:</strong> Don't sit back—make them uncomfortable with the ball</li>
+                <li><strong>Push into space:</strong> Find open areas and stretch the defense</li>
+                <li><strong>Quick transitions:</strong> When we win the ball, attack immediately</li>
+            </ul>
+
+            <div class="video-container">
+                <video controls>
+                    <source src="indoor/OffPress.mp4" type="video/mp4">
+                </video>
+                <p><strong>Watch:</strong> This video shows how we should position ourselves on offense. Notice how players press
+                high and push into attacking positions while maintaining one defender for balance.</p>
+            </div>
+
+            <img src="indoor/offPosition.jpg" alt="Offensive Positioning Result" style="width: 100%; max-width: 600px; margin: 20px 0;">
+            <p><em>The end result: Organized offensive pressure with defensive coverage</em></p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-shield-alt"></i> Defensive Positioning: Mark Up Fast
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Everyone Marks, Everyone Covers</h3>
+            <p>
+                Indoor soccer is a <strong>fast-paced game</strong>, and defense requires immediate reaction. When we
+                lose possession, we all mark up instantly. No spectators—everyone has a job.
+            </p>
+
+            <img src="indoor/defmark.jpg" alt="Defensive Marking Formation" style="width: 100%; max-width: 600px; margin: 20px 0;">
+            <p><strong>Critical Image:</strong> This shows how we mark up on defense. <strong>Everyone is covered, goal side.</strong>
+            We move fast, communicate, and ensure no opponent is left open in dangerous areas.</p>
+
+            <h3>Defensive Marking Keys:</h3>
+            <ul>
+                <li><strong>Instant transition:</strong> As soon as we lose the ball, find your mark</li>
+                <li><strong>Communication:</strong> Call out who you're marking—"I've got #5!"</li>
+                <li><strong>Stay goal-side:</strong> Position yourself between your opponent and the goal</li>
+                <li><strong>Quick recovery:</strong> Sprint back into defensive shape</li>
+                <li><strong>Cover all threats:</strong> No one gets a free look at our goal</li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-arrows-alt"></i> Off-Ball Movement: Create Opportunities
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Don't Stand Still—Move with Purpose</h3>
+            <p>
+                One of the biggest mistakes players make is staying neutral when they don't have the ball.
+                <strong>We need to elevate our play by constantly moving</strong>, making runs, and creating passing
+                lanes for our teammates.
+            </p>
+
+            <div class="video-container">
+                <video controls>
+                    <source src="indoor/0ffBallMovement.mp4" type="video/mp4">
+                </video>
+                <p><strong>Watch:</strong> This video demonstrates off-ball movement—making intelligent runs and
+                switches to create opportunities.</p>
+            </div>
+
+            <h3>Types of Off-Ball Runs to Master:</h3>
+            <ul>
+                <li><strong>Horizontal runs:</strong> Move across the field to drag defenders and open up space</li>
+                <li><strong>Switches:</strong> Cross from one side to another to exploit gaps in the defense</li>
+                <li><strong>Checking runs:</strong> Come towards the ball to receive a pass</li>
+                <li><strong>Diagonal runs:</strong> Cut into space at an angle to receive through balls</li>
+                <li><strong>Overlapping runs:</strong> Sprint past a teammate to provide a passing option</li>
+            </ul>
+
+            <h3>Why Off-Ball Movement Matters:</h3>
+            <ul>
+                <li>Creates space for teammates by pulling defenders out of position</li>
+                <li>Provides passing options for the ball carrier</li>
+                <li>Keeps the defense guessing and disorganized</li>
+                <li>Opens up shooting and scoring opportunities</li>
+                <li>Makes our attack unpredictable and dangerous</li>
+            </ul>
+
+            <p class="highlight-box">
+                <strong>Remember:</strong> Movement off the ball is just as important as what you do with the ball.
+                Be active, be aware, and make yourself available!
+            </p>
+        </div>
+    </section>
+
+    <hr>
+
+    <h2>Press the Pace: The 5-Minute Rule</h2>
+    <p>
+        Here's our philosophy: <strong>Constantly move for 5 minutes, then sub out.</strong> We want to maximize our
+        time on the field by playing at full intensity, then recovering so the next group can do the same.
+    </p>
+
+    <h3>Why the 5-Minute Rule Works:</h3>
+    <ul>
+        <li><strong>Maximum effort:</strong> Players give 100% knowing they'll get a break</li>
+        <li><strong>High tempo:</strong> We maintain relentless pressure on opponents</li>
+        <li><strong>Everyone plays:</strong> Regular substitutions keep everyone engaged and fresh</li>
+        <li><strong>Wear them down:</strong> Our pace becomes overwhelming for the opposition</li>
+        <li><strong>Build fitness:</strong> Short, intense bursts improve conditioning over time</li>
+    </ul>
+
+    <div class="highlight-box" style="background-color: #f0f8ff; padding: 20px; border-left: 5px solid #1e88e5; margin: 20px 0;">
+        <h3><i class="fas fa-trophy"></i> Our Goal</h3>
+        <p style="font-size: 1.1em; margin: 0;">
+            Make it a goal to <strong>maximize every second on the field</strong>. When you're on, you're going full
+            throttle—pressing, moving, attacking, defending. When you're off, you're recovering and preparing to do it
+            again. This is how we win: with pace, intensity, and constant movement.
+        </p>
+    </div>
+
+    <hr>
+
+    <h2>Key Takeaways</h2>
+    <ul>
+        <li>✓ Everyone plays both offense and defense—no passengers</li>
+        <li>✓ Press high on offense, mark tight on defense</li>
+        <li>✓ Constant off-ball movement creates opportunities</li>
+        <li>✓ Use horizontal runs and switches to break down defenses</li>
+        <li>✓ Play at maximum intensity for 5 minutes, then sub</li>
+        <li>✓ Indoor soccer is fast-paced—match that tempo and dominate</li>
+    </ul>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
