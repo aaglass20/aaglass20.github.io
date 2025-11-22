@@ -5,78 +5,24 @@
       "url": "defensive-tactics.html",
       "keywords": ["defense", "defending", "tactical", "positioning", "tackles"],
       "sections": [
-        {
-          "title": "5 Steps to defend like a pro",
-          "anchor": "#5-steps-to-defend-like-a-pro"
-        },
-        {
-          "title": "Outside Back Drill",
-          "anchor": "#outside-back-drill"
-        },
-        {
-          "title": "Defend the Goal",
-          "anchor": "#defend-the-goal"
-        },
-        {
-          "title": "Defensive Distribution",
-          "anchor": "#defensive-distribution"
-        },
-        {
-          "title": "Possession Battle Arena",
-          "anchor": "#possession-battle-arena"
-        },
-        {
-          "title": "50/50 Battle Zone",
-          "anchor": "#5050-battle-zone"
-        },
-        {
-          "title": "Shot Blocking",
-          "anchor": "#shot-blocking"
-        },
-        {
-          "title": "Run Like a Defender",
-          "anchor": "#run-like-a-defender"
-        },
-        {
-          "title": "Defending the Cross",
-          "anchor": "#defending-the-cross"
-        },
-        {
-          "title": "Know when to dive when defending",
-          "anchor": "#know-when-to-dive"
-        },
-        {
-          "title": "Breaking up a run",
-          "anchor": "#breaking-up-a-run"
-        },
-        {
-          "title": "Defending Shots",
-          "anchor": "#defending-shots"
-        },
-        {
-          "title": "Shielding and Dispossession",
-          "anchor": "#shielding-and-dispossession"
-        },
-        {
-          "title": "Defender Footwork",
-          "anchor": "#defender-footwork"
-        },
-        {
-          "title": "Defensive Movement Drill",
-          "anchor": "#defensive-movement-drill"
-        },
-        {
-          "title": "How to Approach an Opponent",
-          "anchor": "#how-to-approach-opponent"
-        },
-        {
-          "title": "Practice Tackling",
-          "anchor": "#practice-tackling"
-        },
-        {
-          "title": "Transitional Shooting, defensive track down",
-          "anchor": "#transitional-shooting"
-        }
+        {"title": "5 Steps to defend like a pro", "anchor": "#5-steps-to-defend-like-a-pro"},
+        {"title": "Outside Back Drill", "anchor": "#outside-back-drill"},
+        {"title": "Defend the Goal", "anchor": "#defend-the-goal"},
+        {"title": "Defensive Distribution", "anchor": "#defensive-distribution"},
+        {"title": "Possession Battle Arena", "anchor": "#possession-battle-arena"},
+        {"title": "50/50 Battle Zone", "anchor": "#5050-battle-zone"},
+        {"title": "Shot Blocking", "anchor": "#shot-blocking"},
+        {"title": "Run Like a Defender", "anchor": "#run-like-a-defender"},
+        {"title": "Defending the Cross", "anchor": "#defending-the-cross"},
+        {"title": "Know when to dive when defending", "anchor": "#know-when-to-dive"},
+        {"title": "Breaking up a run", "anchor": "#breaking-up-a-run"},
+        {"title": "Defending Shots", "anchor": "#defending-shots"},
+        {"title": "Shielding and Dispossession", "anchor": "#shielding-and-dispossession"},
+        {"title": "Defender Footwork", "anchor": "#defender-footwork"},
+        {"title": "Defensive Movement Drill", "anchor": "#defensive-movement-drill"},
+        {"title": "How to Approach an Opponent", "anchor": "#how-to-approach-opponent"},
+        {"title": "Practice Tackling", "anchor": "#practice-tackling"},
+        {"title": "Transitional Shooting, defensive track down", "anchor": "#transitional-shooting"}
       ]
     },
     {
@@ -84,22 +30,10 @@
       "url": "offensive-tactics.html",
       "keywords": ["offense", "attacking", "tactics", "strategy", "pressure"],
       "sections": [
-        {
-          "title": "Big Pitch, Little Pitch",
-          "anchor": "#big-pitch-little-pitch"
-        },
-        {
-          "title": "Decide and Divide",
-          "anchor": "#decide-and-divide"
-        },
-        {
-          "title": "Cross Drill",
-          "anchor": "#cross-drill"
-        },
-        {
-          "title": "Offensive Angled Pressure",
-          "anchor": "#offensive-angled-pressure"
-        }
+        {"title": "Big Pitch, Little Pitch", "anchor": "#big-pitch-little-pitch"},
+        {"title": "Decide and Divide", "anchor": "#decide-and-divide"},
+        {"title": "Cross Drill", "anchor": "#cross-drill"},
+        {"title": "Offensive Angled Pressure", "anchor": "#offensive-angled-pressure"}
       ]
     },
     {
@@ -107,26 +41,11 @@
       "url": "jordan.html",
       "keywords": ["control", "touch", "mastery", "technique", "footwork"],
       "sections": [
-        {
-          "title": "Fast Feet",
-          "anchor": "#fast-feet"
-        },
-        {
-          "title": "First Touch Variations",
-          "anchor": "#first-touch-variations"
-        },
-        {
-          "title": "Figure 8",
-          "anchor": "#figure-8"
-        },
-        {
-          "title": "At Home Ball Mastery Workout",
-          "anchor": "#at-home-ball-mastery-workout"
-        },
-        {
-          "title": "Three Types of First Touch",
-          "anchor": "#three-types-of-first-touch"
-        }
+        {"title": "Fast Feet", "anchor": "#fast-feet"},
+        {"title": "First Touch Variations", "anchor": "#first-touch-variations"},
+        {"title": "Figure 8", "anchor": "#figure-8"},
+        {"title": "At Home Ball Mastery Workout", "anchor": "#at-home-ball-mastery-workout"},
+        {"title": "Three Types of First Touch", "anchor": "#three-types-of-first-touch"}
       ]
     },
     {
@@ -134,70 +53,22 @@
       "url": "ball-control.html",
       "keywords": ["control", "touch", "mastery", "technique", "footwork"],
       "sections": [
-        {
-          "title": "Ball and Wall is all you need",
-          "anchor": "#ball-and-wall-is-all-you-need"
-        },
-        {
-          "title": "Wall Session for Pro Touch",
-          "anchor": "#wall-session-for-pro-touch"
-        },
-        {
-          "title": "Shift and Shuffle",
-          "anchor": "#shift-and-shuffle"
-        },
-        {
-          "title": "First Touch Away From Pressure",
-          "anchor": "#first-touch-away-from-pressure"
-        },
-        {
-          "title": "Fast Feet",
-          "anchor": "#fast-feet"
-        },
-        {
-          "title": "Feint, dribble, controlled shot",
-          "anchor": "#feint-dribble-controlled-shot"
-        },
-        {
-          "title": "First Touch Variations",
-          "anchor": "#first-touch-variations"
-        },
-        {
-          "title": "Two Touch Passing Game",
-          "anchor": "#two-touch-passing-game"
-        },
-        {
-          "title": "Figure 8",
-          "anchor": "#figure-8"
-        },
-        {
-          "title": "At Home Ball Mastery Workout",
-          "anchor": "#at-home-ball-mastery-workout"
-        },
-        {
-          "title": "Three Types of First Touch",
-          "anchor": "#three-types-of-first-touch"
-        },
-        {
-          "title": "V Pull with One Cone Pull Back",
-          "anchor": "#v-pull-with-one-cone-pull-back"
-        },
-        {
-          "title": "Receive Touch Return",
-          "anchor": "#receive-touch-return"
-        },
-        {
-          "title": "Art of Receiving",
-          "anchor": "#art-of-receiving"
-        },
-        {
-          "title": "First Touch Drill",
-          "anchor": "#first-touch-drill"
-        },
-        {
-          "title": "Two player Double Ball Challenge",
-          "anchor": "#two-player-double-ball-challenge"
-        }
+        {"title": "Ball and Wall is all you need", "anchor": "#ball-and-wall-is-all-you-need"},
+        {"title": "Wall Session for Pro Touch", "anchor": "#wall-session-for-pro-touch"},
+        {"title": "Shift and Shuffle", "anchor": "#shift-and-shuffle"},
+        {"title": "First Touch Away From Pressure", "anchor": "#first-touch-away-from-pressure"},
+        {"title": "Fast Feet", "anchor": "#fast-feet"},
+        {"title": "Feint, dribble, controlled shot", "anchor": "#feint-dribble-controlled-shot"},
+        {"title": "First Touch Variations", "anchor": "#first-touch-variations"},
+        {"title": "Two Touch Passing Game", "anchor": "#two-touch-passing-game"},
+        {"title": "Figure 8", "anchor": "#figure-8"},
+        {"title": "At Home Ball Mastery Workout", "anchor": "#at-home-ball-mastery-workout"},
+        {"title": "Three Types of First Touch", "anchor": "#three-types-of-first-touch"},
+        {"title": "V Pull with One Cone Pull Back", "anchor": "#v-pull-with-one-cone-pull-back"},
+        {"title": "Receive Touch Return", "anchor": "#receive-touch-return"},
+        {"title": "Art of Receiving", "anchor": "#art-of-receiving"},
+        {"title": "First Touch Drill", "anchor": "#first-touch-drill"},
+        {"title": "Two player Double Ball Challenge", "anchor": "#two-player-double-ball-challenge"}
       ]
     },
     {
@@ -205,74 +76,23 @@
       "url": "shooting.html",
       "keywords": ["shooting", "finishing", "goals", "striker", "accuracy"],
       "sections": [
-        {
-          "title": "3 Station Finishing",
-          "anchor": "#3-station-finishing"
-        },
-        {
-          "title": "Group Finishing Drill",
-          "anchor": "#group-finishing-drill"
-        },
-        {
-          "title": "Rapid Release: Quick Touch & Shot",
-          "anchor": "#rapid-release-quick-touch-shot"
-        },
-        {
-          "title": "Striking Windows: Shot Selection Challenge",
-          "anchor": "#striking-windows-shot-selection-challenge"
-        },
-        {
-          "title": "Complete Striker Series: 4-Phase Finishing",
-          "anchor": "#complete-striker-series-4-phase-finishing"
-        },
-        {
-          "title": "Quick Release: Touch & Strike Drill",
-          "anchor": "#quick-release-touch-strike-drill"
-        },
-        {
-          "title": "Post up, Flip, Hit",
-          "anchor": "#post-up-flip-hit"
-        },
-        {
-          "title": "Liverpool Finishing Drill",
-          "anchor": "#liverpool-finishing-drill"
-        },
-        {
-          "title": "Reaction Finishing",
-          "anchor": "#reaction-finishing"
-        },
-        {
-          "title": "One Step Shot",
-          "anchor": "#one-step-shot"
-        },
-        {
-          "title": "Transitional Shooting, defensive track down",
-          "anchor": "#transitional-shooting-defensive-track-down"
-        },
-        {
-          "title": "2 v 1 Rotational Finishing",
-          "anchor": "#2-v-1-rotational-finishing"
-        },
-        {
-          "title": "Shooting Drill to work on technique",
-          "anchor": "#shooting-drill-to-work-on-technique"
-        },
-        {
-          "title": "Shooting with Tennis Ball",
-          "anchor": "#shooting-with-tennis-ball"
-        },
-        {
-          "title": "Ireland Finishing Drill",
-          "anchor": "#ireland-finishing-drill"
-        },
-        {
-          "title": "Placement finishing drill",
-          "anchor": "#placement-finishing-drill"
-        },
-        {
-          "title": "If your in the box, shoot it",
-          "anchor": "#in-box-shoot-it"
-        }
+        {"title": "3 Station Finishing", "anchor": "#3-station-finishing"},
+        {"title": "Group Finishing Drill", "anchor": "#group-finishing-drill"},
+        {"title": "Rapid Release: Quick Touch & Shot", "anchor": "#rapid-release-quick-touch-shot"},
+        {"title": "Striking Windows: Shot Selection Challenge", "anchor": "#striking-windows-shot-selection-challenge"},
+        {"title": "Complete Striker Series: 4-Phase Finishing", "anchor": "#complete-striker-series-4-phase-finishing"},
+        {"title": "Quick Release: Touch & Strike Drill", "anchor": "#quick-release-touch-strike-drill"},
+        {"title": "Post up, Flip, Hit", "anchor": "#post-up-flip-hit"},
+        {"title": "Liverpool Finishing Drill", "anchor": "#liverpool-finishing-drill"},
+        {"title": "Reaction Finishing", "anchor": "#reaction-finishing"},
+        {"title": "One Step Shot", "anchor": "#one-step-shot"},
+        {"title": "Transitional Shooting, defensive track down", "anchor": "#transitional-shooting-defensive-track-down"},
+        {"title": "2 v 1 Rotational Finishing", "anchor": "#2-v-1-rotational-finishing"},
+        {"title": "Shooting Drill to work on technique", "anchor": "#shooting-drill-to-work-on-technique"},
+        {"title": "Shooting with Tennis Ball", "anchor": "#shooting-with-tennis-ball"},
+        {"title": "Ireland Finishing Drill", "anchor": "#ireland-finishing-drill"},
+        {"title": "Placement finishing drill", "anchor": "#placement-finishing-drill"},
+        {"title": "If your in the box, shoot it", "anchor": "#in-box-shoot-it"}
       ]
     },
     {
@@ -280,38 +100,14 @@
       "url": "passing.html",
       "keywords": ["passing", "distribution", "accuracy", "technique", "combination"],
       "sections": [
-        {
-          "title": "Progressive Switch: Three-Step Combination Play",
-          "anchor": "#progressive-switch-three-step-combination-play"
-        },
-        {
-          "title": "Precision Gates: Diagonal Passing Exchange",
-          "anchor": "#precision-gates-diagonal-passing-exchange"
-        },
-        {
-          "title": "Dynamic Passing Ladder: Two-Touch Technical Series",
-          "anchor": "#dynamic-passing-ladder-two-touch-technical-series"
-        },
-        {
-          "title": "Touch Left, 1 Touch, 2 Touch Right",
-          "anchor": "#touch-left-1-touch-2-touch-right"
-        },
-        {
-          "title": "Passing Pivot Exercises",
-          "anchor": "#passing-pivot-exercises"
-        },
-        {
-          "title": "Clockwise Passing when Starting Slow",
-          "anchor": "#clockwise-passing-when-starting-slow"
-        },
-        {
-          "title": "Passing Straight from Long Distance",
-          "anchor": "#passing-straight-from-long-distance"
-        },
-        {
-          "title": "Warmup dribble, turn, pass, touch, and Go",
-          "anchor": "#warmup-dribble-turn-pass-touch-and-go"
-        }
+        {"title": "Progressive Switch: Three-Step Combination Play", "anchor": "#progressive-switch-three-step-combination-play"},
+        {"title": "Precision Gates: Diagonal Passing Exchange", "anchor": "#precision-gates-diagonal-passing-exchange"},
+        {"title": "Dynamic Passing Ladder: Two-Touch Technical Series", "anchor": "#dynamic-passing-ladder-two-touch-technical-series"},
+        {"title": "Touch Left, 1 Touch, 2 Touch Right", "anchor": "#touch-left-1-touch-2-touch-right"},
+        {"title": "Passing Pivot Exercises", "anchor": "#passing-pivot-exercises"},
+        {"title": "Clockwise Passing when Starting Slow", "anchor": "#clockwise-passing-when-starting-slow"},
+        {"title": "Passing Straight from Long Distance", "anchor": "#passing-straight-from-long-distance"},
+        {"title": "Warmup dribble, turn, pass, touch, and Go", "anchor": "#warmup-dribble-turn-pass-touch-and-go"}
       ]
     },
     {
@@ -319,34 +115,13 @@
       "url": "dribbling.html",
       "keywords": ["dribbling", "moves", "skills", "feints", "agility"],
       "sections": [
-        {
-          "title": "Dribble & Draw Defenders",
-          "anchor": "#dribble-draw-defenders"
-        },
-        {
-          "title": "3 dribbling drills",
-          "anchor": "#3-dribbling-drills"
-        },
-        {
-          "title": "5 drills to improve your dribbling",
-          "anchor": "#5-drills-to-improve-your-dribbling"
-        },
-        {
-          "title": "Dribbling with laces and other dribble techniques",
-          "anchor": "#dribbling-with-laces-and-other-dribble-techniques"
-        },
-        {
-          "title": "Improve your dribbling at home with no equipment",
-          "anchor": "#improve-your-dribbling-at-home-with-no-equipment"
-        },
-        {
-          "title": "The Glitch",
-          "anchor": "#the-glitch"
-        },
-        {
-          "title": "Dribble and Run are not the same thing",
-          "anchor": "#dribble-and-run-are-not-the-same-thing"
-        }
+        {"title": "Dribble & Draw Defenders", "anchor": "#dribble-draw-defenders"},
+        {"title": "3 dribbling drills", "anchor": "#3-dribbling-drills"},
+        {"title": "5 drills to improve your dribbling", "anchor": "#5-drills-to-improve-your-dribbling"},
+        {"title": "Dribbling with laces and other dribble techniques", "anchor": "#dribbling-with-laces-and-other-dribble-techniques"},
+        {"title": "Improve your dribbling at home with no equipment", "anchor": "#improve-your-dribbling-at-home-with-no-equipment"},
+        {"title": "The Glitch", "anchor": "#the-glitch"},
+        {"title": "Dribble and Run are not the same thing", "anchor": "#dribble-and-run-are-not-the-same-thing"}
       ]
     },
     {
@@ -354,30 +129,12 @@
       "url": "goalkeeper.html",
       "keywords": ["goalkeeper", "saves", "diving", "distribution", "positioning"],
       "sections": [
-        {
-          "title": "The Triangle",
-          "anchor": "#the-triangle"
-        },
-        {
-          "title": "Goalie Communication",
-          "anchor": "#goalie-communication"
-        },
-        {
-          "title": "Be at the 6 When They Are at 18",
-          "anchor": "#be-at-the-6-when-they-are-at-18"
-        },
-        {
-          "title": "Defend Smallest Goal Possible Goalie",
-          "anchor": "#defend-smallest-goal-possible-goalie"
-        },
-        {
-          "title": "Goalkeeper Punch instead of Punt",
-          "anchor": "#goalkeeper-punch-instead-of-punt"
-        },
-        {
-          "title": "Handling and Movement warmup",
-          "anchor": "#handling-and-movement-warmup"
-        }
+        {"title": "The Triangle", "anchor": "#the-triangle"},
+        {"title": "Goalie Communication", "anchor": "#goalie-communication"},
+        {"title": "Be at the 6 When They Are at 18", "anchor": "#be-at-the-6-when-they-are-at-18"},
+        {"title": "Defend Smallest Goal Possible Goalie", "anchor": "#defend-smallest-goal-possible-goalie"},
+        {"title": "Goalkeeper Punch instead of Punt", "anchor": "#goalkeeper-punch-instead-of-punt"},
+        {"title": "Handling and Movement warmup", "anchor": "#handling-and-movement-warmup"}
       ]
     },
     {
@@ -385,34 +142,13 @@
       "url": "trapping.html",
       "keywords": ["trapping", "receiving", "control", "technique", "cushion"],
       "sections": [
-        {
-          "title": "Trap Control",
-          "anchor": "#trap-control"
-        },
-        {
-          "title": "Snapback touch",
-          "anchor": "#snapback-touch"
-        },
-        {
-          "title": "Trapping Techniques",
-          "anchor": "#trapping-techniques"
-        },
-        {
-          "title": "Rapid Rotation: Throw, Trap & Score",
-          "anchor": "#rapid-rotation-throw-trap-score"
-        },
-        {
-          "title": "Egg trap",
-          "anchor": "#egg-trap"
-        },
-        {
-          "title": "Control and First Touch Action Trap",
-          "anchor": "#control-and-first-touch-action-trap"
-        },
-        {
-          "title": "Why trap with thigh?",
-          "anchor": "#why-trap-with-thigh"
-        }
+        {"title": "Trap Control", "anchor": "#trap-control"},
+        {"title": "Snapback touch", "anchor": "#snapback-touch"},
+        {"title": "Trapping Techniques", "anchor": "#trapping-techniques"},
+        {"title": "Rapid Rotation: Throw, Trap & Score", "anchor": "#rapid-rotation-throw-trap-score"},
+        {"title": "Egg trap", "anchor": "#egg-trap"},
+        {"title": "Control and First Touch Action Trap", "anchor": "#control-and-first-touch-action-trap"},
+        {"title": "Why trap with thigh?", "anchor": "#why-trap-with-thigh"}
       ]
     },
     {
@@ -420,10 +156,7 @@
       "url": "heading.html",
       "keywords": ["heading", "headers", "aerial", "technique", "power"],
       "sections": [
-        {
-          "title": "Heading Line Drill",
-          "anchor": "#heading-line-drill"
-        }
+        {"title": "Heading Line Drill", "anchor": "#heading-line-drill"}
       ]
     },
     {
@@ -431,46 +164,16 @@
       "url": "turns.html",
       "keywords": ["turns", "rotation", "pivoting", "direction", "change"],
       "sections": [
-        {
-          "title": "Core Turning Skills Collection",
-          "anchor": "#core-turning-skills-collection"
-        },
-        {
-          "title": "Reception & Control Fundamentals",
-          "anchor": "#reception-control-fundamentals"
-        },
-        {
-          "title": "Circle Drill: Reception & Turn Series",
-          "anchor": "#circle-drill-reception-turn-series"
-        },
-        {
-          "title": "Striker's Arsenal: 10 Essential Turns",
-          "anchor": "#strikers-arsenal-10-essential-turns"
-        },
-        {
-          "title": "Turn & Accelerate: Dynamic Dribbling Series",
-          "anchor": "#turn-accelerate-dynamic-dribbling-series"
-        },
-        {
-          "title": "Magic Turn",
-          "anchor": "#magic-turn"
-        },
-        {
-          "title": "Wall Move Turns",
-          "anchor": "#wall-move-turns"
-        },
-        {
-          "title": "High Level Turns",
-          "anchor": "#high-level-turns"
-        },
-        {
-          "title": "Turn Accelerate Out",
-          "anchor": "#turn-accelerate-out"
-        },
-        {
-          "title": "7 ways to turn",
-          "anchor": "#7-ways-to-turn"
-        }
+        {"title": "Core Turning Skills Collection", "anchor": "#core-turning-skills-collection"},
+        {"title": "Reception & Control Fundamentals", "anchor": "#reception-control-fundamentals"},
+        {"title": "Circle Drill: Reception & Turn Series", "anchor": "#circle-drill-reception-turn-series"},
+        {"title": "Striker's Arsenal: 10 Essential Turns", "anchor": "#strikers-arsenal-10-essential-turns"},
+        {"title": "Turn & Accelerate: Dynamic Dribbling Series", "anchor": "#turn-accelerate-dynamic-dribbling-series"},
+        {"title": "Magic Turn", "anchor": "#magic-turn"},
+        {"title": "Wall Move Turns", "anchor": "#wall-move-turns"},
+        {"title": "High Level Turns", "anchor": "#high-level-turns"},
+        {"title": "Turn Accelerate Out", "anchor": "#turn-accelerate-out"},
+        {"title": "7 ways to turn", "anchor": "#7-ways-to-turn"}
       ]
     },
     {
@@ -478,11 +181,527 @@
       "url": "crossing.html",
       "keywords": ["crossing", "delivery", "wings", "service", "flanks"],
       "sections": [
-        {
-          "title": "3 Ways To Get More Crosses Off",
-          "anchor": "#3-ways-to-get-more-crosses-off"
-        }
+        {"title": "3 Ways To Get More Crosses Off", "anchor": "#3-ways-to-get-more-crosses-off"}
       ]
+    },
+    {
+      "title": "Foot Skills",
+      "url": "footskills.html",
+      "keywords": ["footskills", "footwork", "technique", "mastery", "coordination"],
+      "sections": [
+        {"title": "5 Beginner Footwork Drills To Master", "anchor": "#5-beginner-footwork-drills-to-master"},
+        {"title": "Ball Steps", "anchor": "#ball-steps"},
+        {"title": "Quick Feet", "anchor": "#quick-feet"},
+        {"title": "Drag Back in Inside Out", "anchor": "#drag-back-in-inside-out"},
+        {"title": "Inside Out", "anchor": "#inside-out"},
+        {"title": "Ball Steps 2", "anchor": "#ball-steps-2"},
+        {"title": "Maestro", "anchor": "#maestro"},
+        {"title": "Pull Push", "anchor": "#pull-push"},
+        {"title": "Pull Trap", "anchor": "#pull-trap"},
+        {"title": "Quick Feet Rollovers", "anchor": "#quick-feet-rollovers"},
+        {"title": "Quick Feet Snap Rollovers", "anchor": "#quick-feet-snap-rollovers"},
+        {"title": "Scissors", "anchor": "#scissors"},
+        {"title": "Sole Rolls", "anchor": "#sole-rolls"},
+        {"title": "Step overs", "anchor": "#step-overs"},
+        {"title": "Step Unders", "anchor": "#step-unders"},
+        {"title": "The Vee", "anchor": "#the-vee"},
+        {"title": "The Vee II", "anchor": "#the-vee-ii"},
+        {"title": "Three Tap Spin", "anchor": "#three-tap-spin"},
+        {"title": "Triangles", "anchor": "#triangles"},
+        {"title": "Wall - Inside Right and Left", "anchor": "#wall-inside-right-and-left"},
+        {"title": "Wall - Inside Alternating", "anchor": "#wall-inside-alternating"},
+        {"title": "Wall - Laces", "anchor": "#wall-laces"},
+        {"title": "Wall - Both Fee", "anchor": "#wall-both-fee"},
+        {"title": "Wall - Triangle", "anchor": "#wall-triangle"}
+      ]
+    },
+    {
+      "title": "Short Passing",
+      "url": "short-passing.html",
+      "keywords": ["passing", "short-pass", "combination", "technique", "accuracy"],
+      "sections": [
+        {"title": "Create space to break lines", "anchor": "#create-space-to-break-lines"},
+        {"title": "Break the Lines passing drill", "anchor": "#break-the-lines-passing-drill"},
+        {"title": "Trapezoid Passing", "anchor": "#trapezoid-passing"},
+        {"title": "2 Key Give & Go Points", "anchor": "#2-key-give-go-points"},
+        {"title": "Give and GO Fake", "anchor": "#give-and-go-fake"},
+        {"title": "Triangle Dynamics: Three-Player Give & Go", "anchor": "#triangle-dynamics-three-player-give-go"},
+        {"title": "Progressive Switch: Three-Step Combination Play", "anchor": "#progressive-switch-three-step-combination-play"},
+        {"title": "Precision Gates: Diagonal Passing Exchange", "anchor": "#precision-gates-diagonal-passing-exchange"},
+        {"title": "Dynamic Passing Ladder: Two-Touch Technical Series", "anchor": "#dynamic-passing-ladder-two-touch-technical-series"},
+        {"title": "Touch Left, 1 Touch, 2 Touch Right", "anchor": "#touch-left-1-touch-2-touch-right"},
+        {"title": "How To Play The Ball Faster", "anchor": "#how-to-play-the-ball-faster"},
+        {"title": "Punch Pass for faster play", "anchor": "#punch-pass-for-faster-play"},
+        {"title": "Overlap Runs From Defensive End", "anchor": "#overlap-runs-from-defensive-end"},
+        {"title": "Passing Pivot Exercises", "anchor": "#passing-pivot-exercises"},
+        {"title": "Clockwise Passing when Starting Slow", "anchor": "#clockwise-passing-when-starting-slow"},
+        {"title": "Pattern Play Possession", "anchor": "#pattern-play-possession"}
+      ]
+    },
+    {
+      "title": "Speed",
+      "url": "speed.html",
+      "keywords": ["speed", "agility", "fitness", "running", "conditioning"],
+      "sections": [
+        {"title": "Run on Toes exercise", "anchor": "#run-on-toes-exercise"},
+        {"title": "High Knee Stretch", "anchor": "#high-knee-stretch"},
+        {"title": "Cross Hops", "anchor": "#cross-hops"},
+        {"title": "Cross Leg", "anchor": "#cross-leg"},
+        {"title": "Sit Form", "anchor": "#sit-form"},
+        {"title": "Two Step Toe Stretch", "anchor": "#two-step-toe-stretch"},
+        {"title": "One Leg Hops", "anchor": "#one-leg-hops"},
+        {"title": "Skips", "anchor": "#skips"},
+        {"title": "Cross Leg Stretch", "anchor": "#cross-leg-stretch"},
+        {"title": "Lunges", "anchor": "#lunges"},
+        {"title": "Arm Form", "anchor": "#arm-form"},
+        {"title": "Ladder", "anchor": "#ladder"},
+        {"title": "Training for Defender", "anchor": "#training-for-defender"},
+        {"title": "Speed Workout", "anchor": "#speed-workout"}
+      ]
+    },
+    {
+      "title": "1 v 1 Moves",
+      "url": "1v1-moves.html",
+      "keywords": ["1v1", "moves", "dribbling", "skills", "attacking"],
+      "sections": [
+        {"title": "La Croqueta", "anchor": "#la-croqueta"},
+        {"title": "How to win your 1 v 1 as an attacker", "anchor": "#how-to-win-your-1-v-1-as-an-attacker"},
+        {"title": "Knee Rocket", "anchor": "#knee-rocket"},
+        {"title": "Four 1 V 1 Skills to beat defenders", "anchor": "#four-1-v-1-skills-to-beat-defenders"},
+        {"title": "Inside Drag", "anchor": "#inside-drag"},
+        {"title": "Move to Shot", "anchor": "#move-to-shot"},
+        {"title": "Be Deceptive", "anchor": "#be-deceptive"},
+        {"title": "Flick Up Tutorial", "anchor": "#flick-up-tutorial"},
+        {"title": "Slow down can make you speed up", "anchor": "#slow-down-can-make-you-speed-up"},
+        {"title": "Learn the Elastico", "anchor": "#learn-the-elastico"},
+        {"title": "1 on 1 Gate Drill", "anchor": "#1-on-1-gate-drill"}
+      ]
+    },
+    {
+      "title": "Warmup",
+      "url": "warmup.html",
+      "keywords": ["warmup", "stretching", "preparation", "routine", "activation"],
+      "sections": [
+        {"title": "Warmup Routine", "anchor": "#warmup-routine"},
+        {"title": "Game Time Warmup combined groups", "anchor": "#game-time-warmup-combined-groups"},
+        {"title": "Game time warmup 2 groups", "anchor": "#game-time-warmup-2-groups"},
+        {"title": "New 50 Touches Warmup", "anchor": "#new-50-touches-warmup"},
+        {"title": "Two lines Game Time Warmup", "anchor": "#two-lines-game-time-warmup"},
+        {"title": "Dynamic Game warmup", "anchor": "#dynamic-game-warmup"},
+        {"title": "Passing Warmup with some backwards and forward movement", "anchor": "#passing-warmup-with-some-backwards-and-forward-movement"},
+        {"title": "3-Way Warmup", "anchor": "#3-way-warmup"},
+        {"title": "Dynamic warmup", "anchor": "#dynamic-warmup"},
+        {"title": "Positional Warmup for Left Back", "anchor": "#positional-warmup-for-left-back"},
+        {"title": "Game Day Warmup - Gates and Keep Away", "anchor": "#game-day-warmup-gates-and-keep-away"}
+      ]
+    },
+    {
+      "title": "Goalie Drills",
+      "url": "goalie-drills.html",
+      "keywords": ["goalkeeper", "drills", "training", "saves", "technique"],
+      "sections": [
+        {"title": "30-45 Minute Goalie Training Routine", "anchor": "#30-45-minute-goalie-training-routine"},
+        {"title": "Dive Activation", "anchor": "#dive-activation"},
+        {"title": "Positioning and Angles", "anchor": "#positioning-and-angles"},
+        {"title": "Defend Smallest Goal Possible Goalie", "anchor": "#defend-smallest-goal-possible-goalie"},
+        {"title": "The Triangle", "anchor": "#the-triangle"},
+        {"title": "Angles", "anchor": "#angles"},
+        {"title": "Be at the 6 When They Are at 18", "anchor": "#be-at-the-6-when-they-are-at-18"},
+        {"title": "Corner Defending", "anchor": "#corner-defending"},
+        {"title": "Set Position", "anchor": "#set-position"},
+        {"title": "Feet and Shoulders", "anchor": "#feet-and-shoulders"},
+        {"title": "Communication", "anchor": "#communication"},
+        {"title": "Goalie Communication", "anchor": "#goalie-communication"},
+        {"title": "Diving Drills", "anchor": "#diving-drills"},
+        {"title": "Collapse, Dive, and Step", "anchor": "#collapse-dive-and-step"},
+        {"title": "Scoop and Cover", "anchor": "#scoop-and-cover"},
+        {"title": "Reaction Drill", "anchor": "#reaction-drill"},
+        {"title": "Distribution", "anchor": "#distribution"},
+        {"title": "Punting", "anchor": "#punting"},
+        {"title": "Goalie Warmup Ground", "anchor": "#goalie-warmup-ground"},
+        {"title": "Leg Block Breakaway Goalie", "anchor": "#leg-block-breakaway-goalie"}
+      ]
+    },
+    {
+      "title": "Penetrative Passing",
+      "url": "through-balls.html",
+      "keywords": ["through-balls", "passing", "penetration", "runs", "timing"],
+      "sections": [
+        {"title": "Wide player Runs Behind Defense", "anchor": "#wide-player-runs-behind-defense"},
+        {"title": "Give and Go Drill that develops from two opposite lines", "anchor": "#give-and-go-drill-that-develops-from-two-opposite-lines"},
+        {"title": "Dynamic Through Ball: Communication & Movement Drill", "anchor": "#dynamic-through-ball-communication-movement-drill"},
+        {"title": "2 Key Give & Go Points", "anchor": "#2-key-give-go-points"},
+        {"title": "Give and GO Fake", "anchor": "#give-and-go-fake"},
+        {"title": "Triangle Dynamics: Three-Player Give & Go", "anchor": "#triangle-dynamics-three-player-give-go"},
+        {"title": "Overlap Runs From Defensive End", "anchor": "#overlap-runs-from-defensive-end"},
+        {"title": "Overlap Finishing Drill", "anchor": "#overlap-finishing-drill"}
+      ]
+    },
+    {
+      "title": "Small-Sided Games",
+      "url": "small-sided.html",
+      "keywords": ["small-sided", "games", "fun", "competitive", "drills"],
+      "sections": [
+        {"title": "Capture the Flag warmup with bals", "anchor": "#capture-the-flag-warmup-with-bals"},
+        {"title": "Hungry Hippos Relay", "anchor": "#hungry-hippos-relay"},
+        {"title": "Sharks and Minnows", "anchor": "#sharks-and-minnows"},
+        {"title": "Sharks and Minnows with Passing", "anchor": "#sharks-and-minnows-with-passing"},
+        {"title": "Tic Tac Toe", "anchor": "#tic-tac-toe"},
+        {"title": "Break the loc", "anchor": "#break-the-loc"},
+        {"title": "Around the World", "anchor": "#around-the-world"}
+      ]
+    },
+    {
+      "title": "Throw In",
+      "url": "throw-in.html",
+      "keywords": ["throw-in", "set-piece", "tactics", "technique", "movement"],
+      "sections": [
+        {"title": "3 Throw-in options", "anchor": "#3-throw-in-options"},
+        {"title": "Loop Run Throw-In", "anchor": "#loop-run-throw-in"},
+        {"title": "Criss-Cross Throw-In", "anchor": "#criss-cross-throw-in"},
+        {"title": "Direct Throw-In Technique", "anchor": "#direct-throw-in-technique"},
+        {"title": "Throw-In Control & Touch Drill", "anchor": "#throw-in-control-touch-drill"},
+        {"title": "Triple Threat Throw", "anchor": "#triple-threat-throw"}
+      ]
+    },
+    {
+      "title": "Corner Kick",
+      "url": "corner-kick.html",
+      "keywords": ["corner-kick", "set-piece", "delivery", "tactics", "crossing"],
+      "sections": [
+        {"title": "Near Defender Run", "anchor": "#near-defender-run"},
+        {"title": "Fundamental Corner Setup", "anchor": "#fundamental-corner-setup"},
+        {"title": "3-1 Corner Set", "anchor": "#3-1-corner-set"},
+        {"title": "Master the Cross/Coner Kick", "anchor": "#master-the-cross-coner-kick"},
+        {"title": "Futsal Corner Kick", "anchor": "#futsal-corner-kick"}
+      ]
+    },
+    {
+      "title": "Defensive Drills",
+      "url": "defensive-drills.html",
+      "keywords": ["defensive", "drills", "training", "tactics", "positioning"],
+      "sections": [
+        {"title": "Can you get out of the zone?", "anchor": "#can-you-get-out-of-the-zone"},
+        {"title": "Progressive Defensive Containment Drill", "anchor": "#progressive-defensive-containment-drill"},
+        {"title": "Interception Drill", "anchor": "#interception-drill"},
+        {"title": "Touch Feel", "anchor": "#touch-feel"},
+        {"title": "Multi-Ball Deception Game", "anchor": "#multi-ball-deception-game"}
+      ]
+    },
+    {
+      "title": "Receiving",
+      "url": "receiving.html",
+      "keywords": ["receiving", "first-touch", "control", "technique", "directional"],
+      "sections": [
+        {"title": "Directional First Touch", "anchor": "#directional-first-touch"},
+        {"title": "Receiving Skills Examples", "anchor": "#receiving-skills-examples"},
+        {"title": "Receiving Under Pressure", "anchor": "#receiving-under-pressure"},
+        {"title": "First Touch Variations", "anchor": "#first-touch-variations"},
+        {"title": "Art of Receiving", "anchor": "#art-of-receiving"}
+      ]
+    },
+    {
+      "title": "Juggling",
+      "url": "juggling.html",
+      "keywords": ["juggling", "control", "touch", "technique", "coordination"],
+      "sections": [
+        {"title": "Intro to Juggling", "anchor": "#intro-to-juggling"},
+        {"title": "Why Juggle Like That?", "anchor": "#why-juggle-like-that"},
+        {"title": "Juggling Techniques", "anchor": "#juggling-techniques"},
+        {"title": "Advanced Juggling", "anchor": "#advanced-juggling"},
+        {"title": "Juggling Challenges", "anchor": "#juggling-challenges"}
+      ]
+    },
+    {
+      "title": "Assessment Tools",
+      "url": "assessment-tools.html",
+      "keywords": ["assessment", "evaluation", "testing", "skills", "tracking"],
+      "sections": [
+        {"title": "Skill forms", "anchor": "#skill-forms"},
+        {"title": "Results", "anchor": "#results"},
+        {"title": "Weave to Shoot", "anchor": "#weave-to-shoot"},
+        {"title": "Long Pass", "anchor": "#long-pass"}
+      ]
+    },
+    {
+      "title": "Body Feints",
+      "url": "body-feints.html",
+      "keywords": ["feints", "deception", "moves", "body-movement", "skills"],
+      "sections": [
+        {"title": "Body Feint is the unguardable move", "anchor": "#body-feint-is-the-unguardable-move"},
+        {"title": "Feint Series", "anchor": "#feint-series"},
+        {"title": "Advanced Body Feints", "anchor": "#advanced-body-feints"},
+        {"title": "Feint Combinations", "anchor": "#feint-combinations"}
+      ]
+    },
+    {
+      "title": "Scanning",
+      "url": "scanning.html",
+      "keywords": ["scanning", "awareness", "vision", "tactical", "decision-making"],
+      "sections": [
+        {"title": "Importance of Scanning", "anchor": "#importance-of-scanning"},
+        {"title": "Scanning Techniques", "anchor": "#scanning-techniques"},
+        {"title": "Scanning Drills", "anchor": "#scanning-drills"},
+        {"title": "Game Scanning", "anchor": "#game-scanning"}
+      ]
+    },
+    {
+      "title": "Goal Kick",
+      "url": "goal-kick.html",
+      "keywords": ["goal-kick", "distribution", "set-piece", "tactics", "goalkeeper"],
+      "sections": [
+        {"title": "Goal Kick Techniques", "anchor": "#goal-kick-techniques"},
+        {"title": "Short Goal Kick", "anchor": "#short-goal-kick"},
+        {"title": "Long Goal Kick", "anchor": "#long-goal-kick"},
+        {"title": "Goal Kick Tactics", "anchor": "#goal-kick-tactics"}
+      ]
+    },
+    {
+      "title": "Marking",
+      "url": "marking.html",
+      "keywords": ["marking", "defending", "man-marking", "zonal", "tactics"],
+      "sections": [
+        {"title": "Man Marking", "anchor": "#man-marking"},
+        {"title": "Zonal Marking", "anchor": "#zonal-marking"},
+        {"title": "Marking Drills", "anchor": "#marking-drills"},
+        {"title": "Set Piece Marking", "anchor": "#set-piece-marking"}
+      ]
+    },
+    {
+      "title": "Fun",
+      "url": "fun.html",
+      "keywords": ["fun", "games", "activities", "team-building", "engagement"],
+      "sections": [
+        {"title": "Fun Drills", "anchor": "#fun-drills"},
+        {"title": "Team Games", "anchor": "#team-games"},
+        {"title": "Skills Challenges", "anchor": "#skills-challenges"},
+        {"title": "Competition Games", "anchor": "#competition-games"}
+      ]
+    },
+    {
+      "title": "Off-Season Training",
+      "url": "off-season-training.html",
+      "keywords": ["off-season", "training", "fitness", "conditioning", "development"],
+      "sections": [
+        {"title": "Off-Season Program", "anchor": "#off-season-program"},
+        {"title": "Fitness Maintenance", "anchor": "#fitness-maintenance"},
+        {"title": "Skill Development", "anchor": "#skill-development"}
+      ]
+    },
+    {
+      "title": "One Touch Shots",
+      "url": "one-touch-shots.html",
+      "keywords": ["one-touch", "shooting", "finishing", "technique", "quick"],
+      "sections": [
+        {"title": "One Touch Finishing", "anchor": "#one-touch-finishing"},
+        {"title": "One Touch Technique", "anchor": "#one-touch-technique"},
+        {"title": "One Touch Drills", "anchor": "#one-touch-drills"}
+      ]
+    },
+    {
+      "title": "Power Shots",
+      "url": "power-shots.html",
+      "keywords": ["power", "shooting", "technique", "strength", "finishing"],
+      "sections": [
+        {"title": "Power Shot Technique", "anchor": "#power-shot-technique"},
+        {"title": "Building Shot Power", "anchor": "#building-shot-power"},
+        {"title": "Power Shot Drills", "anchor": "#power-shot-drills"}
+      ]
+    },
+    {
+      "title": "Game Day",
+      "url": "game-day.html",
+      "keywords": ["game-day", "preparation", "routine", "mentality", "performance"],
+      "sections": [
+        {"title": "Pre-Game Routine", "anchor": "#pre-game-routine"},
+        {"title": "Mental Preparation", "anchor": "#mental-preparation"},
+        {"title": "Game Day Checklist", "anchor": "#game-day-checklist"}
+      ]
+    },
+    {
+      "title": "Volleys",
+      "url": "volleys.html",
+      "keywords": ["volleys", "technique", "shooting", "aerial", "finishing"],
+      "sections": [
+        {"title": "Volley Technique", "anchor": "#volley-technique"},
+        {"title": "Volley Drills", "anchor": "#volley-drills"}
+      ]
+    },
+    {
+      "title": "Tactics Theory",
+      "url": "tactics-theory.html",
+      "keywords": ["tactics", "theory", "strategy", "understanding", "game-model"],
+      "sections": [
+        {"title": "Tactical Principles", "anchor": "#tactical-principles"},
+        {"title": "Game Understanding", "anchor": "#game-understanding"}
+      ]
+    },
+    {
+      "title": "Partner Drills",
+      "url": "partner-drills.html",
+      "keywords": ["partner", "drills", "two-player", "training", "technique"],
+      "sections": [
+        {"title": "Partner Passing", "anchor": "#partner-passing"},
+        {"title": "Partner Shooting", "anchor": "#partner-shooting"}
+      ]
+    },
+    {
+      "title": "Player Development",
+      "url": "player-development.html",
+      "keywords": ["development", "progression", "youth", "training", "pathway"],
+      "sections": [
+        {"title": "Progression Chart", "anchor": "#progression-chart"}
+      ]
+    },
+    {
+      "title": "Centerback Drills",
+      "url": "centerback-drills.html",
+      "keywords": ["centerback", "defender", "drills", "positioning", "training"],
+      "sections": []
+    },
+    {
+      "title": "Communication",
+      "url": "communication.html",
+      "keywords": ["communication", "teamwork", "leadership", "verbal", "tactical"],
+      "sections": []
+    },
+    {
+      "title": "Conditioning Drills",
+      "url": "conditioning-drills.html",
+      "keywords": ["conditioning", "fitness", "endurance", "stamina", "training"],
+      "sections": []
+    },
+    {
+      "title": "Formations",
+      "url": "formations.html",
+      "keywords": ["formations", "tactics", "system", "shape", "structure"],
+      "sections": []
+    },
+    {
+      "title": "Goalie Practice",
+      "url": "goalie-practice.html",
+      "keywords": ["goalkeeper", "practice", "training", "drills", "technique"],
+      "sections": []
+    },
+    {
+      "title": "Kick Off",
+      "url": "kick-off.html",
+      "keywords": ["kick-off", "set-piece", "tactics", "strategy", "start"],
+      "sections": [
+        {"title": "Drop Back Kickoff Attack", "anchor": "#drop-back-kickoff-attack"}
+      ]
+    },
+    {
+      "title": "Midfielder Drills",
+      "url": "midfielder-drills.html",
+      "keywords": ["midfielder", "center-mid", "drills", "training", "positioning"],
+      "sections": []
+    },
+    {
+      "title": "Off-Ball Runs",
+      "url": "off-ball-runs.html",
+      "keywords": ["off-ball", "movement", "runs", "positioning", "tactical"],
+      "sections": []
+    },
+    {
+      "title": "Offensive Drills",
+      "url": "offensive-drills.html",
+      "keywords": ["offensive", "attacking", "drills", "training", "tactics"],
+      "sections": []
+    },
+    {
+      "title": "Outside Back Drills",
+      "url": "outside-back-drills.html",
+      "keywords": ["outside-back", "fullback", "defender", "drills", "training"],
+      "sections": []
+    },
+    {
+      "title": "Possession",
+      "url": "possession.html",
+      "keywords": ["possession", "keeping-ball", "control", "passing", "rondo"],
+      "sections": []
+    },
+    {
+      "title": "Position Plans",
+      "url": "position-plans.html",
+      "keywords": ["position", "plans", "training", "specific", "roles"],
+      "sections": []
+    },
+    {
+      "title": "Session Planner",
+      "url": "session-planner.html",
+      "keywords": ["session", "planner", "practice", "organization", "planning"],
+      "sections": []
+    },
+    {
+      "title": "Set Pieces",
+      "url": "set-pieces.html",
+      "keywords": ["set-pieces", "corners", "free-kicks", "tactics", "strategy"],
+      "sections": []
+    },
+    {
+      "title": "Strength",
+      "url": "strength.html",
+      "keywords": ["strength", "power", "conditioning", "fitness", "training"],
+      "sections": []
+    },
+    {
+      "title": "Striker Drills",
+      "url": "striker-drills.html",
+      "keywords": ["striker", "forward", "finishing", "drills", "training"],
+      "sections": []
+    },
+    {
+      "title": "Tactical",
+      "url": "tactical.html",
+      "keywords": ["tactical", "tactics", "strategy", "game-plan", "understanding"],
+      "sections": []
+    },
+    {
+      "title": "Team Drills",
+      "url": "team-drills.html",
+      "keywords": ["team", "drills", "group", "training", "collective"],
+      "sections": []
+    },
+    {
+      "title": "Team Management",
+      "url": "team-management.html",
+      "keywords": ["management", "coaching", "organization", "planning", "team"],
+      "sections": []
+    },
+    {
+      "title": "Training",
+      "url": "training.html",
+      "keywords": ["training", "practice", "drills", "development", "improvement"],
+      "sections": []
+    },
+    {
+      "title": "Warm-up Drills",
+      "url": "warm-up-drills.html",
+      "keywords": ["warm-up", "preparation", "activation", "drills", "routine"],
+      "sections": [
+        {"title": "New 50 Touches", "anchor": "#new-50-touches"}
+      ]
+    },
+    {
+      "title": "Warmup Routine",
+      "url": "warmup-routine.html",
+      "keywords": ["warmup", "routine", "preparation", "stretching", "activation"],
+      "sections": [
+        {"title": "Warmup Routine", "anchor": "#warmup-routine"}
+      ]
+    },
+    {
+      "title": "Winger Drills",
+      "url": "winger-drills.html",
+      "keywords": ["winger", "wide-player", "drills", "crossing", "training"],
+      "sections": []
+    },
+    {
+      "title": "Work Ethic",
+      "url": "work-ethic.html",
+      "keywords": ["work-ethic", "mentality", "dedication", "commitment", "mindset"],
+      "sections": []
     }
   ]
 }
