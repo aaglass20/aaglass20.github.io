@@ -1970,3 +1970,76 @@ b {
     .highlight-block strong {
         /*color: #ffd700;*/
     }
+
+    .checklist {
+    list-style: none;
+    padding-left: 0;
+}
+
+.checklist li {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checklist input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+.checklist label {
+    flex: 1;
+}
+
+.checklist a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.checklist a:hover {
+    text-decoration: underline;
+}
+
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+.search-results {
+    position: absolute;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.search-result-item:hover {
+    background: #f5f5f5;
+}
+
+.section-result {
+    padding-left: 30px;
+    font-size: 0.9em;
+    color: #666;
+}

@@ -1,0 +1,83 @@
+{
+  "pages": [
+    {
+      "title": "Defensive Tactics",
+      "url": "defensive-tactics.html",
+      "keywords": ["defense", "defending", "tactical", "positioning", "tackles"],
+      "sections": [
+        {
+          "title": "5 Steps to defend like a pro",
+          "anchor": "#5-steps-to-defend-like-a-pro"
+        },
+        {
+          "title": "Outside Back Drill",
+          "anchor": "#outside-back-drill"
+        },
+        {
+          "title": "Defend the Goal",
+          "anchor": "#defend-the-goal"
+        },
+        {
+          "title": "Defensive Distribution",
+          "anchor": "#defensive-distribution"
+        },
+        {
+          "title": "Possession Battle Arena",
+          "anchor": "#possession-battle-arena"
+        },
+        {
+          "title": "50/50 Battle Zone",
+          "anchor": "#5050-battle-zone"
+        },
+        {
+          "title": "Shot Blocking",
+          "anchor": "#shot-blocking"
+        },
+        {
+          "title": "Run Like a Defender",
+          "anchor": "#run-like-a-defender"
+        },
+        {
+          "title": "Defending the Cross",
+          "anchor": "#defending-the-cross"
+        },
+        {
+          "title": "Know when to dive when defending",
+          "anchor": "#know-when-to-dive"
+        },
+        {
+          "title": "Breaking up a run",
+          "anchor": "#breaking-up-a-run"
+        },
+        {
+          "title": "Defending Shots",
+          "anchor": "#defending-shots"
+        },
+        {
+          "title": "Shielding and Dispossession",
+          "anchor": "#shielding-and-dispossession"
+        },
+        {
+          "title": "Defender Footwork",
+          "anchor": "#defender-footwork"
+        },
+        {
+          "title": "Defensive Movement Drill",
+          "anchor": "#defensive-movement-drill"
+        },
+        {
+          "title": "How to Approach an Opponent",
+          "anchor": "#how-to-approach-opponent"
+        },
+        {
+          "title": "Practice Tackling",
+          "anchor": "#practice-tackling"
+        },
+        {
+          "title": "Transitional Shooting, defensive track down",
+          "anchor": "#transitional-shooting"
+        }
+      ]
+    }
+  ]
+}

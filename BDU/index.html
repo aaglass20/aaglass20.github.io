@@ -56,6 +56,13 @@
     </div>
 
     <!-- Quick Stats Section -->
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search drills, tactics, training..." />
+    <div id="searchResults" class="search-results"></div>
+</div>
+<script src="/BDU/scripts/search.js"></script>
+
+
     <div class="stats-section">
         <div class="stat-card">
             <i class="fas fa-users fa-2x"></i>
@@ -182,7 +189,7 @@
         });
 
     // Loading animation
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         const loader = document.getElementById('loader');
         setTimeout(() => {
             loader.style.opacity = '0';
