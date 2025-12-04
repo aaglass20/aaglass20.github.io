@@ -88,39 +88,44 @@ document.addEventListener("DOMContentLoaded", function () {
     // ====== Enhanced Collapsible Sections with Smooth Animation ======
     const toggleButtons = document.querySelectorAll(".collapsible-section .toggle-button");
 
-    toggleButtons.forEach(button => {
-        button.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const section = this.closest(".collapsible-section");
-            const content = section.querySelector(".collapsible-content");
-            const isExpanded = this.getAttribute("aria-expanded") === "true";
+toggleButtons.forEach(button => {
+    button.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const section = this.closest(".collapsible-section");
+        const content = section.querySelector(".collapsible-content");
+        const isExpanded = this.getAttribute("aria-expanded") === "true";
 
-            if (isExpanded) {
-                // Collapse
-                content.style.maxHeight = '0';
-                content.style.opacity = '0';
-                this.setAttribute("aria-expanded", "false");
+        if (isExpanded) {
+            // Collapse
+            content.style.maxHeight = '0';
+            content.style.opacity = '0';
+            content.classList.remove('active');
+            this.setAttribute("aria-expanded", "false");
 
-                // Rotate icon
-                const icon = this.querySelector('i');
-                if (icon) {
-                    icon.style.transform = 'rotate(0deg)';
+            const icon = this.querySelector('i');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        } else {
+            // Expand
+            content.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.opacity = '1';
+            this.setAttribute("aria-expanded", "true");
+
+            const icon = this.querySelector('i');
+            if (icon) icon.style.transform = 'rotate(180deg)';
+
+            // Recalculate parent heights for nested sections
+            let parentSection = section.parentElement.closest('.collapsible-section');
+            while (parentSection) {
+                const parentContent = parentSection.querySelector('.collapsible-content');
+                if (parentContent && parentContent.classList.contains('active')) {
+                    parentContent.style.maxHeight = parentContent.scrollHeight + 'px';
                 }
-            } else {
-                // Expand
-                content.style.display = 'block';
-                content.style.maxHeight = content.scrollHeight + 'px';
-                content.style.opacity = '1';
-                this.setAttribute("aria-expanded", "true");
-
-                // Rotate icon
-                const icon = this.querySelector('i');
-                if (icon) {
-                    icon.style.transform = 'rotate(180deg)';
-                }
+                parentSection = parentSection.parentElement.closest('.collapsible-section');
             }
-        });
+        }
     });
+});
 
     // ====== Click Section Title to Expand/Collapse ======
     const sectionTitles = document.querySelectorAll('.section-title');

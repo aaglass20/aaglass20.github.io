@@ -435,17 +435,12 @@ header::before {
 .collapsible-content {
     max-height: 0;
     overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
     opacity: 0;
-    transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
-    padding-left: 20px;
-    border-left: 2px solid #0779e4;
-    margin-top: 10px;
-    display: none;
 }
 
 .collapsible-content.active {
-    display: block;
-    max-height: none;
+    overflow: visible; /* Allow nested content to expand beyond parent */
     opacity: 1;
 }
 
