@@ -350,6 +350,10 @@
       ],
       "sections": [
         {
+          "title": "Defensive Banana Run",
+          "anchor": "#defensive-banana-run"
+        },
+        {
           "title": "5 Steps to defend like a pro",
           "anchor": "#5-steps-to-defend-like-a-pro"
         },
@@ -387,7 +391,7 @@
         },
         {
           "title": "Know when to dive when defending",
-          "anchor": "#know-when-to-dive"
+          "anchor": "#know-when-to-dive-when-defending"
         },
         {
           "title": "Breaking up a run",
@@ -406,12 +410,16 @@
           "anchor": "#defender-footwork"
         },
         {
+          "title": "Run like a Defender",
+          "anchor": "#run-like-a-defender"
+        },
+        {
           "title": "Defensive Movement Drill",
           "anchor": "#defensive-movement-drill"
         },
         {
           "title": "How to Approach an Opponent",
-          "anchor": "#how-to-approach-opponent"
+          "anchor": "#how-to-approach-an-opponent"
         },
         {
           "title": "Practice Tackling",
@@ -419,7 +427,7 @@
         },
         {
           "title": "Transitional Shooting, defensive track down",
-          "anchor": "#transitional-shooting"
+          "anchor": "#transitional-shooting-defensive-track-down"
         }
       ]
     },
@@ -1730,6 +1738,10 @@
         "accuracy"
       ],
       "sections": [
+        {
+          "title": "4 Line Shooting",
+          "anchor": "#4-line-shooting"
+        },
         {
           "title": "3 Station Finishing",
           "anchor": "#3-station-finishing"
