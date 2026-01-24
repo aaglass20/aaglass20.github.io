@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Goalie Day 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .day-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+        }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #ff6b35;
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i {
+            color: #ff6b35;
+        }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #fff5f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i {
+            margin-right: 5px;
+            color: #ff6b35;
+        }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #ff6b35;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #ff6b35;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #f7931e;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Goalie Training - Day 4</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('../menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="../goalie-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Goalie Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-fist-raised"></i> Day 4: Crosses & 1v1 Situations</h2>
+        <p>Commanding the box and winning duels</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Catching Crosses</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> With Server</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Crosses from wide positions. Focus on timing the jump, catching at highest point,
+            and protecting yourself while in the air.
+        </p>
+        <ul class="drill-points">
+            <li>Call "KEEPER!" loudly and early</li>
+            <li>Attack the ball - don't wait for it</li>
+            <li>Take off on one foot, drive knee up for protection</li>
+            <li>Catch at highest point with two hands</li>
+            <li>Bring ball into chest immediately</li>
+        </ul>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Punching</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> With Server</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            When you can't catch, punch it clear. Two-fist punch for height and distance.
+            Clear the danger area, don't punch it back into traffic.
+        </p>
+        <ul class="drill-points">
+            <li>Two fists together, thumbs on top</li>
+            <li>Punch through the bottom half of ball</li>
+            <li>Aim for height and distance</li>
+            <li>Punch toward the sidelines, not centrally</li>
+            <li>Call "AWAY!" so teammates know to clear</li>
+        </ul>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: 1v1 Closing Down</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> With Attacker</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            Attacker breaks through, keeper must decide when to come out.
+            Make yourself big, stay on feet as long as possible.
+        </p>
+        <ul class="drill-points">
+            <li>Come out quickly while ball is traveling</li>
+            <li>Slow down as you get close - be balanced</li>
+            <li>Stay on feet - don't go to ground early</li>
+            <li>Make yourself big - arms out, body spread</li>
+            <li>Force attacker wide or into a bad touch</li>
+        </ul>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Breakaway Saves</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 minutes</span>
+            <span><i class="fas fa-users"></i> Game Situation</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            Full breakaway situations. Through ball played, keeper and attacker race.
+            Keeper must decide: come out and smother, or stay and make save?
+        </p>
+        <ul class="drill-points">
+            <li>Read the pass - can you get there first?</li>
+            <li>If yes: sprint out, get ball before attacker</li>
+            <li>If no: set position, make yourself big</li>
+            <li>Spread technique: lead with hands, body follows</li>
+            <li>Be brave but not reckless</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Communication:</strong> LOUD and EARLY calls for crosses</li>
+                <li><strong>Bravery:</strong> Attack the ball, don't be afraid of contact</li>
+                <li><strong>Decision Making:</strong> Come or stay? Make decision early and commit</li>
+                <li><strong>Stay Big:</strong> On 1v1s, stay on feet and spread wide</li>
+                <li><strong>Recovery:</strong> If beaten, get up fast - play isn't over</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="day3.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 3
+        </a>
+        <a href="../goalie-plan.html" class="nav-btn">
+            All Days <i class="fas fa-list"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('../menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>

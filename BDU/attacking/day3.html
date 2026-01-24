@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Attacking Day 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover { transform: translateX(-5px); }
+
+        .day-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #28a745;
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i { color: #28a745; }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #f0fff4;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i { margin-right: 5px; color: #28a745; }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points { list-style: none; padding: 0; }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #28a745;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover { background: #20c997; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Attacking Training - Day 3</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('../menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="../attacking-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Attacking Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-exchange-alt"></i> Day 3: Combination Play</h2>
+        <p>Quick passing to unlock defenses</p>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Wall Passes (Give and Go)</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 10 minutes</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> Beginner</span>
+        </div>
+        <p class="drill-description">
+            Basic give-and-go. Pass to partner, sprint past defender,
+            receive return pass. The most effective way to beat a defender.
+        </p>
+        <ul class="drill-points">
+            <li>Crisp pass to partner's front foot</li>
+            <li>Explode past defender immediately</li>
+            <li>Partner plays one-touch return</li>
+            <li>Call for ball when you're open</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Third Man Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Trios</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            A passes to B, but the real target is C who runs off the first pass.
+            Use the pass to trigger third player's movement.
+        </p>
+        <ul class="drill-points">
+            <li>Third player starts moving as ball is passed</li>
+            <li>Receiver knows to play quickly to third man</li>
+            <li>Communication essential - know who's the outlet</li>
+            <li>One or two touch maximum</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Quick Combinations</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Small Groups</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Rondo-style drill but with emphasis on combinations to break out.
+            Players must combine with 2+ passes to escape the pressing players.
+        </p>
+        <ul class="drill-points">
+            <li>Quick feet, quick mind</li>
+            <li>Always know your next pass</li>
+            <li>Support the ball - give passing options</li>
+            <li>Combine to break pressure</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Combination Finishing</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 minutes</span>
+            <span><i class="fas fa-users"></i> Groups of 4</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            Start from midfield, must make 3+ combination passes before shooting.
+            Builds game-realistic attacking patterns.
+        </p>
+        <ul class="drill-points">
+            <li>Build up from back with combinations</li>
+            <li>Final ball must be quality</li>
+            <li>Finish with composure</li>
+            <li>Reset and repeat - build rhythm</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>One Touch:</strong> Quick play prevents defenders settling</li>
+                <li><strong>Movement:</strong> Pass and move, never stand still</li>
+                <li><strong>Angles:</strong> Create passing angles for teammates</li>
+                <li><strong>Weight of Pass:</strong> Right pace makes return pass easier</li>
+                <li><strong>Communication:</strong> Talk! Let teammates know your intentions</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="day2.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 2
+        </a>
+        <a href="day4.html" class="nav-btn">
+            Day 4 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('../menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Attacking Day 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #28a745;
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i { color: #28a745; }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #f0fff4;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i { margin-right: 5px; color: #28a745; }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points { list-style: none; padding: 0; }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #28a745;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #20c997;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Attacking Training - Day 2</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('../menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="../attacking-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Attacking Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-running"></i> Day 2: Movement & Runs</h2>
+        <p>Getting open and creating space</p>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Checking To and Away</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 10 minutes</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> Beginner</span>
+        </div>
+        <p class="drill-description">
+            Practice the check-away-check-to movement. Start deep, check toward ball,
+            then spin and run into space. Timing is everything.
+        </p>
+        <ul class="drill-points">
+            <li>Check away first to create space</li>
+            <li>Sharp change of direction</li>
+            <li>Show for the ball with hand signal</li>
+            <li>Receive on back foot, open to field</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Diagonal Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Small Group</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Diagonal runs behind the defense. Start wide, run diagonally toward goal.
+            Stay onside, time your run with the pass.
+        </p>
+        <ul class="drill-points">
+            <li>Start from wide position</li>
+            <li>Bend your run to stay onside</li>
+            <li>Eye contact with passer before run</li>
+            <li>Sprint at full speed once you commit</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Overlapping Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Pairs/Trios</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Overlap your teammate to create 2v1 situations. Runner goes around the outside,
+            ball carrier can pass or use the space created.
+        </p>
+        <ul class="drill-points">
+            <li>Call "OVERLAP!" so teammate knows</li>
+            <li>Sprint past at full speed</li>
+            <li>Stay wide to stretch defense</li>
+            <li>Be ready for cross or cut-back</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Movement Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 minutes</span>
+            <span><i class="fas fa-users"></i> 5v5</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            5v5 game where goals only count if scorer made a run before receiving.
+            Forces constant movement off the ball.
+        </p>
+        <ul class="drill-points">
+            <li>Never stand still - always be moving</li>
+            <li>Create space for yourself AND teammates</li>
+            <li>Communicate your runs</li>
+            <li>Time runs to stay onside</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Timing:</strong> A well-timed run beats a fast run</li>
+                <li><strong>Communication:</strong> Eye contact and calls with passer</li>
+                <li><strong>Selfless Running:</strong> Runs can create space for others</li>
+                <li><strong>Stay Onside:</strong> No goal if you're offside - patience!</li>
+                <li><strong>Never Stop:</strong> Movement creates opportunities</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="day1.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 1
+        </a>
+        <a href="day3.html" class="nav-btn">
+            Day 3 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('../menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>

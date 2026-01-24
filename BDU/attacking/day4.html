@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Attacking Day 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover { transform: translateX(-5px); }
+
+        .day-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #28a745;
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i { color: #28a745; }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #f0fff4;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i { margin-right: 5px; color: #28a745; }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points { list-style: none; padding: 0; }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #28a745;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover { background: #20c997; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Attacking Training - Day 4</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('../menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="../attacking-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Attacking Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-magic"></i> Day 4: 1v1 Skills & Creativity</h2>
+        <p>Beat defenders and create magic</p>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Skill Moves Practice</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Individual</span>
+            <span><i class="fas fa-signal"></i> Beginner</span>
+        </div>
+        <p class="drill-description">
+            Practice fundamental skill moves: step-overs, scissors, body feints,
+            Cruyff turns. Master them without a defender first.
+        </p>
+        <ul class="drill-points">
+            <li>Step-over: Foot goes around, not over ball</li>
+            <li>Scissors: Quick feet, sell the fake</li>
+            <li>Body feint: Drop shoulder, explode opposite way</li>
+            <li>Cruyff turn: Drag ball behind standing leg</li>
+            <li>Practice both feet!</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: 1v1 to Goal</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            1v1 situations from different angles. Attacker must beat defender
+            and finish. Use moves practiced in drill 1.
+        </p>
+        <ul class="drill-points">
+            <li>Attack at speed - slow dribbling is easy to defend</li>
+            <li>Watch defender's hips, not feet</li>
+            <li>Change of pace beats defenders</li>
+            <li>Once past, finish quickly before recovery</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Take On Challenge</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Groups</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Dribble through cones, then face defender. Must attempt to beat them.
+            Points for successful take-ons and goals.
+        </p>
+        <ul class="drill-points">
+            <li>Commit to the take-on</li>
+            <li>Use skills under pressure</li>
+            <li>If move fails, recover and try again</li>
+            <li>Confidence is key - believe you can beat them</li>
+        </ul>
+    </div>
+
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Creative Finishing Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 minutes</span>
+            <span><i class="fas fa-users"></i> Small Sided</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            Small-sided game where skillful goals count double. Encourage
+            creativity - chips, rabonas, flicks, dribbles into box.
+        </p>
+        <ul class="drill-points">
+            <li>Express yourself - try new things</li>
+            <li>Take on defenders when 1v1</li>
+            <li>Look for creative finishes</li>
+            <li>Have fun - creativity comes from enjoyment</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Confidence:</strong> Belief in your ability to beat defenders</li>
+                <li><strong>Change of Pace:</strong> Speed up/slow down to unbalance defender</li>
+                <li><strong>Close Control:</strong> Keep ball close when approaching defender</li>
+                <li><strong>Commit:</strong> Once you start a move, commit to it fully</li>
+                <li><strong>Creativity:</strong> Express yourself - there's no wrong way to score</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="day3.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 3
+        </a>
+        <a href="../attacking-plan.html" class="nav-btn">
+            All Days <i class="fas fa-list"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('../menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>
