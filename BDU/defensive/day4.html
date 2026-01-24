@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Defensive Day 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .day-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+        }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i {
+            color: var(--primary-color);
+        }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #0779e4;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="../images/bdu.png" alt="Company Logo">
+        <h1>Defensive Training - Day 4</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('../menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="../defensive-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Defensive Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-running"></i> Day 4: Pressing & Recovery</h2>
+        <p>Winning the ball back and defensive transitions</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Press Triggers</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Team</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Identify when to press: bad touch, back pass, slow pass, player facing own goal.
+            Team practices recognizing triggers and pressing as a unit.
+        </p>
+        <ul class="drill-points">
+            <li>Press on bad first touch - ball away from foot</li>
+            <li>Press on back passes - receiver under pressure</li>
+            <li>Press when opponent is facing their own goal</li>
+            <li>First player presses, others cut passing lanes</li>
+        </ul>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Recovery Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> Individual/Pairs</span>
+            <span><i class="fas fa-signal"></i> High Intensity</span>
+        </div>
+        <p class="drill-description">
+            Practice sprinting back to recover defensive position. Ball played behind
+            defender, they must sprint to get goal-side before attacker shoots.
+        </p>
+        <ul class="drill-points">
+            <li>Sprint at maximum speed - no jogging</li>
+            <li>Take direct line to goal, not to ball</li>
+            <li>Get goal-side first, then press the ball</li>
+            <li>Never give up on a recovery run</li>
+        </ul>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Counter-Press (Gegenpressing)</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 minutes</span>
+            <span><i class="fas fa-users"></i> 5v5</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            5v5 possession game. When team loses ball, they have 6 seconds to win it back.
+            If they do, they score a point. Builds habit of immediate reaction to losing possession.
+        </p>
+        <ul class="drill-points">
+            <li>React immediately when ball is lost</li>
+            <li>Nearest players swarm the ball</li>
+            <li>Cut off easy passes</li>
+            <li>Win it back in attacking areas when possible</li>
+        </ul>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Transition Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 minutes</span>
+            <span><i class="fas fa-users"></i> 7v7</span>
+            <span><i class="fas fa-signal"></i> Advanced</span>
+        </div>
+        <p class="drill-description">
+            7v7 game with emphasis on transitions. When possession changes, defending
+            team has 5 seconds to get into shape. Coach blows whistle to check shape.
+        </p>
+        <ul class="drill-points">
+            <li>Instant reaction to losing the ball</li>
+            <li>Communication during transition</li>
+            <li>Nearest player delays, others recover</li>
+            <li>Get compact and organized quickly</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Intensity:</strong> Pressing only works at 100% effort</li>
+                <li><strong>Teamwork:</strong> Press as a unit - one person can't press alone</li>
+                <li><strong>Triggers:</strong> Know when to press and when to drop</li>
+                <li><strong>Recovery:</strong> Sprint back, never jog when defending</li>
+                <li><strong>Mentality:</strong> Never give up on any play</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="day3.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 3
+        </a>
+        <a href="../defensive-plan.html" class="nav-btn">
+            All Days <i class="fas fa-list"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('../menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="../scripts/scripts.js"></script>
+
+</body>
+</html>

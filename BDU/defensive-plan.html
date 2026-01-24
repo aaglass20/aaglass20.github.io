@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Defensive Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 20px;
+        }
+
+        .day-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            color: white;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            min-height: 120px;
+        }
+
+        .day-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(7, 121, 228, 0.4);
+        }
+
+        .day-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .day-card span {
+            font-size: 1.2rem;
+        }
+
+        .add-day-card {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+        }
+
+        .add-day-card:hover {
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .plan-intro {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .plan-intro h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .plan-intro p {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .completed {
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .completed::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Defensive Training Plan</h1>
+    </div>
+</header>
+
+<!-- Add the waffle menu toggle button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+    <div class="plan-intro">
+        <h3><i class="fas fa-shield-alt"></i> About This Plan</h3>
+        <p>
+            This defensive training plan focuses on building solid defensive fundamentals through progressive daily sessions.
+            Each day builds upon the previous, covering topics like positioning, 1v1 defending, team shape, pressing, and recovery runs.
+            Complete each day's drills before moving to the next.
+        </p>
+    </div>
+
+    <h2><i class="fas fa-calendar-alt"></i> Training Days</h2>
+    <div class="day-grid" id="day-grid">
+        <a href="defensive/day1.html" class="day-card">
+            <i class="fas fa-shield-alt"></i>
+            <span>Day 1</span>
+            <small>Defensive Stance & Positioning</small>
+        </a>
+        <a href="defensive/day2.html" class="day-card">
+            <i class="fas fa-user-shield"></i>
+            <span>Day 2</span>
+            <small>1v1 Defending</small>
+        </a>
+        <a href="defensive/day3.html" class="day-card">
+            <i class="fas fa-users"></i>
+            <span>Day 3</span>
+            <small>Team Shape</small>
+        </a>
+        <a href="defensive/day4.html" class="day-card">
+            <i class="fas fa-running"></i>
+            <span>Day 4</span>
+            <small>Pressing & Recovery</small>
+        </a>
+        <!-- Add more days as needed -->
+    </div>
+
+    <div class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-plus-circle"></i> Add New Day
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <p style="padding: 1rem; color: var(--text-light);">
+                To add a new training day:
+            </p>
+            <ol style="padding: 1rem 2rem; color: var(--text-dark);">
+                <li>Create a new HTML file in the <code>defensive/</code> folder (e.g., <code>day5.html</code>)</li>
+                <li>Copy the structure from an existing day file</li>
+                <li>Add the drills for that day</li>
+                <li>Add a new card link above in the day-grid section</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
