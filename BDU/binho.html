@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU - Binho Finger Soccer League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Standings Table */
+        .standings-section {
+            margin-bottom: 2rem;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .standings-table thead {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            color: white;
+        }
+
+        .standings-table th,
+        .standings-table td {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .standings-table th:first-child,
+        .standings-table td:first-child {
+            text-align: left;
+            padding-left: 1.5rem;
+        }
+
+        .standings-table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: var(--transition);
+        }
+
+        .standings-table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .standings-table tbody tr:nth-child(odd) {
+            background: #fafafa;
+        }
+
+        .standings-table tbody tr:nth-child(odd):hover {
+            background: #f0f0f0;
+        }
+
+        .standings-table .leader {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+        }
+
+        .standings-table .leader:hover {
+            background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%) !important;
+        }
+
+        .rank-cell {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .leader .rank-cell {
+            color: #b45309;
+        }
+
+        .leader .rank-cell::before {
+            content: '\f091';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 0.5rem;
+            color: #f59e0b;
+        }
+
+        /* Schedule Grid */
+        .schedule-section {
+            margin-bottom: 2rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid #cbd5e1;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .game-card.completed {
+            border-left-color: var(--primary-color);
+        }
+
+        .game-number {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-matchup {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .team-name.home {
+            text-align: left;
+        }
+
+        .team-name.away {
+            text-align: right;
+        }
+
+        .team-name.winner {
+            color: #059669;
+        }
+
+        .game-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .game-vs {
+            color: var(--text-light);
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .score-separator {
+            color: var(--text-light);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .score-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-input-group {
+            text-align: center;
+        }
+
+        .score-input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .score-input-group input {
+            width: 80px;
+            height: 60px;
+            font-size: 2rem;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .score-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+        }
+
+        .score-vs {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-btn.save {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+        }
+
+        .modal-btn.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+        }
+
+        .modal-btn.save:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-btn.cancel {
+            background: #e5e7eb;
+            color: var(--text-dark);
+        }
+
+        .modal-btn.cancel:hover {
+            background: #d1d5db;
+        }
+
+        .modal-status {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-status.success {
+            color: #059669;
+        }
+
+        .modal-status.error {
+            color: #dc2626;
+        }
+
+        .modal-status.loading {
+            color: var(--text-light);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .section-header i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* Loading State */
+        .loading-container {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .loading-container i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Intro Section */
+        .binho-intro {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .binho-intro h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .binho-intro p {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .standings-table {
+                font-size: 0.9rem;
+            }
+
+            .standings-table th,
+            .standings-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .game-matchup {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .team-name {
+                text-align: center !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Shield">
+        <h1>Binho Finger Soccer League</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+
+<div class="container">
+    <div class="binho-intro">
+        <h3><i class="fas fa-futbol"></i> About the League</h3>
+        <p>
+            Welcome to the Binho Finger Soccer League! Five teams compete in a full round-robin season
+            with home and away matches. Click on any game to enter the final score.
+            Standings update automatically - 3 points for a win!
+        </p>
+    </div>
+
+    <!-- Standings Section -->
+    <div class="standings-section">
+        <div class="section-header">
+            <i class="fas fa-trophy"></i>
+            <h2>Standings</h2>
+        </div>
+        <div id="standings-container">
+            <div class="loading-container">
+                <i class="fas fa-spinner"></i>
+                <p>Loading standings...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Section -->
+    <div class="schedule-section">
+        <div class="section-header">
+            <i class="fas fa-calendar-alt"></i>
+            <h2>Season Schedule</h2>
+        </div>
+        <div id="schedule-container">
+            <div class="loading-container">
+                <i class="fas fa-spinner"></i>
+                <p>Loading schedule...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Score Entry Modal -->
+<div class="modal-overlay" id="scoreModal">
+    <div class="modal-content">
+        <h3 class="modal-title" id="modalTitle">Enter Score</h3>
+        <div class="score-inputs">
+            <div class="score-input-group">
+                <label id="homeTeamLabel">Home</label>
+                <input type="number" id="homeScoreInput" min="0" max="99" value="0">
+            </div>
+            <span class="score-vs">vs</span>
+            <div class="score-input-group">
+                <label id="awayTeamLabel">Away</label>
+                <input type="number" id="awayScoreInput" min="0" max="99" value="0">
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn save" id="saveScoreBtn" onclick="saveScore()">
+                <i class="fas fa-check"></i> Save
+            </button>
+            <button class="modal-btn cancel" onclick="closeModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+        <p class="modal-status" id="modalStatus"></p>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Google Apps Script URL - UPDATE THIS after creating your Google Sheet
+    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+    // Default schedule data (used if Google Sheets not configured)
+    const DEFAULT_SCHEDULE = [
+        { gameId: 1, homeTeam: 'Grady', awayTeam: 'Austin', homeScore: null, awayScore: null },
+        { gameId: 2, homeTeam: 'Grady', awayTeam: 'Jordan', homeScore: null, awayScore: null },
+        { gameId: 3, homeTeam: 'Grady', awayTeam: 'Mom', homeScore: null, awayScore: null },
+        { gameId: 4, homeTeam: 'Grady', awayTeam: 'Dad', homeScore: null, awayScore: null },
+        { gameId: 5, homeTeam: 'Austin', awayTeam: 'Grady', homeScore: null, awayScore: null },
+        { gameId: 6, homeTeam: 'Austin', awayTeam: 'Jordan', homeScore: null, awayScore: null },
+        { gameId: 7, homeTeam: 'Austin', awayTeam: 'Mom', homeScore: null, awayScore: null },
+        { gameId: 8, homeTeam: 'Austin', awayTeam: 'Dad', homeScore: null, awayScore: null },
+        { gameId: 9, homeTeam: 'Jordan', awayTeam: 'Grady', homeScore: null, awayScore: null },
+        { gameId: 10, homeTeam: 'Jordan', awayTeam: 'Austin', homeScore: null, awayScore: null },
+        { gameId: 11, homeTeam: 'Jordan', awayTeam: 'Mom', homeScore: null, awayScore: null },
+        { gameId: 12, homeTeam: 'Jordan', awayTeam: 'Dad', homeScore: null, awayScore: null },
+        { gameId: 13, homeTeam: 'Mom', awayTeam: 'Grady', homeScore: null, awayScore: null },
+        { gameId: 14, homeTeam: 'Mom', awayTeam: 'Austin', homeScore: null, awayScore: null },
+        { gameId: 15, homeTeam: 'Mom', awayTeam: 'Jordan', homeScore: null, awayScore: null },
+        { gameId: 16, homeTeam: 'Mom', awayTeam: 'Dad', homeScore: null, awayScore: null },
+        { gameId: 17, homeTeam: 'Dad', awayTeam: 'Grady', homeScore: null, awayScore: null },
+        { gameId: 18, homeTeam: 'Dad', awayTeam: 'Austin', homeScore: null, awayScore: null },
+        { gameId: 19, homeTeam: 'Dad', awayTeam: 'Jordan', homeScore: null, awayScore: null },
+        { gameId: 20, homeTeam: 'Dad', awayTeam: 'Mom', homeScore: null, awayScore: null }
+    ];
+
+    const TEAMS = ['Grady', 'Austin', 'Jordan', 'Mom', 'Dad'];
+
+    let schedule = [...DEFAULT_SCHEDULE];
+    let currentGameId = null;
+
+    // Load data from Google Sheets
+    async function loadData() {
+        if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+            // Use default data if Google Sheets not configured
+            renderStandings();
+            renderSchedule();
+            return;
+        }
+
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getData`);
+            const data = await response.json();
+            if (data.schedule) {
+                schedule = data.schedule;
+            }
+            renderStandings();
+            renderSchedule();
+        } catch (error) {
+            console.error('Error loading data:', error);
+            // Fall back to default schedule
+            renderStandings();
+            renderSchedule();
+        }
+    }
+
+    // Calculate standings from schedule
+    function calculateStandings() {
+        const standings = {};
+        TEAMS.forEach(team => {
+            standings[team] = { wins: 0, losses: 0, points: 0 };
+        });
+
+        schedule.forEach(game => {
+            if (game.homeScore !== null && game.awayScore !== null) {
+                if (game.homeScore > game.awayScore) {
+                    standings[game.homeTeam].wins++;
+                    standings[game.homeTeam].points += 3;
+                    standings[game.awayTeam].losses++;
+                } else {
+                    standings[game.awayTeam].wins++;
+                    standings[game.awayTeam].points += 3;
+                    standings[game.homeTeam].losses++;
+                }
+            }
+        });
+
+        // Convert to sorted array
+        return Object.entries(standings)
+            .map(([team, stats]) => ({ team, ...stats }))
+            .sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.wins - a.wins;
+            });
+    }
+
+    // Render standings table
+    function renderStandings() {
+        const standings = calculateStandings();
+        const container = document.getElementById('standings-container');
+
+        let html = `
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Team</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        standings.forEach((team, index) => {
+            const isLeader = index === 0 && team.points > 0;
+            html += `
+                <tr class="${isLeader ? 'leader' : ''}">
+                    <td class="rank-cell">${index + 1}</td>
+                    <td>${team.team}</td>
+                    <td>${team.wins}</td>
+                    <td>${team.losses}</td>
+                    <td><strong>${team.points}</strong></td>
+                </tr>
+            `;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // Render schedule grid
+    function renderSchedule() {
+        const container = document.getElementById('schedule-container');
+
+        let html = '<div class="games-grid">';
+
+        schedule.forEach(game => {
+            const isCompleted = game.homeScore !== null && game.awayScore !== null;
+            const homeWon = isCompleted && game.homeScore > game.awayScore;
+            const awayWon = isCompleted && game.awayScore > game.homeScore;
+
+            html += `
+                <div class="game-card ${isCompleted ? 'completed' : ''}" onclick="openModal(${game.gameId})">
+                    <div class="game-number">Game ${game.gameId}</div>
+                    <div class="game-matchup">
+                        <span class="team-name home ${homeWon ? 'winner' : ''}">${game.homeTeam}</span>
+                        <div class="game-score">
+                            ${isCompleted
+                                ? `<span>${game.homeScore}</span><span class="score-separator">-</span><span>${game.awayScore}</span>`
+                                : '<span class="game-vs">vs</span>'
+                            }
+                        </div>
+                        <span class="team-name away ${awayWon ? 'winner' : ''}">${game.awayTeam}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    // Open score entry modal
+    function openModal(gameId) {
+        currentGameId = gameId;
+        const game = schedule.find(g => g.gameId === gameId);
+
+        document.getElementById('modalTitle').textContent = `Game ${gameId}`;
+        document.getElementById('homeTeamLabel').textContent = game.homeTeam;
+        document.getElementById('awayTeamLabel').textContent = game.awayTeam;
+        document.getElementById('homeScoreInput').value = game.homeScore !== null ? game.homeScore : 0;
+        document.getElementById('awayScoreInput').value = game.awayScore !== null ? game.awayScore : 0;
+        document.getElementById('modalStatus').textContent = '';
+        document.getElementById('modalStatus').className = 'modal-status';
+        document.getElementById('saveScoreBtn').disabled = false;
+
+        document.getElementById('scoreModal').classList.add('active');
+    }
+
+    // Close modal
+    function closeModal() {
+        document.getElementById('scoreModal').classList.remove('active');
+        currentGameId = null;
+    }
+
+    // Save score
+    async function saveScore() {
+        const homeScore = parseInt(document.getElementById('homeScoreInput').value);
+        const awayScore = parseInt(document.getElementById('awayScoreInput').value);
+        const statusEl = document.getElementById('modalStatus');
+        const saveBtn = document.getElementById('saveScoreBtn');
+
+        // Validate: no ties allowed
+        if (homeScore === awayScore) {
+            statusEl.textContent = 'Ties are not allowed - there must be a winner!';
+            statusEl.className = 'modal-status error';
+            return;
+        }
+
+        saveBtn.disabled = true;
+        statusEl.textContent = 'Saving...';
+        statusEl.className = 'modal-status loading';
+
+        // Update local data
+        const gameIndex = schedule.findIndex(g => g.gameId === currentGameId);
+        schedule[gameIndex].homeScore = homeScore;
+        schedule[gameIndex].awayScore = awayScore;
+
+        // Save to Google Sheets if configured
+        if (SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updateScore',
+                        gameId: currentGameId,
+                        homeScore: homeScore,
+                        awayScore: awayScore
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+            }
+        }
+
+        // Update display
+        renderStandings();
+        renderSchedule();
+
+        statusEl.textContent = 'Score saved!';
+        statusEl.className = 'modal-status success';
+
+        setTimeout(() => {
+            closeModal();
+        }, 1000);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('scoreModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Load footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+
+    // Initialize
+    loadData();
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
