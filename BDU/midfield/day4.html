@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Midfield Masterclass Day 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #6610f2; text-decoration: none; font-weight: 600; margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .back-link:hover { transform: translateX(-5px); }
+        .day-header { background: linear-gradient(135deg, #6610f2 0%, #6610f2dd 100%); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; color: white; text-align: center; }
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+        .drill-card { background: white; border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-left: 5px solid #6610f2; }
+        .drill-card h3 { color: var(--secondary-color); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px; }
+        .drill-card h3 i { color: #6610f2; }
+        .drill-meta { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .drill-meta span { background: #6610f215; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+        .drill-meta span i { margin-right: 5px; color: #6610f2; }
+        .drill-description { color: var(--text-dark); line-height: 1.7; margin-bottom: 1rem; }
+        .drill-points { list-style: none; padding: 0; }
+        .drill-points li { padding: 0.5rem 0 0.5rem 1.5rem; position: relative; }
+        .drill-points li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: #6610f2; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #eee; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: #6610f2; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; }
+        .nav-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+<header><div class="highlight-banner"><img src="../images/bdu.png" alt="Logo"><h1>Midfield Masterclass - Day 4</h1></div></header>
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()"><span></span><span></span><span></span></div>
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+<script>fetch('../menus/training-menu.html').then(r=>r.text()).then(d=>{document.getElementById('training-menu').innerHTML=d;});</script>
+<div class="container">
+    <a href="../midfield-plan.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Midfield Masterclass</a>
+    <div class="day-header"><h2><i class="fas fa-music"></i> Day 4: Dictating Tempo</h2><p>Training session 4 of 4</p></div>
+    
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Slow Build Up</h3>
+        <div class="drill-meta"><span><i class="fas fa-clock"></i> 10 min</span><span><i class="fas fa-users"></i> Individual/Pairs</span></div>
+        <p class="drill-description">Foundation drill to build core technique and confidence.</p>
+        <ul class="drill-points"><li>Focus on proper technique</li><li>Start slow, build speed gradually</li><li>Quality over quantity</li><li>Both feet/sides</li></ul>
+    </div>
+    
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Quick Tempo Passing</h3>
+        <div class="drill-meta"><span><i class="fas fa-clock"></i> 15 min</span><span><i class="fas fa-users"></i> Small Groups</span></div>
+        <p class="drill-description">Progress to more game-realistic situations with added complexity.</p>
+        <ul class="drill-points"><li>Increase tempo</li><li>Add decision making</li><li>Communication required</li><li>Competitive element</li></ul>
+    </div>
+    
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: When to Speed Up/Slow</h3>
+        <div class="drill-meta"><span><i class="fas fa-clock"></i> 15 min</span><span><i class="fas fa-users"></i> Groups</span></div>
+        <p class="drill-description">Apply skills under pressure with defensive or time constraints.</p>
+        <ul class="drill-points"><li>Game speed intensity</li><li>Pressure from opponents</li><li>Quick transitions</li><li>Reward success</li></ul>
+    </div>
+    
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Tempo Control Game</h3>
+        <div class="drill-meta"><span><i class="fas fa-clock"></i> 20 min</span><span><i class="fas fa-users"></i> Full Group</span></div>
+        <p class="drill-description">Game-based activity to apply all learned skills in match context.</p>
+        <ul class="drill-points"><li>Full game conditions</li><li>Encourage use of session skills</li><li>Praise good application</li><li>Fun competitive finish</li></ul>
+    </div>
+    
+    <div class="nav-buttons">
+        <a href="day3.html" class="nav-btn"><i class="fas fa-arrow-left"></i> Day 3</a>
+        <a href="../midfield-plan.html" class="nav-btn">All Days <i class="fas fa-list"></i></a>
+    </div>
+</div>
+<div id="shared-footer"></div>
+<script>fetch('../menus/shared-footer.html').then(r=>r.text()).then(d=>{document.getElementById('shared-footer').innerHTML=d;});</script>
+<script src="../scripts/scripts.js"></script>
+</body>
+</html>

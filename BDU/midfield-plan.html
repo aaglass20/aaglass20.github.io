@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Midfield Masterclass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .day-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 30px 0; padding: 20px; }
+        .day-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; background: linear-gradient(135deg, #6610f2 0%, #8540f5 100%); color: white; text-transform: uppercase; font-weight: bold; text-align: center; border-radius: 12px; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; text-decoration: none; min-height: 120px; }
+        .day-card:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(102, 16, 242, 0.4); }
+        .day-card i { font-size: 2rem; margin-bottom: 10px; }
+        .day-card span { font-size: 1.2rem; }
+        .day-card small { font-size: 0.75rem; text-transform: none; font-weight: normal; margin-top: 5px; opacity: 0.9; }
+        .plan-intro { background: linear-gradient(135deg, #f3e8ff 0%, #e8d5ff 100%); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; border-left: 5px solid #6610f2; }
+        .plan-intro h3 { color: var(--secondary-color); margin-bottom: 1rem; }
+        .plan-intro h3 i { color: #6610f2; }
+        .plan-intro p { color: var(--text-dark); line-height: 1.8; }
+    </style>
+</head>
+<body>
+<header><div class="highlight-banner"><img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo"><h1>Midfield Masterclass</h1></div></header>
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()"><span></span><span></span><span></span></div>
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+<script>fetch('menus/training-menu.html').then(response => response.text()).then(data => { document.getElementById('training-menu').innerHTML = data; });</script>
+<div class="container">
+    <div class="plan-intro">
+        <h3><i class="fas fa-compass"></i> About This Plan</h3>
+        <p>Midfielders are the engine of the team. This plan develops the complete midfielder: vision to pick passes, stamina to cover ground, technique to control tempo, and intelligence to link defense with attack.</p>
+    </div>
+    <h2><i class="fas fa-calendar-alt"></i> Training Days</h2>
+    <div class="day-grid">
+        <a href="midfield/day1.html" class="day-card"><i class="fas fa-eye"></i><span>Day 1</span><small>Vision & Scanning</small></a>
+        <a href="midfield/day2.html" class="day-card"><i class="fas fa-exchange-alt"></i><span>Day 2</span><small>Transitioning</small></a>
+        <a href="midfield/day3.html" class="day-card"><i class="fas fa-heartbeat"></i><span>Day 3</span><small>Box-to-Box Play</small></a>
+        <a href="midfield/day4.html" class="day-card"><i class="fas fa-music"></i><span>Day 4</span><small>Dictating Tempo</small></a>
+    </div>
+</div>
+<div id="shared-footer"></div>
+<script>fetch('menus/shared-footer.html').then(response => response.text()).then(data => { document.getElementById('shared-footer').innerHTML = data; });</script>
+<script src="scripts/scripts.js"></script>
+</body>
+</html>
