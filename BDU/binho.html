@@ -465,7 +465,8 @@
 
 <script>
     // Google Apps Script URL - UPDATE THIS after creating your Google Sheet
-    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxBv-ngr7D5gCUdaEXnE7Onf2M1HjlFT7wN0l064OxpBkig6dgi4gWXsMshxuUfS4oJg/exec';
+    const SHEETS_CONFIGURED = true; // Set to false to use offline mode
 
     // Default schedule data (used if Google Sheets not configured)
     const DEFAULT_SCHEDULE = [
@@ -498,16 +499,19 @@
 
     // Load data from Google Sheets
     async function loadData() {
-        if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+        if (!SHEETS_CONFIGURED) {
             // Use default data if Google Sheets not configured
+            console.log('Sheets not configured, using default data');
             renderStandings();
             renderSchedule();
             return;
         }
 
         try {
+            console.log('Loading data from Google Sheets...');
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
             const data = await response.json();
+            console.log('Loaded data:', data);
             if (data.schedule) {
                 schedule = data.schedule;
             }
@@ -666,8 +670,9 @@
         schedule[gameIndex].awayScore = awayScore;
 
         // Save to Google Sheets if configured
-        if (SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+        if (SHEETS_CONFIGURED) {
             try {
+                console.log('Saving to Google Sheets:', { gameId: currentGameId, homeScore, awayScore });
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -679,6 +684,7 @@
                         awayScore: awayScore
                     })
                 });
+                console.log('Save request sent');
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
             }
