@@ -266,6 +266,33 @@ body {
     margin-top: 0.5rem;
 }
 
+/* Video Breakdown */
+.video-breakdown {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--off-white);
+}
+
+.video-breakdown h4 {
+    font-family: 'Rajdhani', 'Roboto', sans-serif;
+    font-size: 1.3rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-breakdown h4 i {
+    color: var(--primary-yellow);
+}
+
+.breakdown-intro {
+    color: var(--text-light);
+    font-size: 1rem;
+    font-style: italic;
+}
+
 /* ============================================
    Cards Grid
    ============================================ */
@@ -539,4 +566,209 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Philosophy Section
+   ============================================ */
+.philosophy-section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--card-shadow);
+    border-top: 5px solid var(--primary-yellow);
+}
+
+.philosophy-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.philosophy-header i {
+    font-size: 2.5rem;
+    color: var(--primary-yellow);
+    margin-bottom: 0.75rem;
+}
+
+.philosophy-header h2 {
+    font-family: 'Rajdhani', 'Roboto', sans-serif;
+    font-size: 2rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.philosophy-motto {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--secondary-blue);
+    font-style: italic;
+}
+
+/* Core Values Badges */
+.core-values {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.core-value-badge {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+    transition: var(--transition);
+}
+
+.core-value-badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 51, 102, 0.4);
+}
+
+/* Philosophy Cards Grid */
+.philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.philosophy-card {
+    background: var(--off-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+    border-bottom: 3px solid transparent;
+}
+
+.philosophy-card:hover {
+    transform: translateY(-5px);
+    border-bottom-color: var(--primary-yellow);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.philosophy-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-yellow), var(--secondary-yellow));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.philosophy-icon i {
+    font-size: 1.25rem;
+    color: var(--primary-blue);
+}
+
+.philosophy-card h4 {
+    font-family: 'Rajdhani', 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.philosophy-card p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Mindset Banner */
+.mindset-banner {
+    background: linear-gradient(135deg, var(--primary-blue), #16213e);
+    border-radius: 12px;
+    padding: 2rem;
+    color: var(--white);
+}
+
+.mindset-quote {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mindset-quote i {
+    font-size: 1.5rem;
+    color: var(--primary-yellow);
+    margin-bottom: 0.5rem;
+}
+
+.mindset-quote h3 {
+    font-family: 'Rajdhani', 'Roboto', sans-serif;
+    font-size: 1.75rem;
+    color: var(--primary-yellow);
+    margin-bottom: 0.75rem;
+}
+
+.mindset-quote p {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mindset-tips {
+    display: grid;
+    gap: 1rem;
+}
+
+.mindset-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.mindset-tip i {
+    color: var(--primary-yellow);
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.mindset-tip span {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Responsive adjustments for philosophy */
+@media (max-width: 768px) {
+    .philosophy-section {
+        padding: 1.5rem;
+    }
+
+    .philosophy-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .philosophy-motto {
+        font-size: 1.1rem;
+    }
+
+    .core-value-badge {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .philosophy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mindset-quote h3 {
+        font-size: 1.4rem;
+    }
 }
