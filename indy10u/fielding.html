@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fielding | Indy 10U Softball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-baseball logo-icon"></i>
+                <div class="logo-text">
+                    <h1>INDY 10U SOFTBALL</h1>
+                    <span>TRAINING HUB</span>
+                </div>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="hitting.html" class="nav-link">
+                    <i class="fas fa-baseball-bat-ball"></i> Hitting
+                </a>
+                <a href="fielding.html" class="nav-link active">
+                    <i class="fas fa-mitten"></i> Fielding
+                </a>
+                <a href="pitching.html" class="nav-link">
+                    <i class="fas fa-bullseye"></i> Pitching
+                </a>
+                <a href="catching.html" class="nav-link">
+                    <i class="fas fa-hand"></i> Catching
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <i class="fas fa-mitten hero-icon"></i>
+            <h2>Fielding Fundamentals</h2>
+            <p>Build confidence in the field with proper technique for ground balls, fly balls, and throwing.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Video Placeholder -->
+        <section class="video-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-video"></i> Fielding Videos
+            </h2>
+            <div style="text-align: center; padding: 3rem; background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); border-radius: 12px; color: white;">
+                <i class="fas fa-film" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-yellow);"></i>
+                <p style="font-size: 1.1rem;">Fielding videos coming soon!</p>
+            </div>
+        </section>
+
+        <!-- Key Fundamentals -->
+        <h2 class="section-title">
+            <i class="fas fa-list-check"></i> Key Fielding Fundamentals
+        </h2>
+        <ul class="drill-list">
+            <li class="drill-item">
+                <div class="drill-number">1</div>
+                <div class="drill-content">
+                    <h4>Ready Position</h4>
+                    <p>Athletic stance with feet wider than shoulders, knees bent, weight forward on balls of feet. Glove out front, eyes on hitter.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">2</div>
+                <div class="drill-content">
+                    <h4>Ground Ball Approach</h4>
+                    <p>Charge the ball when possible. Get low with butt down, field the ball out front between your feet. "Alligator" hands - top hand covers.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">3</div>
+                <div class="drill-content">
+                    <h4>Fly Ball Technique</h4>
+                    <p>First step is back on balls hit in the air. Get behind the ball, catch above forehead with two hands. Call "I got it!"</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">4</div>
+                <div class="drill-content">
+                    <h4>Throwing Mechanics</h4>
+                    <p>Grip ball with 4-seam grip. Reach back, lead with elbow, follow through toward target. Step toward your target.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">5</div>
+                <div class="drill-content">
+                    <h4>Footwork</h4>
+                    <p>Quick feet beat quick hands. After fielding, crow hop to generate momentum toward your target for a stronger throw.</p>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Practice Drills -->
+        <h2 class="section-title mt-2">
+            <i class="fas fa-dumbbell"></i> Practice Drills
+        </h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-arrows-down-to-line"></i>
+                </div>
+                <h3>Rollers</h3>
+                <p>Partner rolls ground balls from 15-20 feet away. Focus on getting low, fielding out front, and making accurate throws back.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-arrows-up-to-line"></i>
+                </div>
+                <h3>Pop Flies</h3>
+                <p>Partner throws high fly balls. Practice drop step, tracking the ball, and catching above the forehead. Work on communication.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-triangle-exclamation"></i>
+                </div>
+                <h3>Triangle Drill</h3>
+                <p>3 players form triangle. Field and throw around the triangle. Focus on quick transfer and accurate throws. Add timing.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-person-walking"></i>
+                </div>
+                <h3>Barehand Drill</h3>
+                <p>Field slow rollers without a glove. Develops soft hands and proper fielding position. Great for building confidence.</p>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="tips-container">
+            <h3><i class="fas fa-lightbulb"></i> Pro Tips for Better Fielding</h3>
+            <ul class="tips-list">
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Always know the situation before the pitch - how many outs, where are the runners, what's your play?</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Field the ball, don't let it field you - be aggressive and charge when possible</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Keep your glove low - it's easier to come up than go down</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Use two hands whenever possible - the throwing hand secures the ball for a quick transfer</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <i class="fas fa-baseball footer-icon"></i>
+        <p>Indy 10U Softball Training Hub</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

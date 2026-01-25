@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitting | Indy 10U Softball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-baseball logo-icon"></i>
+                <div class="logo-text">
+                    <h1>INDY 10U SOFTBALL</h1>
+                    <span>TRAINING HUB</span>
+                </div>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="hitting.html" class="nav-link active">
+                    <i class="fas fa-baseball-bat-ball"></i> Hitting
+                </a>
+                <a href="fielding.html" class="nav-link">
+                    <i class="fas fa-mitten"></i> Fielding
+                </a>
+                <a href="pitching.html" class="nav-link">
+                    <i class="fas fa-bullseye"></i> Pitching
+                </a>
+                <a href="catching.html" class="nav-link">
+                    <i class="fas fa-hand"></i> Catching
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <i class="fas fa-baseball-bat-ball hero-icon"></i>
+            <h2>Hitting Fundamentals</h2>
+            <p>Master your swing mechanics, timing, and bat control to become a consistent hitter.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Video Section -->
+        <section class="video-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-video"></i> Batting Drills Video
+            </h2>
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/5_batting_drills.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <h3 class="video-title">5 Essential Batting Drills</h3>
+            <p class="video-description">These five drills will help you develop proper swing mechanics, improve bat speed, and build consistency at the plate.</p>
+        </section>
+
+        <!-- Key Fundamentals -->
+        <h2 class="section-title">
+            <i class="fas fa-list-check"></i> Key Hitting Fundamentals
+        </h2>
+        <ul class="drill-list">
+            <li class="drill-item">
+                <div class="drill-number">1</div>
+                <div class="drill-content">
+                    <h4>Proper Stance</h4>
+                    <p>Feet shoulder-width apart, knees slightly bent, weight balanced on balls of feet. Hands held back near rear shoulder.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">2</div>
+                <div class="drill-content">
+                    <h4>Load & Stride</h4>
+                    <p>Small weight shift back (load), then a controlled stride toward the pitcher. Keep hands back as you stride.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">3</div>
+                <div class="drill-content">
+                    <h4>Hip Rotation</h4>
+                    <p>Power comes from the hips! Rotate hips toward pitcher before hands start forward. "Squish the bug" with back foot.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">4</div>
+                <div class="drill-content">
+                    <h4>Swing Path</h4>
+                    <p>Hands take a direct path to the ball. Swing slightly upward to match the pitch plane. Keep barrel in the zone.</p>
+                </div>
+            </li>
+            <li class="drill-item">
+                <div class="drill-number">5</div>
+                <div class="drill-content">
+                    <h4>Follow Through</h4>
+                    <p>Complete your swing with full extension. Bat should wrap around your body. Eyes stay on contact point.</p>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Practice Drills -->
+        <h2 class="section-title mt-2">
+            <i class="fas fa-dumbbell"></i> Practice Drills
+        </h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-t"></i>
+                </div>
+                <h3>Tee Work</h3>
+                <p>Set tee at different heights and locations. Focus on driving through the ball with proper mechanics. 25-50 swings per session.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-hand-holding"></i>
+                </div>
+                <h3>Soft Toss</h3>
+                <p>Partner tosses balls from the side at 45-degree angle. Work on timing and hand-eye coordination. Vary locations.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-rotate"></i>
+                </div>
+                <h3>Dry Swings</h3>
+                <p>Practice swing mechanics without a ball. Use a mirror to check form. Focus on balance and rotation. Great for muscle memory.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-circle-dot"></i>
+                </div>
+                <h3>Front Toss</h3>
+                <p>Coach/parent tosses from a screen in front. Simulates live pitching timing. Focus on pitch recognition and contact.</p>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="tips-container">
+            <h3><i class="fas fa-lightbulb"></i> Pro Tips for Better Hitting</h3>
+            <ul class="tips-list">
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Keep your head still and eyes on the ball from pitcher's hand to bat contact</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Stay balanced - if you're falling forward or backward, you'll lose power</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Grip the bat in your fingers, not your palms - this allows better bat control</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Think "hit it where it's pitched" - inside pitches go to pull side, outside to opposite field</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <i class="fas fa-baseball footer-icon"></i>
+        <p>Indy 10U Softball Training Hub</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

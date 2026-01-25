@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indy 10U Softball | Training Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-baseball logo-icon"></i>
+                <div class="logo-text">
+                    <h1>INDY 10U SOFTBALL</h1>
+                    <span>TRAINING HUB</span>
+                </div>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="hitting.html" class="nav-link">
+                    <i class="fas fa-baseball-bat-ball"></i> Hitting
+                </a>
+                <a href="fielding.html" class="nav-link">
+                    <i class="fas fa-mitten"></i> Fielding
+                </a>
+                <a href="pitching.html" class="nav-link">
+                    <i class="fas fa-bullseye"></i> Pitching
+                </a>
+                <a href="catching.html" class="nav-link">
+                    <i class="fas fa-hand"></i> Catching
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <i class="fas fa-baseball hero-icon"></i>
+            <h2>Welcome to Indy 10U Softball</h2>
+            <p>Your complete training resource for developing fundamental softball skills. Practice with purpose, play with passion!</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Featured Video Section -->
+        <section class="video-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Featured Training Video
+            </h2>
+            <div class="video-container">
+                <video controls poster="">
+                    <source src="vid/5_batting_drills.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <h3 class="video-title">5 Essential Batting Drills</h3>
+            <p class="video-description">Master these fundamental batting drills to improve your swing mechanics and consistency at the plate.</p>
+        </section>
+
+        <!-- Training Categories -->
+        <h2 class="section-title">
+            <i class="fas fa-clipboard-list"></i> Training Categories
+        </h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-baseball-bat-ball"></i>
+                </div>
+                <h3>Hitting</h3>
+                <p>Develop proper batting stance, swing mechanics, and timing. Learn drills to improve bat speed and contact consistency.</p>
+                <a href="hitting.html" class="card-link">
+                    Explore Hitting <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-mitten"></i>
+                </div>
+                <h3>Fielding</h3>
+                <p>Master ground balls, fly balls, and throwing mechanics. Build confidence in the field with proven drills.</p>
+                <a href="fielding.html" class="card-link">
+                    Explore Fielding <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Pitching</h3>
+                <p>Learn windmill pitching fundamentals, grip techniques, and accuracy drills to dominate from the circle.</p>
+                <a href="pitching.html" class="card-link">
+                    Explore Pitching <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-hand"></i>
+                </div>
+                <h3>Catching</h3>
+                <p>Develop receiving skills, blocking techniques, and quick throws to second. Become a wall behind the plate.</p>
+                <a href="catching.html" class="card-link">
+                    Explore Catching <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="tips-container">
+            <h3><i class="fas fa-lightbulb"></i> Quick Practice Tips</h3>
+            <ul class="tips-list">
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Always warm up properly before practice - 5-10 minutes of light jogging and dynamic stretching</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Focus on quality repetitions over quantity - proper form builds muscle memory</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Watch videos at half speed to catch important technique details</span>
+                </li>
+                <li>
+                    <i class="fas fa-check"></i>
+                    <span>Practice with a purpose - set specific goals for each training session</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <i class="fas fa-baseball footer-icon"></i>
+        <p>Indy 10U Softball Training Hub</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
