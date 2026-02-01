@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BDU Soccer - Defensive Plan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <style>
@@ -91,6 +91,154 @@
             color: var(--primary-color);
             font-size: 1.5rem;
         }
+
+        /* Defensive Attitude Section */
+        .defensive-attitude-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #ff6b6b;
+        }
+
+        .attitude-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .attitude-header i {
+            font-size: 2.5rem;
+            color: #ff6b6b;
+            margin-bottom: 0.75rem;
+        }
+
+        .attitude-header h2 {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .attitude-motto {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            font-style: italic;
+        }
+
+        .attitude-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .attitude-video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        .attitude-mindset-banner {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .attitude-quote {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .attitude-quote i {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .attitude-quote h3 {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            font-size: 1.75rem;
+            color: #ff6b6b;
+            margin-bottom: 0.75rem;
+        }
+
+        .attitude-quote p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .attitude-principles {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .attitude-principle {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .attitude-principle:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .attitude-principle i {
+            color: #ff6b6b;
+            font-size: 1.25rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+        .attitude-principle span {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .attitude-principle strong {
+            color: #ff6b6b;
+        }
+
+        .attitude-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.5), transparent);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .defensive-attitude-section {
+                padding: 1.5rem;
+            }
+
+            .attitude-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .attitude-motto {
+                font-size: 1.1rem;
+            }
+
+            .attitude-quote h3 {
+                font-size: 1.4rem;
+            }
+
+            .attitude-mindset-banner {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -146,6 +294,82 @@
             Each day builds upon the previous, covering topics like positioning, 1v1 defending, team shape, pressing, and recovery runs.
             Complete each day's drills before moving to the next.
         </p>
+    </div>
+
+    <!-- Defensive Attitude Section -->
+    <div class="defensive-attitude-section">
+        <div class="attitude-header">
+            <i class="fas fa-fist-raised"></i>
+            <h2>Defensive Attitude</h2>
+            <p class="attitude-motto">"Tackle Hard. Every Time."</p>
+        </div>
+
+        <div class="attitude-video-container">
+            <video controls>
+                <source src="vid/tackleHardMentality.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="attitude-mindset-banner">
+            <div class="attitude-quote">
+                <i class="fas fa-quote-left"></i>
+                <h3>"When you tackle, you tackle hard."</h3>
+                <p>There is not one thing soft or delicate or nice about tackling.</p>
+            </div>
+            <div class="attitude-principles">
+                <div class="attitude-principle">
+                    <i class="fas fa-crosshairs"></i>
+                    <span><strong>Commit fully.</strong> Don't just dangle a leg in and hope for the best. When you go in for a tackle, you go in with intent.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-bolt"></i>
+                    <span><strong>Follow through.</strong> If you commit for a tackle, see it through to completion. Half measures get you beat.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-shield-alt"></i>
+                    <span><strong>Win the ball.</strong> The goal is to dispossess your opponent and regain possession for your team.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 50/50 Ball Mentality -->
+        <div class="attitude-divider"></div>
+
+        <div class="attitude-header">
+            <i class="fas fa-handshake-angle"></i>
+            <h2>50/50 Ball Mentality</h2>
+            <p class="attitude-motto">"Make Every 50/50 a 100/0"</p>
+        </div>
+
+        <div class="attitude-video-container">
+            <video controls>
+                <source src="vid/neverLooseA50_50again.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="attitude-mindset-banner">
+            <div class="attitude-quote">
+                <i class="fas fa-quote-left"></i>
+                <h3>"Never lose a 50/50 ball again."</h3>
+                <p>A 50/50 ball is only 50/50 if you let it be. Your desire determines the outcome.</p>
+            </div>
+            <div class="attitude-principles">
+                <div class="attitude-principle">
+                    <i class="fas fa-fire"></i>
+                    <span><strong>Want it more.</strong> The player who wants the ball more will win it. Bring intensity and hunger to every contest.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-person-running"></i>
+                    <span><strong>Get there first.</strong> Anticipate, react quickly, and arrive before your opponent has time to settle.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-hand-fist"></i>
+                    <span><strong>Use your body.</strong> Get low, be strong, shield the ball. Make yourself impossible to move.</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <h2><i class="fas fa-calendar-alt"></i> Training Days</h2>
