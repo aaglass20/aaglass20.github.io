@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Defensive Day 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .day-header h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .day-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+        }
+
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drill-card h3 i {
+            color: var(--primary-color);
+        }
+
+        .drill-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .drill-meta span i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        .drill-description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .drill-points {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #0779e4;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Defensive Training - Day 1</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="defensive-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Defensive Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-shield-alt"></i> Day 1: Defensive Stance & Positioning</h2>
+        <p>Foundation drills for proper defensive technique</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Defensive Stance Practice</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 10 minutes</span>
+            <span><i class="fas fa-users"></i> Individual</span>
+            <span><i class="fas fa-signal"></i> Beginner</span>
+        </div>
+        <p class="drill-description">
+            Players practice holding the proper defensive stance. Low center of gravity,
+            on balls of feet, arms out for balance, eyes on the ball.
+        </p>
+        <ul class="drill-points">
+            <li>Knees bent, hips low</li>
+            <li>Weight on balls of feet, ready to move</li>
+            <li>Arms out wide for balance</li>
+            <li>Side-on to attacker, not square</li>
+            <li>Eyes on the ball, not the player's feet</li>
+        </ul>
+
+        <div class="defensive-attitude-section">
+            <div class="attitude-video-container">
+                <video controls>
+                    <source src="vid/defendLikeProIn5Steps.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <!-- Drill 2 -->
+        <div class="drill-card">
+            <h3><i class="fas fa-futbol"></i> Drill 2: Shadow Defending</h3>
+            <div class="drill-meta">
+                <span><i class="fas fa-clock"></i> 15 minutes</span>
+                <span><i class="fas fa-users"></i> Pairs</span>
+                <span><i class="fas fa-signal"></i> Beginner</span>
+            </div>
+            <p class="drill-description">
+                One player moves laterally while the partner mirrors their movement,
+                maintaining proper defensive position. No ball - focus on footwork.
+            </p>
+            <ul class="drill-points">
+                <li>Quick shuffle steps, don't cross feet</li>
+                <li>Stay balanced and low</li>
+                <li>Keep proper distance from partner</li>
+                <li>React quickly to direction changes</li>
+            </ul>
+        </div>
+
+        <!-- Drill 3 -->
+        <div class="drill-card">
+            <h3><i class="fas fa-futbol"></i> Drill 3: Closing Down</h3>
+            <div class="drill-meta">
+                <span><i class="fas fa-clock"></i> 15 minutes</span>
+                <span><i class="fas fa-users"></i> Pairs</span>
+                <span><i class="fas fa-signal"></i> Intermediate</span>
+            </div>
+            <p class="drill-description">
+                Attacker receives a pass, defender closes down quickly then slows approach
+                to get in proper position. Focus on speed of approach and controlled finish.
+            </p>
+            <ul class="drill-points">
+                <li>Sprint while ball is traveling</li>
+                <li>Slow down as you get close (last 2-3 yards)</li>
+                <li>Get into side-on stance</li>
+                <li>Jockey the attacker toward the sideline</li>
+                <li>Be patient - don't dive in</li>
+            </ul>
+            <div class="defensive-attitude-section">
+
+                <div class="attitude-header">
+                    <h2>Banana Run</h2>
+                </div>
+
+                <div class="attitude-video-container">
+                    <video controls>
+                        <source src="vid/defBannarRun.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drill 4 -->
+        <div class="drill-card">
+            <h3><i class="fas fa-futbol"></i> Drill 4: Positioning Game</h3>
+            <div class="drill-meta">
+                <span><i class="fas fa-clock"></i> 20 minutes</span>
+                <span><i class="fas fa-users"></i> Small Groups</span>
+                <span><i class="fas fa-signal"></i> Intermediate</span>
+            </div>
+            <p class="drill-description">
+                3v3 game in a small area. Defenders must stay goal-side of their mark at all times.
+                Points awarded for maintaining position, points lost for getting beaten.
+            </p>
+            <ul class="drill-points">
+                <li>Always know where your mark is</li>
+                <li>Stay goal-side and ball-side</li>
+                <li>Communicate with teammates</li>
+                <li>Recover quickly if beaten</li>
+            </ul>
+        </div>
+
+        <section class="collapsible-section">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb"></i> Key Coaching Points
+                <button class="toggle-button" aria-expanded="false">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </h2>
+            <div class="collapsible-content">
+                <ul>
+                    <li><strong>Patience:</strong> Don't dive in - make the attacker make a mistake</li>
+                    <li><strong>Body Shape:</strong> Side-on position limits attacker's options</li>
+                    <li><strong>Communication:</strong> Defenders must talk to each other</li>
+                    <li><strong>Recovery:</strong> If beaten, sprint to recover goal-side</li>
+                    <li><strong>Eyes on Ball:</strong> Watch the ball, not the player's body feints</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="defensive-plan.html" class="nav-btn">
+                <i class="fas fa-list"></i> All Days
+            </a>
+            <a href="defensive-plan-day2.html" class="nav-btn">
+                Day 2 <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div id="shared-footer"></div>
+
+    <script>
+        fetch('../menus/shared-footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('shared-footer').innerHTML = data;
+            });
+    </script>
+
+    <script src="scripts/scripts.js"></script>
+
+</body>
+</html>

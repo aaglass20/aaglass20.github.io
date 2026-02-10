@@ -6,7 +6,7 @@
     <title>BDU Soccer - Defensive Day 4</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <style>
         .back-link {
             display: inline-flex;
@@ -140,7 +140,7 @@
 <body>
 <header>
     <div class="highlight-banner">
-        <img src="../images/bdu.png" alt="Company Logo">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
         <h1>Defensive Training - Day 4</h1>
     </div>
 </header>
@@ -155,7 +155,7 @@
 <div id="training-menu"></div>
 
 <script>
-    fetch('../menus/training-menu.html')
+    fetch('menus/training-menu.html')
         .then(response => response.text())
         .then(data => {
             document.getElementById('training-menu').innerHTML = data;
@@ -163,7 +163,7 @@
 </script>
 
 <div class="container">
-    <a href="../defensive-plan.html" class="back-link">
+    <a href="defensive-plan.html" class="back-link">
         <i class="fas fa-arrow-left"></i> Back to Defensive Plan
     </a>
 
@@ -271,10 +271,10 @@
     </section>
 
     <div class="nav-buttons">
-        <a href="day3.html" class="nav-btn">
+        <a href="defensive-plan-day3.html" class="nav-btn">
             <i class="fas fa-arrow-left"></i> Day 3
         </a>
-        <a href="../defensive-plan.html" class="nav-btn">
+        <a href="defensive-plan.html" class="nav-btn">
             All Days <i class="fas fa-list"></i>
         </a>
     </div>
@@ -290,7 +290,7 @@
         });
 </script>
 
-<script src="../scripts/scripts.js"></script>
+<script src="scripts/scripts.js"></script>
 
 </body>
 </html>
