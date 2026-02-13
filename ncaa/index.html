@@ -1507,7 +1507,47 @@
 
     <!-- Tab: Grid -->
     <div id="tab-grid" class="tab-content active">
-        <p class="text-muted">Grid content here</p>
+        <div class="section-header">
+            <i class="fas fa-th"></i>
+            <h2>100 Squares Grid</h2>
+        </div>
+        <p class="section-subtext">Click an empty square to claim it. Row = winner's last digit, Column = loser's last digit.</p>
+
+        <!-- Grid -->
+        <div class="grid-wrapper">
+            <div id="grid-container"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="grid-legend">
+            <div class="legend-item">
+                <div class="legend-swatch unclaimed"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch claimed"></div>
+                <span>Claimed</span>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div class="admin-section">
+            <div class="section-header">
+                <i class="fas fa-shield-halved"></i>
+                <h2>Admin Controls</h2>
+            </div>
+            <div class="grid-controls">
+                <div class="grid-info">
+                    <strong id="squares-claimed-count">0</strong> / 100 squares claimed
+                </div>
+                <div class="admin-actions">
+                    <button id="btn-generate-numbers" class="btn btn-primary" onclick="generateNumbers()">
+                        <i class="fas fa-shuffle"></i>
+                        Generate Random Numbers
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Tab: Configuration -->
@@ -1593,6 +1633,175 @@
             el.textContent = message;
             el.className = 'modal-status ' + (type || '');
         }
+
+        // =============================================
+        // Grid Tab - 10x10 Squares Grid
+        // =============================================
+
+        // Data model
+        const gridData = Array.from({ length: 10 }, () => Array(10).fill(''));
+        let rowNumbers = Array(10).fill(null);
+        let colNumbers = Array(10).fill(null);
+        let numbersGenerated = false;
+
+        /**
+         * Renders the 10x10 grid table into #grid-container.
+         * Updates the claimed squares counter.
+         */
+        function renderGrid() {
+            const container = document.getElementById('grid-container');
+            let claimedCount = 0;
+            let html = '<table class="squares-grid">';
+
+            // Header row: corner + 10 column headers
+            html += '<tr>';
+            html += '<th class="corner-cell">W \\ L</th>';
+            for (let c = 0; c < 10; c++) {
+                const label = numbersGenerated ? colNumbers[c] : '?';
+                html += '<th class="col-header">';
+                if (numbersGenerated) {
+                    html += '<span class="team-label">Loser</span>';
+                }
+                html += label + '</th>';
+            }
+            html += '</tr>';
+
+            // Data rows
+            for (let r = 0; r < 10; r++) {
+                html += '<tr>';
+
+                // Row header
+                const rowLabel = numbersGenerated ? rowNumbers[r] : '?';
+                html += '<th class="row-header">';
+                if (numbersGenerated) {
+                    html += '<span class="team-label">Winner</span>';
+                }
+                html += rowLabel + '</th>';
+
+                // Data cells
+                for (let c = 0; c < 10; c++) {
+                    const name = gridData[r][c];
+                    if (name) {
+                        claimedCount++;
+                        html += '<td class="cell-claimed">' + escapeHtml(name) + '</td>';
+                    } else {
+                        html += '<td class="cell-unclaimed" onclick="claimSquare(' + r + ',' + c + ')"></td>';
+                    }
+                }
+                html += '</tr>';
+            }
+
+            html += '</table>';
+            container.innerHTML = html;
+
+            // Update counter
+            document.getElementById('squares-claimed-count').textContent = claimedCount;
+        }
+
+        /**
+         * Escapes HTML special characters to prevent XSS in name display.
+         */
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        /**
+         * Opens the modal to claim a square at (row, col).
+         * Validates the name is non-empty before saving.
+         */
+        function claimSquare(row, col) {
+            // Prevent claiming already-claimed squares
+            if (gridData[row][col]) return;
+
+            const rowLabel = numbersGenerated ? rowNumbers[row] : '?';
+            const colLabel = numbersGenerated ? colNumbers[col] : '?';
+
+            const bodyHtml =
+                '<p style="margin-bottom:0.75rem;color:var(--text-medium);font-size:0.9rem;">' +
+                    'Claiming square at Row <strong>' + rowLabel + '</strong>, Column <strong>' + colLabel + '</strong>' +
+                '</p>' +
+                '<input type="text" id="claim-name-input" class="modal-input" placeholder="Enter your name" autocomplete="off">';
+
+            const buttonsHtml =
+                '<button class="btn btn-success" onclick="saveClaimedSquare(' + row + ',' + col + ')">' +
+                    '<i class="fas fa-check"></i> Save' +
+                '</button>' +
+                '<button class="btn btn-outline" onclick="closeModal()">' +
+                    'Cancel' +
+                '</button>';
+
+            openModal('Claim Square', bodyHtml, buttonsHtml);
+
+            // Focus the input after modal opens
+            setTimeout(function() {
+                const input = document.getElementById('claim-name-input');
+                if (input) {
+                    input.focus();
+                    // Allow Enter key to save
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            saveClaimedSquare(row, col);
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        /**
+         * Saves the claimed square after validating name input.
+         */
+        function saveClaimedSquare(row, col) {
+            const input = document.getElementById('claim-name-input');
+            const name = input ? input.value.trim() : '';
+
+            if (!name) {
+                setModalStatus('Please enter a name.', 'error');
+                if (input) input.focus();
+                return;
+            }
+
+            gridData[row][col] = name;
+            closeModal();
+            renderGrid();
+        }
+
+        /**
+         * Generates random row and column numbers using Fisher-Yates shuffle.
+         * Each set is an independent random permutation of [0..9].
+         */
+        function generateNumbers() {
+            if (numbersGenerated) return;
+
+            rowNumbers = fisherYatesShuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            colNumbers = fisherYatesShuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            numbersGenerated = true;
+
+            // Disable the generate button
+            const btn = document.getElementById('btn-generate-numbers');
+            if (btn) btn.disabled = true;
+
+            renderGrid();
+        }
+
+        /**
+         * Fisher-Yates (Knuth) shuffle algorithm.
+         * Returns a new shuffled copy of the input array.
+         */
+        function fisherYatesShuffle(arr) {
+            const shuffled = arr.slice();
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const temp = shuffled[i];
+                shuffled[i] = shuffled[j];
+                shuffled[j] = temp;
+            }
+            return shuffled;
+        }
+
+        // Initial render
+        renderGrid();
     </script>
 </body>
 </html>
