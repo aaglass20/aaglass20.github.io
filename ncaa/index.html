@@ -1552,7 +1552,60 @@
 
     <!-- Tab: Configuration -->
     <div id="tab-config" class="tab-content">
-        <p class="text-muted">Configuration content here</p>
+        <div class="section-header">
+            <i class="fas fa-cog"></i>
+            <h2>Payout Configuration</h2>
+        </div>
+        <p class="section-subtext">Set the payout amount per game for each tournament round.</p>
+
+        <!-- Config table -->
+        <div class="config-table-wrapper">
+            <table class="config-table" id="config-table">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Games</th>
+                        <th>$ Per Game (Normal)</th>
+                        <th>$ Per Game (Inverse)</th>
+                    </tr>
+                </thead>
+                <tbody id="config-table-body">
+                    <!-- Rendered by renderConfig() -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Save button -->
+        <div class="config-actions">
+            <button class="btn btn-success btn-block" onclick="saveConfig()">
+                <i class="fas fa-save"></i>
+                Save Configuration
+            </button>
+        </div>
+
+        <!-- Status message area -->
+        <div id="config-status"></div>
+
+        <!-- Totals summary section -->
+        <div class="card mt-2" id="config-totals-card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-calculator" style="color:var(--primary);margin-right:0.5rem;"></i>Payout Summary</span>
+            </div>
+            <div class="results-summary">
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-normal-payout">$0</div>
+                    <div class="stat-label">Normal Payout</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-inverse-payout">$0</div>
+                    <div class="stat-label">Inverse Payout</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-grand-payout">$0</div>
+                    <div class="stat-label">Grand Total</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Tab: Score Entry -->
@@ -1800,8 +1853,134 @@
             return shuffled;
         }
 
+        // =============================================
+        // Configuration Tab - Payout Configuration
+        // =============================================
+
+        // Config data model
+        const configData = [
+            { round: 'First Four', gamesCount: 4, amount: 0, inverseAmount: 0 },
+            { round: 'First Round (Round of 64)', gamesCount: 32, amount: 0, inverseAmount: 0 },
+            { round: 'Second Round (Round of 32)', gamesCount: 16, amount: 0, inverseAmount: 0 },
+            { round: 'Sweet 16', gamesCount: 8, amount: 0, inverseAmount: 0 },
+            { round: 'Elite Eight', gamesCount: 4, amount: 0, inverseAmount: 0 },
+            { round: 'Final Four', gamesCount: 2, amount: 0, inverseAmount: 0 },
+            { round: 'Championship', gamesCount: 1, amount: 0, inverseAmount: 0 }
+        ];
+
+        /**
+         * Renders the configuration table rows into #config-table-body.
+         * Each row shows the round name, game count (read-only), and
+         * two number inputs for normal and inverse payout per game.
+         * A totals row is appended at the bottom.
+         */
+        function renderConfig() {
+            const tbody = document.getElementById('config-table-body');
+            let html = '';
+
+            configData.forEach(function(item, index) {
+                html += '<tr>';
+                html += '<td>' + escapeHtml(item.round) + '</td>';
+                html += '<td>' + item.gamesCount + '</td>';
+                html += '<td>';
+                html += '<input type="number" min="0" step="1" class="config-input" ';
+                html += 'value="' + item.amount + '" ';
+                html += 'oninput="updateConfigAmount(' + index + ', \'amount\', this.value)" ';
+                html += 'onchange="updateConfigAmount(' + index + ', \'amount\', this.value)">';
+                html += '</td>';
+                html += '<td>';
+                html += '<input type="number" min="0" step="1" class="config-input" ';
+                html += 'value="' + item.inverseAmount + '" ';
+                html += 'oninput="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)" ';
+                html += 'onchange="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)">';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            // Totals row
+            const totals = calculateTotals();
+            html += '<tr class="total-row">';
+            html += '<td>Totals</td>';
+            html += '<td>' + configData.reduce(function(sum, item) { return sum + item.gamesCount; }, 0) + '</td>';
+            html += '<td id="config-total-normal-cell">$' + totals.totalNormal + '</td>';
+            html += '<td id="config-total-inverse-cell">$' + totals.totalInverse + '</td>';
+            html += '</tr>';
+
+            tbody.innerHTML = html;
+
+            // Update the summary cards
+            document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
+            document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
+            document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+        }
+
+        /**
+         * Updates a config data entry and re-renders totals in real time.
+         * @param {number} index - Index into configData
+         * @param {string} field - 'amount' or 'inverseAmount'
+         * @param {string} value - The new value from the input
+         */
+        function updateConfigAmount(index, field, value) {
+            const parsed = parseInt(value, 10);
+            configData[index][field] = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+
+            // Recalculate and update totals display without full re-render
+            // (to avoid losing input focus)
+            const totals = calculateTotals();
+
+            const normalCell = document.getElementById('config-total-normal-cell');
+            const inverseCell = document.getElementById('config-total-inverse-cell');
+            if (normalCell) normalCell.textContent = '$' + totals.totalNormal;
+            if (inverseCell) inverseCell.textContent = '$' + totals.totalInverse;
+
+            document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
+            document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
+            document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+        }
+
+        /**
+         * Computes total normal, total inverse, and grand total payouts.
+         * Total Normal Payout = sum of (gamesCount * amount) per round.
+         * Total Inverse Payout = sum of (gamesCount * inverseAmount) per round.
+         * Grand Total = Normal + Inverse.
+         * @returns {{ totalNormal: number, totalInverse: number, grandTotal: number }}
+         */
+        function calculateTotals() {
+            let totalNormal = 0;
+            let totalInverse = 0;
+
+            configData.forEach(function(item) {
+                totalNormal += item.gamesCount * item.amount;
+                totalInverse += item.gamesCount * item.inverseAmount;
+            });
+
+            return {
+                totalNormal: totalNormal,
+                totalInverse: totalInverse,
+                grandTotal: totalNormal + totalInverse
+            };
+        }
+
+        /**
+         * Saves the configuration.
+         * For now, shows a success message. Google Sheets integration comes in Task 6.
+         */
+        function saveConfig() {
+            const statusEl = document.getElementById('config-status');
+            statusEl.innerHTML =
+                '<div class="status-message success mt-1">' +
+                    '<i class="fas fa-check-circle"></i> Configuration saved successfully!' +
+                '</div>';
+
+            // Auto-hide the message after 3 seconds
+            setTimeout(function() {
+                statusEl.innerHTML = '';
+            }, 3000);
+        }
+
         // Initial render
         renderGrid();
+        renderConfig();
     </script>
 </body>
 </html>
