@@ -723,6 +723,80 @@
             color: var(--text-medium);
         }
 
+        /* Score Entry - Game inputs layout */
+        .game-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .team-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .team-input {
+            flex: 1;
+            min-width: 80px;
+            padding: 0.45rem 0.65rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            transition: var(--transition-fast);
+        }
+
+        .team-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 109, 0, 0.15);
+        }
+
+        .vs-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            padding: 0 0.15rem;
+            flex-shrink: 0;
+        }
+
+        .game-result {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #F1F8E9;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        .game-result .result-winner {
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 0.25rem;
+        }
+
+        .game-result .result-info {
+            color: var(--text-medium);
+        }
+
+        .game-card .game-status {
+            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .game-card .completed-indicator {
+            color: var(--success);
+            font-weight: 600;
+        }
+
         /* ============================================
            RESULTS TAB
            ============================================ */
@@ -1610,7 +1684,9 @@
 
     <!-- Tab: Score Entry -->
     <div id="tab-scores" class="tab-content">
-        <p class="text-muted">Score Entry content here</p>
+        <div id="scores-container">
+            <!-- Rendered by renderScoreEntry() -->
+        </div>
     </div>
 
     <!-- Tab: Results -->
@@ -1978,9 +2054,352 @@
             }, 3000);
         }
 
+        // =============================================
+        // Score Entry Tab
+        // =============================================
+
+        // Rounds definition
+        const ROUNDS = [
+            { name: 'First Four', count: 4 },
+            { name: 'First Round (Round of 64)', count: 32 },
+            { name: 'Second Round (Round of 32)', count: 16 },
+            { name: 'Sweet 16', count: 8 },
+            { name: 'Elite Eight', count: 4 },
+            { name: 'Final Four', count: 2 },
+            { name: 'Championship', count: 1 }
+        ];
+
+        // Build gamesData from ROUNDS
+        let gamesData = [];
+        let gameId = 1;
+        ROUNDS.forEach(function(round) {
+            for (let i = 0; i < round.count; i++) {
+                gamesData.push({
+                    gameId: gameId++,
+                    round: round.name,
+                    team1: '',
+                    team2: '',
+                    score1: null,
+                    score2: null
+                });
+            }
+        });
+
+        // Track which round sections are expanded
+        let expandedRounds = {};
+
+        /**
+         * Renders the Score Entry tab content into #scores-container.
+         * Builds collapsible round sections with game cards inside each.
+         */
+        function renderScoreEntry() {
+            const container = document.getElementById('scores-container');
+            let html = '';
+
+            // Section header
+            html += '<div class="section-header">';
+            html += '<i class="fas fa-pen-to-square"></i>';
+            html += '<h2>Score Entry</h2>';
+            html += '</div>';
+
+            // Build a section for each round
+            ROUNDS.forEach(function(round) {
+                const roundGames = gamesData.filter(function(g) { return g.round === round.name; });
+                const completedCount = roundGames.filter(function(g) { return g.score1 !== null && g.score2 !== null; }).length;
+                const isExpanded = expandedRounds[round.name] || false;
+
+                html += '<div class="round-section">';
+
+                // Round header (clickable)
+                html += '<div class="round-header' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRound(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')">';
+                html += '<h3>';
+                html += '<i class="fas fa-basketball" style="font-size:0.85rem;"></i> ';
+                html += escapeHtml(round.name);
+                html += ' <span class="round-badge">' + completedCount + ' / ' + round.count + '</span>';
+                html += '</h3>';
+                html += '<i class="fas fa-chevron-down chevron"></i>';
+                html += '</div>';
+
+                // Round body (collapsible)
+                html += '<div class="round-body' + (isExpanded ? ' expanded' : '') + '">';
+                html += '<div class="games-grid">';
+
+                roundGames.forEach(function(game) {
+                    const isCompleted = game.score1 !== null && game.score2 !== null;
+
+                    html += '<div class="game-card' + (isCompleted ? ' completed' : '') + '" id="game-card-' + game.gameId + '">';
+
+                    // Game number with optional checkmark
+                    html += '<div class="game-number">';
+                    if (isCompleted) {
+                        html += '<i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem;"></i>';
+                    }
+                    html += 'Game ' + game.gameId;
+                    html += '</div>';
+
+                    // Game inputs
+                    html += '<div class="game-inputs">';
+
+                    // Team 1 group
+                    html += '<div class="team-input-group">';
+                    html += '<input type="text" placeholder="Team 1" id="team1-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team1) + '">';
+                    html += '<input type="number" placeholder="Score" id="score1-' + game.gameId + '" class="score-input" min="0"' + (game.score1 !== null ? ' value="' + game.score1 + '"' : '') + '>';
+                    html += '</div>';
+
+                    // VS separator
+                    html += '<span class="vs-label">vs</span>';
+
+                    // Team 2 group
+                    html += '<div class="team-input-group">';
+                    html += '<input type="text" placeholder="Team 2" id="team2-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team2) + '">';
+                    html += '<input type="number" placeholder="Score" id="score2-' + game.gameId + '" class="score-input" min="0"' + (game.score2 !== null ? ' value="' + game.score2 + '"' : '') + '>';
+                    html += '</div>';
+
+                    // Save button
+                    html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')">';
+                    html += '<i class="fas fa-check"></i> Save';
+                    html += '</button>';
+
+                    html += '</div>'; // .game-inputs
+
+                    // Result display area (hidden until score is saved)
+                    html += '<div class="game-result" id="game-result-' + game.gameId + '" style="' + (isCompleted ? '' : 'display:none;') + '">';
+                    if (isCompleted) {
+                        html += buildResultHtml(game);
+                    }
+                    html += '</div>';
+
+                    html += '</div>'; // .game-card
+                });
+
+                html += '</div>'; // .games-grid
+                html += '</div>'; // .round-body
+                html += '</div>'; // .round-section
+            });
+
+            container.innerHTML = html;
+        }
+
+        /**
+         * Toggles the expand/collapse state of a round section.
+         * @param {string} roundName - The name of the round to toggle
+         */
+        function toggleRound(roundName) {
+            expandedRounds[roundName] = !expandedRounds[roundName];
+            renderScoreEntry();
+        }
+
+        /**
+         * Saves the score for a specific game.
+         * Validates inputs, updates gamesData, and displays the result.
+         * @param {number} id - The gameId (1-based)
+         */
+        function saveGameScore(id) {
+            const team1Input = document.getElementById('team1-' + id);
+            const team2Input = document.getElementById('team2-' + id);
+            const score1Input = document.getElementById('score1-' + id);
+            const score2Input = document.getElementById('score2-' + id);
+
+            const team1 = team1Input ? team1Input.value.trim() : '';
+            const team2 = team2Input ? team2Input.value.trim() : '';
+            const score1Str = score1Input ? score1Input.value : '';
+            const score2Str = score2Input ? score2Input.value : '';
+
+            // Validation: both teams must have names
+            if (!team1 || !team2) {
+                showGameStatus(id, 'Both team names are required.', 'error');
+                return;
+            }
+
+            // Validation: both scores must be filled
+            if (score1Str === '' || score2Str === '') {
+                showGameStatus(id, 'Both scores are required.', 'error');
+                return;
+            }
+
+            const score1 = parseInt(score1Str, 10);
+            const score2 = parseInt(score2Str, 10);
+
+            if (isNaN(score1) || isNaN(score2)) {
+                showGameStatus(id, 'Scores must be valid numbers.', 'error');
+                return;
+            }
+
+            // Validation: scores can't be equal
+            if (score1 === score2) {
+                showGameStatus(id, 'Scores cannot be equal (no ties in NCAA tournament).', 'error');
+                return;
+            }
+
+            // Update gamesData
+            const game = gamesData[id - 1];
+            game.team1 = team1;
+            game.team2 = team2;
+            game.score1 = score1;
+            game.score2 = score2;
+
+            // Build and display result
+            const resultEl = document.getElementById('game-result-' + id);
+            if (resultEl) {
+                resultEl.innerHTML = buildResultHtml(game);
+                resultEl.style.display = '';
+            }
+
+            // Add completed class to the game card
+            const cardEl = document.getElementById('game-card-' + id);
+            if (cardEl) {
+                cardEl.classList.add('completed');
+            }
+
+            // Re-render to update badge counts and checkmarks
+            renderScoreEntry();
+
+            // Show success status after re-render so it appears on the new DOM
+            showGameStatus(id, 'Score saved successfully!', 'success');
+        }
+
+        /**
+         * Builds the result HTML for a completed game.
+         * Shows winner, digits, square owners, and payouts.
+         * @param {Object} game - The game data object
+         * @returns {string} HTML string
+         */
+        function buildResultHtml(game) {
+            const isTeam1Winner = game.score1 > game.score2;
+            const winnerTeam = isTeam1Winner ? game.team1 : game.team2;
+            const loserTeam = isTeam1Winner ? game.team2 : game.team1;
+            const winnerScore = isTeam1Winner ? game.score1 : game.score2;
+            const loserScore = isTeam1Winner ? game.score2 : game.score1;
+            const winnerDigit = winnerScore % 10;
+            const loserDigit = loserScore % 10;
+
+            let html = '';
+            html += '<div class="result-winner">';
+            html += '<i class="fas fa-trophy" style="color:var(--accent);margin-right:0.3rem;"></i>';
+            html += escapeHtml(winnerTeam) + ' wins ' + winnerScore + ' - ' + loserScore;
+            html += '</div>';
+
+            html += '<div class="result-info">';
+            html += '<strong>Winner digit:</strong> ' + winnerDigit + ' | <strong>Loser digit:</strong> ' + loserDigit;
+            html += '</div>';
+
+            // Normal square
+            const normalOwner = getSquareOwner(winnerDigit, loserDigit);
+            const normalPayout = getPayoutForRound(game.round, false);
+            html += '<div class="result-info">';
+            html += '<i class="fas fa-square" style="color:var(--primary);margin-right:0.3rem;font-size:0.7rem;"></i>';
+            html += '<strong>Normal:</strong> ' + escapeHtml(normalOwner.name);
+            if (normalOwner.row >= 0) {
+                html += ' (Row ' + normalOwner.row + ', Col ' + normalOwner.col + ')';
+            }
+            html += ' &mdash; <strong>$' + normalPayout + '</strong>';
+            html += '</div>';
+
+            // Inverse square (swap digits)
+            const inverseOwner = getSquareOwner(loserDigit, winnerDigit);
+            const inversePayout = getPayoutForRound(game.round, true);
+            html += '<div class="result-info">';
+            html += '<i class="fas fa-arrows-rotate" style="color:var(--info);margin-right:0.3rem;font-size:0.7rem;"></i>';
+            html += '<strong>Inverse:</strong> ' + escapeHtml(inverseOwner.name);
+            if (inverseOwner.row >= 0) {
+                html += ' (Row ' + inverseOwner.row + ', Col ' + inverseOwner.col + ')';
+            }
+            html += ' &mdash; <strong>$' + inversePayout + '</strong>';
+            html += '</div>';
+
+            return html;
+        }
+
+        /**
+         * Shows a temporary status message on a game card.
+         * @param {number} id - The gameId
+         * @param {string} message - Status message text
+         * @param {string} type - 'success' or 'error'
+         */
+        function showGameStatus(id, message, type) {
+            const cardEl = document.getElementById('game-card-' + id);
+            if (!cardEl) return;
+
+            // Remove any existing status message
+            const existing = cardEl.querySelector('.game-status-msg');
+            if (existing) existing.remove();
+
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'status-message ' + type + ' mt-1 game-status-msg';
+            statusDiv.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '"></i> ' + escapeHtml(message);
+            cardEl.appendChild(statusDiv);
+
+            // Auto-remove after 3 seconds
+            setTimeout(function() {
+                if (statusDiv.parentNode) {
+                    statusDiv.remove();
+                }
+            }, 3000);
+        }
+
+        /**
+         * Gets the square owner for the given winner and loser last digits.
+         * Maps winnerDigit to the grid row and loserDigit to the grid column
+         * using the generated row/col numbers.
+         * @param {number} winnerDigit - Last digit of the winner's score
+         * @param {number} loserDigit - Last digit of the loser's score
+         * @returns {{ name: string, row: number, col: number }}
+         */
+        function getSquareOwner(winnerDigit, loserDigit) {
+            if (!numbersGenerated) {
+                return { name: 'Numbers not generated', row: -1, col: -1 };
+            }
+
+            // Find the grid row index where rowNumbers[i] === winnerDigit
+            let gridRow = -1;
+            for (let i = 0; i < 10; i++) {
+                if (rowNumbers[i] === winnerDigit) {
+                    gridRow = i;
+                    break;
+                }
+            }
+
+            // Find the grid col index where colNumbers[j] === loserDigit
+            let gridCol = -1;
+            for (let j = 0; j < 10; j++) {
+                if (colNumbers[j] === loserDigit) {
+                    gridCol = j;
+                    break;
+                }
+            }
+
+            if (gridRow < 0 || gridCol < 0) {
+                return { name: '(error)', row: -1, col: -1 };
+            }
+
+            return {
+                name: gridData[gridRow][gridCol] || '(unclaimed)',
+                row: gridRow,
+                col: gridCol
+            };
+        }
+
+        /**
+         * Gets the payout amount for a given round name.
+         * Looks up the round in configData and returns either the normal
+         * or inverse amount.
+         * @param {string} roundName - The round name to look up
+         * @param {boolean} isInverse - If true, return inverseAmount; otherwise amount
+         * @returns {number} The payout amount
+         */
+        function getPayoutForRound(roundName, isInverse) {
+            for (let i = 0; i < configData.length; i++) {
+                if (configData[i].round === roundName) {
+                    return isInverse ? configData[i].inverseAmount : configData[i].amount;
+                }
+            }
+            return 0;
+        }
+
         // Initial render
         renderGrid();
         renderConfig();
+        renderScoreEntry();
     </script>
 </body>
 </html>
