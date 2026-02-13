@@ -1674,6 +1674,10 @@
         </div>
         <p class="section-subtext">Click an empty square to claim it. Row = winner's last digit, Column = loser's last digit.</p>
 
+        <div id="grid-full-message" class="status-message success mb-1" style="display:none;">
+            <i class="fas fa-check-circle"></i> All 100 squares have been claimed! Grid is full.
+        </div>
+
         <!-- Grid -->
         <div class="grid-wrapper">
             <div id="grid-container"></div>
@@ -1815,6 +1819,12 @@
 
     <script>
         // =============================================
+        // Google Sheets Configuration
+        // =============================================
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+        const SHEETS_CONFIGURED = false; // Set to true after deploying Apps Script
+
+        // =============================================
         // Tab Navigation
         // =============================================
         (function() {
@@ -1930,6 +1940,12 @@
 
             // Update counter
             document.getElementById('squares-claimed-count').textContent = claimedCount;
+
+            // Show grid full message if all 100 claimed
+            const fullMsg = document.getElementById('grid-full-message');
+            if (fullMsg) {
+                fullMsg.style.display = claimedCount >= 100 ? '' : 'none';
+            }
         }
 
         /**
@@ -1999,6 +2015,25 @@
             gridData[row][col] = name;
             closeModal();
             renderGrid();
+
+            // Save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'claimSquare',
+                            row: row,
+                            col: col,
+                            name: name
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving square to Google Sheets:', error);
+                }
+            }
         }
 
         /**
@@ -2017,6 +2052,24 @@
             if (btn) btn.disabled = true;
 
             renderGrid();
+
+            // Save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'generateNumbers',
+                            rowNumbers: rowNumbers.join(','),
+                            colNumbers: colNumbers.join(',')
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving numbers to Google Sheets:', error);
+                }
+            }
         }
 
         /**
@@ -2147,6 +2200,29 @@
          * For now, shows a success message. Google Sheets integration comes in Task 6.
          */
         function saveConfig() {
+            // Save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveConfig',
+                            rounds: configData.map(function(item) {
+                                return {
+                                    round: item.round,
+                                    amount: item.amount,
+                                    inverseAmount: item.inverseAmount
+                                };
+                            })
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving config to Google Sheets:', error);
+                }
+            }
+
             const statusEl = document.getElementById('config-status');
             statusEl.innerHTML =
                 '<div class="status-message success mt-1">' +
@@ -2206,6 +2282,14 @@
             html += '<i class="fas fa-pen-to-square"></i>';
             html += '<h2>Score Entry</h2>';
             html += '</div>';
+
+            // Warning if numbers not generated
+            if (!numbersGenerated) {
+                html += '<div class="status-message warning mb-2">';
+                html += '<i class="fas fa-exclamation-triangle"></i> ';
+                html += 'Numbers have not been generated yet. Square matching will not work until numbers are generated on the Grid tab.';
+                html += '</div>';
+            }
 
             // Build a section for each round
             ROUNDS.forEach(function(round) {
@@ -2342,6 +2426,27 @@
             game.team2 = team2;
             game.score1 = score1;
             game.score2 = score2;
+
+            // Save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveScore',
+                            gameId: id,
+                            team1: team1,
+                            team2: team2,
+                            score1: score1,
+                            score2: score2
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving score to Google Sheets:', error);
+                }
+            }
 
             // Build and display result
             const resultEl = document.getElementById('game-result-' + id);
@@ -2765,11 +2870,115 @@
             container.innerHTML = html;
         }
 
-        // Initial render
-        renderGrid();
-        renderConfig();
-        renderScoreEntry();
-        renderResults();
+        // =============================================
+        // Data Loading (Google Sheets Integration)
+        // =============================================
+
+        /**
+         * Renders all tabs. Called after data load or as a full refresh.
+         */
+        function renderAll() {
+            renderGrid();
+            renderConfig();
+            renderScoreEntry();
+            renderResults();
+
+            // Update generate button state
+            if (numbersGenerated) {
+                const btn = document.getElementById('btn-generate-numbers');
+                if (btn) btn.disabled = true;
+            }
+        }
+
+        /**
+         * Shows the loading overlay.
+         */
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('active');
+        }
+
+        /**
+         * Hides the loading overlay.
+         */
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('active');
+        }
+
+        /**
+         * Loads all data from Google Sheets (if configured).
+         * Falls back to offline defaults if Sheets is not configured or on error.
+         */
+        async function loadData() {
+            if (!SHEETS_CONFIGURED) {
+                console.log('Sheets not configured, using offline mode');
+                renderAll();
+                return;
+            }
+
+            showLoading();
+
+            try {
+                console.log('Loading data from Google Sheets...');
+                const response = await fetch(SCRIPT_URL + '?action=getData');
+                const data = await response.json();
+                console.log('Loaded data:', data);
+
+                // Populate grid
+                if (data.grid && Array.isArray(data.grid)) {
+                    for (let r = 0; r < 10 && r < data.grid.length; r++) {
+                        for (let c = 0; c < 10 && c < data.grid[r].length; c++) {
+                            gridData[r][c] = data.grid[r][c] || '';
+                        }
+                    }
+                }
+
+                // Populate numbers
+                if (data.numbers) {
+                    if (data.numbers.generated) {
+                        numbersGenerated = true;
+                        if (data.numbers.rowNumbers) {
+                            rowNumbers = data.numbers.rowNumbers.split(',').map(Number);
+                        }
+                        if (data.numbers.colNumbers) {
+                            colNumbers = data.numbers.colNumbers.split(',').map(Number);
+                        }
+                    }
+                }
+
+                // Populate config
+                if (data.config && Array.isArray(data.config)) {
+                    data.config.forEach(function(item, index) {
+                        if (index < configData.length) {
+                            configData[index].amount = item.amount || 0;
+                            configData[index].inverseAmount = item.inverseAmount || 0;
+                        }
+                    });
+                }
+
+                // Populate games
+                if (data.games && Array.isArray(data.games)) {
+                    data.games.forEach(function(item) {
+                        const game = gamesData.find(function(g) { return g.gameId === item.gameId; });
+                        if (game) {
+                            game.team1 = item.team1 || '';
+                            game.team2 = item.team2 || '';
+                            game.score1 = (item.score1 !== null && item.score1 !== '') ? Number(item.score1) : null;
+                            game.score2 = (item.score2 !== null && item.score2 !== '') ? Number(item.score2) : null;
+                        }
+                    });
+                }
+
+                renderAll();
+            } catch (error) {
+                console.error('Error loading data from Google Sheets:', error);
+                renderAll();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Start loading
+        loadData();
     </script>
 </body>
 </html>
