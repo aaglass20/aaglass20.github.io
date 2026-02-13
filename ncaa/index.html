@@ -726,9 +726,14 @@
         /* Score Entry - Game inputs layout */
         .game-inputs {
             display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .game-matchup-row {
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            flex-wrap: wrap;
         }
 
         .team-input-group {
@@ -2329,6 +2334,9 @@
                     // Game inputs
                     html += '<div class="game-inputs">';
 
+                    // Team matchup row
+                    html += '<div class="game-matchup-row">';
+
                     // Team 1 group
                     html += '<div class="team-input-group">';
                     html += '<input type="text" placeholder="Team 1" id="team1-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team1) + '">';
@@ -2344,7 +2352,9 @@
                     html += '<input type="number" placeholder="Score" id="score2-' + game.gameId + '" class="score-input" min="0"' + (game.score2 !== null ? ' value="' + game.score2 + '"' : '') + '>';
                     html += '</div>';
 
-                    // Save button
+                    html += '</div>'; // .game-matchup-row
+
+                    // Save button (own row)
                     html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')">';
                     html += '<i class="fas fa-check"></i> Save';
                     html += '</button>';
