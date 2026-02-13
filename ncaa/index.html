@@ -931,6 +931,93 @@
         }
 
         /* ============================================
+           RESULTS TAB - Sub-tabs & Additional Styles
+           ============================================ */
+
+        .results-subtabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .results-subtab {
+            background: transparent;
+            border: 2px solid var(--border-medium);
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .results-subtab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--bg-hover);
+        }
+
+        .results-subtab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--text-on-primary);
+            border-color: var(--primary);
+        }
+
+        .results-subtab.active:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: var(--text-on-primary);
+        }
+
+        .results-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .results-empty i {
+            font-size: 2.5rem;
+            color: var(--border-medium);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .results-empty p {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .results-empty .results-empty-sub {
+            font-size: 0.85rem;
+        }
+
+        .results-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-section-title i {
+            color: var(--primary);
+        }
+
+        .winnings-cell {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .leader-row .winnings-cell {
+            color: #B45309;
+        }
+
+        /* ============================================
            BUTTONS
            ============================================ */
 
@@ -1691,7 +1778,20 @@
 
     <!-- Tab: Results -->
     <div id="tab-results" class="tab-content">
-        <p class="text-muted">Results content here</p>
+        <div class="section-header">
+            <i class="fas fa-trophy"></i>
+            <h2>Results</h2>
+        </div>
+
+        <!-- Sub-tab navigation -->
+        <div class="results-subtabs">
+            <button class="btn btn-sm results-subtab active" data-results-mode="normal" onclick="switchResultsMode('normal')">Normal</button>
+            <button class="btn btn-sm results-subtab" data-results-mode="inverse" onclick="switchResultsMode('inverse')">Inverse</button>
+            <button class="btn btn-sm results-subtab" data-results-mode="combined" onclick="switchResultsMode('combined')">Combined</button>
+        </div>
+
+        <!-- Results content (populated by renderResults()) -->
+        <div id="results-content"></div>
     </div>
 
     <!-- Modal Template (reused for prompts/confirmations) -->
@@ -1737,6 +1837,11 @@
             tabButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
                     switchTab(btn.dataset.tab);
+
+                    // Re-render results when the Results tab is shown
+                    if (btn.dataset.tab === 'results' && typeof renderResults === 'function') {
+                        renderResults();
+                    }
                 });
             });
         })();
@@ -2396,10 +2501,275 @@
             return 0;
         }
 
+        // =============================================
+        // Results Tab
+        // =============================================
+
+        // Current results sub-tab mode
+        let resultsMode = 'normal';
+
+        /**
+         * Switches the active results sub-tab and re-renders results.
+         * @param {string} mode - 'normal', 'inverse', or 'combined'
+         */
+        function switchResultsMode(mode) {
+            resultsMode = mode;
+
+            // Update active sub-tab button styling
+            const subtabs = document.querySelectorAll('.results-subtab');
+            subtabs.forEach(function(btn) {
+                if (btn.getAttribute('data-results-mode') === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            renderResults();
+        }
+
+        /**
+         * Computes results for all completed games.
+         * Iterates gamesData, finds completed games (both scores filled),
+         * and computes winner/loser digits, square owners, and payouts.
+         * @returns {Array} Array of result objects
+         */
+        function computeResults() {
+            const results = [];
+
+            gamesData.forEach(function(game) {
+                // Only include completed games
+                if (game.score1 === null || game.score2 === null) return;
+
+                const isTeam1Winner = game.score1 > game.score2;
+                const winnerTeam = isTeam1Winner ? game.team1 : game.team2;
+                const loserTeam = isTeam1Winner ? game.team2 : game.team1;
+                const winnerScore = isTeam1Winner ? game.score1 : game.score2;
+                const loserScore = isTeam1Winner ? game.score2 : game.score1;
+                const winnerDigit = winnerScore % 10;
+                const loserDigit = loserScore % 10;
+
+                // Normal square: row=winnerDigit, col=loserDigit
+                const normalOwner = getSquareOwner(winnerDigit, loserDigit);
+                const normalPayout = getPayoutForRound(game.round, false);
+
+                // Inverse square: row=loserDigit, col=winnerDigit
+                const inverseOwner = getSquareOwner(loserDigit, winnerDigit);
+                const inversePayout = getPayoutForRound(game.round, true);
+
+                results.push({
+                    gameId: game.gameId,
+                    round: game.round,
+                    winnerTeam: winnerTeam,
+                    loserTeam: loserTeam,
+                    winnerScore: winnerScore,
+                    loserScore: loserScore,
+                    winnerDigit: winnerDigit,
+                    loserDigit: loserDigit,
+                    normalOwner: normalOwner.name,
+                    normalPayout: normalPayout,
+                    inverseOwner: inverseOwner.name,
+                    inversePayout: inversePayout
+                });
+            });
+
+            return results;
+        }
+
+        /**
+         * Computes leaderboard from results based on the given mode.
+         * Groups results by name (case-insensitive, trimmed) and sums wins/payouts.
+         * @param {Array} results - Array from computeResults()
+         * @param {string} mode - 'normal', 'inverse', or 'combined'
+         * @returns {Array} Sorted array of { name, wins, totalWinnings }
+         */
+        function computeLeaderboard(results, mode) {
+            const map = {};
+
+            results.forEach(function(r) {
+                // Normal wins
+                if (mode === 'normal' || mode === 'combined') {
+                    const name = (r.normalOwner || '').trim();
+                    if (name && name !== '(unclaimed)' && name !== 'Numbers not generated' && name !== '(error)') {
+                        const key = name.toLowerCase();
+                        if (!map[key]) {
+                            map[key] = { name: name, wins: 0, totalWinnings: 0 };
+                        }
+                        map[key].wins += 1;
+                        map[key].totalWinnings += r.normalPayout;
+                    }
+                }
+
+                // Inverse wins
+                if (mode === 'inverse' || mode === 'combined') {
+                    const name = (r.inverseOwner || '').trim();
+                    if (name && name !== '(unclaimed)' && name !== 'Numbers not generated' && name !== '(error)') {
+                        const key = name.toLowerCase();
+                        if (!map[key]) {
+                            map[key] = { name: name, wins: 0, totalWinnings: 0 };
+                        }
+                        map[key].wins += 1;
+                        map[key].totalWinnings += r.inversePayout;
+                    }
+                }
+            });
+
+            // Convert to array and sort by totalWinnings descending
+            const leaderboard = Object.keys(map).map(function(key) {
+                return map[key];
+            });
+
+            leaderboard.sort(function(a, b) {
+                if (b.totalWinnings !== a.totalWinnings) return b.totalWinnings - a.totalWinnings;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return a.name.localeCompare(b.name);
+            });
+
+            return leaderboard;
+        }
+
+        /**
+         * Renders the Results tab content based on the current resultsMode.
+         * Builds the game results table and leaderboard.
+         */
+        function renderResults() {
+            const container = document.getElementById('results-content');
+            const results = computeResults();
+
+            // If no completed games, show empty state
+            if (results.length === 0) {
+                container.innerHTML =
+                    '<div class="results-empty">' +
+                        '<i class="fas fa-clipboard-list"></i>' +
+                        '<p>No games completed yet</p>' +
+                        '<p class="results-empty-sub">Enter scores in the Scores tab to see results here.</p>' +
+                    '</div>';
+                return;
+            }
+
+            let html = '';
+
+            // --- Summary Stats ---
+            const leaderboard = computeLeaderboard(results, resultsMode);
+            let totalPaidOut = 0;
+            leaderboard.forEach(function(entry) { totalPaidOut += entry.totalWinnings; });
+
+            html += '<div class="results-summary">';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">' + results.length + '</div>';
+            html += '<div class="stat-label">Games Completed</div>';
+            html += '</div>';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">' + leaderboard.length + '</div>';
+            html += '<div class="stat-label">Unique Winners</div>';
+            html += '</div>';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">$' + totalPaidOut + '</div>';
+            html += '<div class="stat-label">Total Paid Out</div>';
+            html += '</div>';
+            html += '</div>';
+
+            // --- Game Results Table ---
+            html += '<div class="card">';
+            html += '<div class="results-section-title">';
+            html += '<i class="fas fa-list-ol"></i> Game Results';
+            html += '</div>';
+            html += '<div class="results-table-wrapper">';
+            html += '<table class="results-table">';
+            html += '<thead><tr>';
+            html += '<th>Round</th>';
+            html += '<th>Game #</th>';
+            html += '<th>Teams</th>';
+            html += '<th>Score</th>';
+            html += '<th>W Digit</th>';
+            html += '<th>L Digit</th>';
+
+            if (resultsMode === 'combined') {
+                html += '<th>Normal Owner</th>';
+                html += '<th>Normal Payout</th>';
+                html += '<th>Inverse Owner</th>';
+                html += '<th>Inverse Payout</th>';
+            } else {
+                html += '<th>Square Owner</th>';
+                html += '<th>Payout</th>';
+            }
+
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            results.forEach(function(r) {
+                html += '<tr>';
+                html += '<td>' + escapeHtml(r.round) + '</td>';
+                html += '<td class="text-center">' + r.gameId + '</td>';
+                html += '<td>' + escapeHtml(r.winnerTeam) + ' vs ' + escapeHtml(r.loserTeam) + '</td>';
+                html += '<td>' + r.winnerScore + ' - ' + r.loserScore + '</td>';
+                html += '<td class="text-center">' + r.winnerDigit + '</td>';
+                html += '<td class="text-center">' + r.loserDigit + '</td>';
+
+                if (resultsMode === 'combined') {
+                    html += '<td>' + escapeHtml(r.normalOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.normalPayout + '</td>';
+                    html += '<td>' + escapeHtml(r.inverseOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.inversePayout + '</td>';
+                } else if (resultsMode === 'normal') {
+                    html += '<td>' + escapeHtml(r.normalOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.normalPayout + '</td>';
+                } else {
+                    html += '<td>' + escapeHtml(r.inverseOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.inversePayout + '</td>';
+                }
+
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += '</div>'; // .results-table-wrapper
+            html += '</div>'; // .card
+
+            // --- Leaderboard ---
+            html += '<div class="card">';
+            html += '<div class="results-section-title">';
+            html += '<i class="fas fa-ranking-star"></i> Leaderboard';
+            html += '</div>';
+
+            if (leaderboard.length === 0) {
+                html += '<p class="text-muted text-center" style="padding:1rem;">No winners yet (squares may be unclaimed or numbers not generated).</p>';
+            } else {
+                html += '<div class="results-table-wrapper">';
+                html += '<table class="results-table">';
+                html += '<thead><tr>';
+                html += '<th style="text-align:center;">Rank</th>';
+                html += '<th>Name</th>';
+                html += '<th style="text-align:center;">Games Won</th>';
+                html += '<th>Total Winnings</th>';
+                html += '</tr></thead>';
+                html += '<tbody>';
+
+                leaderboard.forEach(function(entry, index) {
+                    const rank = index + 1;
+                    const isLeader = rank === 1;
+                    html += '<tr class="' + (isLeader ? 'leader-row' : '') + '">';
+                    html += '<td class="rank-cell">' + rank + '</td>';
+                    html += '<td' + (isLeader ? ' style="font-weight:700;"' : '') + '>' + escapeHtml(entry.name) + '</td>';
+                    html += '<td class="text-center">' + entry.wins + '</td>';
+                    html += '<td class="winnings-cell">$' + entry.totalWinnings + '</td>';
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                html += '</div>'; // .results-table-wrapper
+            }
+
+            html += '</div>'; // .card
+
+            container.innerHTML = html;
+        }
+
         // Initial render
         renderGrid();
         renderConfig();
         renderScoreEntry();
+        renderResults();
     </script>
 </body>
 </html>
