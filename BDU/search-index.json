@@ -354,6 +354,14 @@
       ],
       "sections": [
         {
+          "title": "Proper Soccer Defensive Stance",
+          "anchor": "#proper-soccer-defensive-stance"
+        },
+        {
+          "title": "90 % Defending is Decision Making",
+          "anchor": "#90-percent-defending-is-decision-making"
+        },
+        {
           "title": "Defensive Banana Run",
           "anchor": "#defensive-banana-run"
         },
@@ -432,6 +440,74 @@
         {
           "title": "Transitional Shooting, defensive track down",
           "anchor": "#transitional-shooting-defensive-track-down"
+        }
+      ]
+    },
+    {
+      "title": "Defensive Training - Day 1",
+      "url": "defensive-plan-day1.html",
+      "keywords": [
+        "defense",
+        "defending",
+        "tactical",
+        "positioning",
+        "tackles"
+      ],
+      "sections": [
+        {
+          "title": "Key Coaching Points",
+          "anchor": "#key-coaching-points"
+        }
+      ]
+    },
+    {
+      "title": "Defensive Training - Day 2",
+      "url": "defensive-plan-day2.html",
+      "keywords": [
+        "defense",
+        "defending",
+        "tactical",
+        "positioning",
+        "tackles"
+      ],
+      "sections": [
+        {
+          "title": "Key Coaching Points",
+          "anchor": "#key-coaching-points"
+        }
+      ]
+    },
+    {
+      "title": "Defensive Training - Day 3",
+      "url": "defensive-plan-day3.html",
+      "keywords": [
+        "defense",
+        "defending",
+        "tactical",
+        "positioning",
+        "tackles"
+      ],
+      "sections": [
+        {
+          "title": "Key Coaching Points",
+          "anchor": "#key-coaching-points"
+        }
+      ]
+    },
+    {
+      "title": "Defensive Training - Day 4",
+      "url": "defensive-plan-day4.html",
+      "keywords": [
+        "defense",
+        "defending",
+        "tactical",
+        "positioning",
+        "tackles"
+      ],
+      "sections": [
+        {
+          "title": "Key Coaching Points",
+          "anchor": "#key-coaching-points"
         }
       ]
     },
@@ -1135,6 +1211,10 @@
         "pressure"
       ],
       "sections": [
+        {
+          "title": "Follow your Pass",
+          "anchor": "#follow-your-pass"
+        },
         {
           "title": "Big Pitch, Little Pitch",
           "anchor": "#big-pitch-little-pitch"
@@ -2401,6 +2481,10 @@
         {
           "title": "Training with attitude",
           "anchor": "#training-with-attitude"
+        },
+        {
+          "title": "Advice to soccer player",
+          "anchor": "#advice-to-soccer-player"
         }
       ]
     }
