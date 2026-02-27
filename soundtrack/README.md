@@ -78,3 +78,10 @@ Now you just need to commit and push these changes. Want me to do that? The key 
   Going forward, after each npm run build, you'll need to copy the build output from soundtrack/build/ to soundtrack/ again. You could also add a deploy script to package.json
   to automate this.
 
+
+⏺ Now instead of npm run build, just run:                                                                                                                                       
+
+  npm run deploy                                                                                                                                                                
+   
+  It will build the app and then copy everything from build/ into the soundtrack/ folder so GitHub Pages can serve it directly. 
+
