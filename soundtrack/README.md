@@ -69,4 +69,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-test
+Now you just need to commit and push these changes. Want me to do that? The key files to add are:                                                                             
+                                                                                                                                                                                
+  - soundtrack/index.html                                                                                                                                                       
+  - soundtrack/static/ (JS and CSS bundles)
+  - soundtrack/favicon.ico, logo192.png, logo512.png, manifest.json, robots.txt, asset-manifest.json
+
+  Going forward, after each npm run build, you'll need to copy the build output from soundtrack/build/ to soundtrack/ again. You could also add a deploy script to package.json
+  to automate this.
+
