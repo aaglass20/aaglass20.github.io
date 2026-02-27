@@ -1,0 +1,559 @@
+{
+  "1960": [
+    { "title": "The Twist", "artist": "Chubby Checker" },
+    { "title": "Are You Lonesome Tonight?", "artist": "Elvis Presley" },
+    { "title": "Save the Last Dance for Me", "artist": "The Drifters" },
+    { "title": "Stuck on You", "artist": "Elvis Presley" },
+    { "title": "Cathy's Clown", "artist": "The Everly Brothers" },
+    { "title": "My Heart Has a Mind of Its Own", "artist": "Connie Francis" }
+  ],
+  "1961": [
+    { "title": "Tossin' and Turnin'", "artist": "Bobby Lewis" },
+    { "title": "Big Bad John", "artist": "Jimmy Dean" },
+    { "title": "Runaway", "artist": "Del Shannon" },
+    { "title": "Pony Time", "artist": "Chubby Checker" },
+    { "title": "Stand by Me", "artist": "Ben E. King" },
+    { "title": "Blue Moon", "artist": "The Marcels" }
+  ],
+  "1962": [
+    { "title": "Stranger on the Shore", "artist": "Mr. Acker Bilk" },
+    { "title": "I Can't Stop Loving You", "artist": "Ray Charles" },
+    { "title": "Sherry", "artist": "The Four Seasons" },
+    { "title": "Roses Are Red", "artist": "Bobby Vinton" },
+    { "title": "The Loco-Motion", "artist": "Little Eva" },
+    { "title": "Duke of Earl", "artist": "Gene Chandler" }
+  ],
+  "1963": [
+    { "title": "Sugar Shack", "artist": "Jimmy Gilmer and the Fireballs" },
+    { "title": "Surfin' U.S.A.", "artist": "The Beach Boys" },
+    { "title": "He's So Fine", "artist": "The Chiffons" },
+    { "title": "Blue Velvet", "artist": "Bobby Vinton" },
+    { "title": "My Boyfriend's Back", "artist": "The Angels" },
+    { "title": "Da Doo Ron Ron", "artist": "The Crystals" }
+  ],
+  "1964": [
+    { "title": "I Want to Hold Your Hand", "artist": "The Beatles" },
+    { "title": "She Loves You", "artist": "The Beatles" },
+    { "title": "Oh, Pretty Woman", "artist": "Roy Orbison" },
+    { "title": "Baby Love", "artist": "The Supremes" },
+    { "title": "A Hard Day's Night", "artist": "The Beatles" },
+    { "title": "My Guy", "artist": "Mary Wells" },
+    { "title": "Where Did Our Love Go", "artist": "The Supremes" }
+  ],
+  "1965": [
+    { "title": "(I Can't Get No) Satisfaction", "artist": "The Rolling Stones" },
+    { "title": "Yesterday", "artist": "The Beatles" },
+    { "title": "Help!", "artist": "The Beatles" },
+    { "title": "My Girl", "artist": "The Temptations" },
+    { "title": "Stop! In the Name of Love", "artist": "The Supremes" },
+    { "title": "I Got You Babe", "artist": "Sonny & Cher" }
+  ],
+  "1966": [
+    { "title": "Paint It Black", "artist": "The Rolling Stones" },
+    { "title": "Good Vibrations", "artist": "The Beach Boys" },
+    { "title": "You Can't Hurry Love", "artist": "The Supremes" },
+    { "title": "California Dreamin'", "artist": "The Mamas & the Papas" },
+    { "title": "Last Train to Clarksville", "artist": "The Monkees" },
+    { "title": "Cherish", "artist": "The Association" }
+  ],
+  "1967": [
+    { "title": "Light My Fire", "artist": "The Doors" },
+    { "title": "Respect", "artist": "Aretha Franklin" },
+    { "title": "All You Need Is Love", "artist": "The Beatles" },
+    { "title": "Happy Together", "artist": "The Turtles" },
+    { "title": "Somebody to Love", "artist": "Jefferson Airplane" },
+    { "title": "Groovin'", "artist": "The Young Rascals" }
+  ],
+  "1968": [
+    { "title": "Hey Jude", "artist": "The Beatles" },
+    { "title": "Sittin' on the Dock of the Bay", "artist": "Otis Redding" },
+    { "title": "People Got to Be Free", "artist": "The Rascals" },
+    { "title": "Mrs. Robinson", "artist": "Simon & Garfunkel" },
+    { "title": "Heard It Through the Grapevine", "artist": "Marvin Gaye" },
+    { "title": "Born to Be Wild", "artist": "Steppenwolf" }
+  ],
+  "1969": [
+    { "title": "Sugar, Sugar", "artist": "The Archies" },
+    { "title": "Aquarius/Let the Sunshine In", "artist": "The 5th Dimension" },
+    { "title": "Come Together", "artist": "The Beatles" },
+    { "title": "Honky Tonk Women", "artist": "The Rolling Stones" },
+    { "title": "Get Back", "artist": "The Beatles" },
+    { "title": "Everyday People", "artist": "Sly & the Family Stone" }
+  ],
+  "1970": [
+    { "title": "Bridge over Troubled Water", "artist": "Simon & Garfunkel" },
+    { "title": "Let It Be", "artist": "The Beatles" },
+    { "title": "Ain't No Mountain High Enough", "artist": "Diana Ross" },
+    { "title": "War", "artist": "Edwin Starr" },
+    { "title": "I'll Be There", "artist": "The Jackson 5" },
+    { "title": "ABC", "artist": "The Jackson 5" }
+  ],
+  "1971": [
+    { "title": "Joy to the World", "artist": "Three Dog Night" },
+    { "title": "Maggie May", "artist": "Rod Stewart" },
+    { "title": "It's Too Late", "artist": "Carole King" },
+    { "title": "Imagine", "artist": "John Lennon" },
+    { "title": "Stairway to Heaven", "artist": "Led Zeppelin" },
+    { "title": "What's Going On", "artist": "Marvin Gaye" }
+  ],
+  "1972": [
+    { "title": "The First Time Ever I Saw Your Face", "artist": "Roberta Flack" },
+    { "title": "American Pie", "artist": "Don McLean" },
+    { "title": "Lean on Me", "artist": "Bill Withers" },
+    { "title": "Without You", "artist": "Nilsson" },
+    { "title": "Let's Stay Together", "artist": "Al Green" },
+    { "title": "Heart of Gold", "artist": "Neil Young" }
+  ],
+  "1973": [
+    { "title": "Killing Me Softly with His Song", "artist": "Roberta Flack" },
+    { "title": "Tie a Yellow Ribbon Round the Ole Oak Tree", "artist": "Tony Orlando and Dawn" },
+    { "title": "Let's Get It On", "artist": "Marvin Gaye" },
+    { "title": "Superstition", "artist": "Stevie Wonder" },
+    { "title": "Crocodile Rock", "artist": "Elton John" },
+    { "title": "You're So Vain", "artist": "Carly Simon" }
+  ],
+  "1974": [
+    { "title": "The Way We Were", "artist": "Barbra Streisand" },
+    { "title": "Seasons in the Sun", "artist": "Terry Jacks" },
+    { "title": "Come and Get Your Love", "artist": "Redbone" },
+    { "title": "Bennie and the Jets", "artist": "Elton John" },
+    { "title": "Kung Fu Fighting", "artist": "Carl Douglas" },
+    { "title": "Cat's in the Cradle", "artist": "Harry Chapin" }
+  ],
+  "1975": [
+    { "title": "Love Will Keep Us Together", "artist": "Captain & Tennille" },
+    { "title": "Bohemian Rhapsody", "artist": "Queen" },
+    { "title": "Rhinestone Cowboy", "artist": "Glen Campbell" },
+    { "title": "Fame", "artist": "David Bowie" },
+    { "title": "Shining Star", "artist": "Earth, Wind & Fire" },
+    { "title": "Best of My Love", "artist": "Eagles" }
+  ],
+  "1976": [
+    { "title": "Silly Love Songs", "artist": "Wings" },
+    { "title": "Don't Go Breaking My Heart", "artist": "Elton John & Kiki Dee" },
+    { "title": "December, 1963 (Oh, What a Night)", "artist": "The Four Seasons" },
+    { "title": "Disco Lady", "artist": "Johnnie Taylor" },
+    { "title": "Play That Funky Music", "artist": "Wild Cherry" },
+    { "title": "50 Ways to Leave Your Lover", "artist": "Paul Simon" }
+  ],
+  "1977": [
+    { "title": "You Light Up My Life", "artist": "Debby Boone" },
+    { "title": "Hotel California", "artist": "Eagles" },
+    { "title": "Stayin' Alive", "artist": "Bee Gees" },
+    { "title": "Dreams", "artist": "Fleetwood Mac" },
+    { "title": "Don't Stop", "artist": "Fleetwood Mac" },
+    { "title": "We Are the Champions", "artist": "Queen" },
+    { "title": "Dancing Queen", "artist": "ABBA" }
+  ],
+  "1978": [
+    { "title": "Night Fever", "artist": "Bee Gees" },
+    { "title": "You're the One That I Want", "artist": "John Travolta & Olivia Newton-John" },
+    { "title": "Stayin' Alive", "artist": "Bee Gees" },
+    { "title": "Le Freak", "artist": "Chic" },
+    { "title": "Miss You", "artist": "The Rolling Stones" },
+    { "title": "Baker Street", "artist": "Gerry Rafferty" }
+  ],
+  "1979": [
+    { "title": "My Sharona", "artist": "The Knack" },
+    { "title": "Le Freak", "artist": "Chic" },
+    { "title": "Don't Stop 'Til You Get Enough", "artist": "Michael Jackson" },
+    { "title": "Heart of Glass", "artist": "Blondie" },
+    { "title": "I Will Survive", "artist": "Gloria Gaynor" },
+    { "title": "Good Times", "artist": "Chic" },
+    { "title": "Y.M.C.A.", "artist": "Village People" }
+  ],
+  "1980": [
+    { "title": "Call Me", "artist": "Blondie" },
+    { "title": "Another Brick in the Wall", "artist": "Pink Floyd" },
+    { "title": "Upside Down", "artist": "Diana Ross" },
+    { "title": "Crazy Little Thing Called Love", "artist": "Queen" },
+    { "title": "Another One Bites the Dust", "artist": "Queen" },
+    { "title": "Magic", "artist": "Olivia Newton-John" }
+  ],
+  "1981": [
+    { "title": "Bette Davis Eyes", "artist": "Kim Carnes" },
+    { "title": "Endless Love", "artist": "Diana Ross & Lionel Richie" },
+    { "title": "Physical", "artist": "Olivia Newton-John" },
+    { "title": "Don't Stop Believin'", "artist": "Journey" },
+    { "title": "Every Little Thing She Does Is Magic", "artist": "The Police" },
+    { "title": "Start Me Up", "artist": "The Rolling Stones" }
+  ],
+  "1982": [
+    { "title": "I Love Rock 'n' Roll", "artist": "Joan Jett & the Blackhearts" },
+    { "title": "Eye of the Tiger", "artist": "Survivor" },
+    { "title": "Ebony and Ivory", "artist": "Paul McCartney & Stevie Wonder" },
+    { "title": "Africa", "artist": "Toto" },
+    { "title": "Don't You Want Me", "artist": "The Human League" },
+    { "title": "Jack and Diane", "artist": "John Mellencamp" }
+  ],
+  "1983": [
+    { "title": "Every Breath You Take", "artist": "The Police" },
+    { "title": "Billie Jean", "artist": "Michael Jackson" },
+    { "title": "Beat It", "artist": "Michael Jackson" },
+    { "title": "Total Eclipse of the Heart", "artist": "Bonnie Tyler" },
+    { "title": "Sweet Dreams (Are Made of This)", "artist": "Eurythmics" },
+    { "title": "Maniac", "artist": "Michael Sembello" },
+    { "title": "Come On Eileen", "artist": "Dexys Midnight Runners" }
+  ],
+  "1984": [
+    { "title": "When Doves Cry", "artist": "Prince" },
+    { "title": "What's Love Got to Do with It", "artist": "Tina Turner" },
+    { "title": "Like a Virgin", "artist": "Madonna" },
+    { "title": "Jump", "artist": "Van Halen" },
+    { "title": "Footloose", "artist": "Kenny Loggins" },
+    { "title": "Girls Just Want to Have Fun", "artist": "Cyndi Lauper" },
+    { "title": "Wake Me Up Before You Go-Go", "artist": "Wham!" }
+  ],
+  "1985": [
+    { "title": "Careless Whisper", "artist": "George Michael" },
+    { "title": "We Are the World", "artist": "USA for Africa" },
+    { "title": "Everybody Wants to Rule the World", "artist": "Tears for Fears" },
+    { "title": "Take On Me", "artist": "a-ha" },
+    { "title": "Money for Nothing", "artist": "Dire Straits" },
+    { "title": "Shout", "artist": "Tears for Fears" },
+    { "title": "Don't You (Forget About Me)", "artist": "Simple Minds" }
+  ],
+  "1986": [
+    { "title": "Walk Like an Egyptian", "artist": "The Bangles" },
+    { "title": "Livin' on a Prayer", "artist": "Bon Jovi" },
+    { "title": "Papa Don't Preach", "artist": "Madonna" },
+    { "title": "Higher Love", "artist": "Steve Winwood" },
+    { "title": "Kiss", "artist": "Prince" },
+    { "title": "Sledgehammer", "artist": "Peter Gabriel" }
+  ],
+  "1987": [
+    { "title": "Walk Like an Egyptian", "artist": "The Bangles" },
+    { "title": "With or Without You", "artist": "U2" },
+    { "title": "Livin' on a Prayer", "artist": "Bon Jovi" },
+    { "title": "La Bamba", "artist": "Los Lobos" },
+    { "title": "I Wanna Dance with Somebody", "artist": "Whitney Houston" },
+    { "title": "Here I Go Again", "artist": "Whitesnake" },
+    { "title": "Faith", "artist": "George Michael" }
+  ],
+  "1988": [
+    { "title": "Faith", "artist": "George Michael" },
+    { "title": "Need You Tonight", "artist": "INXS" },
+    { "title": "Sweet Child O' Mine", "artist": "Guns N' Roses" },
+    { "title": "Every Rose Has Its Thorn", "artist": "Poison" },
+    { "title": "Don't Worry, Be Happy", "artist": "Bobby McFerrin" },
+    { "title": "Pour Some Sugar on Me", "artist": "Def Leppard" }
+  ],
+  "1989": [
+    { "title": "Like a Prayer", "artist": "Madonna" },
+    { "title": "Straight Up", "artist": "Paula Abdul" },
+    { "title": "Love Shack", "artist": "The B-52's" },
+    { "title": "She Drives Me Crazy", "artist": "Fine Young Cannibals" },
+    { "title": "Every Rose Has Its Thorn", "artist": "Poison" },
+    { "title": "Wind Beneath My Wings", "artist": "Bette Midler" }
+  ],
+  "1990": [
+    { "title": "Nothing Compares 2 U", "artist": "Sinead O'Connor" },
+    { "title": "Vogue", "artist": "Madonna" },
+    { "title": "Ice Ice Baby", "artist": "Vanilla Ice" },
+    { "title": "U Can't Touch This", "artist": "MC Hammer" },
+    { "title": "Hold On", "artist": "Wilson Phillips" },
+    { "title": "Opposites Attract", "artist": "Paula Abdul" }
+  ],
+  "1991": [
+    { "title": "Smells Like Teen Spirit", "artist": "Nirvana" },
+    { "title": "(Everything I Do) I Do It for You", "artist": "Bryan Adams" },
+    { "title": "Gonna Make You Sweat", "artist": "C+C Music Factory" },
+    { "title": "Losing My Religion", "artist": "R.E.M." },
+    { "title": "Cream", "artist": "Prince" },
+    { "title": "Under the Bridge", "artist": "Red Hot Chili Peppers" }
+  ],
+  "1992": [
+    { "title": "End of the Road", "artist": "Boyz II Men" },
+    { "title": "Baby Got Back", "artist": "Sir Mix-a-Lot" },
+    { "title": "Jump", "artist": "Kris Kross" },
+    { "title": "Save the Best for Last", "artist": "Vanessa Williams" },
+    { "title": "I Will Always Love You", "artist": "Whitney Houston" },
+    { "title": "Under the Bridge", "artist": "Red Hot Chili Peppers" }
+  ],
+  "1993": [
+    { "title": "I Will Always Love You", "artist": "Whitney Houston" },
+    { "title": "Whoomp! (There It Is)", "artist": "Tag Team" },
+    { "title": "Dreamlover", "artist": "Mariah Carey" },
+    { "title": "Creep", "artist": "Radiohead" },
+    { "title": "Informer", "artist": "Snow" },
+    { "title": "Nuthin' but a 'G' Thang", "artist": "Dr. Dre" }
+  ],
+  "1994": [
+    { "title": "The Sign", "artist": "Ace of Base" },
+    { "title": "I'll Make Love to You", "artist": "Boyz II Men" },
+    { "title": "All I Wanna Do", "artist": "Sheryl Crow" },
+    { "title": "Bump N' Grind", "artist": "R. Kelly" },
+    { "title": "Stay (I Missed You)", "artist": "Lisa Loeb" },
+    { "title": "Return to Innocence", "artist": "Enigma" }
+  ],
+  "1995": [
+    { "title": "Gangsta's Paradise", "artist": "Coolio" },
+    { "title": "Waterfalls", "artist": "TLC" },
+    { "title": "Creep", "artist": "TLC" },
+    { "title": "Kiss from a Rose", "artist": "Seal" },
+    { "title": "One Sweet Day", "artist": "Mariah Carey & Boyz II Men" },
+    { "title": "Wonderwall", "artist": "Oasis" }
+  ],
+  "1996": [
+    { "title": "Macarena", "artist": "Los Del Rio" },
+    { "title": "One Sweet Day", "artist": "Mariah Carey & Boyz II Men" },
+    { "title": "Killing Me Softly", "artist": "Fugees" },
+    { "title": "No Diggity", "artist": "Blackstreet" },
+    { "title": "Ironic", "artist": "Alanis Morissette" },
+    { "title": "Follow You Down", "artist": "Gin Blossoms" }
+  ],
+  "1997": [
+    { "title": "Candle in the Wind 1997", "artist": "Elton John" },
+    { "title": "MMMBop", "artist": "Hanson" },
+    { "title": "I'll Be Missing You", "artist": "Puff Daddy & Faith Evans" },
+    { "title": "Wannabe", "artist": "Spice Girls" },
+    { "title": "Bittersweet Symphony", "artist": "The Verve" },
+    { "title": "Karma Police", "artist": "Radiohead" },
+    { "title": "Tubthumping", "artist": "Chumbawamba" }
+  ],
+  "1998": [
+    { "title": "Too Close", "artist": "Next" },
+    { "title": "...Baby One More Time", "artist": "Britney Spears" },
+    { "title": "Iris", "artist": "Goo Goo Dolls" },
+    { "title": "Truly Madly Deeply", "artist": "Savage Garden" },
+    { "title": "Gettin' Jiggy wit It", "artist": "Will Smith" },
+    { "title": "Intergalactic", "artist": "Beastie Boys" }
+  ],
+  "1999": [
+    { "title": "Believe", "artist": "Cher" },
+    { "title": "No Scrubs", "artist": "TLC" },
+    { "title": "Livin' la Vida Loca", "artist": "Ricky Martin" },
+    { "title": "Smooth", "artist": "Santana ft. Rob Thomas" },
+    { "title": "...Baby One More Time", "artist": "Britney Spears" },
+    { "title": "Genie in a Bottle", "artist": "Christina Aguilera" },
+    { "title": "I Want It That Way", "artist": "Backstreet Boys" }
+  ],
+  "2000": [
+    { "title": "Breathe", "artist": "Faith Hill" },
+    { "title": "Smooth", "artist": "Santana ft. Rob Thomas" },
+    { "title": "Say My Name", "artist": "Destiny's Child" },
+    { "title": "Maria Maria", "artist": "Santana ft. The Product G&B" },
+    { "title": "It's Gonna Be Me", "artist": "*NSYNC" },
+    { "title": "Bye Bye Bye", "artist": "*NSYNC" }
+  ],
+  "2001": [
+    { "title": "Hanging by a Moment", "artist": "Lifehouse" },
+    { "title": "Fallin'", "artist": "Alicia Keys" },
+    { "title": "Crazy in Love", "artist": "Beyonce" },
+    { "title": "Lady Marmalade", "artist": "Christina Aguilera, Lil' Kim, Mya & Pink" },
+    { "title": "It Wasn't Me", "artist": "Shaggy" },
+    { "title": "Drops of Jupiter", "artist": "Train" }
+  ],
+  "2002": [
+    { "title": "How You Remind Me", "artist": "Nickelback" },
+    { "title": "Complicated", "artist": "Avril Lavigne" },
+    { "title": "Lose Yourself", "artist": "Eminem" },
+    { "title": "Hot in Herre", "artist": "Nelly" },
+    { "title": "Dilemma", "artist": "Nelly ft. Kelly Rowland" },
+    { "title": "A Thousand Miles", "artist": "Vanessa Carlton" }
+  ],
+  "2003": [
+    { "title": "In Da Club", "artist": "50 Cent" },
+    { "title": "Crazy in Love", "artist": "Beyonce ft. Jay-Z" },
+    { "title": "Where Is the Love?", "artist": "The Black Eyed Peas" },
+    { "title": "Ignition (Remix)", "artist": "R. Kelly" },
+    { "title": "Hey Ya!", "artist": "OutKast" },
+    { "title": "Bring Me to Life", "artist": "Evanescence" }
+  ],
+  "2004": [
+    { "title": "Yeah!", "artist": "Usher ft. Lil Jon & Ludacris" },
+    { "title": "Burn", "artist": "Usher" },
+    { "title": "Hey Ya!", "artist": "OutKast" },
+    { "title": "This Love", "artist": "Maroon 5" },
+    { "title": "Toxic", "artist": "Britney Spears" },
+    { "title": "Lean Back", "artist": "Terror Squad" },
+    { "title": "Mr. Brightside", "artist": "The Killers" }
+  ],
+  "2005": [
+    { "title": "We Belong Together", "artist": "Mariah Carey" },
+    { "title": "Hollaback Girl", "artist": "Gwen Stefani" },
+    { "title": "Gold Digger", "artist": "Kanye West ft. Jamie Foxx" },
+    { "title": "Boulevard of Broken Dreams", "artist": "Green Day" },
+    { "title": "Since U Been Gone", "artist": "Kelly Clarkson" },
+    { "title": "Sugar, We're Goin Down", "artist": "Fall Out Boy" },
+    { "title": "Feel Good Inc.", "artist": "Gorillaz" }
+  ],
+  "2006": [
+    { "title": "Bad Day", "artist": "Daniel Powter" },
+    { "title": "Hips Don't Lie", "artist": "Shakira ft. Wyclef Jean" },
+    { "title": "Crazy", "artist": "Gnarls Barkley" },
+    { "title": "SexyBack", "artist": "Justin Timberlake" },
+    { "title": "Promiscuous", "artist": "Nelly Furtado ft. Timbaland" },
+    { "title": "Chasing Cars", "artist": "Snow Patrol" }
+  ],
+  "2007": [
+    { "title": "Umbrella", "artist": "Rihanna ft. Jay-Z" },
+    { "title": "Irreplaceable", "artist": "Beyonce" },
+    { "title": "Hey There Delilah", "artist": "Plain White T's" },
+    { "title": "Beautiful Girls", "artist": "Sean Kingston" },
+    { "title": "Stronger", "artist": "Kanye West" },
+    { "title": "Rehab", "artist": "Amy Winehouse" },
+    { "title": "Apologize", "artist": "Timbaland ft. OneRepublic" }
+  ],
+  "2008": [
+    { "title": "Low", "artist": "Flo Rida ft. T-Pain" },
+    { "title": "Bleeding Love", "artist": "Leona Lewis" },
+    { "title": "Viva la Vida", "artist": "Coldplay" },
+    { "title": "I Kissed a Girl", "artist": "Katy Perry" },
+    { "title": "Disturbia", "artist": "Rihanna" },
+    { "title": "Paper Planes", "artist": "M.I.A." },
+    { "title": "Single Ladies (Put a Ring on It)", "artist": "Beyonce" }
+  ],
+  "2009": [
+    { "title": "Boom Boom Pow", "artist": "The Black Eyed Peas" },
+    { "title": "Poker Face", "artist": "Lady Gaga" },
+    { "title": "I Gotta Feeling", "artist": "The Black Eyed Peas" },
+    { "title": "Single Ladies (Put a Ring on It)", "artist": "Beyonce" },
+    { "title": "Use Somebody", "artist": "Kings of Leon" },
+    { "title": "Empire State of Mind", "artist": "Jay-Z ft. Alicia Keys" },
+    { "title": "Bad Romance", "artist": "Lady Gaga" }
+  ],
+  "2010": [
+    { "title": "TiK ToK", "artist": "Kesha" },
+    { "title": "Love the Way You Lie", "artist": "Eminem ft. Rihanna" },
+    { "title": "California Gurls", "artist": "Katy Perry ft. Snoop Dogg" },
+    { "title": "Teenage Dream", "artist": "Katy Perry" },
+    { "title": "Just the Way You Are", "artist": "Bruno Mars" },
+    { "title": "Firework", "artist": "Katy Perry" },
+    { "title": "Rolling in the Deep", "artist": "Adele" }
+  ],
+  "2011": [
+    { "title": "Rolling in the Deep", "artist": "Adele" },
+    { "title": "Party Rock Anthem", "artist": "LMFAO" },
+    { "title": "Someone Like You", "artist": "Adele" },
+    { "title": "Moves Like Jagger", "artist": "Maroon 5 ft. Christina Aguilera" },
+    { "title": "Firework", "artist": "Katy Perry" },
+    { "title": "Pumped Up Kicks", "artist": "Foster the People" },
+    { "title": "Super Bass", "artist": "Nicki Minaj" }
+  ],
+  "2012": [
+    { "title": "Somebody That I Used to Know", "artist": "Gotye ft. Kimbra" },
+    { "title": "Call Me Maybe", "artist": "Carly Rae Jepsen" },
+    { "title": "Gangnam Style", "artist": "PSY" },
+    { "title": "We Are Young", "artist": "fun. ft. Janelle Monae" },
+    { "title": "Lights", "artist": "Ellie Goulding" },
+    { "title": "Stronger (What Doesn't Kill You)", "artist": "Kelly Clarkson" }
+  ],
+  "2013": [
+    { "title": "Blurred Lines", "artist": "Robin Thicke ft. T.I. & Pharrell" },
+    { "title": "Radioactive", "artist": "Imagine Dragons" },
+    { "title": "Get Lucky", "artist": "Daft Punk ft. Pharrell Williams" },
+    { "title": "Royals", "artist": "Lorde" },
+    { "title": "Roar", "artist": "Katy Perry" },
+    { "title": "Wrecking Ball", "artist": "Miley Cyrus" },
+    { "title": "Happy", "artist": "Pharrell Williams" }
+  ],
+  "2014": [
+    { "title": "Happy", "artist": "Pharrell Williams" },
+    { "title": "All About That Bass", "artist": "Meghan Trainor" },
+    { "title": "Shake It Off", "artist": "Taylor Swift" },
+    { "title": "Uptown Funk", "artist": "Mark Ronson ft. Bruno Mars" },
+    { "title": "Stay with Me", "artist": "Sam Smith" },
+    { "title": "Blank Space", "artist": "Taylor Swift" },
+    { "title": "Take Me to Church", "artist": "Hozier" }
+  ],
+  "2015": [
+    { "title": "Uptown Funk", "artist": "Mark Ronson ft. Bruno Mars" },
+    { "title": "See You Again", "artist": "Wiz Khalifa ft. Charlie Puth" },
+    { "title": "Thinking Out Loud", "artist": "Ed Sheeran" },
+    { "title": "Shut Up and Dance", "artist": "Walk the Moon" },
+    { "title": "Hello", "artist": "Adele" },
+    { "title": "Can't Feel My Face", "artist": "The Weeknd" },
+    { "title": "What Do You Mean?", "artist": "Justin Bieber" }
+  ],
+  "2016": [
+    { "title": "Love Yourself", "artist": "Justin Bieber" },
+    { "title": "Sorry", "artist": "Justin Bieber" },
+    { "title": "Stressed Out", "artist": "Twenty One Pilots" },
+    { "title": "Cheap Thrills", "artist": "Sia" },
+    { "title": "Closer", "artist": "The Chainsmokers ft. Halsey" },
+    { "title": "One Dance", "artist": "Drake ft. Wizkid & Kyla" },
+    { "title": "7 Years", "artist": "Lukas Graham" }
+  ],
+  "2017": [
+    { "title": "Shape of You", "artist": "Ed Sheeran" },
+    { "title": "Despacito", "artist": "Luis Fonsi & Daddy Yankee ft. Justin Bieber" },
+    { "title": "That's What I Like", "artist": "Bruno Mars" },
+    { "title": "Humble", "artist": "Kendrick Lamar" },
+    { "title": "Rockstar", "artist": "Post Malone ft. 21 Savage" },
+    { "title": "Something Just Like This", "artist": "The Chainsmokers & Coldplay" },
+    { "title": "Thunder", "artist": "Imagine Dragons" }
+  ],
+  "2018": [
+    { "title": "God's Plan", "artist": "Drake" },
+    { "title": "Perfect", "artist": "Ed Sheeran" },
+    { "title": "Havana", "artist": "Camila Cabello ft. Young Thug" },
+    { "title": "Rockstar", "artist": "Post Malone ft. 21 Savage" },
+    { "title": "I Like It", "artist": "Cardi B, Bad Bunny & J Balvin" },
+    { "title": "This Is America", "artist": "Childish Gambino" },
+    { "title": "Shallow", "artist": "Lady Gaga & Bradley Cooper" }
+  ],
+  "2019": [
+    { "title": "Old Town Road", "artist": "Lil Nas X ft. Billy Ray Cyrus" },
+    { "title": "Sunflower", "artist": "Post Malone & Swae Lee" },
+    { "title": "Bad Guy", "artist": "Billie Eilish" },
+    { "title": "Sucker", "artist": "Jonas Brothers" },
+    { "title": "Senorita", "artist": "Shawn Mendes & Camila Cabello" },
+    { "title": "7 Rings", "artist": "Ariana Grande" },
+    { "title": "Truth Hurts", "artist": "Lizzo" }
+  ],
+  "2020": [
+    { "title": "Blinding Lights", "artist": "The Weeknd" },
+    { "title": "Circles", "artist": "Post Malone" },
+    { "title": "The Box", "artist": "Roddy Ricch" },
+    { "title": "Don't Start Now", "artist": "Dua Lipa" },
+    { "title": "Watermelon Sugar", "artist": "Harry Styles" },
+    { "title": "Rockstar", "artist": "DaBaby ft. Roddy Ricch" },
+    { "title": "Savage Love", "artist": "Jawsh 685 & Jason Derulo" }
+  ],
+  "2021": [
+    { "title": "Levitating", "artist": "Dua Lipa" },
+    { "title": "Save Your Tears", "artist": "The Weeknd & Ariana Grande" },
+    { "title": "drivers license", "artist": "Olivia Rodrigo" },
+    { "title": "Kiss Me More", "artist": "Doja Cat ft. SZA" },
+    { "title": "Montero (Call Me By Your Name)", "artist": "Lil Nas X" },
+    { "title": "Stay", "artist": "The Kid LAROI & Justin Bieber" },
+    { "title": "good 4 u", "artist": "Olivia Rodrigo" },
+    { "title": "Peaches", "artist": "Justin Bieber ft. Daniel Caesar & Giveon" }
+  ],
+  "2022": [
+    { "title": "As It Was", "artist": "Harry Styles" },
+    { "title": "Heat Waves", "artist": "Glass Animals" },
+    { "title": "First Class", "artist": "Jack Harlow" },
+    { "title": "About Damn Time", "artist": "Lizzo" },
+    { "title": "Bad Habit", "artist": "Steve Lacy" },
+    { "title": "Anti-Hero", "artist": "Taylor Swift" },
+    { "title": "Running Up That Hill", "artist": "Kate Bush" }
+  ],
+  "2023": [
+    { "title": "Flowers", "artist": "Miley Cyrus" },
+    { "title": "Kill Bill", "artist": "SZA" },
+    { "title": "Last Night", "artist": "Morgan Wallen" },
+    { "title": "Cruel Summer", "artist": "Taylor Swift" },
+    { "title": "Vampire", "artist": "Olivia Rodrigo" },
+    { "title": "Paint the Town Red", "artist": "Doja Cat" },
+    { "title": "What Was I Made For?", "artist": "Billie Eilish" }
+  ],
+  "2024": [
+    { "title": "Espresso", "artist": "Sabrina Carpenter" },
+    { "title": "A Bar Song (Tipsy)", "artist": "Shaboozey" },
+    { "title": "Not Like Us", "artist": "Kendrick Lamar" },
+    { "title": "Beautiful Things", "artist": "Benson Boone" },
+    { "title": "Birds of a Feather", "artist": "Billie Eilish" },
+    { "title": "Lose Control", "artist": "Teddy Swims" },
+    { "title": "Texas Hold 'Em", "artist": "Beyonce" }
+  ],
+  "2025": [
+    { "title": "APT.", "artist": "Rose & Bruno Mars" },
+    { "title": "Die With A Smile", "artist": "Lady Gaga & Bruno Mars" },
+    { "title": "Luther", "artist": "Kendrick Lamar ft. SZA" },
+    { "title": "Messy", "artist": "Lola Young" },
+    { "title": "Abracadabra", "artist": "Lady Gaga" },
+    { "title": "That's So True", "artist": "Gracie Abrams" }
+  ]
+}
