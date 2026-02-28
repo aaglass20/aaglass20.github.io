@@ -16,9 +16,9 @@ const YearCard = ({ year, song, onPickSong, onRemoveSong, onBrowseTopSongs, isOw
               <button
                 className="btn-top-songs"
                 onClick={() => onBrowseTopSongs(year)}
-                title={`Browse top songs of ${year}`}
+                title={`View Top Songs in ${year}`}
               >
-                &#9835; {year}
+                &#9835; View Top Songs in {year}
               </button>
             )}
             <button className="btn-add-song" onClick={() => onPickSong(year)}>

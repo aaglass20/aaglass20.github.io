@@ -407,73 +407,48 @@ function handleGetTopSongsForYear(params) {
   var year = params.year;
   if (!year) return jsonResponse({ error: 'Year is required', tracks: [] });
 
-  // Search for a "Top Songs of {year}" playlist
-  var searchUrl = 'https://api.spotify.com/v1/search?type=playlist&q=' +
-    encodeURIComponent('Top songs of ' + year) + '&limit=5';
+  // Search multiple queries to build a broad pool, then rank by Spotify popularity
+  var queries = [
+    'top hits ' + year,
+    'best songs ' + year,
+    'number one hits ' + year
+  ];
 
-  var searchRes = UrlFetchApp.fetch(searchUrl, {
-    headers: { 'Authorization': 'Bearer ' + token }
-  });
-  var searchJson = JSON.parse(searchRes.getContentText());
+  var seen = {};
+  var allTracks = [];
 
-  if (!searchJson.playlists || !searchJson.playlists.items || searchJson.playlists.items.length === 0) {
-    return jsonResponse({ tracks: [], error: 'No playlist found for ' + year });
-  }
-
-  // Filter out null items, then prefer Spotify-owned playlists
-  var validItems = searchJson.playlists.items.filter(function(p) { return p !== null; });
-  if (validItems.length === 0) {
-    return jsonResponse({ tracks: [], error: 'No playlist found for ' + year });
-  }
-
-  var playlist = validItems[0];
-  for (var i = 0; i < validItems.length; i++) {
-    var p = validItems[i];
-    if (p.owner && p.owner.id === 'spotify') {
-      playlist = p;
-      break;
-    }
-  }
-
-  // Try each valid playlist until one works (some may be restricted)
-  var tracksJson = null;
-  for (var j = 0; j < validItems.length; j++) {
-    var candidate = validItems[j];
-    var tracksUrl = 'https://api.spotify.com/v1/playlists/' + candidate.id + '/tracks?limit=100';
-    var tracksRes = UrlFetchApp.fetch(tracksUrl, {
+  queries.forEach(function(q) {
+    var url = 'https://api.spotify.com/v1/search?q=' +
+      encodeURIComponent(q) + '&type=track&limit=10';
+    var res = UrlFetchApp.fetch(url, {
       headers: { 'Authorization': 'Bearer ' + token },
       muteHttpExceptions: true
     });
-    if (tracksRes.getResponseCode() === 200) {
-      playlist = candidate;
-      tracksJson = JSON.parse(tracksRes.getContentText());
-      break;
-    }
-  }
+    if (res.getResponseCode() !== 200) return;
+    var data = JSON.parse(res.getContentText());
+    if (!data.tracks || !data.tracks.items) return;
 
-  if (!tracksJson) {
-    return jsonResponse({ tracks: [], error: 'Could not access any playlist for ' + year });
-  }
-
-  var tracks = [];
-  if (tracksJson.items) {
-    tracksJson.items.forEach(function(item) {
-      var t = item.track;
-      if (!t || !t.id) return;
-      tracks.push({
+    data.tracks.items.forEach(function(t) {
+      if (!t || !t.id || seen[t.id]) return;
+      seen[t.id] = true;
+      allTracks.push({
         id: t.id,
         name: t.name,
         artist: t.artists.map(function(a) { return a.name; }).join(', '),
         album: t.album.name,
         coverUrl: t.album.images.length > 0 ? t.album.images[t.album.images.length - 1].url : '',
-        spotifyUrl: t.external_urls.spotify
+        spotifyUrl: t.external_urls.spotify,
+        popularity: t.popularity || 0
       });
     });
-  }
+  });
+
+  // Sort by popularity descending and take top 10
+  allTracks.sort(function(a, b) { return b.popularity - a.popularity; });
+  var topTracks = allTracks.slice(0, 10);
 
   return jsonResponse({
-    tracks: tracks,
-    playlistName: playlist.name,
-    playlistOwner: playlist.owner ? playlist.owner.display_name : ''
+    tracks: topTracks,
+    playlistName: 'Top Songs in ' + year
   });
 }

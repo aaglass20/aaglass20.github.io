@@ -16,7 +16,7 @@ const TopSongsModal = ({ isOpen, onClose, onSelect, year }) => {
     getTopSongsForYear(year)
       .then(data => {
         setTracks(data.tracks || []);
-        setPlaylistName(data.playlistName || `Top Songs of ${year}`);
+        setPlaylistName(data.playlistName || `Top Songs in ${year}`);
         if (data.error && (!data.tracks || data.tracks.length === 0)) {
           setError(data.error);
         }
@@ -45,7 +45,7 @@ const TopSongsModal = ({ isOpen, onClose, onSelect, year }) => {
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>
-            {playlistName || `Top Songs of ${year}`}
+            {playlistName || `Top Songs in ${year}`}
             {tracks.length > 0 && (
               <span className="top-songs-count">{tracks.length} songs</span>
             )}
