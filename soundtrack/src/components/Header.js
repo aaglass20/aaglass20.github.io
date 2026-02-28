@@ -23,7 +23,7 @@ const Header = () => {
       <div className="header-inner">
         <Link to="/timeline" className="header-logo">
           <span className="logo-icon">🎵</span>
-          <span className="logo-text">Soundtrack</span>
+          <span className="logo-text">Soundtrack of a Lifetime</span>
         </Link>
 
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>

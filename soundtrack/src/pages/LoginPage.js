@@ -52,12 +52,9 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-hero">
         <h1 className="login-title">
-          <span className="title-icon">🎵</span>
-          Soundtrack of My Life
+          Soundtrack of a Lifetime
         </h1>
-        <p className="login-subtitle">
-          Pick a song for every year of your life. Build your musical biography.
-        </p>
+        <p className="login-tagline">Every life has a soundtrack. What's yours?</p>
       </div>
 
       <div className="login-card">
@@ -105,6 +102,36 @@ const LoginPage = () => {
             {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
           </button>
         </form>
+      </div>
+
+      <div className="login-about">
+        <div className="about-section">
+          <h3 className="about-heading">How It Works</h3>
+          <p>Sign up with a username, password, and the year you were born. Your musical journey begins instantly.</p>
+          <p>Choose <strong>one song for every year of your life</strong>. It can be a hit from that year, or a song that personally represents who you were during that time.</p>
+          <p>Relive your story — one song at a time.</p>
+        </div>
+
+        <div className="about-section">
+          <h3 className="about-heading">Build Your Legacy Lists</h3>
+          <div className="feature-list">
+            <div className="feature-item">
+              <span className="feature-icon">Top 25</span>
+              <span>Songs of All Time</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">Top 10</span>
+              <span>Albums of All Time</span>
+            </div>
+          </div>
+          <p>With smooth drag-and-drop, add songs and albums anytime and rearrange your rankings whenever your heart changes.</p>
+        </div>
+
+        <div className="about-section">
+          <h3 className="about-heading">Discover & Connect</h3>
+          <p>Browse other users' soundtracks. Find hidden gems, rediscover forgotten favorites, and see how different lives are shaped by different songs.</p>
+          <p>When you favorite a song, it gets added to <strong>The Super Chart</strong> — a living, breathing musical time capsule built by everyone.</p>
+        </div>
       </div>
     </div>
   );
