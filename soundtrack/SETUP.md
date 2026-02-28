@@ -57,7 +57,7 @@ npm start
 ## 6. Deploy to GitHub Pages
 
 ```bash
-npm run build
+npm run deploy
 ```
 
-Then commit and push. The app will be live at `https://aaglass20.github.io/soundtrack/`.
+This builds the app and copies the output so GitHub Pages can serve it. Then commit and push. The app will be live at `https://aaglass20.github.io/soundtrack/`.
