@@ -3,12 +3,14 @@ import { useAuth } from '../context/AuthContext';
 import * as sheetsApi from '../api/sheetsApi';
 import YearCard from '../components/YearCard';
 import SongSearchModal from '../components/SongSearchModal';
+import TopSongsModal from '../components/TopSongsModal';
 
 const TimelinePage = () => {
   const { user } = useAuth();
   const [timeline, setTimeline] = useState({});
   const [loading, setLoading] = useState(true);
   const [modalYear, setModalYear] = useState(null);
+  const [topSongsYear, setTopSongsYear] = useState(null);
 
   const currentYear = new Date().getFullYear();
   const years = [];
@@ -51,6 +53,18 @@ const TimelinePage = () => {
     setModalYear(null);
   };
 
+  const handleSelectTopSong = (song) => {
+    if (!topSongsYear) return;
+    const updated = { ...timeline, [topSongsYear]: { ...song, year: topSongsYear } };
+    setTimeline(updated);
+    sheetsApi.saveTimelineSong(
+      user.userId, topSongsYear,
+      song.songTitle, song.artist,
+      song.spotifyId, song.spotifyUrl
+    );
+    setTopSongsYear(null);
+  };
+
   const handleRemoveSong = (year) => {
     const updated = { ...timeline };
     delete updated[year];
@@ -89,6 +103,7 @@ const TimelinePage = () => {
               song={timeline[year]}
               onPickSong={handlePickSong}
               onRemoveSong={handleRemoveSong}
+              onBrowseTopSongs={setTopSongsYear}
             />
           ))}
         </div>
@@ -99,6 +114,13 @@ const TimelinePage = () => {
         onClose={() => setModalYear(null)}
         onSelect={handleSelectSong}
         year={modalYear}
+      />
+
+      <TopSongsModal
+        isOpen={topSongsYear !== null}
+        onClose={() => setTopSongsYear(null)}
+        onSelect={handleSelectTopSong}
+        year={topSongsYear}
       />
     </div>
   );

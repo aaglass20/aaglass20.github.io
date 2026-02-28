@@ -90,6 +90,8 @@ function doGet(e) {
         return handleGetSuperChart();
       case 'spotifySearch':
         return handleSpotifySearch(e.parameter);
+      case 'getTopSongsForYear':
+        return handleGetTopSongsForYear(e.parameter);
       default:
         return jsonResponse({ error: 'Unknown action: ' + action });
     }
@@ -394,4 +396,84 @@ function handleSpotifySearch(params) {
   }
 
   return jsonResponse({ results: results });
+}
+
+// ---------- Top Songs For Year ----------
+
+function handleGetTopSongsForYear(params) {
+  var token = getSpotifyToken();
+  if (!token) return jsonResponse({ error: 'Spotify not configured', tracks: [] });
+
+  var year = params.year;
+  if (!year) return jsonResponse({ error: 'Year is required', tracks: [] });
+
+  // Search for a "Top Songs of {year}" playlist
+  var searchUrl = 'https://api.spotify.com/v1/search?type=playlist&q=' +
+    encodeURIComponent('Top songs of ' + year) + '&limit=5';
+
+  var searchRes = UrlFetchApp.fetch(searchUrl, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  var searchJson = JSON.parse(searchRes.getContentText());
+
+  if (!searchJson.playlists || !searchJson.playlists.items || searchJson.playlists.items.length === 0) {
+    return jsonResponse({ tracks: [], error: 'No playlist found for ' + year });
+  }
+
+  // Filter out null items, then prefer Spotify-owned playlists
+  var validItems = searchJson.playlists.items.filter(function(p) { return p !== null; });
+  if (validItems.length === 0) {
+    return jsonResponse({ tracks: [], error: 'No playlist found for ' + year });
+  }
+
+  var playlist = validItems[0];
+  for (var i = 0; i < validItems.length; i++) {
+    var p = validItems[i];
+    if (p.owner && p.owner.id === 'spotify') {
+      playlist = p;
+      break;
+    }
+  }
+
+  // Try each valid playlist until one works (some may be restricted)
+  var tracksJson = null;
+  for (var j = 0; j < validItems.length; j++) {
+    var candidate = validItems[j];
+    var tracksUrl = 'https://api.spotify.com/v1/playlists/' + candidate.id + '/tracks?limit=100';
+    var tracksRes = UrlFetchApp.fetch(tracksUrl, {
+      headers: { 'Authorization': 'Bearer ' + token },
+      muteHttpExceptions: true
+    });
+    if (tracksRes.getResponseCode() === 200) {
+      playlist = candidate;
+      tracksJson = JSON.parse(tracksRes.getContentText());
+      break;
+    }
+  }
+
+  if (!tracksJson) {
+    return jsonResponse({ tracks: [], error: 'Could not access any playlist for ' + year });
+  }
+
+  var tracks = [];
+  if (tracksJson.items) {
+    tracksJson.items.forEach(function(item) {
+      var t = item.track;
+      if (!t || !t.id) return;
+      tracks.push({
+        id: t.id,
+        name: t.name,
+        artist: t.artists.map(function(a) { return a.name; }).join(', '),
+        album: t.album.name,
+        coverUrl: t.album.images.length > 0 ? t.album.images[t.album.images.length - 1].url : '',
+        spotifyUrl: t.external_urls.spotify
+      });
+    });
+  }
+
+  return jsonResponse({
+    tracks: tracks,
+    playlistName: playlist.name,
+    playlistOwner: playlist.owner ? playlist.owner.display_name : ''
+  });
 }

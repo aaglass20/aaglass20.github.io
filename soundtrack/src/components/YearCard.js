@@ -1,8 +1,9 @@
 import React from 'react';
 import SongTile from './SongTile';
 import topSongsByYear from '../data/topSongsByYear.json';
+import { FEATURES } from '../config';
 
-const YearCard = ({ year, song, onPickSong, onRemoveSong, isOwner = true }) => {
+const YearCard = ({ year, song, onPickSong, onRemoveSong, onBrowseTopSongs, isOwner = true }) => {
   const suggestions = topSongsByYear[year] || [];
 
   return (
@@ -10,9 +11,20 @@ const YearCard = ({ year, song, onPickSong, onRemoveSong, isOwner = true }) => {
       <div className="year-card-header">
         <span className="year-label">{year}</span>
         {isOwner && !song && (
-          <button className="btn-add-song" onClick={() => onPickSong(year)}>
-            + Add Song
-          </button>
+          <>
+            {FEATURES.TOP_SONGS && (
+              <button
+                className="btn-top-songs"
+                onClick={() => onBrowseTopSongs(year)}
+                title={`Browse top songs of ${year}`}
+              >
+                &#9835; {year}
+              </button>
+            )}
+            <button className="btn-add-song" onClick={() => onPickSong(year)}>
+              + Add Song
+            </button>
+          </>
         )}
       </div>
 

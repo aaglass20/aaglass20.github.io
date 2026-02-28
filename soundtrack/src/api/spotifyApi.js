@@ -16,6 +16,14 @@ export const searchAlbums = async (query) => {
   return data.results || [];
 };
 
+export const getTopSongsForYear = async (year) => {
+  if (!SHEETS_CONFIGURED) return { tracks: getMockResults(`Top songs of ${year}`, 'track'), playlistName: `Top Songs of ${year}` };
+  const params = new URLSearchParams({ action: 'getTopSongsForYear', year });
+  const res = await fetch(`${SCRIPT_URL}?${params}`);
+  const data = await res.json();
+  return data;
+};
+
 export const getEmbedUrl = (spotifyId, type = 'track') =>
   `https://open.spotify.com/embed/${type}/${spotifyId}?utm_source=generator&theme=0`;
 
