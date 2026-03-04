@@ -12,6 +12,7 @@ const ViewSoundtrackPage = () => {
   const [favAlbums, setFavAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('timeline');
+  const [expandedStories, setExpandedStories] = useState({});
 
   useEffect(() => {
     const load = async () => {
@@ -79,15 +80,28 @@ const ViewSoundtrackPage = () => {
             <div className="empty-state">No songs on timeline yet.</div>
           ) : (
             timeline.sort((a, b) => b.year - a.year).map(song => (
-              <div key={song.year} className="view-year-row">
-                <span className="view-year-label">{song.year}</span>
-                <SongTile
-                  song={song}
-                  showLike
-                  likeContext="timeline"
-                  viewingUserId={userId}
-                  compact
-                />
+              <div key={song.year} className="view-year-row-wrapper">
+                <div className="view-year-row">
+                  <span className="view-year-label">{song.year}</span>
+                  <SongTile
+                    song={song}
+                    showLike
+                    likeContext="timeline"
+                    viewingUserId={userId}
+                    compact
+                  />
+                </div>
+                {song.story && (
+                  <div className="story-section">
+                    <button
+                      className="story-toggle"
+                      onClick={() => setExpandedStories(prev => ({ ...prev, [song.year]: !prev[song.year] }))}
+                    >
+                      {expandedStories[song.year] ? 'Hide Story' : 'View Story'}
+                    </button>
+                    {expandedStories[song.year] && <p className="story-text">{song.story}</p>}
+                  </div>
+                )}
               </div>
             ))
           )}

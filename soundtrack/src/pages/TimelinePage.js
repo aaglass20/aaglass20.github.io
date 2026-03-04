@@ -72,6 +72,12 @@ const TimelinePage = () => {
     sheetsApi.deleteTimelineSong(user.userId, year);
   };
 
+  const handleSaveStory = (year, story) => {
+    const updated = { ...timeline, [year]: { ...timeline[year], story } };
+    setTimeline(updated);
+    sheetsApi.saveTimelineStory(user.userId, year, story);
+  };
+
   const filledCount = Object.keys(timeline).length;
   const totalYears = years.length;
   const pct = totalYears > 0 ? Math.round((filledCount / totalYears) * 100) : 0;
@@ -104,6 +110,7 @@ const TimelinePage = () => {
               onPickSong={handlePickSong}
               onRemoveSong={handleRemoveSong}
               onBrowseTopSongs={setTopSongsYear}
+              onSaveStory={handleSaveStory}
             />
           ))}
         </div>

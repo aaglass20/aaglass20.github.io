@@ -9,7 +9,7 @@
 | userId | name | pinHash | birthYear | createdAt |
 
 **TimelineSongs tab:**
-| userId | year | songTitle | artist | spotifyId | spotifyUrl |
+| userId | year | songTitle | artist | spotifyId | spotifyUrl | story |
 
 **FavoriteSongs tab:**
 | userId | rank | songTitle | artist | spotifyId | spotifyUrl |
@@ -44,6 +44,7 @@ The backend handles these actions (passed as `action` parameter):
 | `getUserTimeline` | GET | userId | Get a user's timeline songs |
 | `saveTimelineSong` | POST | userId, year, songTitle, artist, spotifyId, spotifyUrl | Save a song to timeline |
 | `deleteTimelineSong` | POST | userId, year | Remove a song from timeline |
+| `saveTimelineStory` | POST | userId, year, story | Save a story/memory for a timeline year |
 | `getUserFavoriteSongs` | GET | userId | Get favorite songs list |
 | `saveFavoriteSongs` | POST | userId, songs | Save ranked favorite songs |
 | `getUserFavoriteAlbums` | GET | userId | Get favorite albums list |

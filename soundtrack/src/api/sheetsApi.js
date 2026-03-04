@@ -42,6 +42,9 @@ export const saveTimelineSong = (userId, year, songTitle, artist, spotifyId, spo
 export const deleteTimelineSong = (userId, year) =>
   post('deleteTimelineSong', { userId, year });
 
+export const saveTimelineStory = (userId, year, story) =>
+  post('saveTimelineStory', { userId, year, story });
+
 // Favorites
 export const getUserFavoriteSongs = (userId) =>
   get('getUserFavoriteSongs', { userId });

@@ -3,7 +3,7 @@
  *
  * Google Sheet Tabs Required:
  *   Users:          userId | name | pinHash | birthYear | createdAt
- *   TimelineSongs:  userId | year | songTitle | artist | spotifyId | spotifyUrl
+ *   TimelineSongs:  userId | year | songTitle | artist | spotifyId | spotifyUrl | story
  *   FavoriteSongs:  userId | rank | songTitle | artist | spotifyId | spotifyUrl
  *   FavoriteAlbums: userId | rank | albumTitle | artist | spotifyId | spotifyUrl | coverUrl
  *   Likes:          likerUserId | targetUserId | songTitle | artist | spotifyId | context | likedAt
@@ -124,6 +124,8 @@ function doPost(e) {
         return handleLikeSong(data);
       case 'unlikeSong':
         return handleUnlikeSong(data);
+      case 'saveTimelineStory':
+        return handleSaveTimelineStory(data);
       default:
         return jsonResponse({ error: 'Unknown action: ' + action });
     }
@@ -219,18 +221,34 @@ function handleSaveTimelineSong(data) {
   // Find existing row for this user+year
   for (var i = 1; i < allData.length; i++) {
     if (allData[i][0] === data.userId && String(allData[i][1]) === String(data.year)) {
-      // Update existing row
+      // Update existing row — preserve story (column 7)
+      var existingStory = allData[i][6] || '';
       sheet.getRange(i + 1, 3).setValue(data.songTitle);
       sheet.getRange(i + 1, 4).setValue(data.artist);
       sheet.getRange(i + 1, 5).setValue(data.spotifyId);
       sheet.getRange(i + 1, 6).setValue(data.spotifyUrl);
+      sheet.getRange(i + 1, 7).setValue(existingStory);
       return jsonResponse({ success: true });
     }
   }
 
   // Append new row
-  sheet.appendRow([data.userId, data.year, data.songTitle, data.artist, data.spotifyId, data.spotifyUrl]);
+  sheet.appendRow([data.userId, data.year, data.songTitle, data.artist, data.spotifyId, data.spotifyUrl, '']);
   return jsonResponse({ success: true });
+}
+
+function handleSaveTimelineStory(data) {
+  var sheet = getSheet('TimelineSongs');
+  var allData = sheet.getDataRange().getValues();
+
+  for (var i = 1; i < allData.length; i++) {
+    if (allData[i][0] === data.userId && String(allData[i][1]) === String(data.year)) {
+      sheet.getRange(i + 1, 7).setValue(data.story);
+      return jsonResponse({ success: true });
+    }
+  }
+
+  return jsonResponse({ error: 'No song found for this year' });
 }
 
 function handleDeleteTimelineSong(data) {
