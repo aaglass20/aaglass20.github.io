@@ -49,13 +49,22 @@ export const AuthProvider = ({ children }) => {
     return { success: true };
   };
 
+  const resetPin = async (name, birthYear, newPin) => {
+    const newPinHash = await hashPin(newPin);
+    const result = await sheetsApi.resetPin(name, parseInt(birthYear), newPinHash);
+    if (result && result.success) {
+      return { success: true };
+    }
+    return { success: false, error: result?.error || 'Reset failed. Check your name and birth year.' };
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('soundtrack_user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signUp, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signUp, logout, resetPin }}>
       {children}
     </AuthContext.Provider>
   );

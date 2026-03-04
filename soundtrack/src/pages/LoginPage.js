@@ -4,13 +4,16 @@ import { useAuth } from '../context/AuthContext';
 import heroBg from '../images/logogreen.jpg';
 
 const LoginPage = () => {
-  const { signUp, login } = useAuth();
+  const { signUp, login, resetPin } = useAuth();
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isReset, setIsReset] = useState(false);
   const [name, setName] = useState('');
   const [pin, setPin] = useState('');
   const [birthYear, setBirthYear] = useState('');
+  const [newPin, setNewPin] = useState('');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
   const currentYear = new Date().getFullYear();
@@ -18,6 +21,39 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccessMsg('');
+
+    if (isReset) {
+      if (!name.trim() || !birthYear || !newPin.trim()) {
+        setError('All fields are required');
+        return;
+      }
+      if (birthYear < 1940 || birthYear > currentYear) {
+        setError('Please enter a valid birth year');
+        return;
+      }
+      if (newPin.length < 4) {
+        setError('New PIN must be at least 4 characters');
+        return;
+      }
+      setLoading(true);
+      try {
+        const result = await resetPin(name.trim(), parseInt(birthYear), newPin);
+        if (result.success) {
+          setSuccessMsg('PIN reset successful! You can now sign in.');
+          setIsReset(false);
+          setNewPin('');
+          setBirthYear('');
+          setPin('');
+        } else {
+          setError(result.error || 'Reset failed');
+        }
+      } catch (err) {
+        setError('Something went wrong. Please try again.');
+      }
+      setLoading(false);
+      return;
+    }
 
     if (!name.trim() || !pin.trim()) {
       setError('Name and PIN are required');
@@ -82,13 +118,15 @@ const LoginPage = () => {
             placeholder="Your name"
             autoFocus
           />
-          <input
-            type="password"
-            value={pin}
-            onChange={e => setPin(e.target.value)}
-            placeholder="PIN (4+ characters)"
-          />
-          {isSignUp && (
+          {!isReset && (
+            <input
+              type="password"
+              value={pin}
+              onChange={e => setPin(e.target.value)}
+              placeholder="PIN (4+ characters)"
+            />
+          )}
+          {(isSignUp || isReset) && (
             <input
               type="number"
               value={birthYear}
@@ -98,10 +136,37 @@ const LoginPage = () => {
               max={currentYear}
             />
           )}
+          {isReset && (
+            <input
+              type="password"
+              value={newPin}
+              onChange={e => setNewPin(e.target.value)}
+              placeholder="New PIN (4+ characters)"
+            />
+          )}
           {error && <div className="login-error">{error}</div>}
+          {successMsg && <div className="login-success">{successMsg}</div>}
           <button type="submit" className="btn-login" disabled={loading}>
-            {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
+            {loading ? 'Please wait...' : isReset ? 'Reset PIN' : isSignUp ? 'Create Account' : 'Sign In'}
           </button>
+          {!isSignUp && !isReset && (
+            <button
+              type="button"
+              className="btn-forgot"
+              onClick={() => { setIsReset(true); setError(''); setSuccessMsg(''); }}
+            >
+              Forgot PIN?
+            </button>
+          )}
+          {isReset && (
+            <button
+              type="button"
+              className="btn-forgot"
+              onClick={() => { setIsReset(false); setError(''); setSuccessMsg(''); setNewPin(''); setBirthYear(''); }}
+            >
+              Back to Sign In
+            </button>
+          )}
         </form>
       </div>
 

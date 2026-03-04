@@ -266,6 +266,25 @@ body {
 .btn-login:hover { background: var(--accent-hover); }
 .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.btn-forgot {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #aaa);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.25rem 0;
+}
+.btn-forgot:hover { color: var(--accent); }
+
+.login-success {
+  color: #51cf66;
+  font-size: 0.85rem;
+  background: rgba(81,207,102,0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
 /* === Timeline === */
 .timeline-progress {
   display: flex;

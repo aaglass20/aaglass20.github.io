@@ -74,6 +74,8 @@ function doGet(e) {
         return handleGetUser(e.parameter);
       case 'verifyPin':
         return handleVerifyPin(e.parameter);
+      case 'resetPin':
+        return handleResetPin(e.parameter);
       case 'getAllUsers':
         return handleGetAllUsers();
       case 'getUserTimeline':
@@ -155,6 +157,26 @@ function handleVerifyPin(params) {
   });
   if (!user) return jsonResponse({ success: false, error: 'Invalid name or PIN' });
   return jsonResponse({ success: true, userId: user.userId, name: user.name, birthYear: user.birthYear });
+}
+
+function handleResetPin(params) {
+  var sheet = getSheet('Users');
+  var allData = sheet.getDataRange().getValues();
+  var headers = allData[0];
+  var nameCol = headers.indexOf('name');
+  var birthYearCol = headers.indexOf('birthYear');
+  var pinHashCol = headers.indexOf('pinHash');
+
+  for (var i = 1; i < allData.length; i++) {
+    if (String(allData[i][nameCol]).toLowerCase() === String(params.name).toLowerCase()) {
+      if (String(allData[i][birthYearCol]) === String(params.birthYear)) {
+        sheet.getRange(i + 1, pinHashCol + 1).setValue(params.newPinHash);
+        return jsonResponse({ success: true });
+      }
+      return jsonResponse({ success: false, error: 'Birth year does not match' });
+    }
+  }
+  return jsonResponse({ success: false, error: 'User not found' });
 }
 
 function handleGetAllUsers() {

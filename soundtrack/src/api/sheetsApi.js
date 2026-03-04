@@ -23,6 +23,9 @@ export const createUser = (name, pinHash, birthYear) =>
 export const verifyPin = (name, pinHash) =>
   get('verifyPin', { name, pinHash });
 
+export const resetPin = (name, birthYear, newPinHash) =>
+  get('resetPin', { name, birthYear, newPinHash });
+
 export const getUser = (userId) =>
   get('getUser', { userId });
 
