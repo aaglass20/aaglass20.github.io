@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import heroBg from '../images/logogreen.jpg';
 
 const LoginPage = () => {
   const { signUp, login } = useAuth();
@@ -50,7 +51,7 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
-      <div className="login-hero">
+      <div className="login-hero" style={{ backgroundImage: `url(${heroBg})` }}>
         <h1 className="login-title">
           Soundtrack of a Lifetime
         </h1>

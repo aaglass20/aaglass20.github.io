@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import * as sheetsApi from '../api/sheetsApi';
+import { useAuth } from '../context/AuthContext';
 import UserCard from '../components/UserCard';
 
 const BrowsePage = () => {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -20,8 +22,10 @@ const BrowsePage = () => {
     load();
   }, []);
 
+  const isTestUser = currentUser?.name?.toLowerCase() === 'test';
   const filtered = users.filter(u =>
-    u.name.toLowerCase().includes(search.toLowerCase())
+    u.name.toLowerCase().includes(search.toLowerCase()) &&
+    (isTestUser || u.name.toLowerCase() !== 'test')
   );
 
   return (

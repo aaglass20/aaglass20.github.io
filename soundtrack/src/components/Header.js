@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../images/logogreen.jpg';
 import './Header.css';
 
 const Header = () => {
@@ -22,7 +23,7 @@ const Header = () => {
     <header className="header">
       <div className="header-inner">
         <Link to="/timeline" className="header-logo">
-          <span className="logo-icon">🎵</span>
+          <img src={logo} alt="Soundtrack" className="logo-icon" />
           <span className="logo-text">Soundtrack of a Lifetime</span>
         </Link>
 
