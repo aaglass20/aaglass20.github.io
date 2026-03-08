@@ -1,26 +1,43 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { searchTracks } from '../api/spotifyApi';
 import './Modal.css';
 
-const SongSearchModal = ({ isOpen, onClose, onSelect, year }) => {
+const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '' }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [manualMode, setManualMode] = useState(false);
   const [manualTitle, setManualTitle] = useState('');
   const [manualArtist, setManualArtist] = useState('');
+  const lastInitialQuery = useRef('');
 
-  const handleSearch = useCallback(async () => {
-    if (!query.trim()) return;
+  const doSearch = useCallback(async (q) => {
+    if (!q.trim()) return;
     setSearching(true);
     try {
-      const res = await searchTracks(query);
+      const res = await searchTracks(q);
       setResults(res);
     } catch (e) {
       console.error('Search failed:', e);
     }
     setSearching(false);
-  }, [query]);
+  }, []);
+
+  // Auto-search when opened with an initialQuery
+  useEffect(() => {
+    if (isOpen && initialQuery && initialQuery !== lastInitialQuery.current) {
+      lastInitialQuery.current = initialQuery;
+      setQuery(initialQuery);
+      doSearch(initialQuery);
+    }
+    if (!isOpen) {
+      lastInitialQuery.current = '';
+    }
+  }, [isOpen, initialQuery, doSearch]);
+
+  const handleSearch = useCallback(() => {
+    doSearch(query);
+  }, [query, doSearch]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') handleSearch();
@@ -83,17 +100,26 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year }) => {
             </div>
 
             <div className="search-results">
-              {results.map(r => (
-                <button key={r.id} className="search-result" onClick={() => handleSelect(r)}>
-                  {r.coverUrl && <img src={r.coverUrl} alt="" className="result-cover" />}
-                  <div className="result-info">
-                    <div className="result-name">{r.name}</div>
-                    <div className="result-artist">{r.artist}</div>
-                  </div>
-                </button>
-              ))}
-              {results.length === 0 && query && !searching && (
-                <p className="no-results">No results found. Try different terms or enter manually.</p>
+              {searching ? (
+                <div className="search-loading">
+                  <div className="search-spinner" />
+                  <span>Searching Spotify...</span>
+                </div>
+              ) : (
+                <>
+                  {results.map(r => (
+                    <button key={r.id} className="search-result" onClick={() => handleSelect(r)}>
+                      {r.coverUrl && <img src={r.coverUrl} alt="" className="result-cover" />}
+                      <div className="result-info">
+                        <div className="result-name">{r.name}</div>
+                        <div className="result-artist">{r.artist}</div>
+                      </div>
+                    </button>
+                  ))}
+                  {results.length === 0 && query && (
+                    <p className="no-results">No results found. Try different terms or enter manually.</p>
+                  )}
+                </>
               )}
             </div>
 

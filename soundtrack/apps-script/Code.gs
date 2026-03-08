@@ -447,48 +447,35 @@ function handleGetTopSongsForYear(params) {
   var year = params.year;
   if (!year) return jsonResponse({ error: 'Year is required', tracks: [] });
 
-  // Search multiple queries to build a broad pool, then rank by Spotify popularity
-  var queries = [
-    'top hits ' + year,
-    'best songs ' + year,
-    'number one hits ' + year
-  ];
+  // Search Spotify for tracks matching "top songs of <year>"
+  var url = 'https://api.spotify.com/v1/search?q=' +
+    encodeURIComponent('top songs of ' + year) + '&type=track&limit=10';
+  var res = UrlFetchApp.fetch(url, {
+    headers: { 'Authorization': 'Bearer ' + token },
+    muteHttpExceptions: true
+  });
+  if (res.getResponseCode() !== 200) {
+    return jsonResponse({ error: 'Spotify search failed', tracks: [] });
+  }
+  var data = JSON.parse(res.getContentText());
+  var items = (data.tracks && data.tracks.items) || [];
 
-  var seen = {};
-  var allTracks = [];
-
-  queries.forEach(function(q) {
-    var url = 'https://api.spotify.com/v1/search?q=' +
-      encodeURIComponent(q) + '&type=track&limit=10';
-    var res = UrlFetchApp.fetch(url, {
-      headers: { 'Authorization': 'Bearer ' + token },
-      muteHttpExceptions: true
-    });
-    if (res.getResponseCode() !== 200) return;
-    var data = JSON.parse(res.getContentText());
-    if (!data.tracks || !data.tracks.items) return;
-
-    data.tracks.items.forEach(function(t) {
-      if (!t || !t.id || seen[t.id]) return;
-      seen[t.id] = true;
-      allTracks.push({
-        id: t.id,
-        name: t.name,
-        artist: t.artists.map(function(a) { return a.name; }).join(', '),
-        album: t.album.name,
-        coverUrl: t.album.images.length > 0 ? t.album.images[t.album.images.length - 1].url : '',
-        spotifyUrl: t.external_urls.spotify,
-        popularity: t.popularity || 0
-      });
+  var topTracks = [];
+  items.forEach(function(t) {
+    if (!t || !t.id) return;
+    topTracks.push({
+      id: t.id,
+      name: t.name,
+      artist: t.artists ? t.artists.map(function(a) { return a.name; }).join(', ') : '',
+      album: t.album ? t.album.name : '',
+      coverUrl: (t.album && t.album.images && t.album.images.length > 0) ? t.album.images[t.album.images.length - 1].url : '',
+      spotifyUrl: t.external_urls ? t.external_urls.spotify : '',
+      popularity: t.popularity || 0
     });
   });
 
-  // Sort by popularity descending and take top 10
-  allTracks.sort(function(a, b) { return b.popularity - a.popularity; });
-  var topTracks = allTracks.slice(0, 10);
-
   return jsonResponse({
     tracks: topTracks,
-    playlistName: 'Top Songs in ' + year
+    playlistName: 'Top Songs of ' + year
   });
 }

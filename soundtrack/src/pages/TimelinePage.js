@@ -10,6 +10,7 @@ const TimelinePage = () => {
   const [timeline, setTimeline] = useState({});
   const [loading, setLoading] = useState(true);
   const [modalYear, setModalYear] = useState(null);
+  const [initialQuery, setInitialQuery] = useState('');
   const [topSongsYear, setTopSongsYear] = useState(null);
 
   const currentYear = new Date().getFullYear();
@@ -38,6 +39,7 @@ const TimelinePage = () => {
   useEffect(() => { loadTimeline(); }, [loadTimeline]);
 
   const handlePickSong = (year, suggestion) => {
+    setInitialQuery(suggestion ? `${suggestion.title} ${suggestion.artist}` : '');
     setModalYear(year);
   };
 
@@ -121,6 +123,7 @@ const TimelinePage = () => {
         onClose={() => setModalYear(null)}
         onSelect={handleSelectSong}
         year={modalYear}
+        initialQuery={initialQuery}
       />
 
       <TopSongsModal
