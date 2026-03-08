@@ -3,7 +3,7 @@
 ## 1. Google Sheets Setup
 
 1. Create a new Google Sheet
-2. Create 5 tabs with these exact names and headers (Row 1):
+2. Create 6 tabs with these exact names and headers (Row 1):
 
 **Users tab:**
 | userId | name | pinHash | birthYear | createdAt |
@@ -19,6 +19,9 @@
 
 **Likes tab:**
 | likerUserId | targetUserId | songTitle | artist | spotifyId | context | likedAt |
+
+**FollowedUsers tab:**
+| userId | followedUserId | groupName | createdAt |
 
 ## 2. Apps Script Deployment
 
@@ -54,6 +57,11 @@ The backend handles these actions (passed as `action` parameter):
 | `likeSong` | POST | likerUserId, targetUserId, songTitle, artist, spotifyId, context | Like a song |
 | `unlikeSong` | POST | likerUserId, spotifyId | Remove a like |
 | `getSuperChart` | GET | — | Get aggregated chart |
+| `getFollowedUsers` | GET | userId | Get users this person follows |
+| `getFollowedUsersActivity` | GET | userId | Get activity from followed users |
+| `followUser` | POST | userId, followedUserId, groupName | Follow a user (group: Family, Friends, Coworkers, Other) |
+| `unfollowUser` | POST | userId, followedUserId | Unfollow a user |
+| `updateFollowGroup` | POST | userId, followedUserId, groupName | Change a followed user's group |
 
 **`resetPin` implementation note:** Look up the user by name in the Users tab, verify that the `birthYear` parameter matches the stored value, then update the `pinHash` column with `newPinHash`. Return `{ success: true }` or `{ success: false, error: "..." }`.
 

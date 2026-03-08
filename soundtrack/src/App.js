@@ -9,6 +9,7 @@ import FavoriteAlbumsPage from './pages/FavoriteAlbumsPage';
 import BrowsePage from './pages/BrowsePage';
 import ViewSoundtrackPage from './pages/ViewSoundtrackPage';
 import SuperChartPage from './pages/SuperChartPage';
+import MyPeoplePage from './pages/MyPeoplePage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -35,6 +36,7 @@ const AppRoutes = () => {
           <Route path="/timeline" element={<ProtectedRoute><TimelinePage /></ProtectedRoute>} />
           <Route path="/favorites/songs" element={<ProtectedRoute><FavoriteSongsPage /></ProtectedRoute>} />
           <Route path="/favorites/albums" element={<ProtectedRoute><FavoriteAlbumsPage /></ProtectedRoute>} />
+          <Route path="/people" element={<ProtectedRoute><MyPeoplePage /></ProtectedRoute>} />
           <Route path="/browse" element={<ProtectedRoute><BrowsePage /></ProtectedRoute>} />
           <Route path="/user/:userId" element={<ProtectedRoute><ViewSoundtrackPage /></ProtectedRoute>} />
           <Route path="/superchart" element={<ProtectedRoute><SuperChartPage /></ProtectedRoute>} />

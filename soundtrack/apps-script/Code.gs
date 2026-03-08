@@ -7,6 +7,7 @@
  *   FavoriteSongs:  userId | rank | songTitle | artist | spotifyId | spotifyUrl
  *   FavoriteAlbums: userId | rank | albumTitle | artist | spotifyId | spotifyUrl | coverUrl
  *   Likes:          likerUserId | targetUserId | songTitle | artist | spotifyId | context | likedAt
+ *   FollowedUsers:  userId | followedUserId | groupName | createdAt
  *
  * Script Properties (File > Project properties > Script properties):
  *   SPOTIFY_CLIENT_ID
@@ -94,6 +95,10 @@ function doGet(e) {
         return handleSpotifySearch(e.parameter);
       case 'getTopSongsForYear':
         return handleGetTopSongsForYear(e.parameter);
+      case 'getFollowedUsers':
+        return handleGetFollowedUsers(e.parameter);
+      case 'getFollowedUsersActivity':
+        return handleGetFollowedUsersActivity(e.parameter);
       default:
         return jsonResponse({ error: 'Unknown action: ' + action });
     }
@@ -126,6 +131,12 @@ function doPost(e) {
         return handleUnlikeSong(data);
       case 'saveTimelineStory':
         return handleSaveTimelineStory(data);
+      case 'followUser':
+        return handleFollowUser(data);
+      case 'unfollowUser':
+        return handleUnfollowUser(data);
+      case 'updateFollowGroup':
+        return handleUpdateFollowGroup(data);
       default:
         return jsonResponse({ error: 'Unknown action: ' + action });
     }
@@ -478,4 +489,128 @@ function handleGetTopSongsForYear(params) {
     tracks: topTracks,
     playlistName: 'Top Songs of ' + year
   });
+}
+
+// ---------- Followed Users ----------
+
+function handleFollowUser(data) {
+  var sheet = getSheet('FollowedUsers');
+  // Check if already following
+  var rows = rowsToObjects(sheet);
+  var exists = rows.find(function(r) {
+    return r.userId === data.userId && r.followedUserId === data.followedUserId;
+  });
+  if (exists) return jsonResponse({ success: true, message: 'Already following' });
+
+  sheet.appendRow([
+    data.userId, data.followedUserId,
+    data.groupName || '',
+    new Date().toISOString()
+  ]);
+  return jsonResponse({ success: true });
+}
+
+function handleUnfollowUser(data) {
+  var sheet = getSheet('FollowedUsers');
+  var allData = sheet.getDataRange().getValues();
+
+  for (var i = allData.length - 1; i >= 1; i--) {
+    if (allData[i][0] === data.userId && allData[i][1] === data.followedUserId) {
+      sheet.deleteRow(i + 1);
+      return jsonResponse({ success: true });
+    }
+  }
+  return jsonResponse({ success: true });
+}
+
+function handleUpdateFollowGroup(data) {
+  var sheet = getSheet('FollowedUsers');
+  var allData = sheet.getDataRange().getValues();
+
+  for (var i = 1; i < allData.length; i++) {
+    if (allData[i][0] === data.userId && allData[i][1] === data.followedUserId) {
+      sheet.getRange(i + 1, 3).setValue(data.groupName || '');
+      return jsonResponse({ success: true });
+    }
+  }
+  return jsonResponse({ error: 'Follow not found' });
+}
+
+function handleGetFollowedUsers(params) {
+  var sheet = getSheet('FollowedUsers');
+  var rows = rowsToObjects(sheet);
+  var follows = rows.filter(function(r) { return r.userId === params.userId; });
+
+  // Enrich with user info
+  var usersSheet = getSheet('Users');
+  var users = rowsToObjects(usersSheet);
+  var userMap = {};
+  users.forEach(function(u) { userMap[u.userId] = u; });
+
+  var result = follows.map(function(f) {
+    var u = userMap[f.followedUserId] || {};
+    return {
+      followedUserId: f.followedUserId,
+      groupName: f.groupName || '',
+      createdAt: f.createdAt,
+      name: u.name || f.followedUserId,
+      birthYear: u.birthYear || ''
+    };
+  });
+
+  return jsonResponse({ follows: result });
+}
+
+function handleGetFollowedUsersActivity(params) {
+  var sheet = getSheet('FollowedUsers');
+  var rows = rowsToObjects(sheet);
+  var follows = rows.filter(function(r) { return r.userId === params.userId; });
+  var followedIds = follows.map(function(f) { return f.followedUserId; });
+
+  if (followedIds.length === 0) {
+    return jsonResponse({ activity: [] });
+  }
+
+  // Get user names
+  var usersSheet = getSheet('Users');
+  var users = rowsToObjects(usersSheet);
+  var userMap = {};
+  users.forEach(function(u) { userMap[u.userId] = u.name; });
+
+  var activity = [];
+
+  // Get recent timeline songs from followed users
+  var timelineSheet = getSheet('TimelineSongs');
+  var timelineRows = rowsToObjects(timelineSheet);
+  timelineRows.forEach(function(r) {
+    if (followedIds.indexOf(r.userId) === -1) return;
+    activity.push({
+      type: 'timeline',
+      userId: r.userId,
+      userName: userMap[r.userId] || r.userId,
+      songTitle: r.songTitle,
+      artist: r.artist,
+      year: r.year,
+      spotifyId: r.spotifyId || ''
+    });
+  });
+
+  // Get recent favorite songs from followed users
+  var favSheet = getSheet('FavoriteSongs');
+  var favRows = rowsToObjects(favSheet);
+  favRows.forEach(function(r) {
+    if (followedIds.indexOf(r.userId) === -1) return;
+    if (Number(r.rank) > 5) return; // only top 5
+    activity.push({
+      type: 'favorite',
+      userId: r.userId,
+      userName: userMap[r.userId] || r.userId,
+      songTitle: r.songTitle,
+      artist: r.artist,
+      rank: r.rank,
+      spotifyId: r.spotifyId || ''
+    });
+  });
+
+  return jsonResponse({ activity: activity });
 }

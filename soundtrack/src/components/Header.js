@@ -15,6 +15,7 @@ const Header = () => {
     { to: '/timeline', label: 'Timeline' },
     { to: '/favorites/songs', label: 'Top 25' },
     { to: '/favorites/albums', label: 'Top 10' },
+    { to: '/people', label: 'My People' },
     { to: '/browse', label: 'Browse' },
     { to: '/superchart', label: 'Super Chart' },
   ];

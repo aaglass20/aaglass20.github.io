@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import * as sheetsApi from '../api/sheetsApi';
 import SongTile from '../components/SongTile';
 import AlbumTile from '../components/AlbumTile';
+import FollowButton from '../components/FollowButton';
 
 const ViewSoundtrackPage = () => {
   const { userId } = useParams();
@@ -54,12 +55,13 @@ const ViewSoundtrackPage = () => {
     <div className="page view-page">
       <div className="view-header">
         <div className="view-avatar">{profile.name?.charAt(0).toUpperCase()}</div>
-        <div>
+        <div style={{ flex: 1 }}>
           <h2>{profile.name}'s Soundtrack</h2>
           <p className="view-meta">
             Born {profile.birthYear} · {timeline.length} songs on timeline
           </p>
         </div>
+        <FollowButton targetUserId={userId} />
       </div>
 
       <div className="view-tabs">

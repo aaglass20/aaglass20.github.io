@@ -74,3 +74,19 @@ export const unlikeSong = (likerUserId, spotifyId) =>
 // Super Chart
 export const getSuperChart = () =>
   get('getSuperChart');
+
+// Followed Users
+export const getFollowedUsers = (userId) =>
+  get('getFollowedUsers', { userId });
+
+export const followUser = (userId, followedUserId, groupName) =>
+  post('followUser', { userId, followedUserId, groupName });
+
+export const unfollowUser = (userId, followedUserId) =>
+  post('unfollowUser', { userId, followedUserId });
+
+export const updateFollowGroup = (userId, followedUserId, groupName) =>
+  post('updateFollowGroup', { userId, followedUserId, groupName });
+
+export const getFollowedUsersActivity = (userId) =>
+  get('getFollowedUsersActivity', { userId });
