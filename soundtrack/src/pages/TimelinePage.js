@@ -55,16 +55,11 @@ const TimelinePage = () => {
     setModalYear(null);
   };
 
-  const handleSelectTopSong = (song) => {
-    if (!topSongsYear) return;
-    const updated = { ...timeline, [topSongsYear]: { ...song, year: topSongsYear } };
-    setTimeline(updated);
-    sheetsApi.saveTimelineSong(
-      user.userId, topSongsYear,
-      song.songTitle, song.artist,
-      song.spotifyId, song.spotifyUrl
-    );
+  const handleSelectTopSong = (song, year) => {
+    // Close the top songs modal and open the search modal pre-filled with this song
     setTopSongsYear(null);
+    setInitialQuery(`${song.title} ${song.artist}`);
+    setModalYear(year);
   };
 
   const handleRemoveSong = (year) => {
