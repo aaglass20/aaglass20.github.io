@@ -55,8 +55,11 @@ const TimelinePage = () => {
     setModalYear(null);
   };
 
+  const [cameFromTopSongs, setCameFromTopSongs] = useState(null);
+
   const handleSelectTopSong = (song, year) => {
     // Close the top songs modal and open the search modal pre-filled with this song
+    setCameFromTopSongs(year);
     setTopSongsYear(null);
     setInitialQuery(`${song.title} ${song.artist}`);
     setModalYear(year);
@@ -115,10 +118,15 @@ const TimelinePage = () => {
 
       <SongSearchModal
         isOpen={modalYear !== null}
-        onClose={() => setModalYear(null)}
+        onClose={() => { setModalYear(null); setCameFromTopSongs(null); }}
         onSelect={handleSelectSong}
         year={modalYear}
         initialQuery={initialQuery}
+        onBack={cameFromTopSongs ? () => {
+          setModalYear(null);
+          setTopSongsYear(cameFromTopSongs);
+          setCameFromTopSongs(null);
+        } : undefined}
       />
 
       <TopSongsModal

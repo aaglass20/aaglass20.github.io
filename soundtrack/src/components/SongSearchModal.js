@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { searchTracks } from '../api/spotifyApi';
 import './Modal.css';
 
-const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '' }) => {
+const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '', onBack }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -79,6 +79,9 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '' })
     <div className="modal-overlay" onClick={resetAndClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
+          {onBack && (
+            <button className="modal-back" onClick={() => { resetAndClose(); onBack(); }}>&#8592;</button>
+          )}
           <h3>{year ? `Pick a song for ${year}` : 'Search for a song'}</h3>
           <button className="modal-close" onClick={resetAndClose}>×</button>
         </div>
