@@ -9,11 +9,13 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '', o
   const [manualMode, setManualMode] = useState(false);
   const [manualTitle, setManualTitle] = useState('');
   const [manualArtist, setManualArtist] = useState('');
+  const [previewId, setPreviewId] = useState(null);
   const lastInitialQuery = useRef('');
 
   const doSearch = useCallback(async (q) => {
     if (!q.trim()) return;
     setSearching(true);
+    setPreviewId(null);
     try {
       const res = await searchTracks(q);
       setResults(res);
@@ -43,7 +45,13 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '', o
     if (e.key === 'Enter') handleSearch();
   };
 
+  const togglePreview = (e, id) => {
+    e.stopPropagation();
+    setPreviewId(prev => prev === id ? null : id);
+  };
+
   const handleSelect = (result) => {
+    setPreviewId(null);
     onSelect({
       songTitle: result.name,
       artist: result.artist,
@@ -65,6 +73,7 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '', o
   };
 
   const resetAndClose = () => {
+    setPreviewId(null);
     setQuery('');
     setResults([]);
     setManualMode(false);
@@ -111,13 +120,35 @@ const SongSearchModal = ({ isOpen, onClose, onSelect, year, initialQuery = '', o
               ) : (
                 <>
                   {results.map(r => (
-                    <button key={r.id} className="search-result" onClick={() => handleSelect(r)}>
-                      {r.coverUrl && <img src={r.coverUrl} alt="" className="result-cover" />}
-                      <div className="result-info">
-                        <div className="result-name">{r.name}</div>
-                        <div className="result-artist">{r.artist}</div>
-                      </div>
-                    </button>
+                    <div key={r.id} className="search-result-wrapper">
+                      <button className="search-result" onClick={() => handleSelect(r)}>
+                        {r.coverUrl && <img src={r.coverUrl} alt="" className="result-cover" />}
+                        <div className="result-info">
+                          <div className="result-name">{r.name}</div>
+                          <div className="result-artist">{r.artist}</div>
+                        </div>
+                        <span
+                          className={`preview-btn ${previewId === r.id ? 'playing' : ''}`}
+                          onClick={(e) => togglePreview(e, r.id)}
+                          title={previewId === r.id ? 'Hide preview' : 'Preview'}
+                        >
+                          {previewId === r.id ? '\u25A0' : '\u25B6'}
+                        </span>
+                      </button>
+                      {previewId === r.id && (
+                        <div className="preview-embed">
+                          <iframe
+                            src={`https://open.spotify.com/embed/track/${r.id}?utm_source=generator&theme=0`}
+                            width="100%"
+                            height="80"
+                            frameBorder="0"
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            loading="lazy"
+                            title={`Preview ${r.name}`}
+                          />
+                        </div>
+                      )}
+                    </div>
                   ))}
                   {results.length === 0 && query && (
                     <p className="no-results">No results found. Try different terms or enter manually.</p>

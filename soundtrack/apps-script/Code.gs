@@ -431,7 +431,8 @@ function handleSpotifySearch(params) {
         artist: t.artists.map(function(a) { return a.name; }).join(', '),
         album: t.album.name,
         coverUrl: t.album.images.length > 0 ? t.album.images[t.album.images.length - 1].url : '',
-        spotifyUrl: t.external_urls.spotify
+        spotifyUrl: t.external_urls.spotify,
+        previewUrl: t.preview_url || ''
       };
     });
   } else if (type === 'album' && json.albums) {
