@@ -45,10 +45,15 @@ const ViewSoundtrackPage = () => {
     </div>
   );
 
+  const playableSongs = timeline
+    .filter(s => s.spotifyId)
+    .sort((a, b) => a.year - b.year);
+
   const tabs = [
     { id: 'timeline', label: `Timeline (${timeline.length})` },
     { id: 'songs', label: `Top Songs (${favSongs.length})` },
     { id: 'albums', label: `Top Albums (${favAlbums.length})` },
+    ...(playableSongs.length > 0 ? [{ id: 'playlist', label: `♫ Play All (${playableSongs.length})` }] : []),
   ];
 
   return (
@@ -140,6 +145,30 @@ const ViewSoundtrackPage = () => {
               <AlbumTile key={i} album={album} rank={i + 1} />
             ))
           )}
+        </div>
+      )}
+
+      {tab === 'playlist' && (
+        <div className="view-playlist">
+          <p className="playlist-info">
+            {playableSongs.length} songs · {profile.name}'s life soundtrack
+          </p>
+          <div className="playlist-tracks">
+            {playableSongs.map(song => (
+              <div key={song.spotifyId} className="playlist-track">
+                <span className="playlist-year">{song.year}</span>
+                <iframe
+                  src={`https://open.spotify.com/embed/track/${song.spotifyId}?utm_source=generator&theme=0`}
+                  width="100%"
+                  height="80"
+                  frameBorder="0"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  title={`${song.songTitle} - ${song.artist}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
