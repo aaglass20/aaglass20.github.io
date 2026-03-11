@@ -105,6 +105,48 @@
       font-size: 0.9rem;
       color: #58a6ff;
     }
+    /* Bust & Sleeper cards */
+    .callout-section { margin-bottom: 1.5rem; }
+    .callout-section h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid #30363d;
+    }
+    .bust-card {
+      display: inline-block;
+      background: rgba(233,69,96,0.08);
+      border: 1px solid #e94560;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      margin: 3px;
+      font-size: 0.88rem;
+    }
+    .bust-card .bust-name { font-weight: 600; }
+    .bust-card .bust-detail { color: #8b949e; font-size: 0.8rem; }
+    .sleeper-card {
+      display: inline-block;
+      background: rgba(63,185,80,0.08);
+      border: 1px solid #3fb950;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      margin: 3px;
+      font-size: 0.88rem;
+    }
+    .sleeper-card .sleeper-name { font-weight: 600; }
+    .sleeper-card .sleeper-detail { color: #8b949e; font-size: 0.8rem; }
+    .rp-sleeper-card {
+      display: inline-block;
+      background: rgba(240,136,62,0.08);
+      border: 1px solid #f0883e;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      margin: 3px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
     .back-link {
       color: #8b949e;
       text-decoration: none;
@@ -313,6 +355,54 @@
         pane.innerHTML = html;
         contentEl.appendChild(pane);
       });
+
+      // Notes tab (Busts, Sleepers, RP Sleepers)
+      const notesLi = document.createElement('li');
+      notesLi.className = 'nav-item';
+      notesLi.setAttribute('role', 'presentation');
+      notesLi.innerHTML = `<button class="nav-link"
+        id="tab-notes" data-bs-toggle="pill" data-bs-target="#pane-notes"
+        type="button" role="tab" aria-selected="false">
+        <span class="position-icon">📋</span>Notes
+      </button>`;
+      tabsEl.appendChild(notesLi);
+
+      const notesPane = document.createElement('div');
+      notesPane.className = 'tab-pane fade';
+      notesPane.id = 'pane-notes';
+      notesPane.setAttribute('role', 'tabpanel');
+
+      let notesHTML = '';
+
+      // Busts
+      if (data.busts && data.busts.length) {
+        notesHTML += '<div class="callout-section"><h3>🚫 Bust Alert — Overvalued / Risky</h3>';
+        data.busts.forEach(b => {
+          notesHTML += `<span class="bust-card"><span class="bust-name">${b.name}</span> <span class="bust-detail">${b.pos}, ${b.team}</span></span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      // Deep Sleepers
+      if (data.deepSleepers && data.deepSleepers.length) {
+        notesHTML += '<div class="callout-section"><h3>💤 Sleepers — Under the Radar</h3>';
+        data.deepSleepers.forEach(s => {
+          notesHTML += `<span class="sleeper-card"><span class="sleeper-name">${s.name}</span> <span class="sleeper-detail">${s.pos}, ${s.team}</span></span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      // RP Sleepers
+      if (data.rpSleepers && data.rpSleepers.length) {
+        notesHTML += '<div class="callout-section"><h3>🔥 Relief Pitcher Sleepers</h3>';
+        data.rpSleepers.forEach(r => {
+          notesHTML += `<span class="rp-sleeper-card">${r.name}</span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      notesPane.innerHTML = notesHTML;
+      contentEl.appendChild(notesPane);
 
       // Wire up Top 300 interactivity
       initTop300(top300);

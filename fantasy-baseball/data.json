@@ -1,54 +1,77 @@
 {
   "lastUpdated": "2026-03-10",
   "leagueType": "Points League",
+  "sourceBias": "NBC/Rotoworld consensus inputs provided by user, lightly adjusted for points scoring",
+  "notes": [
+    "The 2B data block provided appears to be a duplicate of the 1B rankings, so 2B remains from the prior version.",
+    "Where position eligibility may vary by platform, players are left in the position bucket implied by the supplied consensus lists."
+  ],
   "positions": {
     "OF": {
       "title": "Outfield",
       "icon": "⚾",
-      "note": "Power + volume > speed in your format.",
-      "sleepers": ["Brent Rooker", "James Wood"],
+      "note": "This update leans much more into the NBC/Rotoworld OF consensus you supplied. In your format, power and everyday volume still matter, but the consensus clearly pushes some younger ceiling bats higher.",
+      "sleepers": ["Brent Rooker", "James Wood", "Wyatt Langford"],
       "tiers": {
-        "Tier 1 — Elite Points Anchors": [
+        "Tier 1 — Elite OF1": [
           "Aaron Judge",
-          "Yordan Alvarez",
           "Juan Soto",
           "Ronald Acuña Jr.",
-          "Kyle Tucker",
           "Julio Rodríguez",
+          "Kyle Tucker",
+          "Corbin Carroll",
           "Fernando Tatis Jr."
         ],
         "Tier 2 — High-End OF1 / OF2": [
-          "Mookie Betts",
-          "Corbin Carroll",
-          "Bryce Harper",
-          "Randy Arozarena",
-          "Teoscar Hernández",
-          "Christian Yelich",
-          "Adolis García",
-          "Kyle Schwarber"
+          "Jackson Chourio",
+          { "name": "James Wood", "tag": "sleeper" },
+          "Yordan Alvarez",
+          { "name": "Brent Rooker", "tag": "sleeper" },
+          { "name": "Wyatt Langford", "tag": "sleeper" },
+          "Pete Crow-Armstrong",
+          "Roman Anthony",
+          "Jarren Duran"
         ],
         "Tier 3 — Strong Starters": [
-          { "name": "Brent Rooker", "tag": "sleeper" },
-          "Anthony Santander",
-          "Nolan Jones",
-          { "name": "James Wood", "tag": "sleeper" },
-          "Lane Thomas",
-          "Seiya Suzuki",
-          "Steven Kwan",
-          "George Springer",
-          "Michael Harris II"
-        ],
-        "Tier 4 — Upside / Depth": [
-          { "name": "Jordan Walker", "tag": "sleeper" },
-          "Tyler O'Neill",
           "Cody Bellinger",
-          "Jackson Chourio",
-          "Lourdes Gurriel Jr.",
-          "Heliot Ramos"
+          "Jackson Merrill",
+          "Byron Buxton",
+          "Riley Greene",
+          "Seiya Suzuki",
+          "George Springer",
+          "Michael Harris II",
+          "Tyler Soderstrom"
+        ],
+        "Tier 4 — Depth / Upside": [
+          "Randy Arozarena",
+          "Christian Yelich",
+          "Luis Robert Jr.",
+          "Jo Adell",
+          "Oneil Cruz",
+          "Kyle Stowers",
+          "Jose Altuve",
+          "Brandon Nimmo",
+          "Andy Pages",
+          "Teoscar Hernandez",
+          "Jakob Marsee",
+          "Lawrence Butler",
+          "Dylan Crews",
+          "Ceddanne Rafaela",
+          "Ian Happ",
+          "Bryan Reynolds",
+          "Steven Kwan",
+          "Taylor Ward",
+          "Brenton Doyle",
+          "Mike Trout",
+          "Alec Burleson",
+          "Kerry Carpenter",
+          "Daylen Lile",
+          "Heliot Ramos",
+          "Wilyer Abreu",
+          "Jurickson Profar"
         ]
       }
     },
-
     "C": {
       "title": "Catcher",
       "icon": "🧢",
@@ -92,92 +115,97 @@
         ]
       }
     },
-
     "1B": {
       "title": "First Base",
       "icon": "👊",
-      "note": "",
-      "sleepers": ["Spencer Torkelson", "Christian Encarnacion-Strand"],
+      "note": "This update follows your NBC/Rotoworld-style consensus much more closely. The top of 1B is clearly led by Vlad and Nick Kurtz in the list you provided.",
+      "sleepers": ["Nick Kurtz", "Ben Rice", "Sal Stewart"],
       "tiers": {
         "Tier 1 — Elite": [
-          "Freddie Freeman",
-          "Matt Olson",
+          "Vladimir Guerrero Jr.",
+          { "name": "Nick Kurtz", "tag": "sleeper" },
           "Pete Alonso",
-          "Vladimir Guerrero Jr."
+          "Bryce Harper",
+          "Freddie Freeman",
+          "Matt Olson"
         ],
         "Tier 2 — High-End": [
-          "Bryce Harper",
-          "Christian Walker",
-          "Cody Bellinger",
-          { "name": "Spencer Torkelson", "tag": "sleeper" }
+          "Rafael Devers",
+          "Josh Naylor",
+          "Vinnie Pasquantino",
+          "Tyler Soderstrom",
+          { "name": "Ben Rice", "tag": "sleeper" },
+          "Michael Busch",
+          "Yandy Diaz"
         ],
         "Tier 3 — Solid Starters": [
-          "Paul Goldschmidt",
-          "Rhys Hoskins",
-          "Josh Naylor",
-          "Nathaniel Lowe",
-          "Vinnie Pasquantino",
-          "Ryan Mountcastle"
+          { "name": "Sal Stewart", "tag": "sleeper" },
+          "Salvador Perez",
+          "Willson Contreras",
+          "Spencer Torkelson",
+          "Jonathan Aranda",
+          "Christian Walker",
+          "Alec Burleson"
         ],
         "Tier 4 — Depth": [
           "Triston Casas",
-          { "name": "Christian Encarnacion-Strand", "tag": "sleeper" },
+          "Rhys Hoskins",
+          "Nathaniel Lowe",
+          "Ryan Mountcastle",
           "Andrew Vaughn",
-          "Rowdy Tellez",
           "Carlos Santana",
-          "LaMonte Wade Jr.",
           "Luke Raley",
           "Wilmer Flores",
           "Ty France"
         ]
       }
     },
-
     "SS": {
       "title": "Shortstop",
       "icon": "🧠",
-      "note": "",
-      "sleepers": ["Oneil Cruz"],
+      "note": "This section was reworked heavily to match the SS consensus table you supplied.",
+      "sleepers": ["Zach Neto", "Jacob Wilson"],
       "tiers": {
         "Tier 1 — Elite": [
           "Bobby Witt Jr.",
+          "Elly De La Cruz",
           "Gunnar Henderson",
-          "Corey Seager",
           "Trea Turner",
           "Francisco Lindor"
         ],
         "Tier 2 — High-End": [
-          "Elly De La Cruz",
+          { "name": "Zach Neto", "tag": "sleeper" },
+          "Mookie Betts",
+          "CJ Abrams",
           "Bo Bichette",
-          "Carlos Correa",
-          { "name": "Oneil Cruz", "tag": "sleeper" },
-          "Dansby Swanson"
+          "Geraldo Perdomo",
+          "Jeremy Pena",
+          "Corey Seager"
         ],
         "Tier 3 — Solid Starters": [
-          "Xander Bogaerts",
-          "CJ Abrams",
-          "Jeremy Peña",
-          "Anthony Volpe",
+          "Trevor Story",
           "Willy Adames",
-          "Zach Neto",
-          "Bryson Stott"
-        ],
-        "Tier 4 — Depth": [
+          { "name": "Jacob Wilson", "tag": "sleeper" },
+          "Dansby Swanson",
           "Ezequiel Tovar",
+          "Xavier Edwards",
+          "Xander Bogaerts"
+        ],
+        "Tier 4 — Depth / Upside": [
           "Masyn Winn",
           "Ha-Seong Kim",
-          "Geraldo Perdomo",
+          "Anthony Volpe",
           "Orlando Arcia",
-          "Trevor Story",
-          "Amed Rosario"
+          "Amed Rosario",
+          "Oneil Cruz",
+          "Konnor Griffin"
         ]
       }
     },
-
     "2B": {
       "title": "Second Base",
       "icon": "🥎",
-      "note": "",
+      "note": "No new valid 2B table was available in the latest data block, so this remains unchanged from the prior version.",
       "sleepers": ["Nolan Gorman", "Matt McLain"],
       "tiers": {
         "Tier 1 — Elite Volume": [
@@ -212,119 +240,212 @@
         ]
       }
     },
-
     "3B": {
       "title": "Third Base",
       "icon": "🔨",
-      "note": "",
-      "sleepers": ["Junior Caminero", "Royce Lewis"],
+      "note": "This now matches your 3B consensus much more closely, especially with Caminero and Jazz pushed near the top.",
+      "sleepers": ["Junior Caminero", "Noelvi Marte", "Munetaka Murakami"],
       "tiers": {
         "Tier 1 — Elite Anchors": [
           "Jose Ramirez",
+          { "name": "Junior Caminero", "tag": "sleeper" },
+          "Jazz Chisholm Jr.",
+          "Manny Machado",
           "Austin Riley",
-          "Rafael Devers",
-          "Manny Machado"
+          "Maikel Garcia"
         ],
         "Tier 2 — High-End": [
-          { "name": "Junior Caminero", "tag": "sleeper" },
-          "Alec Bohm",
+          "Eugenio Suarez",
+          "Alex Bregman",
+          "Jordan Westburg",
+          { "name": "Noelvi Marte", "tag": "sleeper" },
           "Matt Chapman",
-          { "name": "Royce Lewis", "tag": "sleeper" }
+          "Isaac Paredes"
         ],
         "Tier 3 — Solid Starters": [
-          "Nolan Arenado",
-          "Jake Burger",
-          "Alex Bregman",
-          "Josh Jung",
-          "Isaac Paredes",
-          "Eugenio Suarez",
-          "Ryan McMahon",
+          { "name": "Munetaka Murakami", "tag": "sleeper" },
+          "Addison Barger",
+          "Royce Lewis",
+          "Kazuma Okamoto",
+          "Alec Bohm",
           "Max Muncy"
         ],
         "Tier 4 — Depth / Upside": [
-          "Jordan Westburg",
-          "Jeimer Candelario",
+          "Caleb Durbin",
+          "Brett Baty",
           "Ke'Bryan Hayes",
           "Spencer Steer",
-          "Luis Rengifo"
+          "Luis Rengifo",
+          "Jeimer Candelario",
+          "Jordan Westburg"
         ]
       }
     },
-
     "SP": {
       "title": "Starting Pitchers",
       "icon": "🅿️",
-      "note": "Your format LOVES: QS, Wins, Strikeouts, 6+ innings starters.",
-      "sleepers": ["Bryan Woo", "Tanner Bibee"],
+      "note": "NBC/Rotoworld consensus plus your supplied SP list. In your scoring, deep-start volume, strikeouts, and wins still matter a lot.",
+      "sleepers": ["Bryan Woo", "Spencer Schwellenbach", "Tanner Bibee"],
       "tiers": {
-        "Tier 1 — Elite QS Anchors": [
-          "Zack Wheeler",
-          "Corbin Burnes",
-          "Spencer Strider",
-          "Logan Webb",
-          "Pablo Lopez",
-          "Luis Castillo",
-          "George Kirby",
-          "Max Fried",
-          "Kevin Gausman"
-        ],
-        "Tier 2 — Strong SP1/SP2": [
-          "Dylan Cease",
-          "Sonny Gray",
-          "Framber Valdez",
-          "Logan Gilbert",
+        "Tier 1 — Clear-Cut Aces": [
           "Tarik Skubal",
-          "Blake Snell",
-          "Joe Ryan",
-          "Tyler Glasnow",
-          "Zac Gallen"
+          "Garrett Crochet",
+          "Paul Skenes"
         ],
-        "Tier 3 — Reliable SP2/SP3": [
-          { "name": "Tanner Bibee", "tag": "sleeper" },
+        "Tier 2 — Frontline SP1": [
+          "Yoshinobu Yamamoto",
           { "name": "Bryan Woo", "tag": "sleeper" },
+          "Cole Ragans",
+          "Logan Gilbert",
+          "Max Fried",
           "Hunter Greene",
-          "Kodai Senga",
-          "Michael King",
-          "Grayson Rodriguez",
-          "Cristopher Sanchez",
+          "Cristopher Sanchez"
+        ],
+        "Tier 3 — High-End SP2 With SP1 Upside": [
+          "Hunter Brown",
+          "Jacob deGrom",
+          "George Kirby",
+          "Joe Ryan",
+          { "name": "Spencer Schwellenbach", "tag": "sleeper" },
+          "Kyle Bradish",
+          "Logan Webb",
+          "Chris Sale",
+          "Shohei Ohtani"
+        ],
+        "Tier 4 — Strong SP2 / Stable SP3": [
           "Freddy Peralta",
-          "Nathan Eovaldi"
+          "Eury Perez",
+          "Dylan Cease",
+          "Pablo Lopez",
+          "Framber Valdez",
+          "Nick Pivetta",
+          "Drew Rasmussen",
+          "Tyler Glasnow",
+          "Ryan Pepiot",
+          "Michael King",
+          "Blake Snell"
+        ],
+        "Tier 5 — Upside Arms / Risk-Reward SP3": [
+          "Shota Imanaga",
+          "Nick Lodolo",
+          "Jesus Luzardo",
+          "Robbie Ray",
+          "Sandy Alcantara",
+          "Sonny Gray",
+          "Kevin Gausman",
+          "Kodai Senga",
+          "Aaron Nola",
+          "Bryce Miller",
+          "Gavin Williams",
+          "MacKenzie Gore"
+        ],
+        "Tier 6 — Mid-Rotation Depth": [
+          { "name": "Tanner Bibee", "tag": "sleeper" },
+          "Spencer Strider",
+          "Luis Castillo",
+          "Seth Lugo",
+          "Zach Eflin",
+          "Merrill Kelly",
+          "Jack Flaherty",
+          "Zac Gallen",
+          "Gerrit Cole",
+          "Justin Steele",
+          "Jared Jones",
+          "Zack Wheeler"
+        ],
+        "Tier 7 — Back-End Starters / Bench Stashes": [
+          "Roki Sasaki",
+          "Andrew Painter",
+          "David Peterson",
+          "Bryan Bello",
+          "Reese Olson",
+          "Corbin Burnes",
+          "Spencer Arrighetti",
+          "Bailey Ober",
+          "Sean Manaea",
+          "Yusei Kikuchi",
+          "Tyler Mahle",
+          "Brady Singer",
+          "Michael Wacha",
+          "Mitch Keller",
+          "Chris Bassitt",
+          "Jordan Montgomery",
+          "Taj Bradley"
         ]
       }
     },
-
     "RP": {
       "title": "Relief Pitchers",
       "icon": "🔥",
-      "note": "Saves are worth 10 points.",
-      "sleepers": ["Andres Munoz"],
+      "note": "Saves are worth 10 points, so true closers jump. This follows your NBC/Rotoworld consensus reliever table closely.",
+      "sleepers": ["Andres Munoz", "Griffin Jax", "Daniel Palencia"],
       "tiers": {
         "Tier 1 — Elite Closers": [
-          "Emmanuel Clase",
-          "Josh Hader",
+          "Mason Miller",
           "Edwin Diaz",
-          "Devin Williams",
-          "Raisel Iglesias",
-          "Camilo Doval"
+          "Jhoan Duran",
+          "Cade Smith",
+          { "name": "Andres Munoz", "tag": "sleeper" }
         ],
         "Tier 2 — Strong Closers": [
-          { "name": "Andres Munoz", "tag": "sleeper" },
-          "Alexis Diaz",
-          "Jordan Romano",
-          "Ryan Pressly",
-          "Kenley Jansen",
-          "Pete Fairbanks",
-          "Clay Holmes",
-          "Jhoan Duran"
-        ],
-        "Tier 3 — Risk / Role Uncertain": [
-          "Carlos Estevez",
+          "Devin Williams",
+          "Aroldis Chapman",
           "David Bednar",
-          "Kyle Finnegan",
-          "Adbert Alzolay",
-          "Evan Phillips"
+          "Josh Hader",
+          "Ryan Helsley",
+          "Jeff Hoffman",
+          "Raisel Iglesias"
+        ],
+        "Tier 3 — Draftable Closers / Upside Saves": [
+          { "name": "Daniel Palencia", "tag": "sleeper" },
+          "Trevor Megill",
+          "Pete Fairbanks",
+          "Emilio Pagan",
+          "Carlos Estevez",
+          "Kenley Jansen",
+          { "name": "Griffin Jax", "tag": "sleeper" }
+        ],
+        "Tier 4 — Speculative Saves / Committee Risk": [
+          "Abner Uribe",
+          "Dennis Santana",
+          "Ryan Walker",
+          "Riley O'Brien",
+          "Seranthony Dominguez",
+          "Bryan Abreu",
+          "Robert Garcia",
+          "Robert Suarez",
+          "Kirby Yates"
         ]
       }
     }
-  }
+  },
+  "busts": [
+    { "name": "Ozzie Albies", "pos": "2B", "team": "Braves" },
+    { "name": "Jackson Merrill", "pos": "OF", "team": "Padres" },
+    { "name": "Pete Crow-Armstrong", "pos": "OF", "team": "Cubs" },
+    { "name": "Nolan McLean", "pos": "SP", "team": "Mets" },
+    { "name": "Oneil Cruz", "pos": "OF", "team": "Pirates" },
+    { "name": "Zach Neto", "pos": "SS", "team": "Angels" },
+    { "name": "Ceddanne Rafaela", "pos": "OF/2B", "team": "Red Sox" },
+    { "name": "Spencer Strider", "pos": "SP", "team": "Braves" }
+  ],
+  "deepSleepers": [
+    { "name": "Sal Stewart", "pos": "1B", "team": "Reds" },
+    { "name": "Cade Horton", "pos": "SP", "team": "Cubs" },
+    { "name": "Kazuma Okamoto", "pos": "1B/3B", "team": "Blue Jays" },
+    { "name": "Francisco Alvarez", "pos": "C", "team": "Mets" },
+    { "name": "Bubba Chandler", "pos": "SP", "team": "Pirates" },
+    { "name": "Jordan Lawlar", "pos": "3B", "team": "Diamondbacks" },
+    { "name": "Quinn Priester", "pos": "SP", "team": "Brewers" },
+    { "name": "Luis Garcia Jr.", "pos": "2B", "team": "Nationals" }
+  ],
+  "rpSleepers": [
+    { "name": "Clayton Beeter" },
+    { "name": "Kirby Yates" },
+    { "name": "Grant Taylor" },
+    { "name": "Matt Svanson" },
+    { "name": "Garrett Whitlock" },
+    { "name": "Justin Sterner" },
+    { "name": "Bryan Baker" }
+  ]
 }
