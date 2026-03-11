@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-03-10",
+  "lastUpdated": "2026-03-10",
   "leagueType": "Points League",
   "positions": {
     "OF": {
@@ -20,12 +20,12 @@
         "Tier 2 — High-End OF1 / OF2": [
           "Mookie Betts",
           "Corbin Carroll",
-          "Bryce Harper (if OF eligible)",
-          "Corey Seager (if OF eligible)",
+          "Bryce Harper",
           "Randy Arozarena",
           "Teoscar Hernández",
           "Christian Yelich",
-          "Adolis García"
+          "Adolis García",
+          "Kyle Schwarber"
         ],
         "Tier 3 — Strong Starters": [
           { "name": "Brent Rooker", "tag": "sleeper" },
@@ -48,6 +48,7 @@
         ]
       }
     },
+
     "C": {
       "title": "Catcher",
       "icon": "🧢",
@@ -84,16 +85,14 @@
           "Austin Wells",
           "Mitch Garver",
           "Patrick Bailey",
-          "Jacob Stallings",
-          "Christian Vazquez",
           "Jonah Heim",
           "Kyle Higashioka",
           "Luis Campusano",
-          "Victor Caratini",
-          "Reese McGuire"
+          "Victor Caratini"
         ]
       }
     },
+
     "1B": {
       "title": "First Base",
       "icon": "👊",
@@ -109,7 +108,6 @@
         "Tier 2 — High-End": [
           "Bryce Harper",
           "Christian Walker",
-          "Rafael Devers (if 1B eligible)",
           "Cody Bellinger",
           { "name": "Spencer Torkelson", "tag": "sleeper" }
         ],
@@ -119,7 +117,6 @@
           "Josh Naylor",
           "Nathaniel Lowe",
           "Vinnie Pasquantino",
-          "Anthony Rizzo",
           "Ryan Mountcastle"
         ],
         "Tier 4 — Depth": [
@@ -127,19 +124,15 @@
           { "name": "Christian Encarnacion-Strand", "tag": "sleeper" },
           "Andrew Vaughn",
           "Rowdy Tellez",
-          "Joey Meneses",
           "Carlos Santana",
           "LaMonte Wade Jr.",
-          "Jared Walsh",
           "Luke Raley",
           "Wilmer Flores",
-          "Brandon Drury",
-          "Alec Bohm (if eligible)",
-          "Ty France",
-          "Miguel Vargas"
+          "Ty France"
         ]
       }
     },
+
     "SS": {
       "title": "Shortstop",
       "icon": "🧠",
@@ -165,27 +158,22 @@
           "CJ Abrams",
           "Jeremy Peña",
           "Anthony Volpe",
-          "Nico Hoerner",
           "Willy Adames",
           "Zach Neto",
           "Bryson Stott"
         ],
         "Tier 4 — Depth": [
-          "Tim Anderson",
-          "Jorge Mateo",
-          "Thairo Estrada",
           "Ezequiel Tovar",
           "Masyn Winn",
           "Ha-Seong Kim",
           "Geraldo Perdomo",
           "Orlando Arcia",
-          "Brandon Crawford",
           "Trevor Story",
-          "Isiah Kiner-Falefa",
           "Amed Rosario"
         ]
       }
     },
+
     "2B": {
       "title": "Second Base",
       "icon": "🥎",
@@ -200,7 +188,6 @@
         ],
         "Tier 2 — Strong Starters": [
           "Gleyber Torres",
-          "Nico Hoerner",
           "Bryson Stott",
           "Luis Arraez",
           "Andres Gimenez",
@@ -209,11 +196,9 @@
         "Tier 3 — Mid-Tier Depth": [
           { "name": "Nolan Gorman", "tag": "sleeper" },
           "Brandon Lowe",
-          "Thairo Estrada",
-          { "name": "Matt McLain", "tag": "sleeper" },
           "Jonathan India",
+          { "name": "Matt McLain", "tag": "sleeper" },
           "Zach Gelof",
-          "Ha-Seong Kim",
           "Whit Merrifield"
         ],
         "Tier 4 — Late Round Options": [
@@ -221,17 +206,13 @@
           "Jeff McNeil",
           "Colt Keith",
           "Michael Massey",
-          "Christopher Morel",
           "Edouard Julien",
           "Gavin Lux",
-          "Brendan Rodgers",
-          "Mauricio Dubon",
-          "Luis Garcia (WSH)",
-          "Adam Frazier",
-          "David Fletcher"
+          "Brendan Rodgers"
         ]
       }
     },
+
     "3B": {
       "title": "Third Base",
       "icon": "🔨",
@@ -246,7 +227,6 @@
         ],
         "Tier 2 — High-End": [
           { "name": "Junior Caminero", "tag": "sleeper" },
-          "Gunnar Henderson (if 3B eligible)",
           "Alec Bohm",
           "Matt Chapman",
           { "name": "Royce Lewis", "tag": "sleeper" }
@@ -263,29 +243,21 @@
         ],
         "Tier 4 — Depth / Upside": [
           "Jordan Westburg",
-          "Brett Baty",
           "Jeimer Candelario",
           "Ke'Bryan Hayes",
-          "Miguel Vargas",
-          "DJ LeMahieu",
-          "Anthony Rendon",
-          "Eduardo Escobar",
           "Spencer Steer",
-          "Nick Madrigal",
-          "Luis Rengifo",
-          "Joey Wendle",
-          "Jace Jung"
+          "Luis Rengifo"
         ]
       }
     },
+
     "SP": {
       "title": "Starting Pitchers",
       "icon": "🅿️",
-      "note": "Your format LOVES: QS, Wins, Strikeouts, 6+ innings starters. It penalizes short outings and blowups.",
+      "note": "Your format LOVES: QS, Wins, Strikeouts, 6+ innings starters.",
       "sleepers": ["Bryan Woo", "Tanner Bibee"],
       "tiers": {
         "Tier 1 — Elite QS Anchors": [
-          "Gerrit Cole",
           "Zack Wheeler",
           "Corbin Burnes",
           "Spencer Strider",
@@ -305,7 +277,6 @@
           "Blake Snell",
           "Joe Ryan",
           "Tyler Glasnow",
-          "Jesus Luzardo",
           "Zac Gallen"
         ],
         "Tier 3 — Reliable SP2/SP3": [
@@ -314,54 +285,18 @@
           "Hunter Greene",
           "Kodai Senga",
           "Michael King",
-          "Jordan Montgomery",
           "Grayson Rodriguez",
           "Cristopher Sanchez",
           "Freddy Peralta",
           "Nathan Eovaldi"
-        ],
-        "Tier 4 — Mid-Rotation Depth": [
-          "Chris Bassitt",
-          "Kyle Bradish",
-          "Eduardo Rodriguez",
-          "Bailey Ober",
-          "Clarke Schmidt",
-          "Jack Flaherty",
-          "Jose Berrios",
-          "Marcus Stroman",
-          "Aaron Nola",
-          "Charlie Morton"
-        ],
-        "Tier 5 — Back-End Volume / Upside": [
-          "Nick Pivetta",
-          "Gavin Williams",
-          "Reese Olson",
-          "Taj Bradley",
-          "Justin Steele",
-          "Ranger Suarez",
-          "Merrill Kelly",
-          "Yu Darvish",
-          "Seth Lugo",
-          "Alex Cobb"
-        ],
-        "Tier 6 — Depth & Speculative": [
-          "James Paxton",
-          "Shane Bieber",
-          "Carlos Rodon",
-          "Mitch Keller",
-          "Kenta Maeda",
-          "Lucas Giolito",
-          "Brandon Pfaadt",
-          "Dean Kremer",
-          "Andrew Abbott",
-          "Tony Gonsolin"
         ]
       }
     },
+
     "RP": {
       "title": "Relief Pitchers",
       "icon": "🔥",
-      "note": "Saves are worth 10 points. Huge.",
+      "note": "Saves are worth 10 points.",
       "sleepers": ["Andres Munoz"],
       "tiers": {
         "Tier 1 — Elite Closers": [
@@ -387,8 +322,7 @@
           "David Bednar",
           "Kyle Finnegan",
           "Adbert Alzolay",
-          "Evan Phillips",
-          "Scott Barlow"
+          "Evan Phillips"
         ]
       }
     }

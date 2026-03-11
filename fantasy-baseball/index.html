@@ -118,6 +118,87 @@
       color: #484f58;
       font-size: 0.8rem;
     }
+
+    /* Top 300 table */
+    .top300-controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .top300-controls input,
+    .top300-controls select {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.88rem;
+    }
+    .top300-controls input:focus,
+    .top300-controls select:focus {
+      outline: none;
+      border-color: #58a6ff;
+    }
+    .top300-controls input { flex: 1; min-width: 200px; }
+
+    .top300-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.88rem;
+    }
+    .top300-table thead th {
+      background: #161b22;
+      color: #8b949e;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 2px solid #30363d;
+      position: sticky;
+      top: 0;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .top300-table thead th:hover { color: #58a6ff; }
+    .top300-table thead th.sorted-asc::after { content: " ▲"; font-size: 0.65rem; }
+    .top300-table thead th.sorted-desc::after { content: " ▼"; font-size: 0.65rem; }
+    .top300-table tbody tr {
+      transition: background 0.15s;
+    }
+    .top300-table tbody tr:hover { background: rgba(88,166,255,0.06); }
+    .top300-table tbody td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #21262d;
+    }
+    .top300-table .rank-cell {
+      font-weight: 700;
+      color: #8b949e;
+      width: 50px;
+    }
+    .top300-table .name-cell { font-weight: 600; }
+    .top300-table .team-cell { color: #8b949e; }
+    .pos-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .pos-OF { background: rgba(63,185,80,0.15); color: #3fb950; }
+    .pos-SS { background: rgba(88,166,255,0.15); color: #58a6ff; }
+    .pos-SP { background: rgba(233,69,96,0.15); color: #e94560; }
+    .pos-RP { background: rgba(240,136,62,0.15); color: #f0883e; }
+    .pos-1B { background: rgba(188,140,255,0.15); color: #bc8cff; }
+    .pos-2B { background: rgba(219,171,255,0.15); color: #d2a8ff; }
+    .pos-3B { background: rgba(121,192,255,0.15); color: #79c0ff; }
+    .pos-C  { background: rgba(255,215,0,0.12); color: #e3b341; }
+    .pos-DH { background: rgba(139,148,158,0.15); color: #8b949e; }
+    .trend-up { color: #3fb950; }
+    .trend-down { color: #e94560; }
+    .trend-same { color: #484f58; }
+    .trend-new { color: #f0883e; font-style: italic; font-size: 0.78rem; }
   </style>
 </head>
 <body>
@@ -144,7 +225,7 @@
   <footer>
     <div class="container">
       Fantasy Baseball Tiers &mdash; Points League Draft Board<br>
-      To update rankings, edit <code>data.json</code> and push.
+      To update rankings, edit <code>data.json</code> / <code>top300.json</code> and push.
     </div>
   </footer>
 
@@ -153,36 +234,57 @@
     const TIER_CLASSES = ['tier-1','tier-2','tier-3','tier-4','tier-5','tier-6'];
 
     async function init() {
-      const resp = await fetch('data.json');
+      const [resp, top300Resp] = await Promise.all([
+        fetch('data.json'),
+        fetch('top300.json')
+      ]);
       const data = await resp.json();
+      const top300 = await top300Resp.json();
 
       document.getElementById('lastUpdated').textContent =
         'Last updated: ' + data.lastUpdated + ' | Format: ' + data.leagueType;
 
       const tabsEl = document.getElementById('positionTabs');
       const contentEl = document.getElementById('positionContent');
-      const positions = Object.entries(data.positions);
 
+      // Add Top 300 tab first
+      const top300Li = document.createElement('li');
+      top300Li.className = 'nav-item';
+      top300Li.setAttribute('role', 'presentation');
+      top300Li.innerHTML = `<button class="nav-link active"
+        id="tab-top300" data-bs-toggle="pill" data-bs-target="#pane-top300"
+        type="button" role="tab" aria-selected="true">
+        <span class="position-icon">🏆</span>Top 300
+      </button>`;
+      tabsEl.appendChild(top300Li);
+
+      // Top 300 pane
+      const top300Pane = document.createElement('div');
+      top300Pane.className = 'tab-pane fade show active';
+      top300Pane.id = 'pane-top300';
+      top300Pane.setAttribute('role', 'tabpanel');
+      top300Pane.innerHTML = buildTop300HTML(top300);
+      contentEl.appendChild(top300Pane);
+
+      // Position tabs
+      const positions = Object.entries(data.positions);
       positions.forEach(([key, pos], idx) => {
-        // Tab button
         const li = document.createElement('li');
         li.className = 'nav-item';
         li.setAttribute('role', 'presentation');
-        li.innerHTML = `<button class="nav-link ${idx === 0 ? 'active' : ''}"
+        li.innerHTML = `<button class="nav-link"
           id="tab-${key}" data-bs-toggle="pill" data-bs-target="#pane-${key}"
-          type="button" role="tab" aria-selected="${idx === 0}">
+          type="button" role="tab" aria-selected="false">
           <span class="position-icon">${pos.icon}</span>${pos.title}
         </button>`;
         tabsEl.appendChild(li);
 
-        // Tab pane
         const pane = document.createElement('div');
-        pane.className = `tab-pane fade ${idx === 0 ? 'show active' : ''}`;
+        pane.className = 'tab-pane fade';
         pane.id = `pane-${key}`;
         pane.setAttribute('role', 'tabpanel');
 
         let html = '';
-
         if (pos.note) {
           html += `<div class="note-box">${pos.note}</div>`;
         }
@@ -193,7 +295,6 @@
           html += `<div class="tier-card ${tierClass}">
             <div class="tier-header">${tierName}</div>
             <div class="player-list">`;
-
           players.forEach(p => {
             if (typeof p === 'object') {
               html += `<span class="player sleeper">${p.name}</span>`;
@@ -201,11 +302,9 @@
               html += `<span class="player">${p}</span>`;
             }
           });
-
           html += '</div></div>';
         });
 
-        // Sleepers callout
         if (pos.sleepers && pos.sleepers.length > 0) {
           html += '<div class="sleeper-box">🔥 <strong>Sleepers:</strong> ' +
             pos.sleepers.join(', ') + '</div>';
@@ -214,6 +313,126 @@
         pane.innerHTML = html;
         contentEl.appendChild(pane);
       });
+
+      // Wire up Top 300 interactivity
+      initTop300(top300);
+    }
+
+    function buildTop300HTML(players) {
+      const posOptions = [...new Set(players.map(p => p.pos))].sort();
+      const teamOptions = [...new Set(players.map(p => p.team))].sort();
+
+      let html = `
+        <div class="top300-controls">
+          <input type="text" id="top300Search" placeholder="Search player or team...">
+          <select id="top300PosFilter">
+            <option value="">All Positions</option>
+            ${posOptions.map(p => `<option value="${p}">${p}</option>`).join('')}
+          </select>
+          <select id="top300TeamFilter">
+            <option value="">All Teams</option>
+            ${teamOptions.map(t => `<option value="${t}">${t}</option>`).join('')}
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+        <table class="top300-table">
+          <thead>
+            <tr>
+              <th data-col="rank" class="sorted-asc">Rank</th>
+              <th data-col="name">Player</th>
+              <th data-col="team">Team</th>
+              <th data-col="pos">Pos</th>
+              <th data-col="posRk">Pos Rk</th>
+              <th data-col="mar2">Trend</th>
+            </tr>
+          </thead>
+          <tbody id="top300Body">
+          </tbody>
+        </table>
+        </div>`;
+      return html;
+    }
+
+    function renderTop300Rows(players) {
+      const tbody = document.getElementById('top300Body');
+      tbody.innerHTML = players.map(p => {
+        let trendHTML;
+        if (p.mar2 === null) {
+          trendHTML = '<span class="trend-new">NEW</span>';
+        } else {
+          const diff = p.mar2 - p.rank;
+          if (diff > 0) trendHTML = `<span class="trend-up">+${diff} ▲</span>`;
+          else if (diff < 0) trendHTML = `<span class="trend-down">${diff} ▼</span>`;
+          else trendHTML = '<span class="trend-same">—</span>';
+        }
+        return `<tr>
+          <td class="rank-cell">${p.rank}</td>
+          <td class="name-cell">${p.name}</td>
+          <td class="team-cell">${p.team}</td>
+          <td><span class="pos-badge pos-${p.pos}">${p.pos}</span></td>
+          <td>${p.posRk}</td>
+          <td>${trendHTML}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function initTop300(allPlayers) {
+      let sortCol = 'rank';
+      let sortAsc = true;
+      let filtered = [...allPlayers];
+
+      function applyFilters() {
+        const search = document.getElementById('top300Search').value.toLowerCase();
+        const posFilter = document.getElementById('top300PosFilter').value;
+        const teamFilter = document.getElementById('top300TeamFilter').value;
+
+        filtered = allPlayers.filter(p => {
+          if (posFilter && p.pos !== posFilter) return false;
+          if (teamFilter && p.team !== teamFilter) return false;
+          if (search && !p.name.toLowerCase().includes(search) && !p.team.toLowerCase().includes(search)) return false;
+          return true;
+        });
+        applySort();
+      }
+
+      function applySort() {
+        filtered.sort((a, b) => {
+          let va = a[sortCol], vb = b[sortCol];
+          if (va === null) va = 9999;
+          if (vb === null) vb = 9999;
+          if (typeof va === 'string') {
+            return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+          }
+          return sortAsc ? va - vb : vb - va;
+        });
+        renderTop300Rows(filtered);
+      }
+
+      // Search & filter events
+      document.getElementById('top300Search').addEventListener('input', applyFilters);
+      document.getElementById('top300PosFilter').addEventListener('change', applyFilters);
+      document.getElementById('top300TeamFilter').addEventListener('change', applyFilters);
+
+      // Column sort
+      document.querySelectorAll('.top300-table thead th').forEach(th => {
+        th.addEventListener('click', () => {
+          const col = th.dataset.col;
+          if (sortCol === col) {
+            sortAsc = !sortAsc;
+          } else {
+            sortCol = col;
+            sortAsc = true;
+          }
+          document.querySelectorAll('.top300-table thead th').forEach(t => {
+            t.classList.remove('sorted-asc', 'sorted-desc');
+          });
+          th.classList.add(sortAsc ? 'sorted-asc' : 'sorted-desc');
+          applySort();
+        });
+      });
+
+      // Initial render
+      renderTop300Rows(allPlayers);
     }
 
     init();
