@@ -3,8 +3,8 @@
  *
  * Google Sheet Tabs Required:
  *   Users:          userId | name | pinHash | birthYear | createdAt
- *   TimelineSongs:  userId | year | songTitle | artist | spotifyId | spotifyUrl | story
- *   FavoriteSongs:  userId | rank | songTitle | artist | spotifyId | spotifyUrl
+ *   TimelineSongs:  userId | year | songTitle | artist | spotifyId | spotifyUrl | story | addedAt
+ *   FavoriteSongs:  userId | rank | songTitle | artist | spotifyId | spotifyUrl | addedAt
  *   FavoriteAlbums: userId | rank | albumTitle | artist | spotifyId | spotifyUrl | coverUrl
  *   Likes:          likerUserId | targetUserId | songTitle | artist | spotifyId | context | likedAt
  *   FollowedUsers:  userId | followedUserId | groupName | createdAt
@@ -239,12 +239,13 @@ function handleSaveTimelineSong(data) {
       sheet.getRange(i + 1, 5).setValue(data.spotifyId);
       sheet.getRange(i + 1, 6).setValue(data.spotifyUrl);
       sheet.getRange(i + 1, 7).setValue(existingStory);
+      sheet.getRange(i + 1, 8).setValue(new Date().toISOString());
       return jsonResponse({ success: true });
     }
   }
 
   // Append new row
-  sheet.appendRow([data.userId, data.year, data.songTitle, data.artist, data.spotifyId, data.spotifyUrl, '']);
+  sheet.appendRow([data.userId, data.year, data.songTitle, data.artist, data.spotifyId, data.spotifyUrl, '', new Date().toISOString()]);
   return jsonResponse({ success: true });
 }
 
@@ -301,7 +302,8 @@ function handleSaveFavoriteSongs(data) {
     sheet.appendRow([
       data.userId, idx + 1,
       song.songTitle, song.artist,
-      song.spotifyId || '', song.spotifyUrl || ''
+      song.spotifyId || '', song.spotifyUrl || '',
+      new Date().toISOString()
     ]);
   });
 
@@ -592,7 +594,8 @@ function handleGetFollowedUsersActivity(params) {
       songTitle: r.songTitle,
       artist: r.artist,
       year: r.year,
-      spotifyId: r.spotifyId || ''
+      spotifyId: r.spotifyId || '',
+      addedAt: r.addedAt || ''
     });
   });
 
@@ -609,7 +612,8 @@ function handleGetFollowedUsersActivity(params) {
       songTitle: r.songTitle,
       artist: r.artist,
       rank: r.rank,
-      spotifyId: r.spotifyId || ''
+      spotifyId: r.spotifyId || '',
+      addedAt: r.addedAt || ''
     });
   });
 

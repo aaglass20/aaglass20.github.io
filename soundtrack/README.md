@@ -1,87 +1,43 @@
-# Getting Started with Create React App
+# Soundtrack of My Life
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web app where users build a musical autobiography — mapping songs to years of their life, curating favorites, and following friends to see their soundtracks.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Timeline** — Assign a song to each year of your life, with optional stories
+- **Favorite Songs** — Rank your top songs with drag-and-drop reordering
+- **Favorite Albums** — Rank your top albums
+- **My People** — Follow friends, organize them into groups (Family, Friends, Coworkers, Other), and see new activity since your last visit
+- **Browse** — Discover and follow other users
+- **View Soundtrack** — View any user's full timeline, favorites, and like their songs
+- **SuperChart** — Aggregated chart across all users
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend:** React 19, React Router (HashRouter), @hello-pangea/dnd
+- **Backend:** Google Apps Script (Google Sheets as database)
+- **Music Data:** Spotify API (search, embeds, top songs by year)
+- **Hosting:** GitHub Pages
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Google Sheets Schema
 
-### `npm test`
+| Sheet | Columns |
+|-------|---------|
+| Users | userId, name, pinHash, birthYear, createdAt |
+| TimelineSongs | userId, year, songTitle, artist, spotifyId, spotifyUrl, story, addedAt |
+| FavoriteSongs | userId, rank, songTitle, artist, spotifyId, spotifyUrl, addedAt |
+| FavoriteAlbums | userId, rank, albumTitle, artist, spotifyId, spotifyUrl, coverUrl |
+| Likes | likerUserId, targetUserId, songTitle, artist, spotifyId, context, likedAt |
+| FollowedUsers | userId, followedUserId, groupName, createdAt |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Scripts
 
-### `npm run build`
+```bash
+npm start       # Dev server on localhost:3000
+npm run build   # Production build
+npm run deploy  # Build + copy to root for GitHub Pages
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Deployment
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-Now you just need to commit and push these changes. Want me to do that? The key files to add are:                                                                             
-                                                                                                                                                                                
-  - soundtrack/index.html                                                                                                                                                       
-  - soundtrack/static/ (JS and CSS bundles)
-  - soundtrack/favicon.ico, logo192.png, logo512.png, manifest.json, robots.txt, asset-manifest.json
-
-  Going forward, after each npm run build, you'll need to copy the build output from soundtrack/build/ to soundtrack/ again. You could also add a deploy script to package.json
-  to automate this.
-
-
-⏺ Now instead of npm run build, just run:                                                                                                                                       
-
-  npm run deploy                                                                                                                                                                
-   
-  It will build the app and then copy everything from build/ into the soundtrack/ folder so GitHub Pages can serve it directly. 
-
+The app is hosted via GitHub Pages at the `/soundtrack` path. Running `npm run deploy` builds the app and copies the output from `build/` to the project root so GitHub Pages can serve it directly.

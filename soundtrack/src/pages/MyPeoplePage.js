@@ -24,7 +24,18 @@ const MyPeoplePage = () => {
       ]);
       console.log('followData:', JSON.stringify(followData));
       if (followData?.follows) setFollows(followData.follows);
-      if (activityData?.activity) setActivity(activityData.activity);
+      if (activityData?.activity) {
+        // Filter to only show activity added since last tab visit
+        const storageKey = `lastActivityTabVisit_${user.userId}`;
+        const lastVisit = localStorage.getItem(storageKey);
+        if (lastVisit) {
+          const newActivity = activityData.activity.filter(a => a.addedAt && a.addedAt > lastVisit);
+          setActivity(newActivity);
+        } else {
+          // First visit — show everything
+          setActivity(activityData.activity);
+        }
+      }
     } catch (e) {
       console.error('Failed to load followed users:', e);
     }
@@ -32,6 +43,14 @@ const MyPeoplePage = () => {
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Save timestamp when user visits the Activity tab
+  useEffect(() => {
+    if (activeTab === 'activity' && user) {
+      const storageKey = `lastActivityTabVisit_${user.userId}`;
+      localStorage.setItem(storageKey, new Date().toISOString());
+    }
+  }, [activeTab, user]);
 
   const handleUnfollow = async (followedUserId) => {
     setFollows(prev => prev.filter(f => f.followedUserId !== followedUserId));
@@ -170,7 +189,7 @@ const MyPeoplePage = () => {
           {activeTab === 'activity' && (
             <div className="activity-feed">
               {Object.keys(activityByUser).length === 0 ? (
-                <div className="empty-state">No activity from your people yet.</div>
+                <div className="empty-state">No new activity from your people.</div>
               ) : (
                 Object.values(activityByUser).map(userActivity => (
                   <div key={userActivity.userId} className="activity-user-section">
