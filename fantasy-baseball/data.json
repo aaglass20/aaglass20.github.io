@@ -569,113 +569,112 @@
         "Kirby Yates"
       ]
     }
-  }
-},
-"busts": [
-{
-"name": "Ozzie Albies",
-"pos": "2B",
-"team": "Braves"
-},
-{
-"name": "Jackson Merrill",
-"pos": "OF",
-"team": "Padres"
-},
-{
-"name": "Pete Crow-Armstrong",
-"pos": "OF",
-"team": "Cubs"
-},
-{
-"name": "Nolan McLean",
-"pos": "SP",
-"team": "Mets"
-},
-{
-"name": "Oneil Cruz",
-"pos": "OF",
-"team": "Pirates"
-},
-{
-"name": "Zach Neto",
-"pos": "SS",
-"team": "Angels"
-},
-{
-"name": "Ceddanne Rafaela",
-"pos": "OF/2B",
-"team": "Red Sox"
-},
-{
-"name": "Spencer Strider",
-"pos": "SP",
-"team": "Braves"
-}
-],
-"deepSleepers": [
-{
-"name": "Sal Stewart",
-"pos": "1B",
-"team": "Reds"
-},
-{
-"name": "Cade Horton",
-"pos": "SP",
-"team": "Cubs"
-},
-{
-"name": "Kazuma Okamoto",
-"pos": "1B/3B",
-"team": "Blue Jays"
-},
-{
-"name": "Francisco Alvarez",
-"pos": "C",
-"team": "Mets"
-},
-{
-"name": "Bubba Chandler",
-"pos": "SP",
-"team": "Pirates"
-},
-{
-"name": "Jordan Lawlar",
-"pos": "3B",
-"team": "Diamondbacks"
-},
-{
-"name": "Quinn Priester",
-"pos": "SP",
-"team": "Brewers"
-},
-{
-"name": "Luis Garcia Jr.",
-"pos": "2B",
-"team": "Nationals"
-}
-],
-"rpSleepers": [
-{
-"name": "Clayton Beeter"
-},
-{
-"name": "Kirby Yates"
-},
-{
-"name": "Grant Taylor"
-},
-{
-"name": "Matt Svanson"
-},
-{
-"name": "Garrett Whitlock"
-},
-{
-"name": "Justin Sterner"
-},
-{
-"name": "Bryan Baker"
-}
-]
+  },
+  "busts": [
+    {
+      "name": "Ozzie Albies",
+      "pos": "2B",
+      "team": "Braves"
+    },
+    {
+      "name": "Jackson Merrill",
+      "pos": "OF",
+      "team": "Padres"
+    },
+    {
+      "name": "Pete Crow-Armstrong",
+      "pos": "OF",
+      "team": "Cubs"
+    },
+    {
+      "name": "Nolan McLean",
+      "pos": "SP",
+      "team": "Mets"
+    },
+    {
+      "name": "Oneil Cruz",
+      "pos": "OF",
+      "team": "Pirates"
+    },
+    {
+      "name": "Zach Neto",
+      "pos": "SS",
+      "team": "Angels"
+    },
+    {
+      "name": "Ceddanne Rafaela",
+      "pos": "OF/2B",
+      "team": "Red Sox"
+    },
+    {
+      "name": "Spencer Strider",
+      "pos": "SP",
+      "team": "Braves"
+    }
+  ],
+  "deepSleepers": [
+    {
+      "name": "Sal Stewart",
+      "pos": "1B",
+      "team": "Reds"
+    },
+    {
+      "name": "Cade Horton",
+      "pos": "SP",
+      "team": "Cubs"
+    },
+    {
+      "name": "Kazuma Okamoto",
+      "pos": "1B/3B",
+      "team": "Blue Jays"
+    },
+    {
+      "name": "Francisco Alvarez",
+      "pos": "C",
+      "team": "Mets"
+    },
+    {
+      "name": "Bubba Chandler",
+      "pos": "SP",
+      "team": "Pirates"
+    },
+    {
+      "name": "Jordan Lawlar",
+      "pos": "3B",
+      "team": "Diamondbacks"
+    },
+    {
+      "name": "Quinn Priester",
+      "pos": "SP",
+      "team": "Brewers"
+    },
+    {
+      "name": "Luis Garcia Jr.",
+      "pos": "2B",
+      "team": "Nationals"
+    }
+  ],
+  "rpSleepers": [
+    {
+      "name": "Clayton Beeter"
+    },
+    {
+      "name": "Kirby Yates"
+    },
+    {
+      "name": "Grant Taylor"
+    },
+    {
+      "name": "Matt Svanson"
+    },
+    {
+      "name": "Garrett Whitlock"
+    },
+    {
+      "name": "Justin Sterner"
+    },
+    {
+      "name": "Bryan Baker"
+    }
+  ]
 }
