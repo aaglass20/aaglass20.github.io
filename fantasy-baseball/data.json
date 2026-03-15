@@ -224,9 +224,8 @@
           "Ha-Seong Kim"
         ]
       }
-    }
-  },
-  "3B": {
+    },
+    "3B": {
     "title": "Third Base",
     "icon": "🔨",
     "note": "Leans into your newer 3B consensus with Caminero and Jazz elevated.",
@@ -281,10 +280,10 @@
           "tag": "sleeper"
         }
       ]
-    }
-  },
-  "OF": {
-    "title": "Outfield",
+      }
+    },
+    "OF": {
+      "title": "Outfield",
     "icon": "⚾",
     "note": "Power plus volume still matters, but your new consensus clearly pushes several young ceiling bats up.",
     "sleepers": [
@@ -359,9 +358,9 @@
         "Wilyer Abreu",
         "Jurickson Profar"
       ]
-    }
-  },
-  "SP": {
+      }
+    },
+    "SP": {
     "title": "Starting Pitchers",
     "icon": "🅿️",
     "note": "Starting pitcher tiers now include 100 names. Points scoring still rewards strikeouts, wins, and consistent quality-start volume.",
@@ -511,9 +510,9 @@
         "Reese Olson",
         "Grant Holmes"
       ]
-    }
-  },
-  "RP": {
+      }
+    },
+    "RP": {
     "title": "Relief Pitchers",
     "icon": "🔥",
     "note": "Saves are worth 10 points, so true closers carry real weight.",
@@ -568,6 +567,7 @@
         "Robert Suarez",
         "Kirby Yates"
       ]
+    }
     }
   },
   "busts": [
