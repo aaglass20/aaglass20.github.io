@@ -803,6 +803,375 @@
         }
 
         /* ============================================
+           LIVE FEED TOGGLE & SCOREBOARD
+           ============================================ */
+
+        .live-feed-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .live-feed-toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .live-feed-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border-medium);
+            border-radius: 26px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--success);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        .live-feed-status {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .live-feed-status .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .live-feed-status.inactive .pulse-dot {
+            background: var(--border-medium);
+            animation: none;
+        }
+
+        /* Live game status badges */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.5rem;
+        }
+
+        .live-badge.live {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .live-badge.live .pulse-dot-sm {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #C62828;
+            animation: pulse 1s infinite;
+        }
+
+        .live-badge.final {
+            background: #E8F5E9;
+            color: var(--success);
+        }
+
+        .live-badge.pre {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .live-badge.locked {
+            background: #E3F2FD;
+            color: var(--info);
+        }
+
+        /* Live score display on game cards */
+        .live-score-display {
+            margin-top: 0.4rem;
+            padding: 0.4rem 0.6rem;
+            background: #FFF8E1;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            border-left: 3px solid var(--warning);
+        }
+
+        .live-score-display .live-period {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            margin-top: 0.15rem;
+        }
+
+        /* Lock In button */
+        .btn-lock-in {
+            background: var(--info);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.85rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-lock-in:hover {
+            background: #0D47A1;
+        }
+
+        .btn-lock-in:disabled {
+            background: var(--border-medium);
+            cursor: not-allowed;
+        }
+
+        .game-card.locked-in {
+            border-left-color: var(--info);
+        }
+
+        /* Link Game Dropdown */
+        .link-game-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-game-select {
+            flex: 1;
+            padding: 0.35rem 0.5rem;
+            border: 2px solid var(--info);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 0.78rem;
+            background: #E3F2FD;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .link-game-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
+        }
+
+        .btn-unlink {
+            background: none;
+            border: 1px solid var(--error-light);
+            color: var(--error);
+            padding: 0.3rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .btn-unlink:hover {
+            background: #FFEBEE;
+        }
+
+        .linked-info {
+            font-size: 0.72rem;
+            color: var(--info);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Today's Scoreboard Section */
+        .today-scoreboard {
+            margin-bottom: 1.5rem;
+        }
+
+        .scoreboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            color: white;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .scoreboard-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scoreboard-body {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            padding: 1rem;
+        }
+
+        .scoreboard-body.expanded {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .scoreboard-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.6rem;
+        }
+
+        .sb-game-card {
+            padding: 0.65rem 0.85rem;
+            background: var(--bg-stripe);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--border-medium);
+            font-size: 0.82rem;
+        }
+
+        .sb-game-card.sb-live {
+            border-left-color: #C62828;
+            background: #FFF8F8;
+        }
+
+        .sb-game-card.sb-final {
+            border-left-color: var(--success);
+            background: #F1F8E9;
+        }
+
+        .sb-game-card.sb-pre {
+            border-left-color: var(--warning);
+        }
+
+        .sb-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .sb-team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sb-team-name {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .sb-team-name.sb-winner {
+            color: var(--success);
+        }
+
+        .sb-seed {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-right: 0.3rem;
+            font-weight: 400;
+        }
+
+        .sb-score {
+            font-weight: 700;
+            font-size: 0.95rem;
+            min-width: 28px;
+            text-align: right;
+        }
+
+        .sb-status {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .sb-no-games {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .scoreboard-refresh-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .scoreboard-refresh-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ============================================
            RESULTS TAB
            ============================================ */
 
@@ -1669,6 +2038,10 @@
             <i class="fas fa-cog"></i>
             Config
         </button>
+        <button class="tab-btn" data-tab="rules">
+            <i class="fas fa-book"></i>
+            Rules
+        </button>
     </nav>
 
     <!-- Tab: Grid -->
@@ -1803,6 +2176,150 @@
         <div id="results-content"></div>
     </div>
 
+    <!-- Tab: Rules -->
+    <div id="tab-rules" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-book"></i>
+            <h2>Rules & Payouts</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-basketball" style="color:var(--primary);margin-right:0.5rem;"></i>NCAA Men's Basketball Tournament Squares Pool</span>
+            </div>
+            <div style="padding:1.25rem;line-height:1.8;font-size:0.9rem;color:var(--text-dark);">
+                <p>There is a <strong>100-square grid</strong> &mdash; each square will be sold for <strong>$25</strong>, making a total pot of <strong>$2,000.00</strong> for the main board.</p>
+                <p style="margin-top:0.75rem;">After all the squares have been sold, the numbers will be randomly assigned. The additional <strong>$500.00</strong> will be used for the <strong>*inverse numbers board</strong>.</p>
+                <p style="margin-top:0.75rem;">The same numbers will be used for the <strong>FINAL 63 GAMES</strong> in the tournament for the main board. The inverse of your numbers will be used for the <strong>FINAL 31 GAMES</strong> in the tournament for the *inverse board.</p>
+                <ul style="margin:0.75rem 0 0.75rem 1.5rem;">
+                    <li>For the <strong>main board</strong>: the Round of 64 thru the National Championship. The 4 First Round games will not be used.</li>
+                    <li>For the <strong>inverse board</strong>: the Regional Semifinals thru the National Championship. The 4 First Round games and the Round of 64 and Round of 32 will not be used.</li>
+                </ul>
+                <p>The last digits of the <strong>final score</strong> of each game will be used to determine the winning squares.</p>
+                <p style="margin-top:0.5rem;">The numbers across the top of the grid will represent the <strong>WINNING</strong> teams. The numbers down the left side of the grid will represent the <strong>LOSING</strong> teams.</p>
+            </div>
+        </div>
+
+        <div class="card mt-2">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-dollar-sign" style="color:var(--success);margin-right:0.5rem;"></i>Main Board Payouts</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="config-table" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Round</th>
+                            <th>Payout</th>
+                            <th>Games</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Round of 64</td>
+                            <td style="text-align:center;">$10.00 / game</td>
+                            <td style="text-align:center;">32</td>
+                            <td style="text-align:center;font-weight:700;">$320.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Round of 32</td>
+                            <td style="text-align:center;">$30.00 / game</td>
+                            <td style="text-align:center;">16</td>
+                            <td style="text-align:center;font-weight:700;">$480.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Regional Semifinals (Sweet 16)</td>
+                            <td style="text-align:center;">$50.00 / game</td>
+                            <td style="text-align:center;">8</td>
+                            <td style="text-align:center;font-weight:700;">$400.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Regional Finals (Elite Eight)</td>
+                            <td style="text-align:center;">$75.00 / game</td>
+                            <td style="text-align:center;">4</td>
+                            <td style="text-align:center;font-weight:700;">$300.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">National Semifinals (Final Four)</td>
+                            <td style="text-align:center;">$100.00 / game</td>
+                            <td style="text-align:center;">2</td>
+                            <td style="text-align:center;font-weight:700;">$200.00</td>
+                        </tr>
+                        <tr style="background:var(--bg-hover);">
+                            <td style="text-align:left;font-weight:700;color:var(--primary);">National Championship</td>
+                            <td style="text-align:center;font-weight:700;color:var(--primary);">$300.00 / game</td>
+                            <td style="text-align:center;">1</td>
+                            <td style="text-align:center;font-weight:700;color:var(--primary);">$300.00</td>
+                        </tr>
+                        <tr style="border-top:2px solid var(--secondary);">
+                            <td colspan="3" style="text-align:right;font-weight:700;padding-right:1rem;">Total Main Board</td>
+                            <td style="text-align:center;font-weight:900;font-size:1.05rem;color:var(--success);">$2,000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mt-2">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-arrows-rotate" style="color:var(--info);margin-right:0.5rem;"></i>Inverse Board Payouts</span>
+            </div>
+            <div style="padding:1rem 1.25rem 0.5rem;font-size:0.85rem;color:var(--text-medium);line-height:1.7;">
+                <p><strong>What is an inverse board?</strong> If you drew the numbers 2 and 1, and the final score of a game was 61 to 52 &mdash; you lost the main board, but you won the inverse board. If you drew numbers 2 and 2, you own both on the main and inverse board.</p>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="config-table" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Round</th>
+                            <th>Payout</th>
+                            <th>Games</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Regional Semifinals (Sweet 16)</td>
+                            <td style="text-align:center;">$20.00 / game</td>
+                            <td style="text-align:center;">8</td>
+                            <td style="text-align:center;font-weight:700;">$160.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">Regional Finals (Elite Eight)</td>
+                            <td style="text-align:center;">$30.00 / game</td>
+                            <td style="text-align:center;">4</td>
+                            <td style="text-align:center;font-weight:700;">$120.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;font-weight:600;">National Semifinals (Final Four)</td>
+                            <td style="text-align:center;">$60.00 / game</td>
+                            <td style="text-align:center;">2</td>
+                            <td style="text-align:center;font-weight:700;">$120.00</td>
+                        </tr>
+                        <tr style="background:var(--bg-hover);">
+                            <td style="text-align:left;font-weight:700;color:var(--info);">National Championship</td>
+                            <td style="text-align:center;font-weight:700;color:var(--info);">$100.00 / game</td>
+                            <td style="text-align:center;">1</td>
+                            <td style="text-align:center;font-weight:700;color:var(--info);">$100.00</td>
+                        </tr>
+                        <tr style="border-top:2px solid var(--secondary);">
+                            <td colspan="3" style="text-align:right;font-weight:700;padding-right:1rem;">Total Inverse Board</td>
+                            <td style="text-align:center;font-weight:900;font-size:1.05rem;color:var(--success);">$500.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mt-2" style="background:linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);color:white;">
+            <div style="padding:1.25rem;text-align:center;">
+                <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;opacity:0.8;margin-bottom:0.3rem;">Combined Total Pot</div>
+                <div style="font-size:2rem;font-weight:900;">$2,500.00</div>
+                <div style="font-size:0.8rem;opacity:0.7;margin-top:0.25rem;">Main Board ($2,000) + Inverse Board ($500)</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Template (reused for prompts/confirmations) -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal-content">
@@ -1856,6 +2373,11 @@
                     // Re-render results when the Results tab is shown
                     if (btn.dataset.tab === 'results' && typeof renderResults === 'function') {
                         renderResults();
+                    }
+
+                    // Refresh live scores when switching to Scores tab
+                    if (btn.dataset.tab === 'scores' && liveFeedEnabled) {
+                        fetchLiveScores();
                     }
                 });
             });
@@ -2274,6 +2796,337 @@
         // Track which round sections are expanded
         let expandedRounds = {};
 
+        // =============================================
+        // Live Score Feed
+        // =============================================
+        const ESPN_API_URL = 'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard';
+        let liveFeedEnabled = false;
+        let liveFeedInterval = null;
+        let liveScoreboardData = []; // today's scoreboard games from API (normalized)
+        let lockedGameIds = new Set(); // gameIds that have been locked in
+        let linkedGames = {}; // gameId -> ESPN apiGameId mapping
+        let scoreboardExpanded = true;
+        let lastFetchTime = null;
+
+        // Load live feed preference from localStorage
+        (function() {
+            const saved = localStorage.getItem('ncaa_live_feed_enabled');
+            if (saved === 'true') liveFeedEnabled = true;
+            const savedLocked = localStorage.getItem('ncaa_locked_games');
+            if (savedLocked) {
+                try { lockedGameIds = new Set(JSON.parse(savedLocked)); } catch(e) {}
+            }
+            const savedLinked = localStorage.getItem('ncaa_linked_games');
+            if (savedLinked) {
+                try { linkedGames = JSON.parse(savedLinked); } catch(e) {}
+            }
+        })();
+
+        function saveLiveFeedPref() {
+            localStorage.setItem('ncaa_live_feed_enabled', liveFeedEnabled);
+        }
+
+        function saveLockedGames() {
+            localStorage.setItem('ncaa_locked_games', JSON.stringify([...lockedGameIds]));
+        }
+
+        function saveLinkedGames() {
+            localStorage.setItem('ncaa_linked_games', JSON.stringify(linkedGames));
+        }
+
+        function linkGame(gameId, apiGameId) {
+            if (!apiGameId) {
+                // Unlink
+                delete linkedGames[gameId];
+                var game = gamesData[gameId - 1];
+                if (game && !lockedGameIds.has(gameId)) {
+                    game._liveState = null;
+                    game._livePeriod = '';
+                    game._liveClock = '';
+                    game._liveMessage = '';
+                    game._apiGameId = null;
+                }
+                saveLinkedGames();
+                renderScoreEntry();
+                return;
+            }
+            linkedGames[gameId] = apiGameId;
+            saveLinkedGames();
+
+            // Immediately populate from the linked game
+            var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
+            if (apiGame) {
+                var game = gamesData[gameId - 1];
+                if (game) {
+                    game.team1 = apiGame.away.name || '';
+                    game.team2 = apiGame.home.name || '';
+                    var awayScore = apiGame.away.score ? parseInt(apiGame.away.score, 10) : null;
+                    var homeScore = apiGame.home.score ? parseInt(apiGame.home.score, 10) : null;
+                    game.score1 = awayScore;
+                    game.score2 = homeScore;
+                    game._liveState = apiGame.gameState;
+                    game._livePeriod = apiGame.periodText || '';
+                    game._liveClock = apiGame.clock || '';
+                    game._liveMessage = apiGame.detail || '';
+                    game._apiGameId = apiGame.id;
+                }
+            }
+            renderScoreEntry();
+        }
+
+        function toggleLiveFeed() {
+            liveFeedEnabled = !liveFeedEnabled;
+            saveLiveFeedPref();
+            if (liveFeedEnabled) {
+                startLiveFeed();
+            } else {
+                stopLiveFeed();
+            }
+            renderScoreEntry();
+        }
+
+        function startLiveFeed() {
+            fetchLiveScores();
+            if (liveFeedInterval) clearInterval(liveFeedInterval);
+            liveFeedInterval = setInterval(fetchLiveScores, 60000); // every 60s
+        }
+
+        function stopLiveFeed() {
+            if (liveFeedInterval) {
+                clearInterval(liveFeedInterval);
+                liveFeedInterval = null;
+            }
+        }
+
+        // Normalize ESPN event into a simple game object
+        function normalizeEspnGame(event) {
+            var comp = event.competitions && event.competitions[0];
+            if (!comp) return null;
+
+            var status = comp.status || {};
+            var statusType = status.type || {};
+            // state: "pre", "in", "post"
+            var rawState = statusType.state || 'pre';
+            var gameState = rawState === 'in' ? 'live' : (rawState === 'post' ? 'final' : 'pre');
+
+            var home = null, away = null;
+            (comp.competitors || []).forEach(function(c) {
+                var obj = {
+                    name: c.team ? (c.team.shortDisplayName || c.team.displayName || c.team.abbreviation || '') : '',
+                    abbreviation: c.team ? (c.team.abbreviation || '') : '',
+                    score: c.score || null,
+                    seed: c.curatedRank ? (c.curatedRank.current <= 25 ? c.curatedRank.current : null) : null,
+                    winner: c.winner || false
+                };
+                if (c.homeAway === 'home') home = obj;
+                else away = obj;
+            });
+
+            var detail = statusType.detail || status.detail || '';
+            var clock = status.displayClock || '';
+            var period = status.period || 0;
+            var periodText = period === 1 ? '1st Half' : (period === 2 ? '2nd Half' : (period > 2 ? 'OT' : ''));
+            var network = '';
+            if (event.competitions[0].geoBroadcasts && event.competitions[0].geoBroadcasts.length > 0) {
+                network = event.competitions[0].geoBroadcasts[0].media ? event.competitions[0].geoBroadcasts[0].media.shortName : '';
+            }
+
+            var startTime = '';
+            if (event.date) {
+                try {
+                    var d = new Date(event.date);
+                    startTime = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                } catch(e) {}
+            }
+
+            return {
+                id: event.id,
+                home: home,
+                away: away,
+                gameState: gameState,
+                detail: detail,
+                clock: clock,
+                periodText: periodText,
+                network: network,
+                startTime: startTime,
+                headline: (comp.notes && comp.notes.length > 0) ? comp.notes[0].headline : ''
+            };
+        }
+
+        async function fetchLiveScores() {
+            try {
+                const response = await fetch(ESPN_API_URL);
+                const data = await response.json();
+                if (data && data.events) {
+                    liveScoreboardData = [];
+                    data.events.forEach(function(ev) {
+                        var g = normalizeEspnGame(ev);
+                        if (g) liveScoreboardData.push(g);
+                    });
+                    lastFetchTime = new Date();
+                    // Auto-populate unlocked tournament games
+                    if (liveFeedEnabled) {
+                        autoPopulateScores();
+                    }
+                    renderScoreEntry();
+                    renderTodayScoreboard();
+                }
+            } catch (error) {
+                console.error('Error fetching live scores:', error);
+                // Update UI to show error instead of spinner
+                var container = document.getElementById('today-scoreboard-container');
+                if (container) {
+                    container.innerHTML = '<div class="sb-no-games"><i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;color:var(--warning);"></i>Could not load scores. Will retry automatically.</div>';
+                }
+            }
+        }
+
+        function autoPopulateScores() {
+            // Update scores for all linked games
+            Object.keys(linkedGames).forEach(function(gameIdStr) {
+                var gameId = parseInt(gameIdStr, 10);
+                if (lockedGameIds.has(gameId)) return; // skip locked games
+
+                var apiGameId = linkedGames[gameIdStr];
+                var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
+                if (!apiGame || !apiGame.home || !apiGame.away) return;
+
+                var game = gamesData[gameId - 1];
+                if (!game) return;
+
+                game.team1 = apiGame.away.name || game.team1;
+                game.team2 = apiGame.home.name || game.team2;
+
+                var awayScore = apiGame.away.score ? parseInt(apiGame.away.score, 10) : null;
+                var homeScore = apiGame.home.score ? parseInt(apiGame.home.score, 10) : null;
+                if (awayScore !== null && homeScore !== null) {
+                    game.score1 = awayScore;
+                    game.score2 = homeScore;
+                }
+
+                game._liveState = apiGame.gameState;
+                game._livePeriod = apiGame.periodText || '';
+                game._liveClock = apiGame.clock || '';
+                game._liveMessage = apiGame.detail || '';
+                game._apiGameId = apiGame.id;
+            });
+        }
+
+        function lockInScore(id) {
+            var game = gamesData[id - 1];
+            if (!game || game.score1 === null || game.score2 === null) return;
+            if (game.score1 === game.score2) {
+                showGameStatus(id, 'Cannot lock in tied score. Wait for a final result.', 'error');
+                return;
+            }
+
+            lockedGameIds.add(id);
+            saveLockedGames();
+
+            // Save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveScore',
+                            gameId: id,
+                            team1: game.team1,
+                            team2: game.team2,
+                            score1: game.score1,
+                            score2: game.score2
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving locked score to Google Sheets:', error);
+                }
+            }
+
+            renderScoreEntry();
+            showGameStatus(id, 'Score locked in!', 'success');
+        }
+
+        function toggleScoreboard() {
+            scoreboardExpanded = !scoreboardExpanded;
+            var body = document.getElementById('scoreboard-body');
+            if (body) {
+                body.classList.toggle('expanded', scoreboardExpanded);
+            }
+            var chevron = document.getElementById('scoreboard-chevron');
+            if (chevron) {
+                chevron.style.transform = scoreboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+
+        function renderTodayScoreboard() {
+            var container = document.getElementById('today-scoreboard-container');
+            if (!container) return;
+
+            if (liveScoreboardData.length === 0) {
+                container.innerHTML = '<div class="sb-no-games"><i class="fas fa-basketball" style="margin-right:0.4rem;"></i>No games on the scoreboard right now.</div>';
+                return;
+            }
+
+            var html = '';
+            html += '<div class="scoreboard-games">';
+
+            liveScoreboardData.forEach(function(g) {
+                var state = g.gameState || 'pre';
+                var stateClass = state === 'live' ? 'sb-live' : (state === 'final' ? 'sb-final' : 'sb-pre');
+
+                html += '<div class="sb-game-card ' + stateClass + '">';
+
+                // Away team row
+                html += '<div class="sb-teams">';
+                html += '<div class="sb-team-row">';
+                html += '<span class="sb-team-name' + (state === 'final' && g.away.winner ? ' sb-winner' : '') + '">';
+                if (g.away.seed) html += '<span class="sb-seed">[' + g.away.seed + ']</span>';
+                html += escapeHtml(g.away.name || 'TBD');
+                html += '</span>';
+                html += '<span class="sb-score">' + (g.away.score || '-') + '</span>';
+                html += '</div>';
+
+                // Home team row
+                html += '<div class="sb-team-row">';
+                html += '<span class="sb-team-name' + (state === 'final' && g.home.winner ? ' sb-winner' : '') + '">';
+                if (g.home.seed) html += '<span class="sb-seed">[' + g.home.seed + ']</span>';
+                html += escapeHtml(g.home.name || 'TBD');
+                html += '</span>';
+                html += '<span class="sb-score">' + (g.home.score || '-') + '</span>';
+                html += '</div>';
+                html += '</div>';
+
+                // Headline (tournament round info)
+                if (g.headline) {
+                    html += '<div class="sb-status" style="color:var(--info);font-weight:600;margin-bottom:0.1rem;">' + escapeHtml(g.headline) + '</div>';
+                }
+
+                // Status line
+                html += '<div class="sb-status">';
+                if (state === 'live') {
+                    html += '<span class="pulse-dot-sm" style="width:6px;height:6px;border-radius:50%;background:#C62828;animation:pulse 1s infinite;display:inline-block;"></span>';
+                    html += escapeHtml(g.detail || 'LIVE');
+                } else if (state === 'final') {
+                    html += '<i class="fas fa-check-circle" style="color:var(--success);font-size:0.65rem;"></i> ' + escapeHtml(g.detail || 'FINAL');
+                } else {
+                    html += '<i class="fas fa-clock" style="font-size:0.65rem;"></i> ' + escapeHtml(g.startTime || 'TBD');
+                }
+                if (g.network) html += ' &middot; ' + escapeHtml(g.network);
+                html += '</div>';
+
+                html += '</div>';
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function refreshScoreboard() {
+            fetchLiveScores();
+        }
+
         /**
          * Renders the Score Entry tab content into #scores-container.
          * Builds collapsible round sections with game cards inside each.
@@ -2288,6 +3141,47 @@
             html += '<h2>Score Entry</h2>';
             html += '</div>';
 
+            // Live Feed Controls
+            html += '<div class="live-feed-controls">';
+            html += '<div class="live-feed-toggle-group">';
+            html += '<span class="live-feed-label"><i class="fas fa-satellite-dish" style="margin-right:0.3rem;"></i>Live Score Feed</span>';
+            html += '<label class="toggle-switch">';
+            html += '<input type="checkbox" id="live-feed-toggle" ' + (liveFeedEnabled ? 'checked' : '') + ' onchange="toggleLiveFeed()">';
+            html += '<span class="toggle-slider"></span>';
+            html += '</label>';
+            html += '</div>';
+            html += '<div class="live-feed-status' + (liveFeedEnabled ? '' : ' inactive') + '" id="live-feed-status">';
+            html += '<span class="pulse-dot"></span>';
+            if (liveFeedEnabled && lastFetchTime) {
+                html += 'Live &middot; Updated ' + lastFetchTime.toLocaleTimeString();
+            } else if (liveFeedEnabled) {
+                html += 'Connecting...';
+            } else {
+                html += 'Off &middot; Manual entry mode';
+            }
+            html += '</div>';
+            html += '</div>';
+
+            // Today's Scoreboard (always visible when live feed is on)
+            if (liveFeedEnabled) {
+                html += '<div class="today-scoreboard">';
+                html += '<div class="scoreboard-header" onclick="toggleScoreboard()">';
+                html += '<h3><i class="fas fa-tv"></i> Today\'s Scoreboard</h3>';
+                html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
+                html += '<button class="scoreboard-refresh-btn" onclick="event.stopPropagation();refreshScoreboard()"><i class="fas fa-sync-alt"></i> Refresh</button>';
+                html += '<i class="fas fa-chevron-down" id="scoreboard-chevron" style="font-size:0.8rem;transition:transform 0.3s ease;' + (scoreboardExpanded ? 'transform:rotate(180deg);' : '') + '"></i>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="scoreboard-body' + (scoreboardExpanded ? ' expanded' : '') + '" id="scoreboard-body">';
+                html += '<div id="today-scoreboard-container">';
+                if (liveScoreboardData.length === 0) {
+                    html += '<div class="sb-no-games"><i class="fas fa-spinner fa-spin" style="margin-right:0.4rem;"></i>Loading scoreboard...</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+
             // Warning if numbers not generated
             if (!numbersGenerated) {
                 html += '<div class="status-message warning mb-2">';
@@ -2299,7 +3193,9 @@
             // Build a section for each round
             ROUNDS.forEach(function(round) {
                 const roundGames = gamesData.filter(function(g) { return g.round === round.name; });
-                const completedCount = roundGames.filter(function(g) { return g.score1 !== null && g.score2 !== null; }).length;
+                const completedCount = roundGames.filter(function(g) {
+                    return lockedGameIds.has(g.gameId) || (g.score1 !== null && g.score2 !== null && !g._liveState);
+                }).length;
                 const isExpanded = expandedRounds[round.name] || false;
 
                 html += '<div class="round-section">';
@@ -2319,17 +3215,77 @@
                 html += '<div class="games-grid">';
 
                 roundGames.forEach(function(game) {
-                    const isCompleted = game.score1 !== null && game.score2 !== null;
+                    const isLocked = lockedGameIds.has(game.gameId);
+                    const hasScores = game.score1 !== null && game.score2 !== null;
+                    const isCompleted = isLocked || (hasScores && !game._liveState);
+                    const isLive = game._liveState === 'live';
+                    const isFinal = game._liveState === 'final';
 
-                    html += '<div class="game-card' + (isCompleted ? ' completed' : '') + '" id="game-card-' + game.gameId + '">';
+                    var cardClass = 'game-card';
+                    if (isLocked) cardClass += ' completed locked-in';
+                    else if (isCompleted) cardClass += ' completed';
+                    else if (isLive) cardClass += ' in-progress';
 
-                    // Game number with optional checkmark
+                    html += '<div class="' + cardClass + '" id="game-card-' + game.gameId + '">';
+
+                    // Game number with status badges
                     html += '<div class="game-number">';
-                    if (isCompleted) {
+                    if (isLocked) {
+                        html += '<i class="fas fa-lock" style="color:var(--info);margin-right:0.3rem;"></i>';
+                    } else if (isCompleted) {
                         html += '<i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem;"></i>';
                     }
                     html += 'Game ' + game.gameId;
+
+                    // Live status badge
+                    if (liveFeedEnabled && !isLocked) {
+                        if (isLive) {
+                            html += '<span class="live-badge live"><span class="pulse-dot-sm"></span>LIVE';
+                            if (game._liveClock) html += ' ' + (game._liveMessage || game._livePeriod) + ' ' + game._liveClock;
+                            html += '</span>';
+                        } else if (isFinal) {
+                            html += '<span class="live-badge final"><i class="fas fa-flag-checkered" style="font-size:0.55rem;"></i> FINAL</span>';
+                        }
+                    }
+                    if (isLocked) {
+                        html += '<span class="live-badge locked"><i class="fas fa-lock" style="font-size:0.55rem;"></i> LOCKED</span>';
+                    }
                     html += '</div>';
+
+                    // Link to Live Game dropdown (when live feed is on and game is not locked)
+                    var currentLinkedId = linkedGames[game.gameId];
+                    if (liveFeedEnabled && !isLocked && liveScoreboardData.length > 0) {
+                        // Get set of already-linked API game IDs (excluding this game's link)
+                        var usedApiIds = {};
+                        Object.keys(linkedGames).forEach(function(gid) {
+                            if (parseInt(gid, 10) !== game.gameId) usedApiIds[linkedGames[gid]] = true;
+                        });
+
+                        if (currentLinkedId) {
+                            // Show linked info with unlink button
+                            var linkedApiGame = liveScoreboardData.find(function(g) { return g.id === currentLinkedId; });
+                            var linkedLabel = linkedApiGame ? (linkedApiGame.away.name + ' vs ' + linkedApiGame.home.name) : ('Game #' + currentLinkedId);
+                            html += '<div class="link-game-row">';
+                            html += '<span class="linked-info"><i class="fas fa-link"></i> Linked: ' + escapeHtml(linkedLabel) + '</span>';
+                            html += '<button class="btn-unlink" onclick="linkGame(' + game.gameId + ', null)"><i class="fas fa-unlink"></i> Unlink</button>';
+                            html += '</div>';
+                        } else {
+                            // Show dropdown to link
+                            html += '<div class="link-game-row">';
+                            html += '<select class="link-game-select" onchange="linkGame(' + game.gameId + ', this.value)">';
+                            html += '<option value="">Link to live game...</option>';
+                            liveScoreboardData.forEach(function(sg) {
+                                if (usedApiIds[sg.id]) return; // skip already linked
+                                var label = (sg.away.name || 'TBD') + ' vs ' + (sg.home.name || 'TBD');
+                                if (sg.gameState === 'live') label += ' (LIVE)';
+                                else if (sg.gameState === 'final') label += ' (FINAL)';
+                                else label += ' (' + (sg.startTime || 'TBD') + ')';
+                                html += '<option value="' + sg.id + '">' + escapeHtml(label) + '</option>';
+                            });
+                            html += '</select>';
+                            html += '</div>';
+                        }
+                    }
 
                     // Game inputs
                     html += '<div class="game-inputs">';
@@ -2337,10 +3293,12 @@
                     // Team matchup row
                     html += '<div class="game-matchup-row">';
 
+                    var inputDisabled = (isLocked || currentLinkedId) ? ' disabled' : '';
+
                     // Team 1 group
                     html += '<div class="team-input-group">';
-                    html += '<input type="text" placeholder="Team 1" id="team1-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team1) + '">';
-                    html += '<input type="number" placeholder="Score" id="score1-' + game.gameId + '" class="score-input" min="0"' + (game.score1 !== null ? ' value="' + game.score1 + '"' : '') + '>';
+                    html += '<input type="text" placeholder="Team 1" id="team1-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team1) + '"' + inputDisabled + '>';
+                    html += '<input type="number" placeholder="Score" id="score1-' + game.gameId + '" class="score-input" min="0"' + (game.score1 !== null ? ' value="' + game.score1 + '"' : '') + inputDisabled + '>';
                     html += '</div>';
 
                     // VS separator
@@ -2348,22 +3306,44 @@
 
                     // Team 2 group
                     html += '<div class="team-input-group">';
-                    html += '<input type="text" placeholder="Team 2" id="team2-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team2) + '">';
-                    html += '<input type="number" placeholder="Score" id="score2-' + game.gameId + '" class="score-input" min="0"' + (game.score2 !== null ? ' value="' + game.score2 + '"' : '') + '>';
+                    html += '<input type="text" placeholder="Team 2" id="team2-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team2) + '"' + inputDisabled + '>';
+                    html += '<input type="number" placeholder="Score" id="score2-' + game.gameId + '" class="score-input" min="0"' + (game.score2 !== null ? ' value="' + game.score2 + '"' : '') + inputDisabled + '>';
                     html += '</div>';
 
                     html += '</div>'; // .game-matchup-row
 
-                    // Save button (own row)
-                    html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')">';
-                    html += '<i class="fas fa-check"></i> Save';
-                    html += '</button>';
+                    // Buttons row
+                    if (isLocked) {
+                        // Already locked — no buttons needed
+                    } else if (liveFeedEnabled && isFinal && hasScores && game.score1 !== game.score2) {
+                        // Final game from live feed — show Lock In button
+                        html += '<div style="display:flex;gap:0.5rem;align-items:center;">';
+                        html += '<button class="btn-lock-in" onclick="lockInScore(' + game.gameId + ')">';
+                        html += '<i class="fas fa-lock"></i> Lock In Score';
+                        html += '</button>';
+                        html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')">';
+                        html += '<i class="fas fa-check"></i> Save';
+                        html += '</button>';
+                        html += '</div>';
+                    } else if (liveFeedEnabled && isLive && hasScores) {
+                        // Live game — show live indicator, save disabled
+                        html += '<div class="live-score-display">';
+                        html += '<i class="fas fa-satellite-dish" style="margin-right:0.3rem;color:var(--warning);"></i>';
+                        html += 'Score updating live — lock in when final';
+                        html += '</div>';
+                    } else {
+                        // Manual save button
+                        html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')">';
+                        html += '<i class="fas fa-check"></i> Save';
+                        html += '</button>';
+                    }
 
                     html += '</div>'; // .game-inputs
 
-                    // Result display area (hidden until score is saved)
-                    html += '<div class="game-result" id="game-result-' + game.gameId + '" style="' + (isCompleted ? '' : 'display:none;') + '">';
-                    if (isCompleted) {
+                    // Result display area
+                    var showResult = isLocked || (isCompleted && hasScores);
+                    html += '<div class="game-result" id="game-result-' + game.gameId + '" style="' + (showResult ? '' : 'display:none;') + '">';
+                    if (showResult && hasScores && game.score1 !== game.score2) {
                         html += buildResultHtml(game);
                     }
                     html += '</div>';
@@ -2377,6 +3357,11 @@
             });
 
             container.innerHTML = html;
+
+            // Re-render scoreboard if live feed is on
+            if (liveFeedEnabled && liveScoreboardData.length > 0) {
+                renderTodayScoreboard();
+            }
         }
 
         /**
@@ -2989,6 +3974,11 @@
 
         // Start loading
         loadData();
+
+        // Start live feed if previously enabled
+        if (liveFeedEnabled) {
+            startLiveFeed();
+        }
     </script>
 </body>
 </html>
