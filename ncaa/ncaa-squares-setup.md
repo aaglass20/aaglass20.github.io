@@ -65,25 +65,23 @@ Create a new tab named "Games" with these headers and 67 data rows:
 |---|---|---|---|---|---|
 | GameID | Round | Team1 | Team2 | Score1 | Score2 |
 
-Add 67 rows with GameID 1-67, organized by round:
+Add 65 rows with GameID 1-65, organized by round:
 
-- Games 1-4: First Four
-- Games 5-36: First Round (Round of 64)
-- Games 37-52: Second Round (Round of 32)
-- Games 53-60: Sweet 16
-- Games 61-64: Elite Eight
-- Games 65-66: Final Four
-- Game 67: Championship
+- Games 1-2: First Four
+- Games 3-34: First Round (Round of 64)
+- Games 35-50: Second Round (Round of 32)
+- Games 51-58: Sweet 16
+- Games 59-62: Elite Eight
+- Games 63-64: Final Four
+- Game 65: Championship
 
 For example:
 ```
 1,First Four,,,,
 2,First Four,,,,
-3,First Four,,,,
-4,First Four,,,,
-5,First Round (Round of 64),,,,
+3,First Round (Round of 64),,,,
 ...
-67,Championship,,,,
+65,Championship,,,,
 ```
 
 Leave Team1, Team2, Score1, and Score2 columns empty.
