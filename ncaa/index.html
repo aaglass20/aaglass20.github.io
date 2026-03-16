@@ -3079,7 +3079,18 @@
                             }
                         }
                         renderGrid();
-                        setModalStatus('This square was already claimed by "' + data.grid[row][col] + '". Please refresh the page and pick another square.', 'error');
+                        setModalStatus('This square was already claimed by "' + data.grid[row][col] + '". Please refresh and pick another square.', 'error');
+                        // Replace modal buttons with a Refresh button
+                        var modalBtns = document.querySelector('.modal-buttons');
+                        if (modalBtns) {
+                            modalBtns.innerHTML =
+                                '<button class="btn btn-success" onclick="location.reload()">' +
+                                    '<i class="fas fa-sync-alt"></i> Refresh Page' +
+                                '</button>' +
+                                '<button class="btn btn-outline" onclick="closeModal()">' +
+                                    'Close' +
+                                '</button>';
+                        }
                         return;
                     }
                 } catch (error) {
