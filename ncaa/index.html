@@ -3055,7 +3055,7 @@
         /**
          * Saves the claimed square after validating name input.
          */
-        function saveClaimedSquare(row, col) {
+        async function saveClaimedSquare(row, col) {
             const input = document.getElementById('claim-name-input');
             const name = input ? input.value.trim() : '';
 
@@ -3063,6 +3063,29 @@
                 setModalStatus('Please enter a name.', 'error');
                 if (input) input.focus();
                 return;
+            }
+
+            // Re-check with Google Sheets to prevent overwriting a square claimed by someone else
+            if (SHEETS_CONFIGURED) {
+                try {
+                    setModalStatus('Checking availability...', 'info');
+                    const response = await fetch(SCRIPT_URL + '?action=getData');
+                    const data = await response.json();
+                    if (data.grid && data.grid[row] && data.grid[row][col]) {
+                        // Square was claimed by someone else since page loaded — update local data and re-render
+                        for (let r = 0; r < 10 && r < data.grid.length; r++) {
+                            for (let c = 0; c < 10 && c < data.grid[r].length; c++) {
+                                gridData[r][c] = data.grid[r][c] || '';
+                            }
+                        }
+                        renderGrid();
+                        setModalStatus('This square was already claimed by "' + data.grid[row][col] + '". Please refresh the page and pick another square.', 'error');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error checking square availability:', error);
+                    // If check fails, proceed anyway to avoid blocking offline users
+                }
             }
 
             gridData[row][col] = name;
