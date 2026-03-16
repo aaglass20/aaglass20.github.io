@@ -803,6 +803,77 @@
         }
 
         /* ============================================
+           ADMIN LOGIN
+           ============================================ */
+
+        .admin-login-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            z-index: 10;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .admin-login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .admin-login-btn.logged-in {
+            background: rgba(46, 125, 50, 0.5);
+            border-color: rgba(46, 125, 50, 0.7);
+        }
+
+        .admin-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .admin-login-form input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+        }
+
+        .admin-login-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 109, 0, 0.15);
+        }
+
+        .tab-btn.admin-only-tab {
+            display: none;
+        }
+
+        .admin-section.admin-hidden {
+            display: none;
+        }
+
+        /* Read-only scores styling */
+        .scores-readonly .team-input,
+        .scores-readonly .score-input {
+            background: var(--bg-stripe);
+            border-color: var(--border-light);
+            color: var(--text-dark);
+            cursor: default;
+        }
+
+        /* ============================================
            LIVE FEED TOGGLE & SCOREBOARD
            ============================================ */
 
@@ -2011,6 +2082,10 @@
 
     <!-- Header -->
     <header class="app-header">
+        <button class="admin-login-btn" id="admin-login-btn" onclick="handleAdminClick()">
+            <i class="fas fa-user-shield"></i>
+            <span id="admin-btn-text">Admin</span>
+        </button>
         <div class="header-content">
             <div class="header-icon">
                 <i class="fas fa-basketball"></i>
@@ -2030,11 +2105,15 @@
             <i class="fas fa-trophy"></i>
             Results
         </button>
-        <button class="tab-btn" data-tab="scores">
-            <i class="fas fa-pen-to-square"></i>
+        <button class="tab-btn" data-tab="scores-view">
+            <i class="fas fa-basketball"></i>
             Scores
         </button>
-        <button class="tab-btn" data-tab="config">
+        <button class="tab-btn admin-only-tab" data-tab="scores">
+            <i class="fas fa-pen-to-square"></i>
+            Score Admin
+        </button>
+        <button class="tab-btn admin-only-tab" data-tab="config">
             <i class="fas fa-cog"></i>
             Config
         </button>
@@ -2074,7 +2153,7 @@
         </div>
 
         <!-- Admin Section -->
-        <div class="admin-section">
+        <div class="admin-section admin-hidden" id="admin-section">
             <div class="section-header">
                 <i class="fas fa-shield-halved"></i>
                 <h2>Admin Controls</h2>
@@ -2151,7 +2230,14 @@
         </div>
     </div>
 
-    <!-- Tab: Score Entry -->
+    <!-- Tab: Scores (Read-Only View) -->
+    <div id="tab-scores-view" class="tab-content">
+        <div id="scores-view-container">
+            <!-- Rendered by renderScoresView() -->
+        </div>
+    </div>
+
+    <!-- Tab: Score Entry (Admin Only) -->
     <div id="tab-scores" class="tab-content">
         <div id="scores-container">
             <!-- Rendered by renderScoreEntry() -->
@@ -2403,6 +2489,170 @@
             const el = document.getElementById('modal-status');
             el.textContent = message;
             el.className = 'modal-status ' + (type || '');
+        }
+
+        // =============================================
+        // Admin Authentication
+        // =============================================
+        const ADMIN_PASSWORD = 'NCAA2026letsdothis';
+        let isAdmin = false;
+
+        // Check if admin session exists
+        (function() {
+            if (sessionStorage.getItem('ncaa_admin') === 'true') {
+                isAdmin = true;
+            }
+        })();
+
+        function handleAdminClick() {
+            if (isAdmin) {
+                // Logout
+                isAdmin = false;
+                sessionStorage.removeItem('ncaa_admin');
+                applyAdminState();
+                // Switch to grid tab if on admin-only tab
+                var activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab && activeTab.classList.contains('admin-only-tab')) {
+                    document.querySelector('.tab-btn[data-tab="grid"]').click();
+                }
+            } else {
+                // Show login modal
+                openModal(
+                    'Admin Login',
+                    '<div class="admin-login-form">' +
+                    '<p style="font-size:0.85rem;color:var(--text-medium);margin-bottom:0.25rem;">Enter the admin password to access score entry, configuration, and admin controls.</p>' +
+                    '<input type="password" id="admin-password-input" placeholder="Password" onkeydown="if(event.key===\'Enter\')adminLogin()">' +
+                    '</div>',
+                    '<button class="btn btn-primary" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>' +
+                    '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>'
+                );
+                setTimeout(function() {
+                    var input = document.getElementById('admin-password-input');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+
+        function adminLogin() {
+            var input = document.getElementById('admin-password-input');
+            if (!input) return;
+            if (input.value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem('ncaa_admin', 'true');
+                closeModal();
+                applyAdminState();
+            } else {
+                setModalStatus('Incorrect password.', 'error');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function applyAdminState() {
+            // Toggle admin-only tabs
+            document.querySelectorAll('.admin-only-tab').forEach(function(tab) {
+                tab.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            // Toggle admin section on grid page
+            var adminSection = document.getElementById('admin-section');
+            if (adminSection) {
+                adminSection.classList.toggle('admin-hidden', !isAdmin);
+            }
+
+            // Update login button
+            var btn = document.getElementById('admin-login-btn');
+            var btnText = document.getElementById('admin-btn-text');
+            if (btn && btnText) {
+                if (isAdmin) {
+                    btn.classList.add('logged-in');
+                    btnText.textContent = 'Logout';
+                } else {
+                    btn.classList.remove('logged-in');
+                    btnText.textContent = 'Admin';
+                }
+            }
+
+            // Re-render the read-only scores view
+            if (typeof renderScoresView === 'function') {
+                renderScoresView();
+            }
+        }
+
+        // Read-only scores view
+        function renderScoresView() {
+            var container = document.getElementById('scores-view-container');
+            if (!container) return;
+
+            var html = '';
+            html += '<div class="section-header">';
+            html += '<i class="fas fa-basketball"></i>';
+            html += '<h2>Game Scores</h2>';
+            html += '</div>';
+
+            ROUNDS.forEach(function(round) {
+                var roundGames = gamesData.filter(function(g) { return g.round === round.name; });
+                var completedCount = roundGames.filter(function(g) { return g.score1 !== null && g.score2 !== null; }).length;
+                var isExpanded = expandedRounds[round.name] || false;
+
+                html += '<div class="round-section">';
+
+                html += '<div class="round-header' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRound(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')">';
+                html += '<h3>';
+                html += '<i class="fas fa-basketball" style="font-size:0.85rem;"></i> ';
+                html += escapeHtml(round.name);
+                html += ' <span class="round-badge">' + completedCount + ' / ' + round.count + '</span>';
+                html += '</h3>';
+                html += '<i class="fas fa-chevron-down chevron"></i>';
+                html += '</div>';
+
+                html += '<div class="round-body' + (isExpanded ? ' expanded' : '') + '">';
+                html += '<div class="games-grid">';
+
+                roundGames.forEach(function(game) {
+                    var hasScores = game.score1 !== null && game.score2 !== null;
+                    var cardClass = 'game-card' + (hasScores ? ' completed' : '');
+
+                    html += '<div class="' + cardClass + '">';
+
+                    html += '<div class="game-number">';
+                    if (hasScores) {
+                        html += '<i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem;"></i>';
+                    }
+                    html += 'Game ' + game.gameId;
+                    html += '</div>';
+
+                    if (game.team1 || game.team2) {
+                        html += '<div style="font-size:0.88rem;margin-bottom:0.35rem;">';
+                        html += '<strong>' + escapeHtml(game.team1 || 'TBD') + '</strong>';
+                        if (hasScores) {
+                            html += ' <span style="font-weight:700;color:var(--secondary);">' + game.score1 + '</span>';
+                        }
+                        html += '<span class="vs-label" style="display:inline;padding:0 0.4rem;">vs</span>';
+                        html += '<strong>' + escapeHtml(game.team2 || 'TBD') + '</strong>';
+                        if (hasScores) {
+                            html += ' <span style="font-weight:700;color:var(--secondary);">' + game.score2 + '</span>';
+                        }
+                        html += '</div>';
+                    } else {
+                        html += '<div style="font-size:0.82rem;color:var(--text-light);font-style:italic;">No teams entered yet</div>';
+                    }
+
+                    if (hasScores && game.score1 !== game.score2) {
+                        html += '<div class="game-result" style="display:block;">';
+                        html += buildResultHtml(game);
+                        html += '</div>';
+                    }
+
+                    html += '</div>';
+                });
+
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+            });
+
+            container.innerHTML = html;
         }
 
         // =============================================
@@ -3371,6 +3621,7 @@
         function toggleRound(roundName) {
             expandedRounds[roundName] = !expandedRounds[roundName];
             renderScoreEntry();
+            renderScoresView();
         }
 
         /**
@@ -3876,7 +4127,9 @@
             renderGrid();
             renderConfig();
             renderScoreEntry();
+            renderScoresView();
             renderResults();
+            applyAdminState();
 
             // Update generate button state
             if (numbersGenerated) {
