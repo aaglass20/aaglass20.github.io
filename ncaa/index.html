@@ -803,6 +803,125 @@
         }
 
         /* ============================================
+           USERS / PAYMENT TRACKING
+           ============================================ */
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table td {
+            padding: 0.55rem 0.75rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .users-table .paid-yes {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .users-table .paid-no {
+            color: var(--error);
+            font-weight: 600;
+        }
+
+        .users-table .amount-owed {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .paid-toggle-btn {
+            padding: 0.3rem 0.65rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-fast);
+            font-family: var(--font-main);
+        }
+
+        .paid-toggle-btn.mark-paid {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .paid-toggle-btn.mark-paid:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        .paid-toggle-btn.mark-unpaid {
+            background: var(--error-light);
+            color: var(--error);
+        }
+
+        .paid-toggle-btn.mark-unpaid:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        .users-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .users-summary-card {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .users-summary-card .stat-value {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--secondary);
+        }
+
+        .users-summary-card .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grid cell paid checkmark */
+        .cell-claimed {
+            position: relative;
+        }
+
+        .cell-paid-check {
+            position: absolute;
+            top: 1px;
+            right: 2px;
+            font-size: 0.5rem;
+            color: var(--success);
+            line-height: 1;
+        }
+
+        /* ============================================
            ADMIN LOGIN
            ============================================ */
 
@@ -2117,6 +2236,10 @@
             <i class="fas fa-cog"></i>
             Config
         </button>
+        <button class="tab-btn admin-only-tab" data-tab="users">
+            <i class="fas fa-users"></i>
+            Users
+        </button>
         <button class="tab-btn" data-tab="rules">
             <i class="fas fa-book"></i>
             Rules
@@ -2260,6 +2383,16 @@
 
         <!-- Results content (populated by renderResults()) -->
         <div id="results-content"></div>
+    </div>
+
+    <!-- Tab: Users (Admin Only) -->
+    <div id="tab-users" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-users"></i>
+            <h2>User Payment Tracking</h2>
+        </div>
+        <div id="users-summary"></div>
+        <div id="users-table-container"></div>
     </div>
 
     <!-- Tab: Rules -->
@@ -2656,6 +2789,147 @@
         }
 
         // =============================================
+        // User Payment Tracking
+        // =============================================
+        const PRICE_PER_SQUARE = 25;
+        let paidUsers = {}; // { "Name": true/false } — keyed by lowercase name
+
+        // Load paid status from localStorage
+        (function() {
+            var saved = localStorage.getItem('ncaa_paid_users');
+            if (saved) {
+                try { paidUsers = JSON.parse(saved); } catch(e) {}
+            }
+        })();
+
+        function savePaidUsers() {
+            localStorage.setItem('ncaa_paid_users', JSON.stringify(paidUsers));
+            // Also save to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'savePaidUsers',
+                            paidUsers: paidUsers
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving paid users to Google Sheets:', error);
+                }
+            }
+        }
+
+        function togglePaid(nameKey) {
+            paidUsers[nameKey] = !paidUsers[nameKey];
+            savePaidUsers();
+            renderUsersTab();
+            renderGrid(); // update checkmarks on grid
+        }
+
+        function getUniqueUsers() {
+            var users = {};
+            for (var r = 0; r < 10; r++) {
+                for (var c = 0; c < 10; c++) {
+                    var name = gridData[r][c];
+                    if (name) {
+                        var key = name.toLowerCase().trim();
+                        if (!users[key]) {
+                            users[key] = { name: name, squares: 0, key: key };
+                        }
+                        users[key].squares++;
+                    }
+                }
+            }
+            return Object.values(users).sort(function(a, b) {
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            });
+        }
+
+        function isUserPaid(name) {
+            if (!name) return false;
+            var key = name.toLowerCase().trim();
+            return paidUsers[key] === true;
+        }
+
+        function renderUsersTab() {
+            var users = getUniqueUsers();
+            var totalUsers = users.length;
+            var totalSquares = users.reduce(function(sum, u) { return sum + u.squares; }, 0);
+            var totalOwed = totalSquares * PRICE_PER_SQUARE;
+            var totalPaid = 0;
+            var paidCount = 0;
+            users.forEach(function(u) {
+                if (paidUsers[u.key]) {
+                    totalPaid += u.squares * PRICE_PER_SQUARE;
+                    paidCount++;
+                }
+            });
+            var outstanding = totalOwed - totalPaid;
+
+            // Summary cards
+            var summaryEl = document.getElementById('users-summary');
+            if (summaryEl) {
+                var shtml = '<div class="users-summary-cards">';
+                shtml += '<div class="users-summary-card"><div class="stat-value">' + totalUsers + '</div><div class="stat-label">Users</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value">' + totalSquares + '</div><div class="stat-label">Squares</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value" style="color:var(--success);">$' + totalPaid + '</div><div class="stat-label">Collected</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value" style="color:' + (outstanding > 0 ? 'var(--error)' : 'var(--success)') + ';">$' + outstanding + '</div><div class="stat-label">Outstanding</div></div>';
+                shtml += '</div>';
+                summaryEl.innerHTML = shtml;
+            }
+
+            // Users table
+            var tableEl = document.getElementById('users-table-container');
+            if (!tableEl) return;
+
+            if (users.length === 0) {
+                tableEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-light);"><i class="fas fa-users" style="margin-right:0.4rem;"></i>No squares claimed yet. Users will appear here once squares are claimed on the grid.</div>';
+                return;
+            }
+
+            var html = '<table class="users-table">';
+            html += '<thead><tr>';
+            html += '<th>Name</th>';
+            html += '<th style="text-align:center;">Squares</th>';
+            html += '<th style="text-align:center;">Owed</th>';
+            html += '<th style="text-align:center;">Status</th>';
+            html += '<th style="text-align:center;">Action</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            users.forEach(function(u) {
+                var isPaid = paidUsers[u.key] === true;
+                var owed = u.squares * PRICE_PER_SQUARE;
+
+                html += '<tr>';
+                html += '<td style="font-weight:600;">' + escapeHtml(u.name) + '</td>';
+                html += '<td style="text-align:center;">' + u.squares + '</td>';
+                html += '<td class="amount-owed" style="text-align:center;">$' + owed + '</td>';
+                html += '<td style="text-align:center;">';
+                if (isPaid) {
+                    html += '<span class="paid-yes"><i class="fas fa-check-circle"></i> Paid</span>';
+                } else {
+                    html += '<span class="paid-no"><i class="fas fa-times-circle"></i> Unpaid</span>';
+                }
+                html += '</td>';
+                html += '<td style="text-align:center;">';
+                if (isPaid) {
+                    html += '<button class="paid-toggle-btn mark-unpaid" onclick="togglePaid(\'' + u.key.replace(/'/g, "\\'") + '\')">Mark Unpaid</button>';
+                } else {
+                    html += '<button class="paid-toggle-btn mark-paid" onclick="togglePaid(\'' + u.key.replace(/'/g, "\\'") + '\')">Mark Paid</button>';
+                }
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            tableEl.innerHTML = html;
+        }
+
+        // =============================================
         // Grid Tab - 10x10 Squares Grid
         // =============================================
 
@@ -2704,7 +2978,8 @@
                     const name = gridData[r][c];
                     if (name) {
                         claimedCount++;
-                        html += '<td class="cell-claimed">' + escapeHtml(name) + '</td>';
+                        var paidCheck = isUserPaid(name) ? '<span class="cell-paid-check"><i class="fas fa-check-circle"></i></span>' : '';
+                        html += '<td class="cell-claimed">' + paidCheck + escapeHtml(name) + '</td>';
                     } else {
                         html += '<td class="cell-unclaimed" onclick="claimSquare(' + r + ',' + c + ')"></td>';
                     }
@@ -4129,6 +4404,7 @@
             renderScoreEntry();
             renderScoresView();
             renderResults();
+            renderUsersTab();
             applyAdminState();
 
             // Update generate button state
@@ -4214,6 +4490,12 @@
                             game.score2 = (item.score2 !== null && item.score2 !== '') ? Number(item.score2) : null;
                         }
                     });
+                }
+
+                // Populate paid users
+                if (data.paidUsers && typeof data.paidUsers === 'object') {
+                    paidUsers = data.paidUsers;
+                    localStorage.setItem('ncaa_paid_users', JSON.stringify(paidUsers));
                 }
 
                 renderAll();

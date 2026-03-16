@@ -44,7 +44,20 @@ Create a new tab named "Config" with these headers and 7 data rows:
 | Final Four | 2 | 0 | 0 |
 | Championship | 1 | 0 | 0 |
 
-### Tab 4: "Games"
+### Tab 4: "PaidUsers"
+
+Create a new tab named "PaidUsers" with this layout:
+
+| A | B |
+|---|---|
+| Name | Paid |
+
+- Column A: User name (lowercase, trimmed) — this is the key
+- Column B: TRUE or FALSE
+
+Rows will be added/updated automatically when the admin marks users as paid/unpaid.
+
+### Tab 5: "Games"
 
 Create a new tab named "Games" with these headers and 67 data rows:
 
@@ -135,12 +148,27 @@ function doGet(e) {
       });
     }
 
+    // --- Paid Users ---
+    var paidUsers = {};
+    var paidSheet = ss.getSheetByName('PaidUsers');
+    if (paidSheet) {
+      var paidData = paidSheet.getDataRange().getValues();
+      for (var p = 1; p < paidData.length; p++) {
+        var nameKey = paidData[p][0];
+        var isPaid = paidData[p][1] === true || paidData[p][1] === 'TRUE';
+        if (nameKey) {
+          paidUsers[String(nameKey)] = isPaid;
+        }
+      }
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       grid: grid,
       numbers: numbers,
       config: config,
-      games: games
+      games: games,
+      paidUsers: paidUsers
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -215,6 +243,36 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({
         success: true,
         message: 'Score saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === 'savePaidUsers') {
+      var paidSheet = ss.getSheetByName('PaidUsers');
+      if (!paidSheet) {
+        paidSheet = ss.insertSheet('PaidUsers');
+        paidSheet.getRange('A1').setValue('Name');
+        paidSheet.getRange('B1').setValue('Paid');
+      }
+
+      // Clear existing data (keep header)
+      var lastRow = paidSheet.getLastRow();
+      if (lastRow > 1) {
+        paidSheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+      }
+
+      // Write all paid users
+      var paidUsers = data.paidUsers;
+      var names = Object.keys(paidUsers);
+      var row = 2;
+      for (var p = 0; p < names.length; p++) {
+        paidSheet.getRange(row, 1).setValue(names[p]);
+        paidSheet.getRange(row, 2).setValue(paidUsers[names[p]] === true);
+        row++;
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Paid users saved'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
