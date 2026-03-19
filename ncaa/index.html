@@ -1268,9 +1268,19 @@
         }
 
         .scoreboard-games {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
             gap: 0.6rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 0.5rem;
+            scroll-snap-type: x mandatory;
+        }
+
+        .scoreboard-games .sb-game-card {
+            min-width: 260px;
+            max-width: 300px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
         }
 
         .sb-game-card {
@@ -2303,6 +2313,17 @@
         </div>
         <p class="section-subtext">Set the payout amount per game for each tournament round.</p>
 
+        <!-- Display Settings -->
+        <div class="card mb-2" style="padding:1rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:600;font-size:0.9rem;"><i class="fas fa-tv" style="color:var(--primary);margin-right:0.5rem;"></i>Show Live Scoreboard on Scores Page</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="scoreboard-visibility-toggle" onchange="toggleScoreboardVisibility()" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
         <!-- Config table -->
         <div class="config-table-wrapper">
             <table class="config-table" id="config-table">
@@ -2312,6 +2333,8 @@
                         <th>Games</th>
                         <th>$ Per Game (Normal)</th>
                         <th>$ Per Game (Inverse)</th>
+                        <th>Exclude Normal</th>
+                        <th>Exclude Inverse</th>
                     </tr>
                 </thead>
                 <tbody id="config-table-body">
@@ -2599,6 +2622,11 @@
                     if (btn.dataset.tab === 'scores' && liveFeedEnabled) {
                         fetchLiveScores();
                     }
+
+                    // Fetch live scores for public scoreboard on Scores view tab
+                    if (btn.dataset.tab === 'scores-view' && showScoreboardOnScores) {
+                        fetchLiveScores();
+                    }
                 });
             });
         })();
@@ -2723,6 +2751,26 @@
             html += '<i class="fas fa-basketball"></i>';
             html += '<h2>Game Scores</h2>';
             html += '</div>';
+
+            // Today's Scoreboard (public, read-only)
+            if (showScoreboardOnScores) {
+                html += '<div class="today-scoreboard">';
+                html += '<div class="scoreboard-header" onclick="toggleScoreboardPublic()">';
+                html += '<h3><i class="fas fa-tv"></i> Today\'s Scoreboard</h3>';
+                html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
+                html += '<button class="scoreboard-refresh-btn" onclick="event.stopPropagation();refreshPublicScoreboard()"><i class="fas fa-sync-alt"></i> Refresh</button>';
+                html += '<i class="fas fa-chevron-down" id="scoreboard-chevron-public" style="font-size:0.8rem;transition:transform 0.3s ease;' + (scoreboardPublicExpanded ? 'transform:rotate(180deg);' : '') + '"></i>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="scoreboard-body' + (scoreboardPublicExpanded ? ' expanded' : '') + '" id="scoreboard-body-public">';
+                html += '<div id="today-scoreboard-container-public">';
+                if (liveScoreboardData.length === 0) {
+                    html += '<div class="sb-no-games"><i class="fas fa-spinner fa-spin" style="margin-right:0.4rem;"></i>Loading scoreboard...</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
 
             ROUNDS.forEach(function(round) {
                 var roundGames = gamesData.filter(function(g) { return g.round === round.name; });
@@ -3180,14 +3228,21 @@
 
         // Config data model
         const configData = [
-            { round: 'First Four', gamesCount: 4, amount: 0, inverseAmount: 0 },
-            { round: 'First Round (Round of 64)', gamesCount: 32, amount: 0, inverseAmount: 0 },
-            { round: 'Second Round (Round of 32)', gamesCount: 16, amount: 0, inverseAmount: 0 },
-            { round: 'Sweet 16', gamesCount: 8, amount: 0, inverseAmount: 0 },
-            { round: 'Elite Eight', gamesCount: 4, amount: 0, inverseAmount: 0 },
-            { round: 'Final Four', gamesCount: 2, amount: 0, inverseAmount: 0 },
-            { round: 'Championship', gamesCount: 1, amount: 0, inverseAmount: 0 }
+            { round: 'First Four', gamesCount: 4, amount: 0, inverseAmount: 0, excludeNormal: true, excludeInverse: true },
+            { round: 'First Round (Round of 64)', gamesCount: 32, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: true },
+            { round: 'Second Round (Round of 32)', gamesCount: 16, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: true },
+            { round: 'Sweet 16', gamesCount: 8, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: false },
+            { round: 'Elite Eight', gamesCount: 4, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: false },
+            { round: 'Final Four', gamesCount: 2, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: false },
+            { round: 'Championship', gamesCount: 1, amount: 0, inverseAmount: 0, excludeNormal: false, excludeInverse: false }
         ];
+
+        // Scoreboard visibility setting (persisted to localStorage)
+        let showScoreboardOnScores = true;
+        (function() {
+            var saved = localStorage.getItem('ncaa_show_scoreboard');
+            if (saved === 'false') showScoreboardOnScores = false;
+        })();
 
         /**
          * Renders the configuration table rows into #config-table-body.
@@ -3215,6 +3270,14 @@
                 html += 'oninput="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)" ';
                 html += 'onchange="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)">';
                 html += '</td>';
+                html += '<td style="text-align:center;">';
+                html += '<input type="checkbox" ' + (item.excludeNormal ? 'checked' : '') + ' ';
+                html += 'onchange="toggleRoundExclusion(' + index + ', \'excludeNormal\', this.checked)">';
+                html += '</td>';
+                html += '<td style="text-align:center;">';
+                html += '<input type="checkbox" ' + (item.excludeInverse ? 'checked' : '') + ' ';
+                html += 'onchange="toggleRoundExclusion(' + index + ', \'excludeInverse\', this.checked)">';
+                html += '</td>';
                 html += '</tr>';
             });
 
@@ -3225,6 +3288,7 @@
             html += '<td>' + configData.reduce(function(sum, item) { return sum + item.gamesCount; }, 0) + '</td>';
             html += '<td id="config-total-normal-cell">$' + totals.totalNormal + '</td>';
             html += '<td id="config-total-inverse-cell">$' + totals.totalInverse + '</td>';
+            html += '<td colspan="2"></td>';
             html += '</tr>';
 
             tbody.innerHTML = html;
@@ -3233,6 +3297,10 @@
             document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
             document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
             document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+
+            // Update scoreboard visibility toggle
+            var sbToggle = document.getElementById('scoreboard-visibility-toggle');
+            if (sbToggle) sbToggle.checked = showScoreboardOnScores;
         }
 
         /**
@@ -3257,6 +3325,56 @@
             document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
             document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
             document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+        }
+
+        function toggleRoundExclusion(index, field, checked) {
+            configData[index][field] = checked;
+            saveRoundExclusions();
+        }
+
+        function saveRoundExclusions() {
+            var exclusions = configData.map(function(item) {
+                return { excludeNormal: item.excludeNormal, excludeInverse: item.excludeInverse };
+            });
+            localStorage.setItem('ncaa_round_exclusions', JSON.stringify(exclusions));
+            // Also save to Google Sheets with config
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveExclusions',
+                            exclusions: exclusions
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving exclusions:', error);
+                }
+            }
+        }
+
+        // Load round exclusions from localStorage
+        (function() {
+            var saved = localStorage.getItem('ncaa_round_exclusions');
+            if (saved) {
+                try {
+                    var exclusions = JSON.parse(saved);
+                    exclusions.forEach(function(ex, index) {
+                        if (index < configData.length) {
+                            configData[index].excludeNormal = !!ex.excludeNormal;
+                            configData[index].excludeInverse = !!ex.excludeInverse;
+                        }
+                    });
+                } catch(e) {}
+            }
+        })();
+
+        function toggleScoreboardVisibility() {
+            showScoreboardOnScores = !showScoreboardOnScores;
+            localStorage.setItem('ncaa_show_scoreboard', showScoreboardOnScores);
+            renderScoresView();
         }
 
         /**
@@ -3300,7 +3418,9 @@
                                 return {
                                     round: item.round,
                                     amount: item.amount,
-                                    inverseAmount: item.inverseAmount
+                                    inverseAmount: item.inverseAmount,
+                                    excludeNormal: item.excludeNormal,
+                                    excludeInverse: item.excludeInverse
                                 };
                             })
                         })
@@ -3309,6 +3429,9 @@
                     console.error('Error saving config to Google Sheets:', error);
                 }
             }
+
+            // Also persist exclusions locally
+            saveRoundExclusions();
 
             const statusEl = document.getElementById('config-status');
             statusEl.innerHTML =
@@ -3366,6 +3489,7 @@
         let lockedGameIds = new Set(); // gameIds that have been locked in
         let linkedGames = {}; // gameId -> ESPN apiGameId mapping
         let scoreboardExpanded = true;
+        let scoreboardPublicExpanded = true;
         let lastFetchTime = null;
 
         // Load live feed preference from localStorage
@@ -3533,11 +3657,11 @@
                 }
             } catch (error) {
                 console.error('Error fetching live scores:', error);
-                // Update UI to show error instead of spinner
+                var errHtml = '<div class="sb-no-games"><i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;color:var(--warning);"></i>Could not load scores. Will retry automatically.</div>';
                 var container = document.getElementById('today-scoreboard-container');
-                if (container) {
-                    container.innerHTML = '<div class="sb-no-games"><i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;color:var(--warning);"></i>Could not load scores. Will retry automatically.</div>';
-                }
+                if (container) container.innerHTML = errHtml;
+                var publicContainer = document.getElementById('today-scoreboard-container-public');
+                if (publicContainer) publicContainer.innerHTML = errHtml;
             }
         }
 
@@ -3620,13 +3744,25 @@
             }
         }
 
-        function renderTodayScoreboard() {
-            var container = document.getElementById('today-scoreboard-container');
-            if (!container) return;
+        function toggleScoreboardPublic() {
+            scoreboardPublicExpanded = !scoreboardPublicExpanded;
+            var body = document.getElementById('scoreboard-body-public');
+            if (body) {
+                body.classList.toggle('expanded', scoreboardPublicExpanded);
+            }
+            var chevron = document.getElementById('scoreboard-chevron-public');
+            if (chevron) {
+                chevron.style.transform = scoreboardPublicExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
 
+        function refreshPublicScoreboard() {
+            fetchLiveScores();
+        }
+
+        function buildScoreboardHtml() {
             if (liveScoreboardData.length === 0) {
-                container.innerHTML = '<div class="sb-no-games"><i class="fas fa-basketball" style="margin-right:0.4rem;"></i>No games on the scoreboard right now.</div>';
-                return;
+                return '<div class="sb-no-games"><i class="fas fa-basketball" style="margin-right:0.4rem;"></i>No games on the scoreboard right now.</div>';
             }
 
             var html = '';
@@ -3680,7 +3816,23 @@
             });
 
             html += '</div>';
-            container.innerHTML = html;
+            return html;
+        }
+
+        function renderTodayScoreboard() {
+            var scoreboardHtml = buildScoreboardHtml();
+
+            // Admin scoreboard container
+            var container = document.getElementById('today-scoreboard-container');
+            if (container) {
+                container.innerHTML = scoreboardHtml;
+            }
+
+            // Public scoreboard container (on Scores tab)
+            var publicContainer = document.getElementById('today-scoreboard-container-public');
+            if (publicContainer) {
+                publicContainer.innerHTML = scoreboardHtml;
+            }
         }
 
         function refreshScoreboard() {
@@ -4195,6 +4347,11 @@
          * and computes winner/loser digits, square owners, and payouts.
          * @returns {Array} Array of result objects
          */
+        function getRoundExclusion(roundName) {
+            var cfg = configData.find(function(c) { return c.round === roundName; });
+            return cfg ? { excludeNormal: cfg.excludeNormal, excludeInverse: cfg.excludeInverse } : { excludeNormal: false, excludeInverse: false };
+        }
+
         function computeResults() {
             const results = [];
 
@@ -4202,9 +4359,9 @@
                 // Only include completed games
                 if (game.score1 === null || game.score2 === null) return;
 
+                const exclusion = getRoundExclusion(game.round);
                 const isTeam1Winner = game.score1 > game.score2;
                 const winnerTeam = isTeam1Winner ? game.team1 : game.team2;
-                const loserTeam = isTeam1Winner ? game.team2 : game.team1;
                 const winnerScore = isTeam1Winner ? game.score1 : game.score2;
                 const loserScore = isTeam1Winner ? game.score2 : game.score1;
                 const winnerDigit = winnerScore % 10;
@@ -4212,17 +4369,17 @@
 
                 // Normal square: row=winnerDigit, col=loserDigit
                 const normalOwner = getSquareOwner(winnerDigit, loserDigit);
-                const normalPayout = getPayoutForRound(game.round, false);
+                const normalPayout = exclusion.excludeNormal ? 0 : getPayoutForRound(game.round, false);
 
                 // Inverse square: row=loserDigit, col=winnerDigit
                 const inverseOwner = getSquareOwner(loserDigit, winnerDigit);
-                const inversePayout = getPayoutForRound(game.round, true);
+                const inversePayout = exclusion.excludeInverse ? 0 : getPayoutForRound(game.round, true);
 
                 results.push({
                     gameId: game.gameId,
                     round: game.round,
                     winnerTeam: winnerTeam,
-                    loserTeam: loserTeam,
+                    loserTeam: isTeam1Winner ? game.team2 : game.team1,
                     winnerScore: winnerScore,
                     loserScore: loserScore,
                     winnerDigit: winnerDigit,
@@ -4230,7 +4387,9 @@
                     normalOwner: normalOwner.name,
                     normalPayout: normalPayout,
                     inverseOwner: inverseOwner.name,
-                    inversePayout: inversePayout
+                    inversePayout: inversePayout,
+                    excludeNormal: exclusion.excludeNormal,
+                    excludeInverse: exclusion.excludeInverse
                 });
             });
 
@@ -4248,8 +4407,8 @@
             const map = {};
 
             results.forEach(function(r) {
-                // Normal wins
-                if (mode === 'normal' || mode === 'combined') {
+                // Normal wins (skip if this round is excluded from normal)
+                if ((mode === 'normal' || mode === 'combined') && !r.excludeNormal) {
                     const name = (r.normalOwner || '').trim();
                     if (name && name !== '(unclaimed)' && name !== 'Numbers not generated' && name !== '(error)') {
                         const key = name.toLowerCase();
@@ -4261,8 +4420,8 @@
                     }
                 }
 
-                // Inverse wins
-                if (mode === 'inverse' || mode === 'combined') {
+                // Inverse wins (skip if this round is excluded from inverse)
+                if ((mode === 'inverse' || mode === 'combined') && !r.excludeInverse) {
                     const name = (r.inverseOwner || '').trim();
                     if (name && name !== '(unclaimed)' && name !== 'Numbers not generated' && name !== '(error)') {
                         const key = name.toLowerCase();
@@ -4358,7 +4517,15 @@
             html += '</tr></thead>';
             html += '<tbody>';
 
-            results.forEach(function(r) {
+            // Filter results based on mode exclusions
+            var filteredResults = results.filter(function(r) {
+                if (resultsMode === 'normal') return !r.excludeNormal;
+                if (resultsMode === 'inverse') return !r.excludeInverse;
+                // combined: show if included in at least one pool
+                return !r.excludeNormal || !r.excludeInverse;
+            });
+
+            filteredResults.forEach(function(r) {
                 html += '<tr>';
                 html += '<td>' + escapeHtml(r.round) + '</td>';
                 html += '<td class="text-center">' + r.gameId + '</td>';
@@ -4368,10 +4535,10 @@
                 html += '<td class="text-center">' + r.loserDigit + '</td>';
 
                 if (resultsMode === 'combined') {
-                    html += '<td>' + escapeHtml(r.normalOwner) + '</td>';
-                    html += '<td class="payout-cell">$' + r.normalPayout + '</td>';
-                    html += '<td>' + escapeHtml(r.inverseOwner) + '</td>';
-                    html += '<td class="payout-cell">$' + r.inversePayout + '</td>';
+                    html += '<td>' + (r.excludeNormal ? '<span style="color:var(--text-light);font-style:italic;">N/A</span>' : escapeHtml(r.normalOwner)) + '</td>';
+                    html += '<td class="payout-cell">' + (r.excludeNormal ? '-' : '$' + r.normalPayout) + '</td>';
+                    html += '<td>' + (r.excludeInverse ? '<span style="color:var(--text-light);font-style:italic;">N/A</span>' : escapeHtml(r.inverseOwner)) + '</td>';
+                    html += '<td class="payout-cell">' + (r.excludeInverse ? '-' : '$' + r.inversePayout) + '</td>';
                 } else if (resultsMode === 'normal') {
                     html += '<td>' + escapeHtml(r.normalOwner) + '</td>';
                     html += '<td class="payout-cell">$' + r.normalPayout + '</td>';
@@ -4510,6 +4677,8 @@
                         if (index < configData.length) {
                             configData[index].amount = item.amount || 0;
                             configData[index].inverseAmount = item.inverseAmount || 0;
+                            if (item.excludeNormal !== undefined) configData[index].excludeNormal = !!item.excludeNormal;
+                            if (item.excludeInverse !== undefined) configData[index].excludeInverse = !!item.excludeInverse;
                         }
                     });
                 }
@@ -4545,9 +4714,11 @@
         // Start loading
         loadData();
 
-        // Start live feed if previously enabled
+        // Start live feed if previously enabled, or fetch once for public scoreboard
         if (liveFeedEnabled) {
             startLiveFeed();
+        } else if (showScoreboardOnScores) {
+            fetchLiveScores();
         }
     </script>
 </body>

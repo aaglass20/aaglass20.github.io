@@ -33,16 +33,20 @@ Create a new tab named "Numbers" with this layout:
 
 Create a new tab named "Config" with these headers and 7 data rows:
 
-| A | B | C | D |
-|---|---|---|---|
-| Round | GamesCount | Amount | InverseAmount |
-| First Four | 4 | 0 | 0 |
-| First Round (Round of 64) | 32 | 0 | 0 |
-| Second Round (Round of 32) | 16 | 0 | 0 |
-| Sweet 16 | 8 | 0 | 0 |
-| Elite Eight | 4 | 0 | 0 |
-| Final Four | 2 | 0 | 0 |
-| Championship | 1 | 0 | 0 |
+| A | B | C | D | E | F |
+|---|---|---|---|---|---|
+| Round | GamesCount | Amount | InverseAmount | ExcludeNormal | ExcludeInverse |
+| First Four | 4 | 0 | 0 | TRUE | TRUE |
+| First Round (Round of 64) | 32 | 0 | 0 | FALSE | TRUE |
+| Second Round (Round of 32) | 16 | 0 | 0 | FALSE | TRUE |
+| Sweet 16 | 8 | 0 | 0 | FALSE | FALSE |
+| Elite Eight | 4 | 0 | 0 | FALSE | FALSE |
+| Final Four | 2 | 0 | 0 | FALSE | FALSE |
+| Championship | 1 | 0 | 0 | FALSE | FALSE |
+
+- **ExcludeNormal** (column E): TRUE/FALSE — when TRUE, this round's games are excluded from the Normal pool results
+- **ExcludeInverse** (column F): TRUE/FALSE — when TRUE, this round's games are excluded from the Inverse pool results
+- Default exclusions match tournament rules: First Four excluded from both pools; Round of 64 and Round of 32 excluded from inverse pool only
 
 ### Tab 4: "PaidUsers"
 
@@ -65,23 +69,25 @@ Create a new tab named "Games" with these headers and 67 data rows:
 |---|---|---|---|---|---|
 | GameID | Round | Team1 | Team2 | Score1 | Score2 |
 
-Add 65 rows with GameID 1-65, organized by round:
+Add 67 rows with GameID 1-67, organized by round:
 
-- Games 1-2: First Four
-- Games 3-34: First Round (Round of 64)
-- Games 35-50: Second Round (Round of 32)
-- Games 51-58: Sweet 16
-- Games 59-62: Elite Eight
-- Games 63-64: Final Four
-- Game 65: Championship
+- Games 1-4: First Four
+- Games 5-36: First Round (Round of 64)
+- Games 37-52: Second Round (Round of 32)
+- Games 53-60: Sweet 16
+- Games 61-64: Elite Eight
+- Games 65-66: Final Four
+- Game 67: Championship
 
 For example:
 ```
 1,First Four,,,,
 2,First Four,,,,
-3,First Round (Round of 64),,,,
+3,First Four,,,,
+4,First Four,,,,
+5,First Round (Round of 64),,,,
 ...
-65,Championship,,,,
+67,Championship,,,,
 ```
 
 Leave Team1, Team2, Score1, and Score2 columns empty.
@@ -127,7 +133,9 @@ function doGet(e) {
         round: configData[i][0],
         gamesCount: configData[i][1],
         amount: configData[i][2] || 0,
-        inverseAmount: configData[i][3] || 0
+        inverseAmount: configData[i][3] || 0,
+        excludeNormal: configData[i][4] === true || configData[i][4] === 'TRUE',
+        excludeInverse: configData[i][5] === true || configData[i][5] === 'TRUE'
       });
     }
 
@@ -212,14 +220,32 @@ function doPost(e) {
       var rounds = data.rounds;
       for (var i = 0; i < rounds.length; i++) {
         // Amount is column C (3), InverseAmount is column D (4)
+        // ExcludeNormal is column E (5), ExcludeInverse is column F (6)
         // Row is i + 2 (1-based + header row)
         configSheet.getRange(i + 2, 3).setValue(rounds[i].amount);
         configSheet.getRange(i + 2, 4).setValue(rounds[i].inverseAmount);
+        configSheet.getRange(i + 2, 5).setValue(rounds[i].excludeNormal === true);
+        configSheet.getRange(i + 2, 6).setValue(rounds[i].excludeInverse === true);
       }
 
       return ContentService.createTextOutput(JSON.stringify({
         success: true,
         message: 'Config saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === 'saveExclusions') {
+      const configSheet = ss.getSheetByName('Config');
+      var exclusions = data.exclusions;
+      for (var i = 0; i < exclusions.length; i++) {
+        // ExcludeNormal is column E (5), ExcludeInverse is column F (6)
+        configSheet.getRange(i + 2, 5).setValue(exclusions[i].excludeNormal === true);
+        configSheet.getRange(i + 2, 6).setValue(exclusions[i].excludeInverse === true);
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Exclusions saved'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
