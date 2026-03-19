@@ -52,14 +52,15 @@ Create a new tab named "Config" with these headers and 7 data rows:
 
 Create a new tab named "PaidUsers" with this layout:
 
-| A | B |
-|---|---|
-| Name | Paid |
+| A | B | C |
+|---|---|---|
+| Name | Paid | Notes |
 
 - Column A: User name (lowercase, trimmed) — this is the key
 - Column B: TRUE or FALSE
+- Column C: Free-text notes (e.g. "paid by John", "Venmo", "owes for 2 squares")
 
-Rows will be added/updated automatically when the admin marks users as paid/unpaid.
+Rows will be added/updated automatically when the admin marks users as paid/unpaid or edits notes.
 
 ### Tab 5: "Games"
 
@@ -156,14 +157,17 @@ function doGet(e) {
 
     // --- Paid Users ---
     var paidUsers = {};
+    var userNotes = {};
     var paidSheet = ss.getSheetByName('PaidUsers');
     if (paidSheet) {
       var paidData = paidSheet.getDataRange().getValues();
       for (var p = 1; p < paidData.length; p++) {
         var nameKey = paidData[p][0];
         var isPaid = paidData[p][1] === true || paidData[p][1] === 'TRUE';
+        var note = paidData[p][2] || '';
         if (nameKey) {
           paidUsers[String(nameKey)] = isPaid;
+          if (note) userNotes[String(nameKey)] = String(note);
         }
       }
     }
@@ -174,7 +178,8 @@ function doGet(e) {
       numbers: numbers,
       config: config,
       games: games,
-      paidUsers: paidUsers
+      paidUsers: paidUsers,
+      userNotes: userNotes
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -276,21 +281,28 @@ function doPost(e) {
         paidSheet = ss.insertSheet('PaidUsers');
         paidSheet.getRange('A1').setValue('Name');
         paidSheet.getRange('B1').setValue('Paid');
+        paidSheet.getRange('C1').setValue('Notes');
       }
 
       // Clear existing data (keep header)
       var lastRow = paidSheet.getLastRow();
       if (lastRow > 1) {
-        paidSheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+        paidSheet.getRange(2, 1, lastRow - 1, 3).clearContent();
       }
 
-      // Write all paid users
+      // Write all paid users and notes
       var paidUsers = data.paidUsers;
+      var userNotes = data.userNotes || {};
       var names = Object.keys(paidUsers);
+      // Also include any names that only have notes
+      Object.keys(userNotes).forEach(function(n) {
+        if (names.indexOf(n) === -1) names.push(n);
+      });
       var row = 2;
       for (var p = 0; p < names.length; p++) {
         paidSheet.getRange(row, 1).setValue(names[p]);
         paidSheet.getRange(row, 2).setValue(paidUsers[names[p]] === true);
+        paidSheet.getRange(row, 3).setValue(userNotes[names[p]] || '');
         row++;
       }
 

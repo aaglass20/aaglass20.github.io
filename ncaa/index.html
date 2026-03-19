@@ -907,6 +907,26 @@
             letter-spacing: 0.5px;
         }
 
+        .user-note-input {
+            width: 100%;
+            min-width: 150px;
+            padding: 0.3rem 0.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            background: var(--bg-stripe);
+            transition: var(--transition-fast);
+        }
+
+        .user-note-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 2px rgba(255, 109, 0, 0.15);
+        }
+
         /* Grid cell paid checkmark */
         .cell-claimed {
             position: relative;
@@ -2842,17 +2862,23 @@
         // =============================================
         const PRICE_PER_SQUARE = 25;
         let paidUsers = {}; // { "Name": true/false } — keyed by lowercase name
+        let userNotes = {}; // { "Name": "note text" } — keyed by lowercase name
 
-        // Load paid status from localStorage
+        // Load paid status and notes from localStorage
         (function() {
             var saved = localStorage.getItem('ncaa_paid_users');
             if (saved) {
                 try { paidUsers = JSON.parse(saved); } catch(e) {}
             }
+            var savedNotes = localStorage.getItem('ncaa_user_notes');
+            if (savedNotes) {
+                try { userNotes = JSON.parse(savedNotes); } catch(e) {}
+            }
         })();
 
         function savePaidUsers() {
             localStorage.setItem('ncaa_paid_users', JSON.stringify(paidUsers));
+            localStorage.setItem('ncaa_user_notes', JSON.stringify(userNotes));
             // Also save to Google Sheets
             if (SHEETS_CONFIGURED) {
                 try {
@@ -2862,13 +2888,19 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'savePaidUsers',
-                            paidUsers: paidUsers
+                            paidUsers: paidUsers,
+                            userNotes: userNotes
                         })
                     });
                 } catch (error) {
                     console.error('Error saving paid users to Google Sheets:', error);
                 }
             }
+        }
+
+        function saveUserNote(nameKey, value) {
+            userNotes[nameKey] = value;
+            savePaidUsers();
         }
 
         function togglePaid(nameKey) {
@@ -2946,12 +2978,14 @@
             html += '<th style="text-align:center;">Owed</th>';
             html += '<th style="text-align:center;">Status</th>';
             html += '<th style="text-align:center;">Action</th>';
+            html += '<th>Notes</th>';
             html += '</tr></thead>';
             html += '<tbody>';
 
             users.forEach(function(u) {
                 var isPaid = paidUsers[u.key] === true;
                 var owed = u.squares * PRICE_PER_SQUARE;
+                var note = userNotes[u.key] || '';
 
                 html += '<tr>';
                 html += '<td style="font-weight:600;">' + escapeHtml(u.name) + '</td>';
@@ -2970,6 +3004,11 @@
                 } else {
                     html += '<button class="paid-toggle-btn mark-paid" onclick="togglePaid(\'' + u.key.replace(/'/g, "\\'") + '\')">Mark Paid</button>';
                 }
+                html += '</td>';
+                html += '<td>';
+                html += '<input type="text" class="user-note-input" value="' + escapeHtml(note) + '" ';
+                html += 'placeholder="e.g. paid by John, Venmo, etc." ';
+                html += 'onchange="saveUserNote(\'' + u.key.replace(/'/g, "\\'") + '\', this.value)">';
                 html += '</td>';
                 html += '</tr>';
             });
@@ -4700,6 +4739,12 @@
                 if (data.paidUsers && typeof data.paidUsers === 'object') {
                     paidUsers = data.paidUsers;
                     localStorage.setItem('ncaa_paid_users', JSON.stringify(paidUsers));
+                }
+
+                // Populate user notes
+                if (data.userNotes && typeof data.userNotes === 'object') {
+                    userNotes = data.userNotes;
+                    localStorage.setItem('ncaa_user_notes', JSON.stringify(userNotes));
                 }
 
                 renderAll();
