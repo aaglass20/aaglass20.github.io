@@ -62,7 +62,20 @@ Create a new tab named "PaidUsers" with this layout:
 
 Rows will be added/updated automatically when the admin marks users as paid/unpaid or edits notes.
 
-### Tab 5: "Games"
+### Tab 5: "LinkedGames"
+
+Create a new tab named "LinkedGames" with this layout:
+
+| A | B |
+|---|---|
+| GameID | ApiGameID |
+
+- Column A: Tournament game ID (1-67)
+- Column B: ESPN API game ID that is linked to this tournament game
+
+Rows will be added/updated automatically when the admin links a tournament game to an ESPN live game. This tab enables linked game selections to persist across devices.
+
+### Tab 6: "Games"
 
 Create a new tab named "Games" with these headers and 67 data rows:
 
@@ -155,6 +168,20 @@ function doGet(e) {
       });
     }
 
+    // --- Linked Games ---
+    var linkedGames = {};
+    var linkedSheet = ss.getSheetByName('LinkedGames');
+    if (linkedSheet && linkedSheet.getLastRow() > 1) {
+      var linkedData = linkedSheet.getDataRange().getValues();
+      for (var lg = 1; lg < linkedData.length; lg++) {
+        var gid = linkedData[lg][0];
+        var apiId = linkedData[lg][1];
+        if (gid && apiId) {
+          linkedGames[String(gid)] = String(apiId);
+        }
+      }
+    }
+
     // --- Paid Users ---
     var paidUsers = {};
     var userNotes = {};
@@ -178,6 +205,7 @@ function doGet(e) {
       numbers: numbers,
       config: config,
       games: games,
+      linkedGames: linkedGames,
       paidUsers: paidUsers,
       userNotes: userNotes
     })).setMimeType(ContentService.MimeType.JSON);
@@ -309,6 +337,36 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({
         success: true,
         message: 'Paid users saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === 'saveLinkedGames') {
+      var linkedSheet = ss.getSheetByName('LinkedGames');
+      if (!linkedSheet) {
+        linkedSheet = ss.insertSheet('LinkedGames');
+        linkedSheet.getRange('A1').setValue('GameID');
+        linkedSheet.getRange('B1').setValue('ApiGameID');
+      }
+
+      // Clear existing data (keep header)
+      var lastRow = linkedSheet.getLastRow();
+      if (lastRow > 1) {
+        linkedSheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+      }
+
+      // Write all linked games
+      var lgData = data.linkedGames || {};
+      var gameIds = Object.keys(lgData);
+      var row = 2;
+      for (var lg = 0; lg < gameIds.length; lg++) {
+        linkedSheet.getRange(row, 1).setValue(Number(gameIds[lg]));
+        linkedSheet.getRange(row, 2).setValue(lgData[gameIds[lg]]);
+        row++;
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Linked games saved'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 

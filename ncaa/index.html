@@ -4019,6 +4019,15 @@
 
         function saveLinkedGames() {
             localStorage.setItem('ncaa_linked_games', JSON.stringify(linkedGames));
+            // Persist to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'saveLinkedGames', linkedGames: linkedGames })
+                    });
+                } catch(e) { console.error('Error saving linked games to Sheets:', e); }
+            }
         }
 
         function linkGame(gameId, apiGameId) {
@@ -5240,6 +5249,12 @@
                             game.score2 = (item.score2 !== null && item.score2 !== '') ? Number(item.score2) : null;
                         }
                     });
+                }
+
+                // Populate linked games from Sheets (overrides localStorage)
+                if (data.linkedGames && typeof data.linkedGames === 'object') {
+                    linkedGames = data.linkedGames;
+                    localStorage.setItem('ncaa_linked_games', JSON.stringify(linkedGames));
                 }
 
                 // Populate paid users
