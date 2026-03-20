@@ -4015,6 +4015,15 @@
 
         function saveLockedGames() {
             localStorage.setItem('ncaa_locked_games', JSON.stringify([...lockedGameIds]));
+            // Persist to Google Sheets
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'saveLockedGames', lockedGameIds: [...lockedGameIds] })
+                    });
+                } catch(e) { console.error('Error saving locked games to Sheets:', e); }
+            }
         }
 
         function saveLinkedGames() {
@@ -5255,6 +5264,12 @@
                 if (data.linkedGames && typeof data.linkedGames === 'object') {
                     linkedGames = data.linkedGames;
                     localStorage.setItem('ncaa_linked_games', JSON.stringify(linkedGames));
+                }
+
+                // Populate locked games from Sheets (overrides localStorage)
+                if (data.lockedGameIds && Array.isArray(data.lockedGameIds)) {
+                    lockedGameIds = new Set(data.lockedGameIds);
+                    localStorage.setItem('ncaa_locked_games', JSON.stringify([...lockedGameIds]));
                 }
 
                 // Populate paid users

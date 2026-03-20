@@ -75,7 +75,19 @@ Create a new tab named "LinkedGames" with this layout:
 
 Rows will be added/updated automatically when the admin links a tournament game to an ESPN live game. This tab enables linked game selections to persist across devices.
 
-### Tab 6: "Games"
+### Tab 6: "LockedGames"
+
+Create a new tab named "LockedGames" with this layout:
+
+| A |
+|---|
+| GameID |
+
+- Column A: Tournament game ID (1-67) of a locked-in game
+
+Rows will be added/updated automatically when the admin locks in a game score. This tab enables locked game state to persist across devices.
+
+### Tab 7: "Games"
 
 Create a new tab named "Games" with these headers and 67 data rows:
 
@@ -182,6 +194,18 @@ function doGet(e) {
       }
     }
 
+    // --- Locked Games ---
+    var lockedGameIds = [];
+    var lockedSheet = ss.getSheetByName('LockedGames');
+    if (lockedSheet && lockedSheet.getLastRow() > 1) {
+      var lockedData = lockedSheet.getDataRange().getValues();
+      for (var lk = 1; lk < lockedData.length; lk++) {
+        if (lockedData[lk][0]) {
+          lockedGameIds.push(Number(lockedData[lk][0]));
+        }
+      }
+    }
+
     // --- Paid Users ---
     var paidUsers = {};
     var userNotes = {};
@@ -206,6 +230,7 @@ function doGet(e) {
       config: config,
       games: games,
       linkedGames: linkedGames,
+      lockedGameIds: lockedGameIds,
       paidUsers: paidUsers,
       userNotes: userNotes
     })).setMimeType(ContentService.MimeType.JSON);
@@ -337,6 +362,31 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({
         success: true,
         message: 'Paid users saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (data.action === 'saveLockedGames') {
+      var lockedSheet = ss.getSheetByName('LockedGames');
+      if (!lockedSheet) {
+        lockedSheet = ss.insertSheet('LockedGames');
+        lockedSheet.getRange('A1').setValue('GameID');
+      }
+
+      // Clear existing data (keep header)
+      var lastRow = lockedSheet.getLastRow();
+      if (lastRow > 1) {
+        lockedSheet.getRange(2, 1, lastRow - 1, 1).clearContent();
+      }
+
+      // Write all locked game IDs
+      var ids = data.lockedGameIds || [];
+      for (var lk = 0; lk < ids.length; lk++) {
+        lockedSheet.getRange(lk + 2, 1).setValue(Number(ids[lk]));
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Locked games saved'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
