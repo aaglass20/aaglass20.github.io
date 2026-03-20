@@ -2466,6 +2466,10 @@
             <i class="fas fa-th"></i>
             Grid
         </button>
+        <button class="tab-btn" data-tab="leaderboard">
+            <i class="fas fa-ranking-star"></i>
+            Leaderboard
+        </button>
         <button class="tab-btn" data-tab="results">
             <i class="fas fa-trophy"></i>
             Results
@@ -2566,6 +2570,24 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Tab: Leaderboard -->
+    <div id="tab-leaderboard" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-ranking-star"></i>
+            <h2>Leaderboard</h2>
+        </div>
+
+        <!-- Sub-tab navigation -->
+        <div class="results-subtabs">
+            <button class="btn btn-sm leaderboard-subtab active" data-leaderboard-mode="normal" onclick="switchLeaderboardMode('normal')">Normal</button>
+            <button class="btn btn-sm leaderboard-subtab" data-leaderboard-mode="inverse" onclick="switchLeaderboardMode('inverse')">Inverse</button>
+            <button class="btn btn-sm leaderboard-subtab" data-leaderboard-mode="combined" onclick="switchLeaderboardMode('combined')">Combined</button>
+        </div>
+
+        <!-- Leaderboard content -->
+        <div id="leaderboard-content"></div>
     </div>
 
     <!-- Tab: Configuration -->
@@ -4953,29 +4975,10 @@
             let html = '';
 
             // --- Summary Stats ---
-            const leaderboard = computeLeaderboard(results, resultsMode);
-            let totalPaidOut = 0;
-            leaderboard.forEach(function(entry) { totalPaidOut += entry.totalWinnings; });
-
-            var totalPoolUsers = getUniqueUsers().length;
-            var winnerPct = totalPoolUsers > 0 ? Math.round((leaderboard.length / totalPoolUsers) * 100) : 0;
-
             html += '<div class="results-summary">';
             html += '<div class="summary-stat">';
             html += '<div class="stat-value">' + results.length + '</div>';
             html += '<div class="stat-label">Games Completed</div>';
-            html += '</div>';
-            html += '<div class="summary-stat">';
-            html += '<div class="stat-value">' + leaderboard.length + '</div>';
-            html += '<div class="stat-label">Unique Winners</div>';
-            html += '</div>';
-            html += '<div class="summary-stat">';
-            html += '<div class="stat-value">$' + totalPaidOut + '</div>';
-            html += '<div class="stat-label">Total Paid Out</div>';
-            html += '</div>';
-            html += '<div class="summary-stat">';
-            html += '<div class="stat-value">' + winnerPct + '%</div>';
-            html += '<div class="stat-label">% of Pool Winners</div>';
             html += '</div>';
             html += '</div>';
 
@@ -5044,12 +5047,65 @@
             html += '</div>'; // .results-table-wrapper
             html += '</div>'; // .card
 
-            // --- Leaderboard ---
-            html += '<div class="card">';
-            html += '<div class="results-section-title">';
-            html += '<i class="fas fa-ranking-star"></i> Leaderboard';
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // Leaderboard Tab
+        // =============================================
+        let leaderboardMode = 'normal';
+
+        function switchLeaderboardMode(mode) {
+            leaderboardMode = mode;
+            document.querySelectorAll('.leaderboard-subtab').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-leaderboard-mode') === mode);
+            });
+            renderLeaderboardTab();
+        }
+
+        function renderLeaderboardTab() {
+            const container = document.getElementById('leaderboard-content');
+            if (!container) return;
+
+            const results = computeResults();
+
+            if (results.length === 0) {
+                container.innerHTML =
+                    '<div class="results-empty">' +
+                        '<i class="fas fa-ranking-star"></i>' +
+                        '<p>No games completed yet</p>' +
+                        '<p class="results-empty-sub">Results will appear here once games have been scored.</p>' +
+                    '</div>';
+                return;
+            }
+
+            const leaderboard = computeLeaderboard(results, leaderboardMode);
+            let totalPaidOut = 0;
+            leaderboard.forEach(function(entry) { totalPaidOut += entry.totalWinnings; });
+
+            var totalPoolUsers = getUniqueUsers().length;
+            var winnerPct = totalPoolUsers > 0 ? Math.round((leaderboard.length / totalPoolUsers) * 100) : 0;
+
+            let html = '';
+
+            // Summary stats
+            html += '<div class="results-summary">';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">' + leaderboard.length + '</div>';
+            html += '<div class="stat-label">Unique Winners</div>';
+            html += '</div>';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">$' + totalPaidOut + '</div>';
+            html += '<div class="stat-label">Total Paid Out</div>';
+            html += '</div>';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">' + winnerPct + '%</div>';
+            html += '<div class="stat-label">% of Pool Winners</div>';
+            html += '</div>';
             html += '</div>';
 
+            // Leaderboard table
+            html += '<div class="card">';
             if (leaderboard.length === 0) {
                 html += '<p class="text-muted text-center" style="padding:1rem;">No winners yet (squares may be unclaimed or numbers not generated).</p>';
             } else {
@@ -5075,10 +5131,9 @@
                 });
 
                 html += '</tbody></table>';
-                html += '</div>'; // .results-table-wrapper
+                html += '</div>';
             }
-
-            html += '</div>'; // .card
+            html += '</div>';
 
             container.innerHTML = html;
         }
@@ -5096,6 +5151,7 @@
             renderScoreEntry();
             renderScoresView();
             renderResults();
+            renderLeaderboardTab();
             renderUsersTab();
             applyAdminState();
 
