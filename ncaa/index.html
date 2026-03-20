@@ -4515,6 +4515,9 @@
             let totalPaidOut = 0;
             leaderboard.forEach(function(entry) { totalPaidOut += entry.totalWinnings; });
 
+            var totalPoolUsers = getUniqueUsers().length;
+            var winnerPct = totalPoolUsers > 0 ? Math.round((leaderboard.length / totalPoolUsers) * 100) : 0;
+
             html += '<div class="results-summary">';
             html += '<div class="summary-stat">';
             html += '<div class="stat-value">' + results.length + '</div>';
@@ -4527,6 +4530,10 @@
             html += '<div class="summary-stat">';
             html += '<div class="stat-value">$' + totalPaidOut + '</div>';
             html += '<div class="stat-label">Total Paid Out</div>';
+            html += '</div>';
+            html += '<div class="summary-stat">';
+            html += '<div class="stat-value">' + winnerPct + '%</div>';
+            html += '<div class="stat-label">% of Pool Winners</div>';
             html += '</div>';
             html += '</div>';
 
