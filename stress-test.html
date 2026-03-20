@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stress Test - Glassmation</title>
+<link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+<link href="css/multiColumnTemplate.css" rel="stylesheet" type="text/css">
+<style>
+  .st-container { max-width: 1100px; margin: 0 auto; }
+  .st-header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff; padding: 30px; border-radius: 8px; margin-bottom: 25px; }
+  .st-header h1 { color: #52BAD5; font-size: 28px; margin-bottom: 5px; }
+  .st-header p { color: #aaa; margin: 0; }
+  .config-panel { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .config-panel h5 { margin-bottom: 15px; }
+  .scan-results { display: none; }
+  .scan-card { text-align: center; padding: 15px; border-radius: 8px; }
+  .scan-card h3 { font-size: 32px; margin-bottom: 2px; }
+  .scan-card p { font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+  .scan-card.inputs { background: #e3f2fd; color: #1565c0; }
+  .scan-card.buttons { background: #f3e5f5; color: #7b1fa2; }
+  .scan-card.links { background: #e8f5e9; color: #2e7d32; }
+  .scan-card.forms { background: #fff3e0; color: #ef6c00; }
+  .plan-table { font-size: 13px; margin-top: 15px; }
+  .plan-table td, .plan-table th { vertical-align: middle; }
+  .progress-section { display: none; margin-bottom: 20px; }
+  .log-output { background: #1a1a2e; color: #4caf50; font-family: monospace; font-size: 12px; padding: 15px; border-radius: 6px; max-height: 200px; overflow-y: auto; margin-top: 10px; }
+  .results-section { display: none; }
+  .summary-cards { margin-bottom: 20px; }
+  .summary-card { text-align: center; padding: 20px; border-radius: 8px; color: #fff; }
+  .summary-card h2 { font-size: 40px; margin-bottom: 0; }
+  .summary-card p { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .summary-card.total { background: #37474f; }
+  .summary-card.pass { background: #2e7d32; }
+  .summary-card.fail { background: #c62828; }
+  .summary-card.warn { background: #ef6c00; }
+  .badge-pass { background-color: #4caf50; color: #fff; }
+  .badge-fail { background-color: #f44336; color: #fff; }
+  .badge-warning { background-color: #ff9800; color: #fff; }
+  .results-table { font-size: 12px; }
+  .results-table td { vertical-align: middle; max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+  .payload-cell { font-family: monospace; word-break: break-all; font-size: 11px; }
+  .filter-btn.active { background-color: #52BAD5 !important; border-color: #52BAD5 !important; color: #fff !important; }
+  .cross-origin-msg { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .element-detail { font-family: monospace; font-size: 11px; color: #666; }
+  #test-iframe { display: none; }
+</style>
+</head>
+<body style="padding-top: 70px">
+<div class="container">
+  <header>
+    <div class="primary_header"></div>
+    <nav class="secondary_header" id="menu"></nav>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="index.html">Glassmation</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Technical</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+              <a class="dropdown-item" href="automation.html">Automation</a>
+              <a class="dropdown-item" href="data.html">Data</a>
+              <a class="dropdown-item" href="tools.html">Tooling</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="planning" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Testing</a>
+            <div class="dropdown-menu" aria-labelledby="planning">
+              <a class="dropdown-item" href="planning.html">Test Planning</a>
+              <a class="dropdown-item" href="train.html">Training & Mentoring</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="Other" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
+            <div class="dropdown-menu" aria-labelledby="Other">
+              <a class="dropdown-item" href="communication.html">Communication</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="st-container">
+    <!-- Header -->
+    <div class="st-header">
+      <h1>Page Stress Tester</h1>
+      <p>Scan a web page for interactive elements and functionally stress test every input, button, and link</p>
+    </div>
+
+    <!-- Configuration -->
+    <div class="config-panel" id="config-panel">
+      <h5>Configuration</h5>
+      <div class="form-group">
+        <label for="target-url"><strong>Target URL</strong></label>
+        <div class="input-group">
+          <input type="url" class="form-control" id="target-url" placeholder="https://example.com or a same-origin page path" value="">
+          <div class="input-group-append">
+            <button class="btn btn-primary" id="scan-btn" onclick="startScan()">Scan Page</button>
+          </div>
+        </div>
+        <small class="form-text text-muted">Same-origin pages (this site) can be tested in-browser. Cross-origin URLs require the CLI runner.</small>
+      </div>
+      <div class="form-row mt-3">
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-empty" checked>
+            <label class="custom-control-label" for="cat-empty">Empty/Whitespace</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-boundary" checked>
+            <label class="custom-control-label" for="cat-boundary">Boundary Lengths</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-special" checked>
+            <label class="custom-control-label" for="cat-special">Special Characters</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-unicode" checked>
+            <label class="custom-control-label" for="cat-unicode">Unicode</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-sql" checked>
+            <label class="custom-control-label" for="cat-sql">SQL Injection</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-xss" checked>
+            <label class="custom-control-label" for="cat-xss">XSS</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-numeric" checked>
+            <label class="custom-control-label" for="cat-numeric">Numeric</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cat-format" checked>
+            <label class="custom-control-label" for="cat-format">Format Strings</label>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <h6>Or Load a CLI Report</h6>
+      <div class="custom-file" style="max-width: 400px;">
+        <input type="file" class="custom-file-input" id="load-report" accept=".json" onchange="loadReport(this)">
+        <label class="custom-file-label" for="load-report">Choose JSON report file...</label>
+      </div>
+    </div>
+
+    <!-- Cross-origin message -->
+    <div class="cross-origin-msg" id="cross-origin-msg">
+      <h5>Cross-Origin URL Detected</h5>
+      <p>Browser security prevents testing cross-origin pages via iframe. Use the CLI runner instead:</p>
+      <pre class="bg-dark text-light p-3 rounded"><code id="cli-command">cd stress-test && npm install && node runner.js https://example.com</code></pre>
+      <button class="btn btn-sm btn-outline-secondary" onclick="copyCliCommand()">Copy Command</button>
+      <p class="mt-2 mb-0"><small>Then load the generated JSON report above to view results here.</small></p>
+    </div>
+
+    <!-- Scan Results -->
+    <div class="scan-results" id="scan-results">
+      <h5>Scan Summary</h5>
+      <div class="row mb-3">
+        <div class="col-3"><div class="scan-card inputs"><h3 id="count-inputs">0</h3><p>Inputs</p></div></div>
+        <div class="col-3"><div class="scan-card buttons"><h3 id="count-buttons">0</h3><p>Buttons</p></div></div>
+        <div class="col-3"><div class="scan-card links"><h3 id="count-links">0</h3><p>Links</p></div></div>
+        <div class="col-3"><div class="scan-card forms"><h3 id="count-forms">0</h3><p>Forms</p></div></div>
+      </div>
+
+      <h6>Test Plan</h6>
+      <table class="table table-sm plan-table" id="plan-table">
+        <thead class="thead-light">
+          <tr><th>Element</th><th>Type</th><th>Identifier</th><th>Tests to Run</th></tr>
+        </thead>
+        <tbody id="plan-body"></tbody>
+      </table>
+
+      <div class="text-center mt-3 mb-4">
+        <button class="btn btn-success btn-lg" id="run-btn" onclick="runTests()">Run All Tests</button>
+        <p class="text-muted mt-1" id="estimate-text"></p>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-section" id="progress-section">
+      <h5>Testing in Progress...</h5>
+      <div class="progress mb-2">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar" role="progressbar" style="width: 0%">0%</div>
+      </div>
+      <p class="text-muted" id="progress-text">Initializing...</p>
+      <div class="log-output" id="log-output"></div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-section" id="results-section">
+      <h5>Analysis Results</h5>
+
+      <div class="row summary-cards mb-3">
+        <div class="col-3"><div class="summary-card total"><h2 id="sum-total">0</h2><p>Total</p></div></div>
+        <div class="col-3"><div class="summary-card pass"><h2 id="sum-pass">0</h2><p>Passed</p></div></div>
+        <div class="col-3"><div class="summary-card fail"><h2 id="sum-fail">0</h2><p>Failed</p></div></div>
+        <div class="col-3"><div class="summary-card warn"><h2 id="sum-warn">0</h2><p>Warnings</p></div></div>
+      </div>
+
+      <!-- Analysis Summary -->
+      <div class="card mb-3" id="analysis-card" style="display:none;">
+        <div class="card-header"><strong>Analysis</strong></div>
+        <div class="card-body" id="analysis-body"></div>
+      </div>
+
+      <div class="mb-2">
+        <button class="btn btn-sm btn-outline-secondary filter-btn active" onclick="filterResults('all', this)">All</button>
+        <button class="btn btn-sm btn-outline-danger filter-btn" onclick="filterResults('fail', this)">Failures</button>
+        <button class="btn btn-sm btn-outline-warning filter-btn" onclick="filterResults('warning', this)">Warnings</button>
+        <button class="btn btn-sm btn-outline-success filter-btn" onclick="filterResults('pass', this)">Passed</button>
+        <span class="mx-2">|</span>
+        <button class="btn btn-sm btn-outline-info filter-btn" onclick="filterResults('input', this)">Inputs</button>
+        <button class="btn btn-sm btn-outline-info filter-btn" onclick="filterResults('button', this)">Buttons</button>
+        <button class="btn btn-sm btn-outline-info filter-btn" onclick="filterResults('link', this)">Links</button>
+      </div>
+
+      <table class="table table-sm table-striped results-table">
+        <thead class="thead-dark">
+          <tr><th>Type</th><th>Element</th><th>Category</th><th>Test</th><th>Payload</th><th>Status</th><th>Details</th></tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+
+      <div class="text-center mt-3 mb-4">
+        <button class="btn btn-outline-primary" onclick="exportReport()">Export JSON Report</button>
+      </div>
+    </div>
+
+  </div><!-- /st-container -->
+</div><!-- /container -->
+
+<iframe id="test-iframe" sandbox="allow-same-origin allow-scripts allow-forms" style="width:1280px;height:720px;position:absolute;left:-9999px;"></iframe>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap-4.3.1.js"></script>
+<script src="stress-test/payloads.js"></script>
+<script src="stress-test/stress-test.js"></script>
+</body>
+</html>

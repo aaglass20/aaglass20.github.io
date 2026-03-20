@@ -424,6 +424,153 @@
             outline-offset: -3px;
         }
 
+        /* Filter-highlighted cells */
+        .squares-grid .cell-filter-highlight {
+            outline: 3px solid var(--primary);
+            outline-offset: -3px;
+            box-shadow: inset 0 0 0 2px var(--primary), 0 0 10px rgba(255, 152, 0, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .squares-grid .cell-filter-dim {
+            opacity: 0.3;
+        }
+
+        /* Grid name filter */
+        .grid-filter {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .grid-filter-input-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .grid-filter-input-wrap input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            padding-right: 2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-family: var(--font-main);
+            background: var(--bg-main);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .grid-filter-input-wrap input:focus {
+            border-color: var(--primary);
+        }
+
+        .grid-filter-input-wrap .filter-icon {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .grid-filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.5rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: #fff;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: default;
+            white-space: nowrap;
+        }
+
+        .filter-chip .chip-remove {
+            cursor: pointer;
+            opacity: 0.8;
+            font-size: 0.7rem;
+            margin-left: 0.15rem;
+        }
+
+        .filter-chip .chip-remove:hover {
+            opacity: 1;
+        }
+
+        .filter-clear-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            cursor: pointer;
+            font-family: var(--font-main);
+            transition: var(--transition-fast);
+        }
+
+        .filter-clear-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .grid-filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .grid-filter-dropdown.show {
+            display: block;
+        }
+
+        .grid-filter-dropdown .dropdown-item {
+            padding: 0.45rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .grid-filter-dropdown .dropdown-item:hover,
+        .grid-filter-dropdown .dropdown-item.active {
+            background: var(--bg-hover);
+        }
+
+        .grid-filter-dropdown .dropdown-empty {
+            padding: 0.45rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
         /* Grid legend */
         .grid-legend {
             display: flex;
@@ -2288,6 +2435,19 @@
             <i class="fas fa-check-circle"></i> All 100 squares have been claimed! Grid is full.
         </div>
 
+        <!-- Name Filter -->
+        <div class="grid-filter">
+            <div class="grid-filter-input-wrap">
+                <input type="text" id="grid-filter-input" placeholder="Search for a name to highlight..." autocomplete="off" />
+                <i class="fas fa-search filter-icon"></i>
+                <div class="grid-filter-dropdown" id="grid-filter-dropdown"></div>
+            </div>
+            <div class="grid-filter-chips" id="grid-filter-chips"></div>
+            <button class="filter-clear-btn" id="grid-filter-clear" style="display:none;" onclick="clearGridFilter()">
+                <i class="fas fa-times"></i> Clear
+            </button>
+        </div>
+
         <!-- Grid -->
         <div class="grid-wrapper">
             <div id="grid-container"></div>
@@ -3027,6 +3187,129 @@
         let colNumbers = Array(10).fill(null);
         let numbersGenerated = false;
 
+        // Grid name filter
+        let gridFilterNames = [];
+
+        function getUniqueGridNames() {
+            const names = new Set();
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 10; c++) {
+                    if (gridData[r][c]) names.add(gridData[r][c]);
+                }
+            }
+            return Array.from(names).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        }
+
+        function renderFilterChips() {
+            const chipsEl = document.getElementById('grid-filter-chips');
+            const clearBtn = document.getElementById('grid-filter-clear');
+            if (!chipsEl) return;
+            let html = '';
+            gridFilterNames.forEach((name, i) => {
+                html += '<span class="filter-chip">' + escapeHtml(name) +
+                    ' <span class="chip-remove" onclick="removeFilterName(' + i + ')">&times;</span></span>';
+            });
+            chipsEl.innerHTML = html;
+            if (clearBtn) clearBtn.style.display = gridFilterNames.length > 0 ? '' : 'none';
+        }
+
+        function addFilterName(name) {
+            const trimmed = name.trim();
+            if (!trimmed) return;
+            if (gridFilterNames.some(n => n.toLowerCase() === trimmed.toLowerCase())) return;
+            gridFilterNames.push(trimmed);
+            renderFilterChips();
+            renderGrid();
+            const input = document.getElementById('grid-filter-input');
+            if (input) input.value = '';
+            hideFilterDropdown();
+        }
+
+        function removeFilterName(index) {
+            gridFilterNames.splice(index, 1);
+            renderFilterChips();
+            renderGrid();
+        }
+
+        function clearGridFilter() {
+            gridFilterNames = [];
+            renderFilterChips();
+            renderGrid();
+            const input = document.getElementById('grid-filter-input');
+            if (input) input.value = '';
+            hideFilterDropdown();
+        }
+
+        function showFilterDropdown(query) {
+            const dropdown = document.getElementById('grid-filter-dropdown');
+            if (!dropdown) return;
+            const allNames = getUniqueGridNames();
+            const q = (query || '').toLowerCase();
+            const filtered = allNames.filter(n =>
+                n.toLowerCase().includes(q) &&
+                !gridFilterNames.some(f => f.toLowerCase() === n.toLowerCase())
+            );
+            if (filtered.length === 0) {
+                if (q) {
+                    dropdown.innerHTML = '<div class="dropdown-empty">No matching names</div>';
+                    dropdown.classList.add('show');
+                } else {
+                    dropdown.classList.remove('show');
+                }
+                return;
+            }
+            dropdown.innerHTML = filtered.map(n =>
+                '<div class="dropdown-item" onmousedown="addFilterName(\'' + escapeHtml(n).replace(/'/g, "\\'") + '\')">' + escapeHtml(n) + '</div>'
+            ).join('');
+            dropdown.classList.add('show');
+        }
+
+        function hideFilterDropdown() {
+            const dropdown = document.getElementById('grid-filter-dropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+
+        // Initialize filter event listeners after DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterInput = document.getElementById('grid-filter-input');
+            if (!filterInput) return;
+
+            filterInput.addEventListener('input', function() {
+                showFilterDropdown(this.value);
+            });
+
+            filterInput.addEventListener('focus', function() {
+                showFilterDropdown(this.value);
+            });
+
+            filterInput.addEventListener('blur', function() {
+                // Delay to allow dropdown click
+                setTimeout(hideFilterDropdown, 200);
+            });
+
+            filterInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const q = this.value.trim().toLowerCase();
+                    const allNames = getUniqueGridNames();
+                    // Exact match or single filtered match
+                    const exact = allNames.find(n => n.toLowerCase() === q);
+                    const matches = allNames.filter(n => n.toLowerCase().includes(q));
+                    if (exact) {
+                        addFilterName(exact);
+                    } else if (matches.length === 1) {
+                        addFilterName(matches[0]);
+                    } else if (q) {
+                        addFilterName(this.value.trim());
+                    }
+                }
+                if (e.key === 'Escape') {
+                    hideFilterDropdown();
+                    this.blur();
+                }
+            });
+        });
+
         /**
          * Renders the 10x10 grid table into #grid-container.
          * Updates the claimed squares counter.
@@ -3067,9 +3350,14 @@
                     if (name) {
                         claimedCount++;
                         var paidCheck = isUserPaid(name) ? '<span class="cell-paid-check"><i class="fas fa-check-circle"></i></span>' : '';
-                        html += '<td class="cell-claimed">' + paidCheck + escapeHtml(name) + '</td>';
+                        const nameLower = name.toLowerCase();
+                        const isFiltered = gridFilterNames.length > 0;
+                        const isMatch = isFiltered && gridFilterNames.some(f => nameLower === f.toLowerCase());
+                        const filterClass = isFiltered ? (isMatch ? ' cell-filter-highlight' : ' cell-filter-dim') : '';
+                        html += '<td class="cell-claimed' + filterClass + '">' + paidCheck + escapeHtml(name) + '</td>';
                     } else {
-                        html += '<td class="cell-unclaimed" onclick="claimSquare(' + r + ',' + c + ')"></td>';
+                        const dimClass = gridFilterNames.length > 0 ? ' cell-filter-dim' : '';
+                        html += '<td class="cell-unclaimed' + dimClass + '" onclick="claimSquare(' + r + ',' + c + ')"></td>';
                     }
                 }
                 html += '</tr>';
