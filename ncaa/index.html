@@ -3441,7 +3441,10 @@
                 grouped[recipient].grandTotal += w.totalWinnings;
             });
 
-            var gKeys = Object.keys(grouped).sort(function(a, b) {
+            // Show recipients who have linked users OR have winnings
+            var gKeys = Object.keys(grouped).filter(function(key) {
+                return grouped[key].members.length > 1 || grouped[key].grandTotal > 0;
+            }).sort(function(a, b) {
                 return grouped[b].grandTotal - grouped[a].grandTotal;
             });
 
