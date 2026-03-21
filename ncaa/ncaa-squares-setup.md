@@ -87,7 +87,27 @@ Create a new tab named "LockedGames" with this layout:
 
 Rows will be added/updated automatically when the admin locks in a game score. This tab enables locked game state to persist across devices.
 
-### Tab 7: "Games"
+### Tab 7: "PayoutGroups"
+
+Create a new tab named "PayoutGroups" with this layout:
+
+| A | B |
+|---|---|
+| UserKey | PayoutRecipientKey |
+
+- Column A: User name key (lowercase, trimmed) — the person who won
+- Column B: Payout recipient key (lowercase, trimmed) — the Venmo account that receives the payout
+
+This allows grouping multiple users under a single Venmo payout recipient. For example, if "john" pays via Venmo for "jane" and "bob", rows would be:
+
+```
+jane, john
+bob, john
+```
+
+Users not listed default to paying out to themselves. Rows will be added/updated automatically when the admin assigns payout recipients on the Users tab.
+
+### Tab 8: "Games"
 
 Create a new tab named "Games" with these headers and 67 data rows:
 
@@ -223,6 +243,20 @@ function doGet(e) {
       }
     }
 
+    // --- Payout Groups ---
+    var payoutGroups = {};
+    var payoutSheet = ss.getSheetByName('PayoutGroups');
+    if (payoutSheet && payoutSheet.getLastRow() > 1) {
+      var payoutData = payoutSheet.getDataRange().getValues();
+      for (var pg = 1; pg < payoutData.length; pg++) {
+        var userKey = payoutData[pg][0];
+        var recipientKey = payoutData[pg][1];
+        if (userKey && recipientKey) {
+          payoutGroups[String(userKey)] = String(recipientKey);
+        }
+      }
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       grid: grid,
@@ -232,7 +266,8 @@ function doGet(e) {
       linkedGames: linkedGames,
       lockedGameIds: lockedGameIds,
       paidUsers: paidUsers,
-      userNotes: userNotes
+      userNotes: userNotes,
+      payoutGroups: payoutGroups
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -420,6 +455,36 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (data.action === 'savePayoutGroups') {
+      var payoutSheet = ss.getSheetByName('PayoutGroups');
+      if (!payoutSheet) {
+        payoutSheet = ss.insertSheet('PayoutGroups');
+        payoutSheet.getRange('A1').setValue('UserKey');
+        payoutSheet.getRange('B1').setValue('PayoutRecipientKey');
+      }
+
+      // Clear existing data (keep header)
+      var lastRow = payoutSheet.getLastRow();
+      if (lastRow > 1) {
+        payoutSheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+      }
+
+      // Write all payout groups
+      var pgData = data.payoutGroups || {};
+      var pgKeys = Object.keys(pgData);
+      var row = 2;
+      for (var pg = 0; pg < pgKeys.length; pg++) {
+        payoutSheet.getRange(row, 1).setValue(pgKeys[pg]);
+        payoutSheet.getRange(row, 2).setValue(pgData[pgKeys[pg]]);
+        row++;
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Payout groups saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: 'Unknown action: ' + data.action
@@ -474,6 +539,7 @@ function doPost(e) {
 5. Set config amounts and save — check the Config tab
 6. Enter a game score — check the Games tab
 7. Refresh the page — all data should persist
+8. On the Users tab, assign a payout recipient via the dropdown — check the PayoutGroups tab in the sheet
 
 ---
 

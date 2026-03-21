@@ -2701,6 +2701,14 @@
         </div>
         <div id="users-summary"></div>
         <div id="users-table-container"></div>
+
+        <div class="section-header" style="margin-top:2rem;">
+            <i class="fas fa-money-bill-wave"></i>
+            <h2>Payout Groups</h2>
+        </div>
+        <p style="color:var(--text-light);margin-bottom:1rem;">Assign each user to a Venmo payout recipient. Users linked to the same recipient will have their winnings combined into a single payout.</p>
+        <div id="payout-groups-container"></div>
+        <div id="payout-groups-summary"></div>
     </div>
 
     <!-- Tab: Rules -->
@@ -3280,6 +3288,206 @@
 
             html += '</tbody></table>';
             tableEl.innerHTML = html;
+
+            // Also render payout groups when users tab renders
+            if (typeof renderPayoutGroups === 'function') renderPayoutGroups();
+        }
+
+        // =============================================
+        // Payout Groups
+        // =============================================
+
+        let payoutGroups = {}; // { "username_key": "payout_recipient_key" }
+
+        function savePayoutGroups() {
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'savePayoutGroups',
+                            payoutGroups: payoutGroups
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving payout groups to Google Sheets:', error);
+                }
+            }
+        }
+
+        function setPayoutGroup(userKey, recipientKey) {
+            if (recipientKey === userKey || recipientKey === '') {
+                delete payoutGroups[userKey];
+            } else {
+                payoutGroups[userKey] = recipientKey;
+            }
+            savePayoutGroups();
+            renderPayoutGroups();
+        }
+
+        function getPayoutRecipient(userKey) {
+            return payoutGroups[userKey] || userKey;
+        }
+
+        /**
+         * Computes per-user normal and inverse winnings from completed game results.
+         * @returns {Object} Map of userKey -> { normalWinnings, inverseWinnings, totalWinnings }
+         */
+        function computeUserWinnings() {
+            var results = computeResults();
+            var winnings = {};
+
+            results.forEach(function(r) {
+                // Normal winnings
+                if (!r.excludeNormal && r.normalPayout > 0) {
+                    var nName = (r.normalOwner || '').trim();
+                    if (nName && nName !== '(unclaimed)' && nName !== 'Numbers not generated' && nName !== '(error)') {
+                        var nKey = nName.toLowerCase();
+                        if (!winnings[nKey]) winnings[nKey] = { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                        winnings[nKey].normalWinnings += r.normalPayout;
+                        winnings[nKey].totalWinnings += r.normalPayout;
+                    }
+                }
+                // Inverse winnings
+                if (!r.excludeInverse && r.inversePayout > 0) {
+                    var iName = (r.inverseOwner || '').trim();
+                    if (iName && iName !== '(unclaimed)' && iName !== 'Numbers not generated' && iName !== '(error)') {
+                        var iKey = iName.toLowerCase();
+                        if (!winnings[iKey]) winnings[iKey] = { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                        winnings[iKey].inverseWinnings += r.inversePayout;
+                        winnings[iKey].totalWinnings += r.inversePayout;
+                    }
+                }
+            });
+
+            return winnings;
+        }
+
+        function renderPayoutGroups() {
+            var container = document.getElementById('payout-groups-container');
+            var summaryEl = document.getElementById('payout-groups-summary');
+            if (!container) return;
+
+            var users = getUniqueUsers();
+            var winnings = computeUserWinnings();
+
+            if (users.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-light);">No users yet.</div>';
+                if (summaryEl) summaryEl.innerHTML = '';
+                return;
+            }
+
+            // Build the assignment table
+            var html = '<table class="users-table">';
+            html += '<thead><tr>';
+            html += '<th>Name</th>';
+            html += '<th style="text-align:center;">Normal $</th>';
+            html += '<th style="text-align:center;">Inverse $</th>';
+            html += '<th style="text-align:center;">Total $</th>';
+            html += '<th>Payout To</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            users.forEach(function(u) {
+                var w = winnings[u.key] || { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                var currentRecipient = getPayoutRecipient(u.key);
+
+                html += '<tr>';
+                html += '<td style="font-weight:600;">' + escapeHtml(u.name) + '</td>';
+                html += '<td style="text-align:center;">$' + w.normalWinnings + '</td>';
+                html += '<td style="text-align:center;">$' + w.inverseWinnings + '</td>';
+                html += '<td style="text-align:center;font-weight:600;">$' + w.totalWinnings + '</td>';
+                html += '<td>';
+                html += '<select class="user-note-input" onchange="setPayoutGroup(\'' + u.key.replace(/'/g, "\\'") + '\', this.value)" style="width:100%;padding:0.4rem;">';
+
+                // Option for self (default)
+                users.forEach(function(opt) {
+                    var selected = (opt.key === currentRecipient) ? ' selected' : '';
+                    html += '<option value="' + escapeHtml(opt.key) + '"' + selected + '>' + escapeHtml(opt.name) + '</option>';
+                });
+
+                html += '</select>';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            // Build grouped payout summary
+            if (!summaryEl) return;
+
+            // Group winnings by payout recipient
+            var grouped = {};
+            users.forEach(function(u) {
+                var recipient = getPayoutRecipient(u.key);
+                if (!grouped[recipient]) {
+                    // Find the display name for the recipient
+                    var recipientUser = users.find(function(x) { return x.key === recipient; });
+                    grouped[recipient] = {
+                        name: recipientUser ? recipientUser.name : recipient,
+                        members: [],
+                        normalTotal: 0,
+                        inverseTotal: 0,
+                        grandTotal: 0
+                    };
+                }
+                var w = winnings[u.key] || { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                grouped[recipient].members.push(u.name);
+                grouped[recipient].normalTotal += w.normalWinnings;
+                grouped[recipient].inverseTotal += w.inverseWinnings;
+                grouped[recipient].grandTotal += w.totalWinnings;
+            });
+
+            var gKeys = Object.keys(grouped).sort(function(a, b) {
+                return grouped[b].grandTotal - grouped[a].grandTotal;
+            });
+
+            var overallNormal = 0;
+            var overallInverse = 0;
+            var overallTotal = 0;
+
+            var shtml = '<div style="margin-top:1.5rem;">';
+            shtml += '<h3 style="margin-bottom:0.75rem;"><i class="fas fa-wallet" style="margin-right:0.4rem;"></i>Payout Summary by Recipient</h3>';
+            shtml += '<table class="users-table">';
+            shtml += '<thead><tr>';
+            shtml += '<th>Venmo Recipient</th>';
+            shtml += '<th>Linked Users</th>';
+            shtml += '<th style="text-align:center;">Normal $</th>';
+            shtml += '<th style="text-align:center;">Inverse $</th>';
+            shtml += '<th style="text-align:center;">Total Owed</th>';
+            shtml += '</tr></thead>';
+            shtml += '<tbody>';
+
+            gKeys.forEach(function(key) {
+                var g = grouped[key];
+                overallNormal += g.normalTotal;
+                overallInverse += g.inverseTotal;
+                overallTotal += g.grandTotal;
+
+                shtml += '<tr>';
+                shtml += '<td style="font-weight:600;">' + escapeHtml(g.name) + '</td>';
+                shtml += '<td>' + g.members.map(function(m) { return escapeHtml(m); }).join(', ') + '</td>';
+                shtml += '<td style="text-align:center;">$' + g.normalTotal + '</td>';
+                shtml += '<td style="text-align:center;">$' + g.inverseTotal + '</td>';
+                shtml += '<td style="text-align:center;font-weight:600;color:var(--success);">$' + g.grandTotal + '</td>';
+                shtml += '</tr>';
+            });
+
+            // Totals row
+            shtml += '<tr style="border-top:2px solid var(--border);font-weight:700;">';
+            shtml += '<td>TOTAL</td>';
+            shtml += '<td></td>';
+            shtml += '<td style="text-align:center;">$' + overallNormal + '</td>';
+            shtml += '<td style="text-align:center;">$' + overallInverse + '</td>';
+            shtml += '<td style="text-align:center;color:var(--success);">$' + overallTotal + '</td>';
+            shtml += '</tr>';
+
+            shtml += '</tbody></table>';
+            shtml += '</div>';
+            summaryEl.innerHTML = shtml;
         }
 
         // =============================================
@@ -5282,6 +5490,11 @@
                 if (data.userNotes && typeof data.userNotes === 'object') {
                     userNotes = data.userNotes;
                     localStorage.setItem('ncaa_user_notes', JSON.stringify(userNotes));
+                }
+
+                // Populate payout groups
+                if (data.payoutGroups && typeof data.payoutGroups === 'object') {
+                    payoutGroups = data.payoutGroups;
                 }
 
                 renderAll();
