@@ -785,6 +785,16 @@
       }
     }
   },
+  "pitchingInjuries": [
+    { "name": "Gerrit Cole", "note": "Top 3 in rotation" },
+    { "name": "Shane Bieber", "note": "Top 3 in rotation" },
+    { "name": "Carlos Rodon", "note": "Top 3 in rotation" },
+    { "name": "Merrill Kelly", "note": "Top 3 in rotation" },
+    { "name": "Blake Snell", "note": "Top 3 in rotation" },
+    { "name": "Brandon Woodruff", "note": "Top 3 in rotation" },
+    { "name": "Quinn Priester", "note": "Top 3 in rotation" },
+    { "name": "Zack Wheeler", "note": "Top 3 in rotation" }
+  ],
   "busts": [
     {
       "name": "Ozzie Albies",
@@ -891,5 +901,401 @@
     {
       "name": "Bryan Baker"
     }
-  ]
+  ],
+  "rotations": {
+    "Blue Jays": [
+      { "slot": 1, "name": "Dylan Cease", "hand": "RHP" },
+      { "slot": 2, "name": "Kevin Gausman", "hand": "RHP" },
+      { "slot": 3, "name": "Max Scherzer", "hand": "RHP" },
+      { "slot": 4, "name": "Cody Ponce", "hand": "RHP" },
+      { "slot": 5, "name": "Eric Lauer", "hand": "LHP" }
+    ],
+    "Orioles": [
+      { "slot": 1, "name": "Trevor Rogers", "hand": "LHP" },
+      { "slot": 2, "name": "Kyle Bradish", "hand": "RHP" },
+      { "slot": 3, "name": "Shane Baz", "hand": "RHP" },
+      { "slot": 4, "name": "Chris Bassitt", "hand": "RHP" },
+      { "slot": 5, "name": "Zach Eflin", "hand": "RHP" }
+    ],
+    "Rays": [
+      { "slot": 1, "name": "Drew Rasmussen", "hand": "RHP" },
+      { "slot": 2, "name": "Nick Martinez", "hand": "RHP" },
+      { "slot": 3, "name": "Steven Matz", "hand": "LHP" },
+      { "slot": 4, "name": "Ryan Pepiot", "hand": "RHP" },
+      { "slot": 5, "name": "Shane McClanahan", "hand": "LHP" }
+    ],
+    "Red Sox": [
+      { "slot": 1, "name": "Garrett Crochet", "hand": "LHP" },
+      { "slot": 2, "name": "Ranger Suarez", "hand": "LHP" },
+      { "slot": 3, "name": "Sonny Gray", "hand": "RHP" },
+      { "slot": 4, "name": "Brayan Bello", "hand": "RHP" },
+      { "slot": 5, "name": "Johan Oviedo", "hand": "RHP" }
+    ],
+    "Yankees": [
+      { "slot": 1, "name": "Max Fried", "hand": "LHP" },
+      { "slot": 2, "name": "Cam Schlittler", "hand": "RHP" },
+      { "slot": 3, "name": "Will Warren", "hand": "RHP" },
+      { "slot": 4, "name": "Ryan Weathers", "hand": "LHP" },
+      { "slot": 5, "name": "Luis Gil", "hand": "RHP" }
+    ],
+    "Guardians": [
+      { "slot": 1, "name": "Tanner Bibee", "hand": "RHP" },
+      { "slot": 2, "name": "Gavin Williams", "hand": "RHP" },
+      { "slot": 3, "name": "Slade Cecconi", "hand": "RHP" },
+      { "slot": 4, "name": "Joey Cantillo", "hand": "LHP" },
+      { "slot": 5, "name": "Parker Messick", "hand": "LHP" }
+    ],
+    "Royals": [
+      { "slot": 1, "name": "Cole Ragans", "hand": "LHP" },
+      { "slot": 2, "name": "Seth Lugo", "hand": "RHP" },
+      { "slot": 3, "name": "Michael Wacha", "hand": "RHP" },
+      { "slot": 4, "name": "Kris Bubic", "hand": "LHP" },
+      { "slot": 5, "name": "Noah Cameron", "hand": "LHP" }
+    ],
+    "Tigers": [
+      { "slot": 1, "name": "Tarik Skubal", "hand": "LHP" },
+      { "slot": 2, "name": "Framber Valdez", "hand": "LHP" },
+      { "slot": 3, "name": "Jack Flaherty", "hand": "RHP" },
+      { "slot": 4, "name": "Justin Verlander", "hand": "RHP" },
+      { "slot": 5, "name": "Casey Mize", "hand": "RHP" }
+    ],
+    "Twins": [
+      { "slot": 1, "name": "Joe Ryan", "hand": "RHP" },
+      { "slot": 2, "name": "Bailey Ober", "hand": "RHP" },
+      { "slot": 3, "name": "Taj Bradley", "hand": "RHP" },
+      { "slot": 4, "name": "Simeon Woods Richardson", "hand": "RHP" },
+      { "slot": 5, "name": "Mick Abel", "hand": "RHP" }
+    ],
+    "White Sox": [
+      { "slot": 1, "name": "Shane Smith", "hand": "RHP" },
+      { "slot": 2, "name": "Sean Burke", "hand": "RHP" },
+      { "slot": 3, "name": "Anthony Kay", "hand": "LHP" },
+      { "slot": 4, "name": "Davis Martin", "hand": "RHP" },
+      { "slot": 5, "name": "Erick Fedde", "hand": "RHP" }
+    ],
+    "Angels": [
+      { "slot": 1, "name": "Yusei Kikuchi", "hand": "LHP" },
+      { "slot": 2, "name": "Jose Soriano", "hand": "RHP" },
+      { "slot": 3, "name": "Reid Detmers", "hand": "LHP" },
+      { "slot": 4, "name": "Grayson Rodriguez", "hand": "RHP" },
+      { "slot": 5, "name": "Ryan Johnson", "hand": "RHP" }
+    ],
+    "Astros": [
+      { "slot": 1, "name": "Hunter Brown", "hand": "RHP" },
+      { "slot": 2, "name": "Mike Burrows", "hand": "RHP" },
+      { "slot": 3, "name": "Cristian Javier", "hand": "RHP" },
+      { "slot": 4, "name": "Tatsuya Imai", "hand": "RHP" },
+      { "slot": 5, "name": "Lance McCullers Jr.", "hand": "RHP" }
+    ],
+    "Athletics": [
+      { "slot": 1, "name": "Luis Severino", "hand": "RHP" },
+      { "slot": 2, "name": "Jeffrey Springs", "hand": "LHP" },
+      { "slot": 3, "name": "Luis Morales", "hand": "RHP" },
+      { "slot": 4, "name": "Jacob Lopez", "hand": "LHP" },
+      { "slot": 5, "name": "Aaron Civale", "hand": "RHP" }
+    ],
+    "Mariners": [
+      { "slot": 1, "name": "Logan Gilbert", "hand": "RHP" },
+      { "slot": 2, "name": "Bryan Woo", "hand": "RHP" },
+      { "slot": 3, "name": "George Kirby", "hand": "RHP" },
+      { "slot": 4, "name": "Luis Castillo", "hand": "RHP" },
+      { "slot": 5, "name": "Bryce Miller", "hand": "RHP" }
+    ],
+    "Rangers": [
+      { "slot": 1, "name": "Jacob deGrom", "hand": "RHP" },
+      { "slot": 2, "name": "Nathan Eovaldi", "hand": "RHP" },
+      { "slot": 3, "name": "MacKenzie Gore", "hand": "LHP" },
+      { "slot": 4, "name": "Jack Leiter", "hand": "RHP" },
+      { "slot": 5, "name": "Jacob Latz", "hand": "LHP" }
+    ],
+    "Braves": [
+      { "slot": 1, "name": "Chris Sale", "hand": "LHP" },
+      { "slot": 2, "name": "Spencer Strider", "hand": "RHP" },
+      { "slot": 3, "name": "Reynaldo Lopez", "hand": "RHP" },
+      { "slot": 4, "name": "Grant Holmes", "hand": "RHP" },
+      { "slot": 5, "name": "Bryce Elder", "hand": "RHP" }
+    ],
+    "Marlins": [
+      { "slot": 1, "name": "Sandy Alcantara", "hand": "RHP" },
+      { "slot": 2, "name": "Eury Perez", "hand": "RHP" },
+      { "slot": 3, "name": "Max Meyer", "hand": "RHP" },
+      { "slot": 4, "name": "Chris Paddack", "hand": "RHP" },
+      { "slot": 5, "name": "Janson Junk", "hand": "RHP" }
+    ],
+    "Mets": [
+      { "slot": 1, "name": "Freddy Peralta", "hand": "RHP" },
+      { "slot": 2, "name": "Nolan McLean", "hand": "RHP" },
+      { "slot": 3, "name": "Clay Holmes", "hand": "RHP" },
+      { "slot": 4, "name": "David Peterson", "hand": "LHP" },
+      { "slot": 5, "name": "Sean Manaea", "hand": "LHP" },
+      { "slot": 6, "name": "Kodai Senga", "hand": "RHP" }
+    ],
+    "Nationals": [
+      { "slot": 1, "name": "Cade Cavalli", "hand": "RHP" },
+      { "slot": 2, "name": "Foster Griffin", "hand": "LHP" },
+      { "slot": 3, "name": "Zack Littell", "hand": "RHP" },
+      { "slot": 4, "name": "Miles Mikolas", "hand": "RHP" },
+      { "slot": 5, "name": "Jake Irvin", "hand": "RHP" }
+    ],
+    "Phillies": [
+      { "slot": 1, "name": "Cristopher Sanchez", "hand": "LHP" },
+      { "slot": 2, "name": "Jesus Luzardo", "hand": "LHP" },
+      { "slot": 3, "name": "Aaron Nola", "hand": "RHP" },
+      { "slot": 4, "name": "Taijuan Walker", "hand": "RHP" },
+      { "slot": 5, "name": "Andrew Painter", "hand": "RHP" }
+    ],
+    "Brewers": [
+      { "slot": 1, "name": "Jacob Misiorowski", "hand": "RHP" },
+      { "slot": 2, "name": "Chad Patrick", "hand": "RHP" },
+      { "slot": 3, "name": "Brandon Sproat", "hand": "RHP" },
+      { "slot": 4, "name": "Kyle Harrison", "hand": "LHP" },
+      { "slot": 5, "name": "Brandon Woodruff", "hand": "RHP" }
+    ],
+    "Cardinals": [
+      { "slot": 1, "name": "Matthew Liberatore", "hand": "LHP" },
+      { "slot": 2, "name": "Michael McGreevy", "hand": "RHP" },
+      { "slot": 3, "name": "Dustin May", "hand": "RHP" },
+      { "slot": 4, "name": "Kyle Leahy", "hand": "RHP" },
+      { "slot": 5, "name": "Andre Pallante", "hand": "RHP" }
+    ],
+    "Cubs": [
+      { "slot": 1, "name": "Matthew Boyd", "hand": "LHP" },
+      { "slot": 2, "name": "Cade Horton", "hand": "RHP" },
+      { "slot": 3, "name": "Edward Cabrera", "hand": "RHP" },
+      { "slot": 4, "name": "Shota Imanaga", "hand": "LHP" },
+      { "slot": 5, "name": "Jameson Taillon", "hand": "RHP" }
+    ],
+    "Pirates": [
+      { "slot": 1, "name": "Paul Skenes", "hand": "RHP" },
+      { "slot": 2, "name": "Mitch Keller", "hand": "RHP" },
+      { "slot": 3, "name": "Bubba Chandler", "hand": "RHP" },
+      { "slot": 4, "name": "Braxton Ashcraft", "hand": "RHP" },
+      { "slot": 5, "name": "Jose Urquidy", "hand": "RHP" }
+    ],
+    "Reds": [
+      { "slot": 1, "name": "Andrew Abbott", "hand": "LHP" },
+      { "slot": 2, "name": "Nick Lodolo", "hand": "LHP" },
+      { "slot": 3, "name": "Brady Singer", "hand": "RHP" },
+      { "slot": 4, "name": "Rhett Lowder", "hand": "RHP" },
+      { "slot": 5, "name": "Chase Burns", "hand": "RHP" },
+      { "slot": 6, "name": "Brandon Williamson", "hand": "LHP" }
+    ],
+    "D-backs": [
+      { "slot": 1, "name": "Zac Gallen", "hand": "RHP" },
+      { "slot": 2, "name": "Ryne Nelson", "hand": "RHP" },
+      { "slot": 3, "name": "Brandon Pfaadt", "hand": "RHP" },
+      { "slot": 4, "name": "Eduardo Rodriguez", "hand": "LHP" },
+      { "slot": 5, "name": "Michael Soroka", "hand": "RHP" }
+    ],
+    "Dodgers": [
+      { "slot": 1, "name": "Yoshinobu Yamamoto", "hand": "RHP" },
+      { "slot": 2, "name": "Tyler Glasnow", "hand": "RHP" },
+      { "slot": 3, "name": "Shohei Ohtani", "hand": "RHP" },
+      { "slot": 4, "name": "Emmet Sheehan", "hand": "RHP" },
+      { "slot": 5, "name": "Roki Sasaki", "hand": "RHP" }
+    ],
+    "Giants": [
+      { "slot": 1, "name": "Logan Webb", "hand": "RHP" },
+      { "slot": 2, "name": "Robbie Ray", "hand": "LHP" },
+      { "slot": 3, "name": "Tyler Mahle", "hand": "RHP" },
+      { "slot": 4, "name": "Adrian Houser", "hand": "RHP" },
+      { "slot": 5, "name": "Landen Roupp", "hand": "RHP" }
+    ],
+    "Padres": [
+      { "slot": 1, "name": "Nick Pivetta", "hand": "RHP" },
+      { "slot": 2, "name": "Michael King", "hand": "RHP" },
+      { "slot": 3, "name": "Randy Vasquez", "hand": "RHP" },
+      { "slot": 4, "name": "German Marquez", "hand": "RHP" },
+      { "slot": 5, "name": "Walker Buehler", "hand": "RHP" }
+    ],
+    "Rockies": [
+      { "slot": 1, "name": "Kyle Freeland", "hand": "LHP" },
+      { "slot": 2, "name": "Michael Lorenzen", "hand": "RHP" },
+      { "slot": 3, "name": "Jose Quintana", "hand": "LHP" },
+      { "slot": 4, "name": "Tomoyuki Sugano", "hand": "RHP" },
+      { "slot": 5, "name": "Chase Dollander", "hand": "RHP" }
+    ]
+  },
+  "bullpens": {
+    "Angels": [
+      { "role": "Closer-by-committee", "name": "Robert Stephenson", "savesPct": 0.0 },
+      { "role": "Closer-by-committee", "name": "Kirby Yates", "savesPct": 8.8 },
+      { "role": "Closer-by-committee", "name": "Drew Pomeranz", "savesPct": 0.7 },
+      { "role": "Closer-by-committee", "name": "Jordan Romano", "savesPct": 4.1 }
+    ],
+    "Astros": [
+      { "role": "Closer", "name": "Bryan Abreu", "savesPct": 34.5 },
+      { "role": "Primary setup", "name": "Bryan King", "savesPct": 4.7 },
+      { "role": "Secondary setup", "name": "Steven Okert", "savesPct": 0.6 },
+      { "role": "Injury", "name": "Josh Hader", "savesPct": null }
+    ],
+    "Athletics": [
+      { "role": "Closer-by-committee", "name": "Hogan Harris", "savesPct": 1.1 },
+      { "role": "Closer-by-committee", "name": "Justin Sterner", "savesPct": 0.4 },
+      { "role": "Closer-by-committee", "name": "Mark Leiter Jr.", "savesPct": 0.5 },
+      { "role": "Primary setup", "name": "Michael Kelly", "savesPct": 0.2 }
+    ],
+    "Blue Jays": [
+      { "role": "Closer", "name": "Jeff Hoffman", "savesPct": 81.2 },
+      { "role": "Primary setup", "name": "Tyler Rogers", "savesPct": 10.3 },
+      { "role": "Secondary setup", "name": "Louis Varland", "savesPct": 1.5 },
+      { "role": "Middle relief", "name": "Yimi Garcia", "savesPct": 0.5 }
+    ],
+    "Braves": [
+      { "role": "Closer", "name": "Raisel Iglesias", "savesPct": 80.1 },
+      { "role": "Primary setup", "name": "Robert Suarez", "savesPct": 92.6 },
+      { "role": "Secondary setup", "name": "Dylan Lee", "savesPct": 1.3 },
+      { "role": "Middle relief", "name": "Aaron Bummer", "savesPct": 0.2 }
+    ],
+    "Brewers": [
+      { "role": "Co-closer", "name": "Abner Uribe", "savesPct": 38.3 },
+      { "role": "Co-closer", "name": "Trevor Megill", "savesPct": 57.4 },
+      { "role": "Secondary setup", "name": "Jared Koenig", "savesPct": 4.2 },
+      { "role": "Middle relief", "name": "Aaron Ashby", "savesPct": 2.1 }
+    ],
+    "Cardinals": [
+      { "role": "Closer-by-committee", "name": "Riley O'Brien", "savesPct": 1.5 },
+      { "role": "Closer-by-committee", "name": "JoJo Romero", "savesPct": 10.0 },
+      { "role": "Closer-by-committee", "name": "Matt Svanson", "savesPct": 1.0 },
+      { "role": "Middle relief", "name": "Ryne Stanek", "savesPct": 0.3 }
+    ],
+    "Cubs": [
+      { "role": "Closer", "name": "Daniel Palencia", "savesPct": 15.2 },
+      { "role": "Primary setup", "name": "Phil Maton", "savesPct": 3.7 },
+      { "role": "Secondary setup", "name": "Hunter Harvey", "savesPct": 0.3 },
+      { "role": "Sleeper", "name": "Ben Brown", "savesPct": 5.8 }
+    ],
+    "D-backs": [
+      { "role": "Co-closer", "name": "Kevin Ginkel", "savesPct": 0.3 },
+      { "role": "Co-closer", "name": "Paul Sewald", "savesPct": 0.2 },
+      { "role": "Primary setup", "name": "Ryan Thompson", "savesPct": 0.4 },
+      { "role": "Secondary setup", "name": "Kade Strowd", "savesPct": 0.1 }
+    ],
+    "Dodgers": [
+      { "role": "Closer", "name": "Edwin Diaz", "savesPct": 95.6 },
+      { "role": "Primary setup", "name": "Tanner Scott", "savesPct": 59.4 },
+      { "role": "Secondary setup", "name": "Alex Vesia", "savesPct": 7.4 },
+      { "role": "Middle relief", "name": "Blake Treinen", "savesPct": 3.3 }
+    ],
+    "Giants": [
+      { "role": "Closer", "name": "Ryan Walker", "savesPct": 63.2 },
+      { "role": "Primary setup", "name": "Erik Miller", "savesPct": 0.2 },
+      { "role": "Secondary setup", "name": "Jose Butto", "savesPct": 0.3 },
+      { "role": "Middle relief", "name": "Matt Gage", "savesPct": 0.0 }
+    ],
+    "Guardians": [
+      { "role": "Closer", "name": "Cade Smith", "savesPct": 47.3 },
+      { "role": "Primary setup", "name": "Hunter Gaddis", "savesPct": 14.2 },
+      { "role": "Secondary setup", "name": "Shawn Armstrong", "savesPct": 8.9 },
+      { "role": "Middle relief", "name": "Erik Sabrowski", "savesPct": 0.6 }
+    ],
+    "Mariners": [
+      { "role": "Closer", "name": "Andres Munoz", "savesPct": 95.3 },
+      { "role": "Primary setup", "name": "Matt Brash", "savesPct": 3.8 },
+      { "role": "Secondary setup", "name": "Jose Ferrer", "savesPct": 10.7 },
+      { "role": "Middle relief", "name": "Eduard Bazardo", "savesPct": 2.0 }
+    ],
+    "Marlins": [
+      { "role": "Closer", "name": "Pete Fairbanks", "savesPct": 40.0 },
+      { "role": "Primary setup", "name": "Calvin Faucher", "savesPct": 4.4 },
+      { "role": "Secondary setup", "name": "Tyler Phillips", "savesPct": 0.5 },
+      { "role": "Middle relief", "name": "Anthony Bender", "savesPct": 0.5 }
+    ],
+    "Mets": [
+      { "role": "Closer", "name": "Devin Williams", "savesPct": 67.9 },
+      { "role": "Primary setup", "name": "Luke Weaver", "savesPct": 27.7 },
+      { "role": "Secondary setup", "name": "Brooks Raley", "savesPct": 0.7 },
+      { "role": "Middle relief", "name": "Luis Garcia", "savesPct": 0.2 }
+    ],
+    "Nationals": [
+      { "role": "Co-closer", "name": "Clayton Beeter", "savesPct": 1.0 },
+      { "role": "Co-closer", "name": "Cole Henry", "savesPct": 0.1 },
+      { "role": "Primary setup", "name": "P.J. Poulin", "savesPct": 0.0 },
+      { "role": "Secondary setup", "name": "Jackson Rutledge", "savesPct": 0.0 }
+    ],
+    "Orioles": [
+      { "role": "Closer", "name": "Ryan Helsley", "savesPct": 67.8 },
+      { "role": "Primary setup", "name": "Andrew Kittredge", "savesPct": 9.4 },
+      { "role": "Secondary setup", "name": "Keegan Akin", "savesPct": 4.3 },
+      { "role": "Middle relief", "name": "Yennier Cano", "savesPct": 1.8 }
+    ],
+    "Padres": [
+      { "role": "Closer", "name": "Mason Miller", "savesPct": 91.2 },
+      { "role": "Primary setup", "name": "Adrian Morejon", "savesPct": 7.5 },
+      { "role": "Secondary setup", "name": "Jeremiah Estrada", "savesPct": 11.0 },
+      { "role": "Middle relief", "name": "David Morgan", "savesPct": 0.1 }
+    ],
+    "Phillies": [
+      { "role": "Closer", "name": "Jhoan Duran", "savesPct": 89.4 },
+      { "role": "Primary setup", "name": "Jose Alvarado", "savesPct": 8.4 },
+      { "role": "Secondary setup", "name": "Brad Keller", "savesPct": 8.1 },
+      { "role": "Middle relief", "name": "Orion Kerkering", "savesPct": 3.2 }
+    ],
+    "Pirates": [
+      { "role": "Closer", "name": "Dennis Santana", "savesPct": 14.6 },
+      { "role": "Primary setup", "name": "Gregory Soto", "savesPct": 0.9 },
+      { "role": "Secondary setup", "name": "Isaac Mattson", "savesPct": 0.2 },
+      { "role": "Middle relief", "name": "Justin Lawrence", "savesPct": 0.1 }
+    ],
+    "Rangers": [
+      { "role": "Closer", "name": "Robert Garcia", "savesPct": 2.8 },
+      { "role": "Primary setup", "name": "Chris Martin", "savesPct": 2.5 },
+      { "role": "Secondary setup", "name": "Cole Winn", "savesPct": 0.0 },
+      { "role": "Sleeper", "name": "Alexis Diaz", "savesPct": 19.8 }
+    ],
+    "Rays": [
+      { "role": "Closer-by-committee", "name": "Griffin Jax", "savesPct": 15.8 },
+      { "role": "Closer-by-committee", "name": "Garrett Cleavinger", "savesPct": 1.5 },
+      { "role": "Closer-by-committee", "name": "Bryan Baker", "savesPct": 0.5 },
+      { "role": "Injury", "name": "Edwin Uceta", "savesPct": null }
+    ],
+    "Red Sox": [
+      { "role": "Closer", "name": "Aroldis Chapman", "savesPct": 87.1 },
+      { "role": "Primary setup", "name": "Garrett Whitlock", "savesPct": 7.3 },
+      { "role": "Secondary setup", "name": "Justin Slaten", "savesPct": 0.4 },
+      { "role": "Middle relief", "name": "Greg Weissert", "savesPct": 0.5 }
+    ],
+    "Reds": [
+      { "role": "Closer", "name": "Emilio Pagan", "savesPct": 53.2 },
+      { "role": "Primary setup", "name": "Tony Santillan", "savesPct": 10.6 },
+      { "role": "Secondary setup", "name": "Graham Ashcraft", "savesPct": 1.0 },
+      { "role": "Middle relief", "name": "Pierce Johnson", "savesPct": 0.5 }
+    ],
+    "Rockies": [
+      { "role": "Closer", "name": "Victor Vodnik", "savesPct": 3.4 },
+      { "role": "Primary setup", "name": "Juan Mejia", "savesPct": 0.0 },
+      { "role": "Secondary setup", "name": "Jimmy Herget", "savesPct": 0.3 },
+      { "role": "Middle relief", "name": "Seth Halvorsen", "savesPct": 0.7 }
+    ],
+    "Royals": [
+      { "role": "Closer", "name": "Carlos Estevez", "savesPct": 70.9 },
+      { "role": "Primary setup", "name": "Lucas Erceg", "savesPct": 25.3 },
+      { "role": "Secondary setup", "name": "Matt Strahm", "savesPct": 6.3 },
+      { "role": "Middle relief", "name": "John Schreiber", "savesPct": 0.8 }
+    ],
+    "Tigers": [
+      { "role": "Closer", "name": "Kenley Jansen", "savesPct": 38.4 },
+      { "role": "Primary setup", "name": "Will Vest", "savesPct": 25.0 },
+      { "role": "Secondary setup", "name": "Kyle Finnegan", "savesPct": 30.0 },
+      { "role": "Middle relief", "name": "Tyler Holton", "savesPct": 2.4 }
+    ],
+    "Twins": [
+      { "role": "Closer-by-committee", "name": "Taylor Rogers", "savesPct": 0.3 },
+      { "role": "Closer-by-committee", "name": "Cole Sands", "savesPct": 0.8 },
+      { "role": "Closer-by-committee", "name": "Kody Funderburk", "savesPct": 1.5 },
+      { "role": "Closer-by-committee", "name": "Justin Topa", "savesPct": 0.3 }
+    ],
+    "White Sox": [
+      { "role": "Closer", "name": "Seranthony Dominguez", "savesPct": 1.4 },
+      { "role": "Primary setup", "name": "Jordan Leasure", "savesPct": 2.7 },
+      { "role": "Secondary setup", "name": "Grant Taylor", "savesPct": 0.9 },
+      { "role": "Middle relief", "name": "Jordan Hicks", "savesPct": 1.7 }
+    ],
+    "Yankees": [
+      { "role": "Closer", "name": "David Bednar", "savesPct": 58.8 },
+      { "role": "Primary setup", "name": "Camilo Doval", "savesPct": 14.0 },
+      { "role": "Secondary setup", "name": "Fernando Cruz", "savesPct": 3.2 },
+      { "role": "Middle relief", "name": "Tim Hill", "savesPct": 0.3 }
+    ]
+  }
 }

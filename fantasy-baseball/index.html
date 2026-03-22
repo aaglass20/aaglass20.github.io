@@ -147,6 +147,170 @@
       font-weight: 600;
     }
 
+    /* Rotation tab */
+    .rotation-controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .rotation-controls select,
+    .rotation-controls input {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.88rem;
+    }
+    .rotation-controls select:focus,
+    .rotation-controls input:focus {
+      outline: none;
+      border-color: #58a6ff;
+    }
+    .rotation-controls input { flex: 1; min-width: 200px; }
+    .rotation-team {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .rotation-team-header {
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      background: rgba(88,166,255,0.08);
+      border-bottom: 1px solid #30363d;
+    }
+    .rotation-pitcher {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #21262d;
+      font-size: 0.88rem;
+    }
+    .rotation-pitcher:last-child { border-bottom: none; }
+    .rotation-slot {
+      font-weight: 700;
+      color: #8b949e;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .rotation-name { font-weight: 600; flex: 1; }
+    .rotation-hand {
+      font-size: 0.78rem;
+      color: #8b949e;
+      width: 36px;
+      text-align: center;
+    }
+    .rotation-tier-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .rotation-pts {
+      font-size: 0.78rem;
+      color: #58a6ff;
+      font-weight: 600;
+      width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .rtier-1 { background: rgba(26,122,46,0.15); color: #3fb950; }
+    .rtier-2 { background: rgba(41,128,185,0.15); color: #58a6ff; }
+    .rtier-3 { background: rgba(142,68,173,0.15); color: #bc8cff; }
+    .rtier-4 { background: rgba(127,140,141,0.15); color: #8b949e; }
+    .rtier-5 { background: rgba(211,84,0,0.15); color: #f0883e; }
+    .rtier-6 { background: rgba(149,165,166,0.15); color: #8b949e; }
+    .rtier-7 { background: rgba(100,100,100,0.15); color: #6e7681; }
+    .rtier-none { background: rgba(50,50,50,0.15); color: #484f58; }
+
+    /* Bullpen tab */
+    .bullpen-controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .bullpen-controls select,
+    .bullpen-controls input {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.88rem;
+    }
+    .bullpen-controls select:focus,
+    .bullpen-controls input:focus {
+      outline: none;
+      border-color: #58a6ff;
+    }
+    .bullpen-controls input { flex: 1; min-width: 200px; }
+    .bullpen-team {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .bullpen-team-header {
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      background: rgba(233,69,96,0.08);
+      border-bottom: 1px solid #30363d;
+    }
+    .bullpen-pitcher {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #21262d;
+      font-size: 0.88rem;
+    }
+    .bullpen-pitcher:last-child { border-bottom: none; }
+    .bullpen-name { font-weight: 600; flex: 1; }
+    .bullpen-role-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brole-closer { background: rgba(233,69,96,0.2); color: #e94560; }
+    .brole-co-closer { background: rgba(240,136,62,0.2); color: #f0883e; }
+    .brole-committee { background: rgba(188,140,255,0.2); color: #d2a8ff; }
+    .brole-setup { background: rgba(88,166,255,0.15); color: #58a6ff; }
+    .brole-middle { background: rgba(139,148,158,0.15); color: #8b949e; }
+    .brole-sleeper { background: rgba(63,185,80,0.15); color: #3fb950; }
+    .brole-injury { background: rgba(233,69,96,0.1); color: #e94560; font-style: italic; }
+    .bullpen-saves-pct {
+      font-size: 0.82rem;
+      font-weight: 600;
+      width: 60px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .saves-high { color: #3fb950; }
+    .saves-mid { color: #f0883e; }
+    .saves-low { color: #8b949e; }
+    .bullpen-pts {
+      font-size: 0.78rem;
+      color: #58a6ff;
+      font-weight: 600;
+      width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
     .back-link {
       color: #8b949e;
       text-decoration: none;
@@ -275,139 +439,6 @@
   <script>
     const TIER_CLASSES = ['tier-1','tier-2','tier-3','tier-4','tier-5','tier-6'];
 
-    async function init() {
-      const [resp, top300Resp] = await Promise.all([
-        fetch('data.json'),
-        fetch('top300.json')
-      ]);
-      const data = await resp.json();
-      const top300 = await top300Resp.json();
-
-      document.getElementById('lastUpdated').textContent =
-        'Last updated: ' + data.lastUpdated + ' | Format: ' + data.leagueType;
-
-      const tabsEl = document.getElementById('positionTabs');
-      const contentEl = document.getElementById('positionContent');
-
-      // Add Top 300 tab first
-      const top300Li = document.createElement('li');
-      top300Li.className = 'nav-item';
-      top300Li.setAttribute('role', 'presentation');
-      top300Li.innerHTML = `<button class="nav-link active"
-        id="tab-top300" data-bs-toggle="pill" data-bs-target="#pane-top300"
-        type="button" role="tab" aria-selected="true">
-        <span class="position-icon">🏆</span>Top 300
-      </button>`;
-      tabsEl.appendChild(top300Li);
-
-      // Top 300 pane
-      const top300Pane = document.createElement('div');
-      top300Pane.className = 'tab-pane fade show active';
-      top300Pane.id = 'pane-top300';
-      top300Pane.setAttribute('role', 'tabpanel');
-      top300Pane.innerHTML = buildTop300HTML(top300);
-      contentEl.appendChild(top300Pane);
-
-      // Position tabs
-      const positions = Object.entries(data.positions);
-      positions.forEach(([key, pos], idx) => {
-        const li = document.createElement('li');
-        li.className = 'nav-item';
-        li.setAttribute('role', 'presentation');
-        li.innerHTML = `<button class="nav-link"
-          id="tab-${key}" data-bs-toggle="pill" data-bs-target="#pane-${key}"
-          type="button" role="tab" aria-selected="false">
-          <span class="position-icon">${pos.icon}</span>${pos.title}
-        </button>`;
-        tabsEl.appendChild(li);
-
-        const pane = document.createElement('div');
-        pane.className = 'tab-pane fade';
-        pane.id = `pane-${key}`;
-        pane.setAttribute('role', 'tabpanel');
-
-        let html = '';
-        if (pos.note) {
-          html += `<div class="note-box">${pos.note}</div>`;
-        }
-
-        const tiers = Object.entries(pos.tiers);
-        tiers.forEach(([tierName, players], tIdx) => {
-          const tierClass = TIER_CLASSES[Math.min(tIdx, TIER_CLASSES.length - 1)];
-          html += `<div class="tier-card ${tierClass}">
-            <div class="tier-header">${tierName}</div>
-            <div class="player-list">`;
-          players.forEach(p => {
-            if (typeof p === 'object') {
-              html += `<span class="player sleeper">${p.name}</span>`;
-            } else {
-              html += `<span class="player">${p}</span>`;
-            }
-          });
-          html += '</div></div>';
-        });
-
-        if (pos.sleepers && pos.sleepers.length > 0) {
-          html += '<div class="sleeper-box">🔥 <strong>Sleepers:</strong> ' +
-            pos.sleepers.join(', ') + '</div>';
-        }
-
-        pane.innerHTML = html;
-        contentEl.appendChild(pane);
-      });
-
-      // Notes tab (Busts, Sleepers, RP Sleepers)
-      const notesLi = document.createElement('li');
-      notesLi.className = 'nav-item';
-      notesLi.setAttribute('role', 'presentation');
-      notesLi.innerHTML = `<button class="nav-link"
-        id="tab-notes" data-bs-toggle="pill" data-bs-target="#pane-notes"
-        type="button" role="tab" aria-selected="false">
-        <span class="position-icon">📋</span>Notes
-      </button>`;
-      tabsEl.appendChild(notesLi);
-
-      const notesPane = document.createElement('div');
-      notesPane.className = 'tab-pane fade';
-      notesPane.id = 'pane-notes';
-      notesPane.setAttribute('role', 'tabpanel');
-
-      let notesHTML = '';
-
-      // Busts
-      if (data.busts && data.busts.length) {
-        notesHTML += '<div class="callout-section"><h3>🚫 Bust Alert — Overvalued / Risky</h3>';
-        data.busts.forEach(b => {
-          notesHTML += `<span class="bust-card"><span class="bust-name">${b.name}</span> <span class="bust-detail">${b.pos}, ${b.team}</span></span>`;
-        });
-        notesHTML += '</div>';
-      }
-
-      // Deep Sleepers
-      if (data.deepSleepers && data.deepSleepers.length) {
-        notesHTML += '<div class="callout-section"><h3>💤 Sleepers — Under the Radar</h3>';
-        data.deepSleepers.forEach(s => {
-          notesHTML += `<span class="sleeper-card"><span class="sleeper-name">${s.name}</span> <span class="sleeper-detail">${s.pos}, ${s.team}</span></span>`;
-        });
-        notesHTML += '</div>';
-      }
-
-      // RP Sleepers
-      if (data.rpSleepers && data.rpSleepers.length) {
-        notesHTML += '<div class="callout-section"><h3>🔥 Relief Pitcher Sleepers</h3>';
-        data.rpSleepers.forEach(r => {
-          notesHTML += `<span class="rp-sleeper-card">${r.name}</span>`;
-        });
-        notesHTML += '</div>';
-      }
-
-      notesPane.innerHTML = notesHTML;
-      contentEl.appendChild(notesPane);
-
-      // Wire up Top 300 interactivity
-      initTop300(top300);
-    }
-
     function buildTop300HTML(players) {
       const posOptions = [...new Set(players.map(p => p.pos))].sort();
       const teamOptions = [...new Set(players.map(p => p.team))].sort();
@@ -523,6 +554,478 @@
 
       // Initial render
       renderTop300Rows(allPlayers);
+    }
+
+    function buildTierLookup(data) {
+      const lookup = {};
+      if (!data.positions || !data.positions.SP) return lookup;
+      const tiers = Object.entries(data.positions.SP.tiers);
+      tiers.forEach(([tierName, players], tIdx) => {
+        players.forEach(p => {
+          const name = typeof p === 'object' ? p.name : p;
+          // Strip points suffix like "(422.50)" to get base name for matching
+          const baseName = name.replace(/\s*\([\d.]+\)$/, '');
+          lookup[baseName.toLowerCase()] = {
+            tierName,
+            tierIdx: tIdx,
+            displayName: name,
+            isSleeper: typeof p === 'object' && p.tag === 'sleeper'
+          };
+        });
+      });
+      return lookup;
+    }
+
+    function buildRotationHTML(data) {
+      if (!data.rotations) return '<p>No rotation data available.</p>';
+      const teams = Object.keys(data.rotations).sort();
+      let html = `
+        <div class="rotation-controls">
+          <input type="text" id="rotSearch" placeholder="Search pitcher or team...">
+          <select id="rotSlotFilter">
+            <option value="0">All Slots</option>
+            <option value="1">SP1 Only</option>
+            <option value="2">SP1–SP2</option>
+            <option value="3">SP1–SP3</option>
+            <option value="4">SP1–SP4</option>
+            <option value="5">SP1–SP5</option>
+          </select>
+          <select id="rotHandFilter">
+            <option value="">All Arms</option>
+            <option value="RHP">RHP</option>
+            <option value="LHP">LHP</option>
+          </select>
+        </div>
+        <div class="note-box">Showing team rotations with tier and projected points from SP rankings. Use filters to narrow by slot, handedness, or search.</div>
+        <div id="rotationContainer"></div>`;
+      return html;
+    }
+
+    function renderRotations(data) {
+      const tierLookup = buildTierLookup(data);
+      const container = document.getElementById('rotationContainer');
+      if (!container) return;
+
+      const search = (document.getElementById('rotSearch')?.value || '').toLowerCase();
+      const slotMax = parseInt(document.getElementById('rotSlotFilter')?.value || '0');
+      const handFilter = document.getElementById('rotHandFilter')?.value || '';
+
+      const teams = Object.keys(data.rotations).sort();
+      let html = '';
+
+      teams.forEach(team => {
+        let pitchers = data.rotations[team];
+
+        // Apply filters
+        if (slotMax > 0) {
+          pitchers = pitchers.filter(p => p.slot <= slotMax);
+        }
+        if (handFilter) {
+          pitchers = pitchers.filter(p => p.hand === handFilter);
+        }
+        if (search) {
+          const teamMatch = team.toLowerCase().includes(search);
+          const pitcherMatch = pitchers.some(p => p.name.toLowerCase().includes(search));
+          if (!teamMatch && !pitcherMatch) return;
+          if (!teamMatch) {
+            pitchers = pitchers.filter(p => p.name.toLowerCase().includes(search));
+          }
+        }
+
+        if (pitchers.length === 0) return;
+
+        html += `<div class="rotation-team">
+          <div class="rotation-team-header">${team}</div>`;
+
+        pitchers.forEach(p => {
+          // Look up tier info — try exact name, then common variants
+          const nameLower = p.name.toLowerCase();
+          let info = tierLookup[nameLower];
+          // Try alternate names for common mismatches
+          if (!info) {
+            const alts = {
+              'cam schlittler': 'cameron schlittler',
+              'mike burrows': 'michael burrows',
+              'jose soriano': 'jose soriano'
+            };
+            if (alts[nameLower]) info = tierLookup[alts[nameLower]];
+          }
+
+          let tierBadge = '';
+          let ptsDisplay = '';
+          if (info) {
+            const tierClass = `rtier-${Math.min(info.tierIdx + 1, 7)}`;
+            // Short tier label
+            const shortTier = info.tierName.replace(/^Tier \d+ — /, '');
+            tierBadge = `<span class="rotation-tier-badge ${tierClass}">${shortTier}</span>`;
+            // Extract points if present
+            const ptsMatch = info.displayName.match(/\(([\d.]+)\)$/);
+            if (ptsMatch) {
+              ptsDisplay = `<span class="rotation-pts">${ptsMatch[1]}</span>`;
+            }
+            if (info.isSleeper) {
+              tierBadge += ' <span style="font-size:0.75rem;">🔥</span>';
+            }
+          } else {
+            tierBadge = `<span class="rotation-tier-badge rtier-none">Unranked</span>`;
+          }
+
+          html += `<div class="rotation-pitcher">
+            <span class="rotation-slot">${p.slot}</span>
+            <span class="rotation-name">${p.name}</span>
+            <span class="rotation-hand">${p.hand}</span>
+            ${tierBadge}
+            ${ptsDisplay}
+          </div>`;
+        });
+
+        html += '</div>';
+      });
+
+      if (!html) {
+        html = '<div class="note-box">No results match your filters.</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function buildRPTierLookup(data) {
+      const lookup = {};
+      if (!data.positions || !data.positions.RP) return lookup;
+      const tiers = Object.entries(data.positions.RP.tiers);
+      tiers.forEach(([tierName, players], tIdx) => {
+        players.forEach(p => {
+          const name = typeof p === 'object' ? p.name : p;
+          const baseName = name.replace(/\s*\([\d.]+\)$/, '');
+          lookup[baseName.toLowerCase()] = {
+            tierName,
+            tierIdx: tIdx,
+            displayName: name,
+            isSleeper: typeof p === 'object' && p.tag === 'sleeper'
+          };
+        });
+      });
+      return lookup;
+    }
+
+    function getRoleClass(role) {
+      const r = role.toLowerCase();
+      if (r === 'closer') return 'brole-closer';
+      if (r === 'co-closer') return 'brole-co-closer';
+      if (r.includes('committee')) return 'brole-committee';
+      if (r.includes('setup')) return 'brole-setup';
+      if (r === 'sleeper') return 'brole-sleeper';
+      if (r === 'injury') return 'brole-injury';
+      return 'brole-middle';
+    }
+
+    function getSavesClass(pct) {
+      if (pct === null) return '';
+      if (pct >= 40) return 'saves-high';
+      if (pct >= 10) return 'saves-mid';
+      return 'saves-low';
+    }
+
+    function buildBullpenHTML(data) {
+      if (!data.bullpens) return '<p>No bullpen data available.</p>';
+      let html = `
+        <div class="bullpen-controls">
+          <input type="text" id="bpSearch" placeholder="Search pitcher or team...">
+          <select id="bpRoleFilter">
+            <option value="">All Roles</option>
+            <option value="closer">Closers Only</option>
+            <option value="setup">Setup+</option>
+            <option value="saves">Save Chance > 0%</option>
+          </select>
+        </div>
+        <div class="note-box">Team bullpen depth with save% (roster ownership of saves). Tier and projected points pulled from RP rankings.</div>
+        <div id="bullpenContainer"></div>`;
+      return html;
+    }
+
+    function renderBullpens(data) {
+      const rpLookup = buildRPTierLookup(data);
+      const container = document.getElementById('bullpenContainer');
+      if (!container) return;
+
+      const search = (document.getElementById('bpSearch')?.value || '').toLowerCase();
+      const roleFilter = document.getElementById('bpRoleFilter')?.value || '';
+
+      const teams = Object.keys(data.bullpens).sort();
+      let html = '';
+
+      teams.forEach(team => {
+        let pitchers = data.bullpens[team];
+
+        // Apply role filter
+        if (roleFilter === 'closer') {
+          pitchers = pitchers.filter(p => {
+            const r = p.role.toLowerCase();
+            return r === 'closer' || r === 'co-closer' || r.includes('committee');
+          });
+        } else if (roleFilter === 'setup') {
+          pitchers = pitchers.filter(p => {
+            const r = p.role.toLowerCase();
+            return r !== 'middle relief';
+          });
+        } else if (roleFilter === 'saves') {
+          pitchers = pitchers.filter(p => p.savesPct !== null && p.savesPct > 0);
+        }
+
+        // Apply search
+        if (search) {
+          const teamMatch = team.toLowerCase().includes(search);
+          const pitcherMatch = pitchers.some(p => p.name.toLowerCase().includes(search));
+          if (!teamMatch && !pitcherMatch) return;
+          if (!teamMatch) {
+            pitchers = pitchers.filter(p => p.name.toLowerCase().includes(search));
+          }
+        }
+
+        if (pitchers.length === 0) return;
+
+        html += `<div class="bullpen-team">
+          <div class="bullpen-team-header">${team}</div>`;
+
+        pitchers.forEach(p => {
+          const roleClass = getRoleClass(p.role);
+          const roleBadge = `<span class="bullpen-role-badge ${roleClass}">${p.role}</span>`;
+
+          // Save %
+          let savesHTML = '';
+          if (p.savesPct !== null) {
+            const savesClass = getSavesClass(p.savesPct);
+            savesHTML = `<span class="bullpen-saves-pct ${savesClass}">${p.savesPct}%</span>`;
+          } else {
+            savesHTML = `<span class="bullpen-saves-pct" style="color:#e94560;font-style:italic;">IL</span>`;
+          }
+
+          // RP tier lookup
+          const info = rpLookup[p.name.toLowerCase()];
+          let tierBadge = '';
+          let ptsDisplay = '';
+          if (info) {
+            const tierClass = `rtier-${Math.min(info.tierIdx + 1, 7)}`;
+            const shortTier = info.tierName.replace(/^Tier \d+ — /, '');
+            tierBadge = `<span class="rotation-tier-badge ${tierClass}">${shortTier}</span>`;
+            const ptsMatch = info.displayName.match(/\(([\d.]+)\)$/);
+            if (ptsMatch) {
+              ptsDisplay = `<span class="bullpen-pts">${ptsMatch[1]}</span>`;
+            }
+            if (info.isSleeper) {
+              tierBadge += ' <span style="font-size:0.75rem;">🔥</span>';
+            }
+          }
+
+          html += `<div class="bullpen-pitcher">
+            ${roleBadge}
+            <span class="bullpen-name">${p.name}</span>
+            ${tierBadge}
+            ${ptsDisplay}
+            ${savesHTML}
+          </div>`;
+        });
+
+        html += '</div>';
+      });
+
+      if (!html) {
+        html = '<div class="note-box">No results match your filters.</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    // Store data globally for rotation re-renders
+    let _globalData = null;
+
+    async function init() {
+      const [resp, top300Resp] = await Promise.all([
+        fetch('data.json'),
+        fetch('top300.json')
+      ]);
+      const data = await resp.json();
+      _globalData = data;
+      const top300 = await top300Resp.json();
+
+      document.getElementById('lastUpdated').textContent =
+        'Last updated: ' + data.lastUpdated + ' | Format: ' + data.leagueType;
+
+      const tabsEl = document.getElementById('positionTabs');
+      const contentEl = document.getElementById('positionContent');
+
+      // Add Top 300 tab first
+      const top300Li = document.createElement('li');
+      top300Li.className = 'nav-item';
+      top300Li.setAttribute('role', 'presentation');
+      top300Li.innerHTML = `<button class="nav-link active"
+        id="tab-top300" data-bs-toggle="pill" data-bs-target="#pane-top300"
+        type="button" role="tab" aria-selected="true">
+        <span class="position-icon">🏆</span>Top 300
+      </button>`;
+      tabsEl.appendChild(top300Li);
+
+      // Top 300 pane
+      const top300Pane = document.createElement('div');
+      top300Pane.className = 'tab-pane fade show active';
+      top300Pane.id = 'pane-top300';
+      top300Pane.setAttribute('role', 'tabpanel');
+      top300Pane.innerHTML = buildTop300HTML(top300);
+      contentEl.appendChild(top300Pane);
+
+      // Position tabs
+      const positions = Object.entries(data.positions);
+      positions.forEach(([key, pos], idx) => {
+        const li = document.createElement('li');
+        li.className = 'nav-item';
+        li.setAttribute('role', 'presentation');
+        li.innerHTML = `<button class="nav-link"
+          id="tab-${key}" data-bs-toggle="pill" data-bs-target="#pane-${key}"
+          type="button" role="tab" aria-selected="false">
+          <span class="position-icon">${pos.icon}</span>${pos.title}
+        </button>`;
+        tabsEl.appendChild(li);
+
+        const pane = document.createElement('div');
+        pane.className = 'tab-pane fade';
+        pane.id = `pane-${key}`;
+        pane.setAttribute('role', 'tabpanel');
+
+        let html = '';
+        if (pos.note) {
+          html += `<div class="note-box">${pos.note}</div>`;
+        }
+
+        const tiers = Object.entries(pos.tiers);
+        tiers.forEach(([tierName, players], tIdx) => {
+          const tierClass = TIER_CLASSES[Math.min(tIdx, TIER_CLASSES.length - 1)];
+          html += `<div class="tier-card ${tierClass}">
+            <div class="tier-header">${tierName}</div>
+            <div class="player-list">`;
+          players.forEach(p => {
+            if (typeof p === 'object') {
+              html += `<span class="player sleeper">${p.name}</span>`;
+            } else {
+              html += `<span class="player">${p}</span>`;
+            }
+          });
+          html += '</div></div>';
+        });
+
+        if (pos.sleepers && pos.sleepers.length > 0) {
+          html += '<div class="sleeper-box">🔥 <strong>Sleepers:</strong> ' +
+            pos.sleepers.join(', ') + '</div>';
+        }
+
+        pane.innerHTML = html;
+        contentEl.appendChild(pane);
+      });
+
+      // Rotation tab
+      const rotLi = document.createElement('li');
+      rotLi.className = 'nav-item';
+      rotLi.setAttribute('role', 'presentation');
+      rotLi.innerHTML = `<button class="nav-link"
+        id="tab-rotation" data-bs-toggle="pill" data-bs-target="#pane-rotation"
+        type="button" role="tab" aria-selected="false">
+        <span class="position-icon">⚙️</span>Rotations
+      </button>`;
+      tabsEl.appendChild(rotLi);
+
+      const rotPane = document.createElement('div');
+      rotPane.className = 'tab-pane fade';
+      rotPane.id = 'pane-rotation';
+      rotPane.setAttribute('role', 'tabpanel');
+      rotPane.innerHTML = buildRotationHTML(data);
+      contentEl.appendChild(rotPane);
+
+      // Bullpen tab
+      const bpLi = document.createElement('li');
+      bpLi.className = 'nav-item';
+      bpLi.setAttribute('role', 'presentation');
+      bpLi.innerHTML = `<button class="nav-link"
+        id="tab-bullpen" data-bs-toggle="pill" data-bs-target="#pane-bullpen"
+        type="button" role="tab" aria-selected="false">
+        <span class="position-icon">🔥</span>Bullpens
+      </button>`;
+      tabsEl.appendChild(bpLi);
+
+      const bpPane = document.createElement('div');
+      bpPane.className = 'tab-pane fade';
+      bpPane.id = 'pane-bullpen';
+      bpPane.setAttribute('role', 'tabpanel');
+      bpPane.innerHTML = buildBullpenHTML(data);
+      contentEl.appendChild(bpPane);
+
+      // Notes tab (Busts, Sleepers, RP Sleepers)
+      const notesLi = document.createElement('li');
+      notesLi.className = 'nav-item';
+      notesLi.setAttribute('role', 'presentation');
+      notesLi.innerHTML = `<button class="nav-link"
+        id="tab-notes" data-bs-toggle="pill" data-bs-target="#pane-notes"
+        type="button" role="tab" aria-selected="false">
+        <span class="position-icon">📋</span>Notes
+      </button>`;
+      tabsEl.appendChild(notesLi);
+
+      const notesPane = document.createElement('div');
+      notesPane.className = 'tab-pane fade';
+      notesPane.id = 'pane-notes';
+      notesPane.setAttribute('role', 'tabpanel');
+
+      let notesHTML = '';
+
+      // Pitching Injuries
+      if (data.pitchingInjuries && data.pitchingInjuries.length) {
+        notesHTML += '<div class="callout-section"><h3>🏥 Pitching Injuries — Top 3 in Rotation</h3>';
+        data.pitchingInjuries.forEach(p => {
+          notesHTML += `<span class="bust-card" style="border-color:#f0883e;background:rgba(240,136,62,0.08);"><span class="bust-name">${p.name}</span> <span class="bust-detail">${p.note}</span></span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      if (data.busts && data.busts.length) {
+        notesHTML += '<div class="callout-section"><h3>🚫 Bust Alert — Overvalued / Risky</h3>';
+        data.busts.forEach(b => {
+          notesHTML += `<span class="bust-card"><span class="bust-name">${b.name}</span> <span class="bust-detail">${b.pos}, ${b.team}</span></span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      if (data.deepSleepers && data.deepSleepers.length) {
+        notesHTML += '<div class="callout-section"><h3>💤 Sleepers — Under the Radar</h3>';
+        data.deepSleepers.forEach(s => {
+          notesHTML += `<span class="sleeper-card"><span class="sleeper-name">${s.name}</span> <span class="sleeper-detail">${s.pos}, ${s.team}</span></span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      if (data.rpSleepers && data.rpSleepers.length) {
+        notesHTML += '<div class="callout-section"><h3>🔥 Relief Pitcher Sleepers</h3>';
+        data.rpSleepers.forEach(r => {
+          notesHTML += `<span class="rp-sleeper-card">${r.name}</span>`;
+        });
+        notesHTML += '</div>';
+      }
+
+      notesPane.innerHTML = notesHTML;
+      contentEl.appendChild(notesPane);
+
+      // Wire up Top 300 interactivity
+      initTop300(top300);
+
+      // Wire up rotation filters after DOM is ready
+      // Use a small delay to ensure the rotation pane HTML is in the DOM
+      setTimeout(() => {
+        renderRotations(data);
+        document.getElementById('rotSearch')?.addEventListener('input', () => renderRotations(_globalData));
+        document.getElementById('rotSlotFilter')?.addEventListener('change', () => renderRotations(_globalData));
+        document.getElementById('rotHandFilter')?.addEventListener('change', () => renderRotations(_globalData));
+        // Bullpen
+        renderBullpens(data);
+        document.getElementById('bpSearch')?.addEventListener('input', () => renderBullpens(_globalData));
+        document.getElementById('bpRoleFilter')?.addEventListener('change', () => renderBullpens(_globalData));
+      }, 0);
     }
 
     init();
