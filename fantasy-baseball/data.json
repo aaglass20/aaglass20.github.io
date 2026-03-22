@@ -1,13 +1,14 @@
 {
-  "lastUpdated": "2026-03-20",
+  "lastUpdated": "2026-03-22",
   "leagueType": "Points League",
   "sourceBias": "NBC/Rotoworld consensus inputs provided by user, adjusted for points scoring",
   "notes": [
     "Full tier rebuild across all positions based on March 20 consensus data.",
+    "Projected point totals added March 22 where available (not top 300 ranking).",
     "Cal Raleigh remains the solo elite catcher.",
     "Mason Miller remains the top reliever.",
     "Starting pitcher tiers expanded with additional names.",
-    "Parentheses () indicate injured/IL players. ^ indicates injury risk or returning from injury. † indicates positional eligibility note. * indicates minor-league or limited status."
+    "Parentheses () around a name indicate injured/IL players. ^ indicates injury risk or returning from injury. † indicates positional eligibility note. * indicates minor-league or limited status."
   ],
   "positions": {
     "C": {
@@ -21,13 +22,13 @@
       ],
       "tiers": {
         "Tier 1 — The Elite": [
-          "Cal Raleigh"
+          "Cal Raleigh (426)"
         ],
         "Tier 2 — The Near-Elite": [
-          "Hunter Goodman",
-          "William Contreras",
-          "Ben Rice",
-          "Shea Langeliers"
+          "Hunter Goodman (339)",
+          "William Contreras (302)",
+          "Ben Rice (332)",
+          "Shea Langeliers (311)"
         ],
         "Tier 3 — The Next-Best Things": [
           "Agustin Ramirez",
@@ -35,7 +36,7 @@
             "name": "Drake Baldwin",
             "tag": "sleeper"
           },
-          "Will Smith",
+          "Will Smith (312)",
           "Salvador Perez",
           "Adley Rutschman"
         ],
@@ -58,7 +59,7 @@
         ],
         "Tier 5 — The Last Resorts": [
           "J.T. Realmuto",
-          "Alejandro Kirk",
+          "Alejandro Kirk (314)",
           "Austin Wells",
           "Kyle Teel",
           "Dillon Dingler",
@@ -67,7 +68,7 @@
         "Tier 6 — The Leftovers": [
           "Tyler Stephenson",
           {
-            "name": "Moises Ballesteros",
+            "name": "Moises Ballesteros (306)",
             "tag": "IL"
           },
           "Harry Ford",
@@ -94,32 +95,32 @@
       "tiers": {
         "Tier 1 — The Elite": [
           {
-            "name": "Nick Kurtz",
+            "name": "Nick Kurtz (435)",
             "tag": "sleeper"
           },
-          "Vladimir Guerrero Jr."
+          "Vladimir Guerrero Jr. (476)"
         ],
         "Tier 2 — The Near-Elite": [
-          "Pete Alonso",
-          "Matt Olson",
-          "Bryce Harper",
-          "Rafael Devers",
-          "Freddie Freeman",
-          "Josh Naylor"
+          "Pete Alonso (338)",
+          "Matt Olson (364)",
+          "Bryce Harper (365)",
+          "Rafael Devers (420)",
+          "Freddie Freeman (378)",
+          "Josh Naylor (363)"
         ],
         "Tier 3 — The Next-Best Things": [
           {
-            "name": "Ben Rice",
+            "name": "Ben Rice (332)",
             "tag": "sleeper"
           },
-          "Vinnie Pasquantino",
-          "Yandy Diaz",
-          "Tyler Soderstrom",
-          "Michael Busch"
+          "Vinnie Pasquantino (337)",
+          "Yandy Diaz (395)",
+          "Tyler Soderstrom (342)",
+          "Michael Busch (330)"
         ],
         "Tier 4 — The Fallback Options": [
           "Salvador Perez",
-          "Jonathan Aranda",
+          "Jonathan Aranda (338)",
           {
             "name": "Sal Stewart",
             "tag": "sleeper"
@@ -129,9 +130,9 @@
         "Tier 5 — The Last Resorts": [
           "Munetaka Murakami",
           "Willson Contreras",
-          "Alec Burleson",
-          "Spencer Steer",
-          "Luis Arraez",
+          "Alec Burleson (330)",
+          "Spencer Steer (306)",
+          "Luis Arraez (360)",
           "Kyle Manzardo",
           "Christian Walker",
           {
@@ -169,31 +170,31 @@
       ],
       "tiers": {
         "Tier 1 — The Elite": [
-          "Jazz Chisholm Jr.",
-          "Ketel Marte"
+          "Jazz Chisholm Jr. (342)",
+          "Ketel Marte (457)"
         ],
         "Tier 2 — The Near-Elite": [
-          "Brice Turang"
+          "Brice Turang (320)"
         ],
         "Tier 3 — The Next-Best Things": [
-          "Nico Hoerner",
+          "Nico Hoerner (316)",
           {
             "name": "Luke Keaschall",
             "tag": "sleeper"
           },
-          "Jose Altuve"
+          "Jose Altuve (362)"
         ],
         "Tier 4 — The Fallback Options": [
-          "Ozzie Albies",
-          "Brandon Lowe"
+          "Ozzie Albies (310)",
+          "Brandon Lowe (314)"
         ],
         "Tier 5 — The Last Resorts": [
           "Xavier Edwards",
           "Matt McLain",
-          "Marcus Semien",
-          "Jorge Polanco",
+          "Marcus Semien (320)",
+          "Jorge Polanco (331)",
           "Gleyber Torres",
-          "Brendan Donovan",
+          "Brendan Donovan (345)",
           "Ceddanne Rafaela",
           "Bryson Stott",
           "Otto Lopez",
@@ -240,48 +241,48 @@
       ],
       "tiers": {
         "Tier 1 — The First-Rounders": [
-          "Bobby Witt Jr.",
-          "Elly De La Cruz"
+          "Bobby Witt Jr. (462)",
+          "Elly De La Cruz (360)"
         ],
         "Tier 2 — The Elite": [
-          "Gunnar Henderson",
-          "Trea Turner",
-          "Francisco Lindor",
-          "Mookie Betts",
-          "Geraldo Perdomo"
+          "Gunnar Henderson (373)",
+          "Trea Turner (403)",
+          "Francisco Lindor (444)",
+          "Mookie Betts (398)",
+          "Geraldo Perdomo (416)"
         ],
         "Tier 3 — The Near-Elite": [
-          "Zach Neto",
-          "CJ Abrams",
-          "Corey Seager",
-          "Bo Bichette"
+          "Zach Neto (322)",
+          "CJ Abrams (328)",
+          "Corey Seager (396)",
+          "Bo Bichette (361)"
         ],
         "Tier 4 — The Next-Best Things": [
           "Trevor Story",
-          "Jeremy Pena"
+          "Jeremy Pena (391)"
         ],
         "Tier 5 — The Fallback Options": [
-          "Willy Adames",
+          "Willy Adames (360)",
           "Dansby Swanson",
           {
             "name": "Konnor Griffin",
             "tag": "prospect"
           },
           {
-            "name": "Jacob Wilson",
+            "name": "Jacob Wilson (382)",
             "tag": "sleeper"
           }
         ],
         "Tier 6 — The Last Resorts": [
-          "Colson Montgomery",
+          "Colson Montgomery (313)",
           "Xavier Edwards",
           "JJ Wetherholt",
           "Kevin McGonigle",
-          "Xander Bogaerts",
+          "Xander Bogaerts (334)",
           "Otto Lopez"
         ],
         "Tier 7 — The Leftovers": [
-          "Carlos Correa",
+          "Carlos Correa (327)",
           "Ezequiel Tovar",
           "Masyn Winn",
           "Colt Emerson",
@@ -308,29 +309,29 @@
       ],
       "tiers": {
         "Tier 1 — The First-Rounders": [
-          "Jose Ramirez"
+          "Jose Ramirez (485)"
         ],
         "Tier 2 — The Elite": [
           {
-            "name": "Junior Caminero",
+            "name": "Junior Caminero (433)",
             "tag": "sleeper"
           },
-          "Jazz Chisholm Jr."
+          "Jazz Chisholm Jr. (342)"
         ],
         "Tier 3 — The Near-Elite": [
-          "Manny Machado",
-          "Austin Riley",
+          "Manny Machado (410)",
+          "Austin Riley (318)",
           "Eugenio Suarez",
-          "Maikel Garcia"
+          "Maikel Garcia (335)"
         ],
         "Tier 4 — The Next-Best Things": [
-          "Alex Bregman",
+          "Alex Bregman (395)",
           "Max Muncy"
         ],
         "Tier 5 — The Fallback Options": [
-          "Matt Chapman",
+          "Matt Chapman (331)",
           {
-            "name": "Kazuma Okamoto",
+            "name": "Kazuma Okamoto (300)",
             "tag": "sleeper"
           },
           "Isaac Paredes"
@@ -347,7 +348,7 @@
         "Tier 7 — The Leftovers": [
           "Addison Barger",
           "Jordan Lawlar",
-          "Carlos Correa",
+          "Carlos Correa (327)",
           "Brett Baty",
           "Josh Jung",
           "Caleb Durbin",
@@ -365,7 +366,7 @@
           "Connor Norby",
           "Marcelo Mayer",
           "Ryan McMahon",
-          "Nolan Arenado",
+          "Nolan Arenado (318)",
           "Nolan Gorman",
           "Jonathan India"
         ]
@@ -382,91 +383,91 @@
       ],
       "tiers": {
         "Tier 1 — The First-Rounders": [
-          "Aaron Judge",
+          "Aaron Judge (560)",
           {
-            "name": "Shohei Ohtani",
+            "name": "Shohei Ohtani (527)",
             "tag": "IL"
           },
-          "Juan Soto",
-          "Kyle Tucker",
-          "Ronald Acuna Jr.",
-          "Julio Rodriguez",
+          "Juan Soto (512)",
+          "Kyle Tucker (466)",
+          "Ronald Acuna Jr. (369)",
+          "Julio Rodriguez (412)",
           {
-            "name": "Kyle Schwarber",
+            "name": "Kyle Schwarber (405)",
             "tag": "DH"
           }
         ],
         "Tier 2 — The Elite": [
-          "Fernando Tatis Jr.",
-          "Corbin Carroll",
-          "Jackson Chourio",
-          "Pete Crow-Armstrong",
+          "Fernando Tatis Jr. (432)",
+          "Corbin Carroll (406)",
+          "Jackson Chourio (392)",
+          "Pete Crow-Armstrong (320)",
           {
-            "name": "James Wood",
+            "name": "James Wood (326)",
             "tag": "sleeper"
           },
           {
-            "name": "Yordan Alvarez",
+            "name": "Yordan Alvarez (426)",
             "tag": "IL"
           }
         ],
         "Tier 3 — The Near-Elite": [
-          "Cody Bellinger",
+          "Cody Bellinger (418)",
           {
-            "name": "Wyatt Langford",
+            "name": "Wyatt Langford (329)",
             "tag": "sleeper"
           },
           {
-            "name": "Brent Rooker",
+            "name": "Brent Rooker (408)",
             "tag": "sleeper"
           },
-          "Byron Buxton",
+          "Byron Buxton (421)",
           "Randy Arozarena",
-          "Roman Anthony",
-          "George Springer"
+          "Roman Anthony (329)",
+          "George Springer (440)"
         ],
         "Tier 4 — The Next-Best Things": [
           {
-            "name": "Christian Yelich",
+            "name": "Christian Yelich (339)",
             "tag": "IL"
           },
-          "Jarren Duran",
-          "Riley Greene",
-          "Tyler Soderstrom",
+          "Jarren Duran (337)",
+          "Riley Greene (332)",
+          "Tyler Soderstrom (342)",
           "Michael Harris II",
-          "Jackson Merrill",
-          "Seiya Suzuki",
-          "Jose Altuve",
-          "Oneil Cruz"
+          "Jackson Merrill (389)",
+          "Seiya Suzuki (300)",
+          "Jose Altuve (362)",
+          "Oneil Cruz (342)"
         ],
         "Tier 5 — The Fallback Options": [
-          "Kyle Stowers",
+          "Kyle Stowers (347)",
           "Brandon Nimmo",
           "Jo Adell",
-          "Luis Robert Jr.",
+          "Luis Robert Jr. (341)",
           "Teoscar Hernandez",
           "Jakob Marsee",
-          "Taylor Ward",
+          "Taylor Ward (313)",
           "Ian Happ",
-          "Mike Trout",
-          "Daulton Varsho",
-          "Lawrence Butler",
+          "Mike Trout (310)",
+          "Daulton Varsho (347)",
+          "Lawrence Butler (335)",
           "Andy Pages",
           "Chandler Simpson"
         ],
         "Tier 6 — The Last Resorts": [
           "Jac Caglianone",
           "Daylen Lile",
-          "Ramon Laureano",
-          "Bryan Reynolds",
+          "Ramon Laureano (308)",
+          "Bryan Reynolds (344)",
           "Noelvi Marte",
           "Ceddanne Rafaela",
           "Brenton Doyle",
-          "Steven Kwan",
-          "Sal Frelick",
+          "Steven Kwan (386)",
+          "Sal Frelick (331)",
           "Dylan Crews",
-          "Alec Burleson",
-          "Wilyer Abreu",
+          "Alec Burleson (330)",
+          "Wilyer Abreu (311)",
           "Heliot Ramos",
           "Justin Crawford",
           "Carson Benge",
@@ -482,7 +483,7 @@
           "Giancarlo Stanton",
           "Jasson Dominguez",
           "Adolis Garcia",
-          "Mickey Moniak",
+          "Mickey Moniak (333)",
           {
             "name": "Marcell Ozuna",
             "tag": "IL"
@@ -498,12 +499,12 @@
           "Willi Castro",
           "Evan Carter",
           "Jordan Beck",
-          "Andrew Benintendi",
+          "Andrew Benintendi (321)",
           "Mike Yastrzemski",
           "Jake Mangum",
           "Victor Robles",
           "Nick Castellanos",
-          "Jung Hoo Lee",
+          "Jung Hoo Lee (316)",
           "Jorge Soler",
           "Matt Wallner",
           "Austin Hays",
@@ -542,111 +543,111 @@
       ],
       "tiers": {
         "Tier 1 — The First-Rounders": [
-          "Tarik Skubal",
-          "Garrett Crochet",
-          "Paul Skenes"
+          "Tarik Skubal (492.50)",
+          "Garrett Crochet (417.00)",
+          "Paul Skenes (413.00)"
         ],
         "Tier 2 — The Elite": [
-          "Chris Sale",
-          "Yoshinobu Yamamoto",
-          "Logan Gilbert",
-          "Cristopher Sanchez",
+          "Chris Sale (393.50)",
+          "Yoshinobu Yamamoto (385.50)",
+          "Logan Gilbert (340.00)",
+          "Cristopher Sanchez (364.00)",
           {
-            "name": "Bryan Woo",
+            "name": "Bryan Woo (422.50)",
             "tag": "sleeper"
           },
-          "Max Fried",
-          "Hunter Brown",
-          "Cole Ragans",
-          "Jacob deGrom",
-          "Logan Webb",
-          "Framber Valdez"
+          "Max Fried (425.00)",
+          "Hunter Brown (368.50)",
+          "Cole Ragans (320.50)",
+          "Jacob deGrom (334.00)",
+          "Logan Webb (412.00)",
+          "Framber Valdez (381.00)"
         ],
         "Tier 3 — The Near-Elite": [
-          "Jesus Luzardo",
-          "Freddy Peralta",
-          "George Kirby",
-          "Kyle Bradish",
-          "Joe Ryan",
+          "Jesus Luzardo (368.50)",
+          "Freddy Peralta (346.00)",
+          "George Kirby (356.50)",
+          "Kyle Bradish (282.00)",
+          "Joe Ryan (347.00)",
           "Shohei Ohtani",
           "Eury Perez",
-          "Dylan Cease",
-          "Kevin Gausman"
+          "Dylan Cease (280.00)",
+          "Kevin Gausman (353.00)"
         ],
         "Tier 4 — The Next-Best Things": [
-          "Nolan McLean",
+          "Nolan McLean (351.50)",
           {
-            "name": "Cameron Schlittler",
+            "name": "Cameron Schlittler (290.00)",
             "tag": "sleeper"
           },
-          "Nick Pivetta",
-          "Nick Lodolo",
+          "Nick Pivetta (337.50)",
+          "Nick Lodolo (318.00)",
           {
             "name": "Chase Burns",
             "tag": "sleeper"
           },
-          "Brandon Woodruff",
-          "Tyler Glasnow",
-          "Trevor Rogers",
-          "Gavin Williams"
+          "Brandon Woodruff (345.00)",
+          "Tyler Glasnow (292.00)",
+          "Trevor Rogers (293.50)",
+          "Gavin Williams (304.00)"
         ],
         "Tier 5 — The Fallback Options": [
-          "Nathan Eovaldi",
+          "Nathan Eovaldi (365.50)",
           {
             "name": "Bubba Chandler",
             "tag": "sleeper"
           },
-          "Jacob Misiorowski",
+          "Jacob Misiorowski (281.00)",
           "Tatsuya Imai",
-          "Spencer Strider",
-          "Shota Imanaga",
-          "Sandy Alcantara",
-          "Michael King",
-          "Emmet Sheehan",
+          "Spencer Strider (319.50)",
+          "Shota Imanaga (341.50)",
+          "Sandy Alcantara (276.50)",
+          "Michael King (300.50)",
+          "Emmet Sheehan (301.00)",
           {
-            "name": "Cade Horton",
+            "name": "Cade Horton (280.50)",
             "tag": "sleeper"
           },
-          "Ranger Suarez",
-          "Kris Bubic",
-          "Sonny Gray",
-          "Zack Wheeler",
-          "Robbie Ray",
-          "Luis Castillo",
-          "Carlos Rodon",
-          "Blake Snell",
+          "Ranger Suarez (315.00)",
+          "Kris Bubic (325.50)",
+          "Sonny Gray (324.50)",
+          "Zack Wheeler (365.50)",
+          "Robbie Ray (281.00)",
+          "Luis Castillo (328.00)",
+          "Carlos Rodon (337.00)",
+          "Blake Snell (284.00)",
           "Drew Rasmussen",
-          "Ryan Pepiot",
-          "Matthew Boyd",
+          "Ryan Pepiot (328.50)",
+          "Matthew Boyd (378.00)",
           "Trey Yesavage"
         ],
         "Tier 6 — The Last Resorts": [
           "Edward Cabrera",
-          "MacKenzie Gore",
+          "MacKenzie Gore (291.50)",
           "Michael Burrows",
           "Shane McClanahan",
-          "Tanner Bibee",
-          "Aaron Nola",
-          "Zac Gallen",
-          "Andrew Abbott",
+          "Tanner Bibee (273.00)",
+          "Aaron Nola (273.50)",
+          "Zac Gallen (274.00)",
+          "Andrew Abbott (286.00)",
           "Gerrit Cole",
-          "Ryne Nelson",
+          "Ryne Nelson (273.50)",
           "Shane Baz",
-          "Shane Smith",
-          "Merrill Kelly",
+          "Shane Smith (304.00)",
+          "Merrill Kelly (318.00)",
           "Ryan Weathers",
           "Cody Ponce",
-          "Jack Leiter",
+          "Jack Leiter (304.00)",
           "Kodai Senga",
-          "Jacob Lopez",
-          "Grayson Rodriguez",
+          "Jacob Lopez (268.00)",
+          "Grayson Rodriguez (314.00)",
           "Mick Abel",
           "Andrew Painter",
           "Braxton Ashcraft",
           "Will Warren",
-          "Grant Holmes",
+          "Grant Holmes (275.00)",
           "Chad Patrick",
-          "Noah Cameron",
+          "Noah Cameron (321.00)",
           "Roki Sasaki",
           "Sean Manaea",
           "Shane Bieber",
@@ -654,12 +655,12 @@
         ],
         "Tier 7 — The Leftovers": [
           "Bryce Miller",
-          "Jack Flaherty",
+          "Jack Flaherty (303.50)",
           "Reid Detmers",
-          "Tyler Mahle",
+          "Tyler Mahle (294.50)",
           "Luis Severino",
-          "Bailey Ober",
-          "Reynaldo Lopez",
+          "Bailey Ober (273.00)",
+          "Reynaldo Lopez (296.00)",
           "Joey Cantillo",
           "Connelly Early",
           "Didier Fuentes",
@@ -668,21 +669,21 @@
           "Robby Snelling",
           "Zebby Matthews",
           "Logan Henderson",
-          "Jameson Taillon",
+          "Jameson Taillon (299.50)",
           "Brayan Bello",
-          "Seth Lugo",
+          "Seth Lugo (296.50)",
           "Casey Mize",
-          "Brady Singer",
-          "Chris Bassitt",
+          "Brady Singer (300.50)",
+          "Chris Bassitt (283.00)",
           "Ben Brown",
           "Quinn Priester",
           "Jose Berrios",
           "Clay Holmes",
-          "David Peterson",
-          "Michael Wacha",
+          "David Peterson (307.00)",
+          "Michael Wacha (288.00)",
           "Zack Littell",
           "Jose Soriano",
-          "Mitch Keller",
+          "Mitch Keller (283.00)",
           "Rhett Lowder",
           "Cade Cavalli",
           "Taj Bradley",
@@ -719,49 +720,49 @@
       ],
       "tiers": {
         "Tier 1 — The Elite": [
-          "Mason Miller",
-          "Edwin Diaz",
+          "Mason Miller (473.50)",
+          "Edwin Diaz (475.00)",
           {
-            "name": "Andres Munoz",
+            "name": "Andres Munoz (456.00)",
             "tag": "sleeper"
           },
-          "Cade Smith",
-          "Aroldis Chapman",
-          "Jhoan Duran"
+          "Cade Smith (359.00)",
+          "Aroldis Chapman (446.00)",
+          "Jhoan Duran (437.50)"
         ],
         "Tier 2 — The Near-Elite": [
-          "David Bednar",
-          "Devin Williams",
-          "Raisel Iglesias",
-          "Josh Hader"
+          "David Bednar (443.50)",
+          "Devin Williams (398.00)",
+          "Raisel Iglesias (378.50)",
+          "Josh Hader (398.50)"
         ],
         "Tier 3 — The Next-Best Things": [
-          "Jeff Hoffman",
-          "Ryan Helsley",
-          "Emilio Pagan",
+          "Jeff Hoffman (408.00)",
+          "Ryan Helsley (313.50)",
+          "Emilio Pagan (388.50)",
           {
-            "name": "Daniel Palencia",
+            "name": "Daniel Palencia (394.00)",
             "tag": "sleeper"
           }
         ],
         "Tier 4 — The Fallback Options": [
-          "Carlos Estevez",
-          "Trevor Megill",
-          "Kenley Jansen",
-          "Pete Fairbanks",
-          "Dennis Santana",
-          "Seranthony Dominguez",
-          "Ryan Walker",
+          "Carlos Estevez (368.00)",
+          "Trevor Megill (425.00)",
+          "Kenley Jansen (380.00)",
+          "Pete Fairbanks (366.50)",
+          "Dennis Santana (333.50)",
+          "Seranthony Dominguez (272.00)",
+          "Ryan Walker (360.00)",
           {
-            "name": "Griffin Jax",
+            "name": "Griffin Jax (301.50)",
             "tag": "sleeper"
           }
         ],
         "Tier 5 — The Last Resorts": [
-          "Robert Garcia",
-          "Riley O'Brien",
-          "Kirby Yates",
-          "Clayton Beeter",
+          "Robert Garcia (350.50)",
+          "Riley O'Brien (280.00)",
+          "Kirby Yates (294.50)",
+          "Clayton Beeter (294.50)",
           "Paul Sewald",
           "Hogan Harris",
           "Taylor Rogers",
