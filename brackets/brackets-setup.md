@@ -2,7 +2,7 @@
 
 ## Overview
 
-This app uses Google Sheets as a backend via Google Apps Script. The script creates its own tab and manages all columns automatically.
+This app uses Google Sheets as a backend via Google Apps Script. It supports multiple tournaments, each stored in its own pair of tabs. The script creates and manages all tabs automatically.
 
 ---
 
@@ -10,7 +10,7 @@ This app uses Google Sheets as a backend via Google Apps Script. The script crea
 
 **Google Sheet:** https://docs.google.com/spreadsheets/d/1W8WownlaX4sX41LjUomERsX7glCoy9eyGuwCfZAUv7M/edit
 
-The Apps Script will automatically create the tabs it needs (`TournamentData` and `MatchLog`) inside this sheet.
+The Apps Script will automatically create the tabs it needs inside this sheet.
 
 ---
 
@@ -22,93 +22,99 @@ The Apps Script will automatically create the tabs it needs (`TournamentData` an
 ```javascript
 // ============================================
 // Tournament Bracket Generator - Apps Script
+// Multi-Tournament Support
 // ============================================
 
 const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
+const INDEX_TAB = 'TournamentIndex';
 
-// Tab name for tournament data
-const TAB_NAME = 'TournamentData';
-
-function getOrCreateSheet() {
+// ---- Get or create the master index tab ----
+function getOrCreateIndexSheet() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = ss.getSheetByName(TAB_NAME);
+  let sheet = ss.getSheetByName(INDEX_TAB);
 
   if (!sheet) {
-    sheet = ss.insertSheet(TAB_NAME);
-
-    // Set up header row
-    const headers = [
-      'Key',           // A - data key identifier
-      'Value',         // B - JSON data value
-      'LastUpdated'    // C - timestamp
-    ];
-
+    sheet = ss.insertSheet(INDEX_TAB);
+    const headers = ['TournamentID', 'Name', 'Type', 'Status', 'ParticipantCount', 'CreatedAt', 'UpdatedAt'];
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-
-    // Format header row
     const headerRange = sheet.getRange(1, 1, 1, headers.length);
     headerRange.setFontWeight('bold');
     headerRange.setBackground('#002B5C');
     headerRange.setFontColor('#FFFFFF');
-
-    // Set column widths
-    sheet.setColumnWidth(1, 200);  // Key
-    sheet.setColumnWidth(2, 600);  // Value
-    sheet.setColumnWidth(3, 200);  // LastUpdated
-
-    // Freeze header row
     sheet.setFrozenRows(1);
-
-    // Initialize data rows
-    const initialKeys = [
-      'tournament_name',
-      'tournament_type',
-      'participants',
-      'matches',
-      'rr_matches',
-      'rr_advance_count',
-      'phase',
-      'settings'
-    ];
-
-    initialKeys.forEach((key, i) => {
-      sheet.getRange(i + 2, 1).setValue(key);
-      sheet.getRange(i + 2, 2).setValue('');
-      sheet.getRange(i + 2, 3).setValue('');
-    });
-
-    // Also create a MatchLog tab for detailed match history
-    let logSheet = ss.getSheetByName('MatchLog');
-    if (!logSheet) {
-      logSheet = ss.insertSheet('MatchLog');
-      const logHeaders = [
-        'MatchID',     // A
-        'Round',       // B
-        'Bracket',     // C
-        'Player1',     // D
-        'Player2',     // E
-        'Score1',      // F
-        'Score2',      // G
-        'Winner',      // H
-        'Timestamp'    // I
-      ];
-      logSheet.getRange(1, 1, 1, logHeaders.length).setValues([logHeaders]);
-      const logHeaderRange = logSheet.getRange(1, 1, 1, logHeaders.length);
-      logHeaderRange.setFontWeight('bold');
-      logHeaderRange.setBackground('#002B5C');
-      logHeaderRange.setFontColor('#FFFFFF');
-      logSheet.setFrozenRows(1);
-    }
+    sheet.setColumnWidth(1, 220);
+    sheet.setColumnWidth(2, 250);
+    sheet.setColumnWidth(3, 150);
+    sheet.setColumnWidth(4, 100);
+    sheet.setColumnWidth(5, 130);
+    sheet.setColumnWidth(6, 200);
+    sheet.setColumnWidth(7, 200);
   }
 
   return sheet;
 }
 
+// ---- Get or create per-tournament data tab ----
+function getOrCreateTournamentSheet(tournamentId) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const tabName = 'T_' + tournamentId.substring(0, 30) + '_Data';
+  let sheet = ss.getSheetByName(tabName);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(tabName);
+    const headers = ['Key', 'Value', 'LastUpdated'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#002B5C');
+    headerRange.setFontColor('#FFFFFF');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 200);
+    sheet.setColumnWidth(2, 600);
+    sheet.setColumnWidth(3, 200);
+
+    const initialKeys = [
+      'tournament_name', 'tournament_type', 'participants',
+      'matches', 'rr_matches', 'rr_advance_count', 'phase'
+    ];
+    initialKeys.forEach((key, i) => {
+      sheet.getRange(i + 2, 1).setValue(key);
+    });
+  }
+
+  return sheet;
+}
+
+// ---- Get or create per-tournament match log tab ----
+function getOrCreateMatchLogSheet(tournamentId) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const tabName = 'T_' + tournamentId.substring(0, 30) + '_Log';
+  let sheet = ss.getSheetByName(tabName);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(tabName);
+    const headers = ['MatchID', 'Round', 'Bracket', 'Player1', 'Player2', 'Score1', 'Score2', 'Winner', 'Timestamp'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#002B5C');
+    headerRange.setFontColor('#FFFFFF');
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+// ---- HTTP Handlers ----
 function doGet(e) {
   const action = e.parameter.action;
+  const id = e.parameter.id;
 
-  if (action === 'getTournament') {
-    return getTournamentData();
+  if (action === 'listTournaments') {
+    return listTournaments();
+  }
+  if (action === 'getTournament' && id) {
+    return getTournamentData(id);
   }
 
   return ContentService.createTextOutput(JSON.stringify({ error: 'Unknown action' }))
@@ -119,13 +125,22 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     const action = payload.action;
+    const id = payload.id;
 
-    if (action === 'saveTournament') {
-      return saveTournamentData(payload.data);
+    if (action === 'saveTournament' && id) {
+      return saveTournamentData(id, payload.data);
     }
-
-    if (action === 'resetTournament') {
-      return resetTournamentData();
+    if (action === 'deleteTournament' && id) {
+      return deleteTournamentData(id);
+    }
+    if (action === 'archiveTournament' && id) {
+      return updateTournamentStatus(id, 'archived');
+    }
+    if (action === 'unarchiveTournament' && id) {
+      return updateTournamentStatus(id, 'active');
+    }
+    if (action === 'resetTournament' && id) {
+      return resetTournamentData(id);
     }
 
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' }))
@@ -136,24 +151,44 @@ function doPost(e) {
   }
 }
 
-function getTournamentData() {
-  const sheet = getOrCreateSheet();
+// ---- List all tournaments from index ----
+function listTournaments() {
+  const sheet = getOrCreateIndexSheet();
   const data = sheet.getDataRange().getValues();
+  const tournaments = [];
 
+  for (let i = 1; i < data.length; i++) {
+    if (!data[i][0]) continue;
+    tournaments.push({
+      id: data[i][0],
+      name: data[i][1],
+      type: data[i][2],
+      status: data[i][3],
+      participantCount: data[i][4],
+      createdAt: data[i][5],
+      updatedAt: data[i][6]
+    });
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(tournaments))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ---- Get a single tournament's data ----
+function getTournamentData(tournamentId) {
+  const sheet = getOrCreateTournamentSheet(tournamentId);
+  const data = sheet.getDataRange().getValues();
   const result = {};
+
   for (let i = 1; i < data.length; i++) {
     const key = data[i][0];
     const value = data[i][1];
     if (key && value) {
-      try {
-        result[key] = JSON.parse(value);
-      } catch (e) {
-        result[key] = value;
-      }
+      try { result[key] = JSON.parse(value); }
+      catch (e) { result[key] = value; }
     }
   }
 
-  // Map to tournament object
   const tournament = {
     name: result.tournament_name || '',
     type: result.tournament_type || '',
@@ -168,26 +203,28 @@ function getTournamentData() {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function saveTournamentData(dataStr) {
+// ---- Save tournament data ----
+function saveTournamentData(tournamentId, dataStr) {
   const tournament = JSON.parse(dataStr);
-  const sheet = getOrCreateSheet();
+  const sheet = getOrCreateTournamentSheet(tournamentId);
   const now = new Date().toISOString();
 
-  // Map tournament fields to sheet rows
-  const keyValuePairs = [
+  // Update or create index entry
+  updateIndexEntry(tournamentId, tournament, now);
+
+  // Write key-value pairs
+  const pairs = [
     ['tournament_name', JSON.stringify(tournament.name)],
     ['tournament_type', JSON.stringify(tournament.type)],
     ['participants', JSON.stringify(tournament.participants)],
     ['matches', JSON.stringify(tournament.matches)],
     ['rr_matches', JSON.stringify(tournament.rrMatches || [])],
     ['rr_advance_count', JSON.stringify(tournament.rrAdvanceCount || 4)],
-    ['phase', JSON.stringify(tournament.phase || 'rr')],
-    ['settings', JSON.stringify({ adminPassword: tournament.adminPassword || '' })]
+    ['phase', JSON.stringify(tournament.phase || 'rr')]
   ];
 
-  // Update each row
   const data = sheet.getDataRange().getValues();
-  for (const [key, value] of keyValuePairs) {
+  for (const [key, value] of pairs) {
     let found = false;
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === key) {
@@ -198,53 +235,118 @@ function saveTournamentData(dataStr) {
       }
     }
     if (!found) {
-      const newRow = data.length + 1;
+      const newRow = sheet.getLastRow() + 1;
       sheet.getRange(newRow, 1).setValue(key);
       sheet.getRange(newRow, 2).setValue(value);
       sheet.getRange(newRow, 3).setValue(now);
-      data.push([key, value, now]);
     }
   }
 
-  // Update MatchLog tab with completed matches
-  updateMatchLog(tournament);
+  // Update match log
+  updateMatchLog(tournamentId, tournament);
 
   return ContentService.createTextOutput(JSON.stringify({ success: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function resetTournamentData() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+// ---- Update index entry ----
+function updateIndexEntry(tournamentId, tournament, now) {
+  const indexSheet = getOrCreateIndexSheet();
+  const data = indexSheet.getDataRange().getValues();
 
-  // Clear TournamentData values (keep headers and keys)
-  const sheet = ss.getSheetByName(TAB_NAME);
-  if (sheet) {
-    const lastRow = sheet.getLastRow();
-    if (lastRow > 1) {
-      // Clear Value and LastUpdated columns, keep Key column
-      sheet.getRange(2, 2, lastRow - 1, 2).clearContent();
+  // Check if entry exists
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === tournamentId) {
+      // Update existing
+      indexSheet.getRange(i + 1, 2).setValue(tournament.name);
+      indexSheet.getRange(i + 1, 3).setValue(tournament.type);
+      indexSheet.getRange(i + 1, 5).setValue(tournament.participants ? tournament.participants.length : 0);
+      indexSheet.getRange(i + 1, 7).setValue(now);
+      return;
     }
   }
 
-  // Clear MatchLog data (keep header)
-  const logSheet = ss.getSheetByName('MatchLog');
-  if (logSheet) {
-    const logLastRow = logSheet.getLastRow();
-    if (logLastRow > 1) {
-      logSheet.getRange(2, 1, logLastRow - 1, 9).clearContent();
+  // Create new entry
+  const newRow = indexSheet.getLastRow() + 1;
+  indexSheet.getRange(newRow, 1, 1, 7).setValues([[
+    tournamentId,
+    tournament.name,
+    tournament.type,
+    'active',
+    tournament.participants ? tournament.participants.length : 0,
+    now,
+    now
+  ]]);
+}
+
+// ---- Update tournament status ----
+function updateTournamentStatus(tournamentId, status) {
+  const indexSheet = getOrCreateIndexSheet();
+  const data = indexSheet.getDataRange().getValues();
+  const now = new Date().toISOString();
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === tournamentId) {
+      indexSheet.getRange(i + 1, 4).setValue(status);
+      indexSheet.getRange(i + 1, 7).setValue(now);
+      break;
     }
   }
 
-  return ContentService.createTextOutput(JSON.stringify({ success: true, action: 'reset' }))
+  return ContentService.createTextOutput(JSON.stringify({ success: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function updateMatchLog(tournament) {
+// ---- Delete tournament ----
+function deleteTournamentData(tournamentId) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let logSheet = ss.getSheetByName('MatchLog');
-  if (!logSheet) return;
 
-  // Clear existing data (keep header)
+  // Remove index entry
+  const indexSheet = getOrCreateIndexSheet();
+  const data = indexSheet.getDataRange().getValues();
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === tournamentId) {
+      indexSheet.deleteRow(i + 1);
+      break;
+    }
+  }
+
+  // Delete data tab
+  const dataTabName = 'T_' + tournamentId.substring(0, 30) + '_Data';
+  const dataSheet = ss.getSheetByName(dataTabName);
+  if (dataSheet) ss.deleteSheet(dataSheet);
+
+  // Delete match log tab
+  const logTabName = 'T_' + tournamentId.substring(0, 30) + '_Log';
+  const logSheet = ss.getSheetByName(logTabName);
+  if (logSheet) ss.deleteSheet(logSheet);
+
+  return ContentService.createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ---- Reset tournament data (clear values, keep structure) ----
+function resetTournamentData(tournamentId) {
+  const sheet = getOrCreateTournamentSheet(tournamentId);
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 2, lastRow - 1, 2).clearContent();
+  }
+
+  // Clear match log
+  const logSheet = getOrCreateMatchLogSheet(tournamentId);
+  const logLastRow = logSheet.getLastRow();
+  if (logLastRow > 1) {
+    logSheet.getRange(2, 1, logLastRow - 1, 9).clearContent();
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ---- Update match log ----
+function updateMatchLog(tournamentId, tournament) {
+  const logSheet = getOrCreateMatchLogSheet(tournamentId);
   const lastRow = logSheet.getLastRow();
   if (lastRow > 1) {
     logSheet.getRange(2, 1, lastRow - 1, 9).clearContent();
@@ -253,41 +355,19 @@ function updateMatchLog(tournament) {
   const now = new Date().toISOString();
   const rows = [];
 
-  // Log elimination matches
   if (tournament.matches) {
     for (const match of tournament.matches) {
       if (match.winner && match.slot1 && match.slot2) {
         if (match.slot1.name === 'BYE' || match.slot2.name === 'BYE') continue;
-        rows.push([
-          match.id,
-          match.roundName || 'Round ' + match.round,
-          match.bracket || 'winners',
-          match.slot1.name,
-          match.slot2.name,
-          match.slot1.score,
-          match.slot2.score,
-          match.winner,
-          now
-        ]);
+        rows.push([match.id, match.roundName || 'Round ' + match.round, match.bracket || 'winners', match.slot1.name, match.slot2.name, match.slot1.score, match.slot2.score, match.winner, now]);
       }
     }
   }
 
-  // Log round robin matches
   if (tournament.rrMatches) {
     for (const match of tournament.rrMatches) {
       if (match.completed) {
-        rows.push([
-          'RR-' + match.id,
-          'RR Round ' + match.round,
-          'round_robin',
-          match.p1,
-          match.p2,
-          match.p1Score,
-          match.p2Score,
-          match.p1Score > match.p2Score ? match.p1 : (match.p2Score > match.p1Score ? match.p2 : 'Draw'),
-          now
-        ]);
+        rows.push(['RR-' + match.id, 'RR Round ' + match.round, 'round_robin', match.p1, match.p2, match.p1Score, match.p2Score, match.p1Score > match.p2Score ? match.p1 : (match.p2Score > match.p1Score ? match.p2 : 'Draw'), now]);
       }
     }
   }
@@ -319,35 +399,63 @@ function updateMatchLog(tournament) {
 ## Step 4: Connect the App
 
 1. Open the Tournament Bracket app
-2. Create your tournament and go to the **Settings** tab
-3. Paste the Web app URL in the "Apps Script URL" field
-4. Click **Save**
+2. On the Tournaments landing page, expand **Google Sheets Settings**
+3. Paste the Web app URL and click **Save**
 
 ---
 
 ## Google Sheets Tab Structure
 
-The script automatically creates two tabs:
+The script automatically creates and manages these tabs:
 
-### TournamentData Tab
+### TournamentIndex Tab (Master List)
+
 | Column | Purpose |
 |--------|---------|
-| A - Key | Data identifier (tournament_name, tournament_type, participants, matches, etc.) |
-| B - Value | JSON-encoded data value |
-| C - LastUpdated | ISO timestamp of last update |
+| A - TournamentID | Unique identifier (e.g. `t_1711234567890_abc12`) |
+| B - Name | Tournament name |
+| C - Type | Format (single, double, roundrobin, rr_single, rr_double) |
+| D - Status | active / completed / archived |
+| E - ParticipantCount | Number of participants |
+| F - CreatedAt | ISO timestamp |
+| G - UpdatedAt | ISO timestamp |
 
-### MatchLog Tab
+### T_{id}_Data Tab (Per Tournament)
+
+| Column | Purpose |
+|--------|---------|
+| A - Key | Data identifier (tournament_name, participants, matches, etc.) |
+| B - Value | JSON-encoded data |
+| C - LastUpdated | ISO timestamp |
+
+### T_{id}_Log Tab (Per Tournament Match Log)
+
 | Column | Purpose |
 |--------|---------|
 | A - MatchID | Unique match identifier |
 | B - Round | Round name |
 | C - Bracket | winners / losers / round_robin / grand_final |
-| D - Player1 | First participant name |
-| E - Player2 | Second participant name |
+| D - Player1 | First participant |
+| E - Player2 | Second participant |
 | F - Score1 | Player 1 score |
 | G - Score2 | Player 2 score |
-| H - Winner | Winner name (or "Draw" for RR ties) |
-| I - Timestamp | When the result was recorded |
+| H - Winner | Winner name (or "Draw") |
+| I - Timestamp | When recorded |
+
+---
+
+## API Actions
+
+### GET Requests
+- `?action=listTournaments` — returns array of all tournaments from index
+- `?action=getTournament&id=X` — returns full data for tournament X
+
+### POST Requests
+- `action: saveTournament, id: X, data: JSON` — save/update tournament data
+- `action: deleteTournament, id: X` — remove tournament and its tabs
+- `action: archiveTournament, id: X` — set status to archived
+- `action: unarchiveTournament, id: X` — set status to active
+- `action: resetTournament, id: X` — clear match data, keep structure
 
 ---
 
@@ -357,3 +465,4 @@ The script automatically creates two tabs:
 - **Permission errors**: Make sure the web app is set to "Anyone" for access.
 - **Data not syncing**: Check the Apps Script execution log (Extensions > Apps Script > Executions).
 - **Need to redeploy**: After code changes, go to Deploy > Manage deployments > Edit > New version > Deploy.
+- **Tab name limits**: Tab names are capped at ~30 characters from the tournament ID to stay under the 100-character limit.
