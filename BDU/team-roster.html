@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Roster - BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e94560;
+            font-size: 1.8rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #e94560;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* Teams Section */
+        .teams-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .team-card {
+            flex: 1;
+            min-width: 200px;
+            background: #16213e;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #0f3460;
+        }
+        .team-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .team-card h2 .count {
+            background: #e94560;
+            color: #fff;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+        .team-player-list {
+            list-style: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .team-player-list li {
+            padding: 6px 10px;
+            border-bottom: 1px solid #0f3460;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .team-player-list li:last-child { border-bottom: none; }
+        .team-player-list li .remove-btn {
+            background: none;
+            border: none;
+            color: #e94560;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .team-player-list li .remove-btn:hover { opacity: 1; }
+        .team-player-list .grade-tag {
+            font-size: 0.75rem;
+            color: #888;
+            margin-left: 6px;
+        }
+
+        /* Player Section */
+        .player-section {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #0f3460;
+        }
+        .player-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        .add-player-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .add-player-form input, .add-player-form select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #0f3460;
+            background: #1a1a2e;
+            color: #eee;
+            font-size: 0.9rem;
+        }
+        .add-player-form input { flex: 1; min-width: 150px; }
+        .add-player-form button {
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: none;
+            background: #e94560;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .add-player-form button:hover { background: #c73650; }
+
+        /* Filter */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-bar input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #0f3460;
+            background: #1a1a2e;
+            color: #eee;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-bar label {
+            font-size: 0.85rem;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .filter-bar label input[type="checkbox"] {
+            accent-color: #e94560;
+        }
+
+        /* Player Table */
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .player-table th {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #0f3460;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        .player-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #0f3460;
+            font-size: 0.9rem;
+        }
+        .player-table tr:hover { background: #1a1a3e; }
+        .player-table .bdu-yes { color: #4ecca3; }
+        .player-table .bdu-no { color: #e94560; }
+
+        /* Checkboxes */
+        .team-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #e94560;
+            cursor: pointer;
+        }
+        .team-col { text-align: center; }
+
+        /* Delete player */
+        .delete-player-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .delete-player-btn:hover { color: #e94560; }
+
+        /* Scrollable table wrapper */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 600px) {
+            .teams-container { flex-direction: column; }
+            .team-card { min-width: 100%; }
+            body { padding: 10px; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to BDU</a>
+    <h1><i class="fas fa-users"></i> Team Roster</h1>
+
+    <!-- Teams at the top -->
+    <div class="teams-container" id="teamsContainer"></div>
+
+    <!-- Player list at the bottom -->
+    <div class="player-section">
+        <h2>Players</h2>
+
+        <!-- Add player form -->
+        <div class="add-player-form">
+            <input type="text" id="newPlayerName" placeholder="Player name">
+            <select id="newPlayerGrade">
+                <option value="5th">5th</option>
+                <option value="6th" selected>6th</option>
+                <option value="7th">7th</option>
+                <option value="8th">8th</option>
+            </select>
+            <select id="newPlayerBDU">
+                <option value="Yes">BDU - Yes</option>
+                <option value="No">BDU - No</option>
+            </select>
+            <button onclick="addPlayer()"><i class="fas fa-plus"></i> Add Player</button>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-bar">
+            <input type="text" id="searchInput" placeholder="Search players..." oninput="renderPlayers()">
+            <label><input type="checkbox" id="filterBDU" onchange="renderPlayers()"> BDU Only</label>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>BDU</th>
+                        <th class="team-col">U14</th>
+                        <th class="team-col">U13</th>
+                        <th class="team-col">U12</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="playerTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const TEAMS = ['U14', 'U13', 'U12'];
+        const STORAGE_KEY = 'bdu_team_roster';
+
+        const DEFAULT_PLAYERS = [
+            { name: "Hannah B", grade: "6th", bdu: "Yes" },
+            { name: "Ava", grade: "6th", bdu: "Yes" },
+            { name: "Emma B", grade: "7th", bdu: "Yes" },
+            { name: "Lilly B", grade: "5th", bdu: "Yes" },
+            { name: "Hazel B", grade: "5th", bdu: "Yes" },
+            { name: "Jordan G", grade: "6th", bdu: "Yes" },
+            { name: "Whittney P", grade: "6th", bdu: "Yes" },
+            { name: "Clarie B", grade: "6th", bdu: "Yes" },
+            { name: "Charlie M", grade: "6th", bdu: "Yes" },
+            { name: "Josie D", grade: "6th", bdu: "Yes" },
+            { name: "Emery O", grade: "6th", bdu: "Yes" },
+            { name: "Ava V", grade: "6th", bdu: "Yes" },
+            { name: "Isabelle B", grade: "6th", bdu: "Yes" },
+            { name: "JoJo R", grade: "6th", bdu: "Yes" },
+            { name: "Kendall W", grade: "6th", bdu: "No" },
+            { name: "Mara B", grade: "6th", bdu: "Yes" },
+            { name: "Sidney C", grade: "6th", bdu: "No" },
+            { name: "Olivia K", grade: "6th", bdu: "No" },
+            { name: "Lilly K", grade: "6th", bdu: "No" },
+            { name: "Isla Z", grade: "6th", bdu: "No" },
+            { name: "Claire S", grade: "7th", bdu: "Yes" },
+            { name: "Audrey V", grade: "7th", bdu: "Yes" },
+            { name: "Evie P", grade: "7th", bdu: "Yes" },
+            { name: "Ella M", grade: "7th", bdu: "Yes" },
+            { name: "Emmie U", grade: "7th", bdu: "Yes" },
+            { name: "Emma R", grade: "7th", bdu: "Yes" },
+            { name: "Amsie", grade: "7th", bdu: "Yes" }
+        ];
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            // Initialize with defaults - no team assignments yet
+            const data = {
+                players: DEFAULT_PLAYERS.map((p, i) => ({
+                    id: i + 1,
+                    ...p,
+                    teams: []
+                })),
+                nextId: DEFAULT_PLAYERS.length + 1
+            };
+            saveData(data);
+            return data;
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        let data = loadData();
+
+        function toggleTeam(playerId, team) {
+            const player = data.players.find(p => p.id === playerId);
+            if (!player) return;
+            const idx = player.teams.indexOf(team);
+            if (idx === -1) {
+                player.teams.push(team);
+            } else {
+                player.teams.splice(idx, 1);
+            }
+            saveData(data);
+            render();
+        }
+
+        function removeFromTeam(playerId, team) {
+            const player = data.players.find(p => p.id === playerId);
+            if (!player) return;
+            const idx = player.teams.indexOf(team);
+            if (idx !== -1) {
+                player.teams.splice(idx, 1);
+                saveData(data);
+                render();
+            }
+        }
+
+        function addPlayer() {
+            const nameInput = document.getElementById('newPlayerName');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            const grade = document.getElementById('newPlayerGrade').value;
+            const bdu = document.getElementById('newPlayerBDU').value;
+            data.players.push({
+                id: data.nextId++,
+                name,
+                grade,
+                bdu,
+                teams: []
+            });
+            saveData(data);
+            nameInput.value = '';
+            render();
+        }
+
+        function deletePlayer(playerId) {
+            if (!confirm('Remove this player?')) return;
+            data.players = data.players.filter(p => p.id !== playerId);
+            saveData(data);
+            render();
+        }
+
+        function renderTeams() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = TEAMS.map(team => {
+                const teamPlayers = data.players.filter(p => p.teams.includes(team));
+                return `
+                    <div class="team-card">
+                        <h2>${team} <span class="count">${teamPlayers.length}</span></h2>
+                        <ul class="team-player-list">
+                            ${teamPlayers.length === 0 ? '<li style="color:#666;font-style:italic;">No players assigned</li>' :
+                            teamPlayers.map(p => `
+                                <li>
+                                    <span>${p.name}<span class="grade-tag">${p.grade}</span></span>
+                                    <button class="remove-btn" onclick="removeFromTeam(${p.id}, '${team}')" title="Remove from ${team}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPlayers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const bduOnly = document.getElementById('filterBDU').checked;
+            const tbody = document.getElementById('playerTableBody');
+
+            let filtered = data.players;
+            if (search) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
+            }
+            if (bduOnly) {
+                filtered = filtered.filter(p => p.bdu === 'Yes');
+            }
+
+            tbody.innerHTML = filtered.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>${p.grade}</td>
+                    <td class="${p.bdu === 'Yes' ? 'bdu-yes' : 'bdu-no'}">${p.bdu}</td>
+                    ${TEAMS.map(team => `
+                        <td class="team-col">
+                            <input type="checkbox" class="team-checkbox"
+                                ${p.teams.includes(team) ? 'checked' : ''}
+                                onchange="toggleTeam(${p.id}, '${team}')">
+                        </td>
+                    `).join('')}
+                    <td>
+                        <button class="delete-player-btn" onclick="deletePlayer(${p.id})" title="Delete player">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function render() {
+            renderTeams();
+            renderPlayers();
+        }
+
+        // Enter key to add player
+        document.getElementById('newPlayerName').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') addPlayer();
+        });
+
+        render();
+    </script>
+</body>
+</html>
