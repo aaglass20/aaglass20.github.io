@@ -3685,6 +3685,7 @@
             return active;
         }
 
+        var _liveGridInterval = null;
         function setGridWinnerMode(mode) {
             gridWinnerMode = mode;
             // Update button styling
@@ -3696,6 +3697,20 @@
             const legendLabel = document.getElementById('legend-winner-label');
             if (legendItem) legendItem.style.display = (mode === 'off' || mode === 'live') ? 'none' : '';
             if (legendLabel) legendLabel.textContent = mode === 'normal' ? 'Normal Winner' : mode === 'inverse' ? 'Inverse Winner' : 'Winning Square';
+
+            // When Live mode is selected, fetch scores immediately and start polling
+            if (mode === 'live') {
+                fetchLiveScores();
+                if (_liveGridInterval) clearInterval(_liveGridInterval);
+                _liveGridInterval = setInterval(fetchLiveScores, 60000);
+            } else {
+                // Stop live grid polling (unless admin live feed is already running)
+                if (_liveGridInterval) {
+                    clearInterval(_liveGridInterval);
+                    _liveGridInterval = null;
+                }
+            }
+
             renderGrid();
         }
 
@@ -4539,11 +4554,14 @@
                     });
                     lastFetchTime = new Date();
                     // Auto-populate unlocked tournament games
-                    if (liveFeedEnabled) {
+                    if (liveFeedEnabled || gridWinnerMode === 'live') {
                         autoPopulateScores();
                     }
                     renderScoreEntry();
                     renderTodayScoreboard();
+                    if (gridWinnerMode === 'live') {
+                        renderGrid();
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching live scores:', error);
