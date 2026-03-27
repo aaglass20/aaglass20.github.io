@@ -410,12 +410,81 @@
             color: var(--secondary-dark);
             font-weight: 700;
             position: relative;
-            animation: winPulse 2s ease-in-out infinite;
+            box-shadow: inset 0 0 0 2px var(--accent-dark);
         }
 
-        @keyframes winPulse {
-            0%, 100% { box-shadow: inset 0 0 0 2px var(--accent-dark); }
-            50% { box-shadow: inset 0 0 0 3px var(--primary), 0 0 8px rgba(255, 215, 0, 0.4); }
+        /* Active/live game cell highlight */
+        .squares-grid .cell-active {
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: #fff;
+            font-weight: 700;
+            position: relative;
+            animation: activePulse 2s ease-in-out infinite;
+            overflow: visible;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { box-shadow: inset 0 0 0 2px #b71c1c, 0 0 6px rgba(229, 57, 53, 0.3); }
+            50% { box-shadow: inset 0 0 0 3px #ff5252, 0 0 12px rgba(229, 57, 53, 0.6); }
+        }
+
+        /* When a cell is both a winner and active, active takes priority visually */
+        .squares-grid .cell-winner.cell-active {
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: #fff;
+        }
+
+        /* Live game score tooltip that appears on active cells */
+        .cell-live-badge {
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 20;
+            pointer-events: none;
+            line-height: 1.3;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: badgeAppear 0.4s ease-out;
+        }
+        .cell-live-badge::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: #1a1a2e;
+        }
+        .cell-live-badge .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #ff4444;
+            border-radius: 50%;
+            margin-right: 3px;
+            vertical-align: middle;
+            animation: liveDotBlink 1s ease-in-out infinite;
+        }
+        @keyframes liveDotBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes badgeAppear {
+            from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Smooth transition for cells gaining/losing active state */
+        .squares-grid td {
+            transition: background 0.6s ease, box-shadow 0.6s ease, color 0.3s ease;
         }
 
         /* Admin-highlighted cell */
@@ -668,6 +737,7 @@
         .legend-swatch.claimed { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); }
         .legend-swatch.mine { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); }
         .legend-swatch.winner { background: linear-gradient(135deg, var(--accent-light), var(--accent)); }
+        .legend-swatch.active { background: linear-gradient(135deg, #e53935, #b71c1c); }
 
         /* ============================================
            CONFIGURATION TAB
@@ -2528,6 +2598,7 @@
                 <button class="grid-mode-btn active" data-grid-mode="off" onclick="setGridWinnerMode('off')">Off</button>
                 <button class="grid-mode-btn" data-grid-mode="normal" onclick="setGridWinnerMode('normal')">Normal</button>
                 <button class="grid-mode-btn" data-grid-mode="inverse" onclick="setGridWinnerMode('inverse')">Inverse</button>
+                <button class="grid-mode-btn" data-grid-mode="live" onclick="setGridWinnerMode('live')">Live</button>
             </div>
         </div>
 
@@ -2549,6 +2620,10 @@
             <div class="legend-item" id="legend-winner-item" style="display:none;">
                 <div class="legend-swatch winner"></div>
                 <span id="legend-winner-label">Winning Square</span>
+            </div>
+            <div class="legend-item" id="legend-active-item" style="display:none;">
+                <div class="legend-swatch active"></div>
+                <span>Currently Winning (Live)</span>
             </div>
         </div>
 
@@ -3552,6 +3627,64 @@
             return wins;
         }
 
+        /**
+         * Computes a map of grid cells currently "in play" from live games.
+         * Uses the same mode logic as getWinningCells but for games with _liveState === 'live'.
+         * @param {string} mode - 'normal' or 'inverse'
+         * @returns {Object} Map of "r,c" -> true
+         */
+        function getActiveCells(mode) {
+            const active = {};
+            if (!numbersGenerated) return active;
+
+            gamesData.forEach(function(game) {
+                if (game._liveState !== 'live') return;
+                if (game.score1 === null || game.score2 === null) return;
+                if (game.score1 === 0 && game.score2 === 0) return;
+
+                const exclusion = getRoundExclusion(game.round);
+                if (mode === 'normal' && exclusion.excludeNormal) return;
+                if (mode === 'inverse' && exclusion.excludeInverse) return;
+
+                // For live games, use current leading team as "winner"
+                const isTeam1Leading = game.score1 >= game.score2;
+                const leadScore = isTeam1Leading ? game.score1 : game.score2;
+                const trailScore = isTeam1Leading ? game.score2 : game.score1;
+                const leadDigit = leadScore % 10;
+                const trailDigit = trailScore % 10;
+
+                let rowDigit, colDigit;
+                if (mode === 'normal') {
+                    rowDigit = leadDigit;
+                    colDigit = trailDigit;
+                } else {
+                    rowDigit = trailDigit;
+                    colDigit = leadDigit;
+                }
+
+                const owner = getSquareOwner(rowDigit, colDigit);
+                if (owner.row >= 0 && owner.col >= 0) {
+                    const key = owner.row + ',' + owner.col;
+                    // Build short team names for badge
+                    const t1 = (game.team1 || '').split(' ').pop() || 'TM1';
+                    const t2 = (game.team2 || '').split(' ').pop() || 'TM2';
+                    const gameInfo = {
+                        team1: t1,
+                        team2: t2,
+                        score1: game.score1,
+                        score2: game.score2,
+                        period: game._livePeriod || '',
+                        clock: game._liveClock || ''
+                    };
+                    // A cell can have multiple live games
+                    if (!active[key]) active[key] = [];
+                    active[key].push(gameInfo);
+                }
+            });
+
+            return active;
+        }
+
         function setGridWinnerMode(mode) {
             gridWinnerMode = mode;
             // Update button styling
@@ -3561,7 +3694,7 @@
             // Update legend
             const legendItem = document.getElementById('legend-winner-item');
             const legendLabel = document.getElementById('legend-winner-label');
-            if (legendItem) legendItem.style.display = mode === 'off' ? 'none' : '';
+            if (legendItem) legendItem.style.display = (mode === 'off' || mode === 'live') ? 'none' : '';
             if (legendLabel) legendLabel.textContent = mode === 'normal' ? 'Normal Winner' : mode === 'inverse' ? 'Inverse Winner' : 'Winning Square';
             renderGrid();
         }
@@ -3694,8 +3827,17 @@
             const container = document.getElementById('grid-container');
             let claimedCount = 0;
 
-            // Compute winning cells if mode is on
-            const winningCells = (gridWinnerMode !== 'off') ? getWinningCells(gridWinnerMode) : {};
+            // Compute winning cells (completed games) — not shown in 'live' or 'off' mode
+            const winnerMode = (gridWinnerMode === 'normal' || gridWinnerMode === 'inverse') ? gridWinnerMode : null;
+            const winningCells = winnerMode ? getWinningCells(winnerMode) : {};
+            // Compute active/live game cells — shown in 'live' mode (uses 'normal' mapping)
+            const liveMode = (gridWinnerMode === 'live') ? 'normal' : null;
+            const activeCells = liveMode ? getActiveCells(liveMode) : {};
+            const hasActiveCells = Object.keys(activeCells).length > 0;
+
+            // Show/hide legend items
+            const legendActiveItem = document.getElementById('legend-active-item');
+            if (legendActiveItem) legendActiveItem.style.display = hasActiveCells ? '' : 'none';
 
             let html = '<table class="squares-grid">';
 
@@ -3730,6 +3872,20 @@
                     const cellKey = r + ',' + c;
                     const winCount = winningCells[cellKey] || 0;
                     const isWinner = winCount > 0;
+                    const activeGames = activeCells[cellKey] || null;
+                    const isActive = !!activeGames;
+
+                    // Build live game badge HTML
+                    let liveBadge = '';
+                    if (isActive) {
+                        const badges = activeGames.map(function(g) {
+                            const timeStr = g.clock ? g.clock + ' ' + g.period : g.period;
+                            return '<span class="live-dot"></span>' +
+                                escapeHtml(g.team1) + ' ' + g.score1 + ' - ' + g.score2 + ' ' + escapeHtml(g.team2) +
+                                (timeStr ? '<br>' + escapeHtml(timeStr) : '');
+                        });
+                        liveBadge = '<div class="cell-live-badge">' + badges.join('<br>') + '</div>';
+                    }
 
                     if (name) {
                         claimedCount++;
@@ -3739,12 +3895,14 @@
                         const isMatch = isFiltered && gridFilterNames.some(f => nameLower === f.toLowerCase());
                         const filterClass = isFiltered ? (isMatch ? ' cell-filter-highlight' : ' cell-filter-dim') : '';
                         const winnerClass = isWinner ? ' cell-winner' : '';
+                        const activeClass = isActive ? ' cell-active' : '';
                         const winBadge = winCount > 1 ? '<span class="cell-winner-count">' + winCount + 'x</span>' : '';
-                        html += '<td class="cell-claimed' + winnerClass + filterClass + '" style="position:relative;">' + paidCheck + winBadge + escapeHtml(name) + '</td>';
+                        html += '<td class="cell-claimed' + winnerClass + activeClass + filterClass + '" style="position:relative;">' + liveBadge + paidCheck + winBadge + escapeHtml(name) + '</td>';
                     } else {
                         const dimClass = gridFilterNames.length > 0 ? ' cell-filter-dim' : '';
                         const winnerClass = isWinner ? ' cell-winner' : '';
-                        html += '<td class="cell-unclaimed' + winnerClass + dimClass + '" onclick="claimSquare(' + r + ',' + c + ')"></td>';
+                        const activeClass = isActive ? ' cell-active' : '';
+                        html += '<td class="cell-unclaimed' + winnerClass + activeClass + dimClass + '" onclick="claimSquare(' + r + ',' + c + ')">' + liveBadge + '</td>';
                     }
                 }
                 html += '</tr>';
@@ -5518,6 +5676,7 @@
         } else if (showScoreboardOnScores) {
             fetchLiveScores();
         }
+
     </script>
 </body>
 </html>
