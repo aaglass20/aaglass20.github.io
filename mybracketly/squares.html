@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBracketly - Squares Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/squares.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <button class="admin-login-btn" id="admin-login-btn" onclick="handleAdminClick()">
+            <i class="fas fa-user-shield"></i>
+            <span id="admin-btn-text">Admin</span>
+        </button>
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-table-cells" id="header-sport-icon"></i>
+            </div>
+            <h1 class="app-title">My<span>Bracketly</span></h1>
+            <p class="app-subtitle" id="board-subtitle">Squares Board</p>
+        </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar visible">
+        <a href="index.html" class="tab-btn back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Hub
+        </a>
+        <button class="tab-btn active" data-tab="grid">
+            <i class="fas fa-th"></i>
+            Grid
+        </button>
+        <button class="tab-btn" data-tab="leaderboard">
+            <i class="fas fa-ranking-star"></i>
+            Leaderboard
+        </button>
+        <button class="tab-btn" data-tab="results">
+            <i class="fas fa-trophy"></i>
+            Results
+        </button>
+        <button class="tab-btn" data-tab="scores-view">
+            <i class="fas fa-tv"></i>
+            Scores
+        </button>
+        <button class="tab-btn admin-only-tab" data-tab="scores">
+            <i class="fas fa-pen-to-square"></i>
+            Score Admin
+        </button>
+        <button class="tab-btn admin-only-tab" data-tab="config">
+            <i class="fas fa-cog"></i>
+            Config
+        </button>
+        <button class="tab-btn admin-only-tab" data-tab="users">
+            <i class="fas fa-users"></i>
+            Users
+        </button>
+    </nav>
+
+    <!-- Tab: Grid -->
+    <div id="tab-grid" class="tab-content active">
+        <div class="section-header">
+            <i class="fas fa-th"></i>
+            <h2>Squares Grid</h2>
+        </div>
+        <p class="section-subtext">Click an empty square to claim it. Row = winner's last digit, Column = loser's last digit.</p>
+
+        <div id="grid-full-message" class="status-message success mb-1" style="display:none;">
+            <i class="fas fa-check-circle"></i> All 100 squares have been claimed! Grid is full.
+        </div>
+
+        <!-- Name Filter -->
+        <div class="grid-filter">
+            <div class="grid-filter-input-wrap">
+                <input type="text" id="grid-filter-input" placeholder="Search for a name to highlight..." autocomplete="off" />
+                <i class="fas fa-search filter-icon"></i>
+                <div class="grid-filter-dropdown" id="grid-filter-dropdown"></div>
+            </div>
+            <div class="grid-filter-chips" id="grid-filter-chips"></div>
+            <button class="filter-clear-btn" id="grid-filter-clear" style="display:none;" onclick="clearGridFilter()">
+                <i class="fas fa-times"></i> Clear
+            </button>
+        </div>
+
+        <!-- Grid Mode Toggle -->
+        <div class="grid-mode-toggle" id="grid-mode-toggle">
+            <span class="grid-mode-label"><i class="fas fa-trophy" style="color:var(--accent);margin-right:0.3rem;"></i>Show Winners:</span>
+            <div class="grid-mode-buttons">
+                <button class="grid-mode-btn active" data-grid-mode="off" onclick="setGridWinnerMode('off')">Off</button>
+                <button class="grid-mode-btn" data-grid-mode="normal" onclick="setGridWinnerMode('normal')">Normal</button>
+                <button class="grid-mode-btn" data-grid-mode="inverse" onclick="setGridWinnerMode('inverse')">Inverse</button>
+                <button class="grid-mode-btn" data-grid-mode="live" onclick="setGridWinnerMode('live')">Live</button>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid-wrapper">
+            <div id="grid-container"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="grid-legend">
+            <div class="legend-item">
+                <div class="legend-swatch unclaimed"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch claimed"></div>
+                <span>Claimed</span>
+            </div>
+            <div class="legend-item" id="legend-winner-item" style="display:none;">
+                <div class="legend-swatch winner"></div>
+                <span id="legend-winner-label">Winning Square</span>
+            </div>
+            <div class="legend-item" id="legend-active-item" style="display:none;">
+                <div class="legend-swatch active"></div>
+                <span>Currently Winning (Live)</span>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div class="admin-section admin-hidden" id="admin-section">
+            <div class="section-header">
+                <i class="fas fa-shield-halved"></i>
+                <h2>Admin Controls</h2>
+            </div>
+            <div class="grid-controls">
+                <div class="grid-info">
+                    <strong id="squares-claimed-count">0</strong> / 100 squares claimed
+                </div>
+                <div class="admin-actions">
+                    <button id="btn-generate-numbers" class="btn btn-primary" onclick="generateNumbers()">
+                        <i class="fas fa-shuffle"></i>
+                        Generate Random Numbers
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Leaderboard -->
+    <div id="tab-leaderboard" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-ranking-star"></i>
+            <h2>Leaderboard</h2>
+        </div>
+        <div class="results-subtabs">
+            <button class="btn btn-sm leaderboard-subtab active" data-leaderboard-mode="normal" onclick="switchLeaderboardMode('normal')">Normal</button>
+            <button class="btn btn-sm leaderboard-subtab" data-leaderboard-mode="inverse" onclick="switchLeaderboardMode('inverse')">Inverse</button>
+            <button class="btn btn-sm leaderboard-subtab" data-leaderboard-mode="combined" onclick="switchLeaderboardMode('combined')">Combined</button>
+        </div>
+        <div id="leaderboard-content"></div>
+    </div>
+
+    <!-- Tab: Configuration -->
+    <div id="tab-config" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-cog"></i>
+            <h2>Payout Configuration</h2>
+        </div>
+        <p class="section-subtext">Set the payout amount per game for each round.</p>
+
+        <!-- Display Settings -->
+        <div class="card mb-2" style="padding:1rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-weight:600;font-size:0.9rem;"><i class="fas fa-tv" style="color:var(--primary);margin-right:0.5rem;"></i>Show Live Scoreboard on Scores Page</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="scoreboard-visibility-toggle" onchange="toggleScoreboardVisibility()" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Config table -->
+        <div class="config-table-wrapper">
+            <table class="config-table" id="config-table">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Games</th>
+                        <th>$ Per Game (Normal)</th>
+                        <th>$ Per Game (Inverse)</th>
+                        <th>Exclude Normal</th>
+                        <th>Exclude Inverse</th>
+                    </tr>
+                </thead>
+                <tbody id="config-table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- Save button -->
+        <div class="config-actions">
+            <button class="btn btn-success btn-block" onclick="saveConfig()">
+                <i class="fas fa-save"></i>
+                Save Configuration
+            </button>
+        </div>
+
+        <div id="config-status"></div>
+
+        <!-- Totals summary -->
+        <div class="card mt-2" id="config-totals-card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-calculator" style="color:var(--primary);margin-right:0.5rem;"></i>Payout Summary</span>
+            </div>
+            <div class="results-summary">
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-normal-payout">$0</div>
+                    <div class="stat-label">Normal Payout</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-inverse-payout">$0</div>
+                    <div class="stat-label">Inverse Payout</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="stat-value" id="total-grand-payout">$0</div>
+                    <div class="stat-label">Grand Total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Scores (Read-Only View) -->
+    <div id="tab-scores-view" class="tab-content">
+        <div id="scores-view-container"></div>
+    </div>
+
+    <!-- Tab: Score Entry (Admin Only) -->
+    <div id="tab-scores" class="tab-content">
+        <div id="scores-container"></div>
+    </div>
+
+    <!-- Tab: Results -->
+    <div id="tab-results" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-trophy"></i>
+            <h2>Results</h2>
+        </div>
+        <div class="results-subtabs">
+            <button class="btn btn-sm results-subtab active" data-results-mode="normal" onclick="switchResultsMode('normal')">Normal</button>
+            <button class="btn btn-sm results-subtab" data-results-mode="inverse" onclick="switchResultsMode('inverse')">Inverse</button>
+            <button class="btn btn-sm results-subtab" data-results-mode="combined" onclick="switchResultsMode('combined')">Combined</button>
+        </div>
+        <div id="results-content"></div>
+    </div>
+
+    <!-- Tab: Users (Admin Only) -->
+    <div id="tab-users" class="tab-content">
+        <div class="section-header">
+            <i class="fas fa-users"></i>
+            <h2>User Payment Tracking</h2>
+        </div>
+        <div id="users-summary"></div>
+        <div id="users-table-container"></div>
+
+        <div class="section-header" style="margin-top:2rem;">
+            <i class="fas fa-money-bill-wave"></i>
+            <h2>Payout Groups</h2>
+        </div>
+        <p style="color:var(--text-light);margin-bottom:1rem;">Assign each user to a payout recipient. Users linked to the same recipient will have their winnings combined into a single payout.</p>
+        <div id="payout-groups-container"></div>
+        <div id="payout-groups-summary"></div>
+    </div>
+
+    <!-- Modal Template -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3 class="modal-title" id="modal-title"></h3>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-buttons" id="modal-buttons"></div>
+            <div class="modal-status" id="modal-status"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="modal-overlay">
+        <div class="loading-container">
+            <i class="fas fa-spinner"></i>
+            <p>Loading data...</p>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // Sport-Specific Configuration Registry
+        // =============================================
+        var SPORTS_REGISTRY = {
+            'ncaa-basketball': {
+                label: 'NCAA Basketball',
+                icon: 'fa-basketball',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard',
+                periodLabels: ['1st Half', '2nd Half', 'OT'],
+                scoringUnit: 'points'
+            },
+            'nba': {
+                label: 'NBA',
+                icon: 'fa-basketball',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard',
+                periodLabels: ['Q1', 'Q2', 'Q3', 'Q4', 'OT'],
+                scoringUnit: 'points'
+            },
+            'nfl': {
+                label: 'NFL',
+                icon: 'fa-football',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
+                periodLabels: ['Q1', 'Q2', 'Q3', 'Q4', 'OT'],
+                scoringUnit: 'points'
+            },
+            'mlb': {
+                label: 'MLB',
+                icon: 'fa-baseball',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard',
+                periodLabels: ['Top', 'Bot'],
+                scoringUnit: 'runs'
+            },
+            'nhl': {
+                label: 'NHL',
+                icon: 'fa-hockey-puck',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard',
+                periodLabels: ['P1', 'P2', 'P3', 'OT'],
+                scoringUnit: 'goals'
+            },
+            'mls': {
+                label: 'MLS',
+                icon: 'fa-futbol',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard',
+                periodLabels: ['1st Half', '2nd Half', 'ET', 'PK'],
+                scoringUnit: 'goals'
+            },
+            'ncaa-football': {
+                label: 'NCAA Football',
+                icon: 'fa-football',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard',
+                periodLabels: ['Q1', 'Q2', 'Q3', 'Q4', 'OT'],
+                scoringUnit: 'points'
+            },
+            'epl': {
+                label: 'Premier League',
+                icon: 'fa-futbol',
+                url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard',
+                periodLabels: ['1st Half', '2nd Half', 'ET', 'PK'],
+                scoringUnit: 'goals'
+            }
+        };
+
+        // =============================================
+        // Sport-Specific Round Presets
+        // =============================================
+        var ROUND_PRESETS = {
+            'ncaa-basketball': [
+                { name: 'First Four', count: 4 },
+                { name: 'Round of 64', count: 32 },
+                { name: 'Round of 32', count: 16 },
+                { name: 'Sweet 16', count: 8 },
+                { name: 'Elite Eight', count: 4 },
+                { name: 'Final Four', count: 2 },
+                { name: 'Championship', count: 1 }
+            ],
+            'nfl': [
+                { name: 'Wild Card', count: 6 },
+                { name: 'Divisional', count: 4 },
+                { name: 'Conference Championship', count: 2 },
+                { name: 'Super Bowl', count: 1 }
+            ],
+            'nba': [
+                { name: 'Round 1', count: 8 },
+                { name: 'Round 2', count: 4 },
+                { name: 'Conference Finals', count: 2 },
+                { name: 'Finals', count: 1 }
+            ],
+            'mlb': [
+                { name: 'Wild Card', count: 4 },
+                { name: 'Division Series', count: 4 },
+                { name: 'Championship Series', count: 2 },
+                { name: 'World Series', count: 1 }
+            ],
+            'nhl': [
+                { name: 'Round 1', count: 8 },
+                { name: 'Round 2', count: 4 },
+                { name: 'Conference Finals', count: 2 },
+                { name: 'Stanley Cup', count: 1 }
+            ],
+            'mls': [
+                { name: 'Group Stage', count: 12 },
+                { name: 'Round of 16', count: 8 },
+                { name: 'Quarterfinals', count: 4 },
+                { name: 'Semifinals', count: 2 },
+                { name: 'Final', count: 1 }
+            ],
+            'ncaa-football': [
+                { name: 'First Round', count: 4 },
+                { name: 'Quarterfinals', count: 4 },
+                { name: 'Semifinals', count: 2 },
+                { name: 'Championship', count: 1 }
+            ],
+            'epl': [
+                { name: 'Round of 16', count: 8 },
+                { name: 'Quarterfinals', count: 4 },
+                { name: 'Semifinals', count: 2 },
+                { name: 'Final', count: 1 }
+            ],
+            '_default': [
+                { name: 'Round 1', count: 8 },
+                { name: 'Round 2', count: 4 },
+                { name: 'Round 3', count: 2 },
+                { name: 'Round 4', count: 1 }
+            ]
+        };
+
+        // =============================================
+        // ESPN Normalize Helper
+        // =============================================
+        function normalizeEspnGame(event, sportKey) {
+            var comp = event.competitions && event.competitions[0];
+            if (!comp) return null;
+
+            var sport = SPORTS_REGISTRY[sportKey] || {};
+            var status = comp.status || {};
+            var statusType = status.type || {};
+            var rawState = statusType.state || 'pre';
+            var gameState = rawState === 'in' ? 'live' : (rawState === 'post' ? 'final' : 'pre');
+
+            var home = null, away = null;
+            (comp.competitors || []).forEach(function(c) {
+                var obj = {
+                    name: c.team ? (c.team.shortDisplayName || c.team.displayName || c.team.abbreviation || '') : '',
+                    abbreviation: c.team ? (c.team.abbreviation || '') : '',
+                    score: c.score || null,
+                    seed: c.curatedRank ? (c.curatedRank.current <= 25 ? c.curatedRank.current : null) : null,
+                    logo: c.team && c.team.logo ? c.team.logo : '',
+                    winner: c.winner || false
+                };
+                if (c.homeAway === 'home') home = obj;
+                else away = obj;
+            });
+
+            var detail = statusType.detail || status.detail || '';
+            var clock = status.displayClock || '';
+            var period = status.period || 0;
+
+            var periodText = '';
+            if (sportKey === 'mlb') {
+                periodText = period > 0 ? ('Inn ' + period) : '';
+                if (detail) periodText = detail.split(' - ')[0] || periodText;
+            } else if (sport.periodLabels) {
+                if (period > 0 && period <= sport.periodLabels.length) {
+                    periodText = sport.periodLabels[period - 1];
+                } else if (period > sport.periodLabels.length) {
+                    periodText = sport.periodLabels[sport.periodLabels.length - 1];
+                }
+            }
+
+            var network = '';
+            if (comp.geoBroadcasts && comp.geoBroadcasts.length > 0) {
+                network = comp.geoBroadcasts[0].media ? comp.geoBroadcasts[0].media.shortName : '';
+            }
+
+            var startTime = '';
+            if (event.date) {
+                try {
+                    var d = new Date(event.date);
+                    startTime = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                } catch(e) { /* ignore */ }
+            }
+
+            return {
+                id: event.id,
+                home: home,
+                away: away,
+                gameState: gameState,
+                detail: detail,
+                clock: clock,
+                period: period,
+                periodText: periodText,
+                network: network,
+                startTime: startTime,
+                headline: (comp.notes && comp.notes.length > 0) ? comp.notes[0].headline : ''
+            };
+        }
+
+        // =============================================
+        // Project & Storage Configuration
+        // =============================================
+        var STORAGE_PREFIX = 'mybracketly_squares_';
+        var SHEETS_URL_KEY = 'mybracketly_sheets_url';
+        var SCRIPT_URL = '';
+        var SHEETS_CONFIGURED = false;
+
+        // URL params
+        var urlParams = new URLSearchParams(window.location.search);
+        var PROJECT_ID = urlParams.get('id') || '';
+        var IS_NEW = urlParams.get('new') === '1';
+
+        // Project metadata from registry
+        var projectMeta = null;
+        var currentSportKey = null;
+        var currentSportConfig = null;
+        var ESPN_API_URL = '';
+
+        // =============================================
+        // Utility Functions
+        // =============================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function lsGet(key) {
+            try {
+                var raw = localStorage.getItem(STORAGE_PREFIX + PROJECT_ID + '_' + key);
+                return raw ? JSON.parse(raw) : null;
+            } catch(e) { return null; }
+        }
+
+        function lsSet(key, value) {
+            try {
+                localStorage.setItem(STORAGE_PREFIX + PROJECT_ID + '_' + key, JSON.stringify(value));
+            } catch(e) { console.error('Storage error:', e); }
+        }
+
+        function lsRemove(key) {
+            localStorage.removeItem(STORAGE_PREFIX + PROJECT_ID + '_' + key);
+        }
+
+        // =============================================
+        // Tab Navigation
+        // =============================================
+        (function() {
+            var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
+            var tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(tabId) {
+                tabButtons.forEach(function(btn) { btn.classList.remove('active'); });
+                tabContents.forEach(function(content) { content.classList.remove('active'); });
+
+                var activeBtn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
+                var activeContent = document.getElementById('tab-' + tabId);
+
+                if (activeBtn) activeBtn.classList.add('active');
+                if (activeContent) activeContent.classList.add('active');
+            }
+
+            tabButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    switchTab(btn.dataset.tab);
+
+                    if (btn.dataset.tab === 'results' && typeof renderResults === 'function') {
+                        renderResults();
+                    }
+                    if (btn.dataset.tab === 'leaderboard' && typeof renderLeaderboardTab === 'function') {
+                        renderLeaderboardTab();
+                    }
+                    if (btn.dataset.tab === 'scores' && liveFeedEnabled) {
+                        fetchLiveScores();
+                    }
+                    if (btn.dataset.tab === 'scores-view' && showScoreboardOnScores) {
+                        fetchLiveScores();
+                    }
+                });
+            });
+        })();
+
+        // =============================================
+        // Modal Helpers
+        // =============================================
+        function openModal(title, bodyHtml, buttonsHtml) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = bodyHtml || '';
+            document.getElementById('modal-buttons').innerHTML = buttonsHtml || '';
+            document.getElementById('modal-status').textContent = '';
+            document.getElementById('modal-status').className = 'modal-status';
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        function setModalStatus(message, type) {
+            var el = document.getElementById('modal-status');
+            el.textContent = message;
+            el.className = 'modal-status ' + (type || '');
+        }
+
+        // =============================================
+        // Admin Authentication
+        // =============================================
+        var isAdmin = false;
+        var ADMIN_PASSWORD = '';
+
+        // Check session
+        (function() {
+            if (sessionStorage.getItem('mybracketly_admin_' + PROJECT_ID) === 'true') {
+                isAdmin = true;
+            }
+        })();
+
+        function handleAdminClick() {
+            if (isAdmin) {
+                isAdmin = false;
+                sessionStorage.removeItem('mybracketly_admin_' + PROJECT_ID);
+                applyAdminState();
+                var activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab && activeTab.classList.contains('admin-only-tab')) {
+                    document.querySelector('.tab-btn[data-tab="grid"]').click();
+                }
+            } else {
+                openModal(
+                    'Admin Login',
+                    '<div class="admin-login-form">' +
+                    '<p style="font-size:0.85rem;color:var(--text-medium);margin-bottom:0.25rem;">Enter the admin password to access score entry, configuration, and admin controls.</p>' +
+                    '<input type="password" id="admin-password-input" placeholder="Password" onkeydown="if(event.key===\'Enter\')adminLogin()">' +
+                    '</div>',
+                    '<button class="btn btn-primary" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>' +
+                    '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>'
+                );
+                setTimeout(function() {
+                    var input = document.getElementById('admin-password-input');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+
+        function adminLogin() {
+            var input = document.getElementById('admin-password-input');
+            if (!input) return;
+            if (!ADMIN_PASSWORD) {
+                // No password set — auto-login
+                isAdmin = true;
+                sessionStorage.setItem('mybracketly_admin_' + PROJECT_ID, 'true');
+                closeModal();
+                applyAdminState();
+                return;
+            }
+            if (input.value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem('mybracketly_admin_' + PROJECT_ID, 'true');
+                closeModal();
+                applyAdminState();
+            } else {
+                setModalStatus('Incorrect password.', 'error');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function applyAdminState() {
+            document.querySelectorAll('.admin-only-tab').forEach(function(tab) {
+                tab.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            var adminSection = document.getElementById('admin-section');
+            if (adminSection) {
+                adminSection.classList.toggle('admin-hidden', !isAdmin);
+            }
+
+            var btn = document.getElementById('admin-login-btn');
+            var btnText = document.getElementById('admin-btn-text');
+            if (btn && btnText) {
+                if (isAdmin) {
+                    btn.classList.add('logged-in');
+                    btnText.textContent = 'Logout';
+                } else {
+                    btn.classList.remove('logged-in');
+                    btnText.textContent = 'Admin';
+                }
+            }
+
+            if (typeof renderScoresView === 'function') {
+                renderScoresView();
+            }
+        }
+
+        // =============================================
+        // Grid Tab - 10x10 Squares Grid
+        // =============================================
+        var gridData = Array.from({ length: 10 }, function() { return Array(10).fill(''); });
+        var rowNumbers = Array(10).fill(null);
+        var colNumbers = Array(10).fill(null);
+        var numbersGenerated = false;
+
+        var gridFilterNames = [];
+        var gridWinnerMode = 'off';
+
+        // =============================================
+        // Configuration & Rounds Data
+        // =============================================
+        var ROUNDS = [];
+        var configData = [];
+        var gamesData = [];
+        var PRICE_PER_SQUARE = 25;
+
+        function initRoundsAndGames() {
+            var preset = ROUND_PRESETS[currentSportKey] || ROUND_PRESETS['_default'];
+            ROUNDS = preset.map(function(r) { return { name: r.name, count: r.count }; });
+
+            configData = ROUNDS.map(function(r) {
+                return {
+                    round: r.name,
+                    gamesCount: r.count,
+                    amount: 0,
+                    inverseAmount: 0,
+                    excludeNormal: false,
+                    excludeInverse: false
+                };
+            });
+
+            gamesData = [];
+            var gameId = 1;
+            ROUNDS.forEach(function(round) {
+                for (var i = 0; i < round.count; i++) {
+                    gamesData.push({
+                        gameId: gameId++,
+                        round: round.name,
+                        team1: '',
+                        team2: '',
+                        score1: null,
+                        score2: null,
+                        _liveState: null,
+                        _livePeriod: '',
+                        _liveClock: '',
+                        _liveMessage: '',
+                        _apiGameId: null
+                    });
+                }
+            });
+        }
+
+        // =============================================
+        // User Payment Tracking
+        // =============================================
+        var paidUsers = {};
+        var userNotes = {};
+
+        function savePaidUsers() {
+            lsSet('paid_users', paidUsers);
+            lsSet('user_notes', userNotes);
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'savePaidUsers',
+                            projectId: PROJECT_ID,
+                            paidUsers: paidUsers,
+                            userNotes: userNotes
+                        })
+                    });
+                } catch(e) { console.error('Error saving paid users:', e); }
+            }
+        }
+
+        function saveUserNote(nameKey, value) {
+            userNotes[nameKey] = value;
+            savePaidUsers();
+        }
+
+        function togglePaid(nameKey) {
+            paidUsers[nameKey] = !paidUsers[nameKey];
+            savePaidUsers();
+            renderUsersTab();
+            renderGrid();
+        }
+
+        function getUniqueUsers() {
+            var users = {};
+            for (var r = 0; r < 10; r++) {
+                for (var c = 0; c < 10; c++) {
+                    var name = gridData[r][c];
+                    if (name) {
+                        var key = name.toLowerCase().trim();
+                        if (!users[key]) {
+                            users[key] = { name: name, squares: 0, key: key };
+                        }
+                        users[key].squares++;
+                    }
+                }
+            }
+            return Object.values(users).sort(function(a, b) {
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            });
+        }
+
+        function isUserPaid(name) {
+            if (!name) return false;
+            var key = name.toLowerCase().trim();
+            return paidUsers[key] === true;
+        }
+
+        function renderUsersTab() {
+            var users = getUniqueUsers();
+            var totalUsers = users.length;
+            var totalSquares = users.reduce(function(sum, u) { return sum + u.squares; }, 0);
+            var totalOwed = totalSquares * PRICE_PER_SQUARE;
+            var totalPaid = 0;
+            var paidCount = 0;
+            users.forEach(function(u) {
+                if (paidUsers[u.key]) {
+                    totalPaid += u.squares * PRICE_PER_SQUARE;
+                    paidCount++;
+                }
+            });
+            var outstanding = totalOwed - totalPaid;
+
+            var summaryEl = document.getElementById('users-summary');
+            if (summaryEl) {
+                var shtml = '<div class="users-summary-cards">';
+                shtml += '<div class="users-summary-card"><div class="stat-value">' + totalUsers + '</div><div class="stat-label">Users</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value">' + totalSquares + '</div><div class="stat-label">Squares</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value" style="color:var(--success);">$' + totalPaid + '</div><div class="stat-label">Collected</div></div>';
+                shtml += '<div class="users-summary-card"><div class="stat-value" style="color:' + (outstanding > 0 ? 'var(--error)' : 'var(--success)') + ';">$' + outstanding + '</div><div class="stat-label">Outstanding</div></div>';
+                shtml += '</div>';
+                summaryEl.innerHTML = shtml;
+            }
+
+            var tableEl = document.getElementById('users-table-container');
+            if (!tableEl) return;
+
+            if (users.length === 0) {
+                tableEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-light);"><i class="fas fa-users" style="margin-right:0.4rem;"></i>No squares claimed yet. Users will appear here once squares are claimed on the grid.</div>';
+                return;
+            }
+
+            var html = '<table class="users-table">';
+            html += '<thead><tr>';
+            html += '<th>Name</th>';
+            html += '<th style="text-align:center;">Squares</th>';
+            html += '<th style="text-align:center;">Owed</th>';
+            html += '<th style="text-align:center;">Status</th>';
+            html += '<th style="text-align:center;">Action</th>';
+            html += '<th>Notes</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            users.forEach(function(u) {
+                var isPaid = paidUsers[u.key] === true;
+                var owed = u.squares * PRICE_PER_SQUARE;
+                var note = userNotes[u.key] || '';
+
+                html += '<tr>';
+                html += '<td style="font-weight:600;">' + escapeHtml(u.name) + '</td>';
+                html += '<td style="text-align:center;">' + u.squares + '</td>';
+                html += '<td class="amount-owed" style="text-align:center;">$' + owed + '</td>';
+                html += '<td style="text-align:center;">';
+                if (isPaid) {
+                    html += '<span class="paid-yes"><i class="fas fa-check-circle"></i> Paid</span>';
+                } else {
+                    html += '<span class="paid-no"><i class="fas fa-times-circle"></i> Unpaid</span>';
+                }
+                html += '</td>';
+                html += '<td style="text-align:center;">';
+                if (isPaid) {
+                    html += '<button class="paid-toggle-btn mark-unpaid" onclick="togglePaid(\'' + u.key.replace(/'/g, "\\'") + '\')">Mark Unpaid</button>';
+                } else {
+                    html += '<button class="paid-toggle-btn mark-paid" onclick="togglePaid(\'' + u.key.replace(/'/g, "\\'") + '\')">Mark Paid</button>';
+                }
+                html += '</td>';
+                html += '<td>';
+                html += '<input type="text" class="user-note-input" value="' + escapeHtml(note) + '" ';
+                html += 'placeholder="e.g. paid by John, Venmo, etc." ';
+                html += 'onchange="saveUserNote(\'' + u.key.replace(/'/g, "\\'") + '\', this.value)">';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            tableEl.innerHTML = html;
+
+            if (typeof renderPayoutGroups === 'function') renderPayoutGroups();
+        }
+
+        // =============================================
+        // Payout Groups
+        // =============================================
+        var payoutGroups = {};
+
+        function savePayoutGroups() {
+            lsSet('payout_groups', payoutGroups);
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'savePayoutGroups',
+                            projectId: PROJECT_ID,
+                            payoutGroups: payoutGroups
+                        })
+                    });
+                } catch(e) { console.error('Error saving payout groups:', e); }
+            }
+        }
+
+        function setPayoutGroup(userKey, recipientKey) {
+            if (recipientKey === userKey || recipientKey === '') {
+                delete payoutGroups[userKey];
+            } else {
+                payoutGroups[userKey] = recipientKey;
+            }
+            savePayoutGroups();
+            renderPayoutGroups();
+        }
+
+        function getPayoutRecipient(userKey) {
+            return payoutGroups[userKey] || userKey;
+        }
+
+        function computeUserWinnings() {
+            var results = computeResults();
+            var winnings = {};
+
+            results.forEach(function(r) {
+                if (!r.excludeNormal && r.normalPayout > 0) {
+                    var nName = (r.normalOwner || '').trim();
+                    if (nName && nName !== '(unclaimed)' && nName !== 'Numbers not generated' && nName !== '(error)') {
+                        var nKey = nName.toLowerCase();
+                        if (!winnings[nKey]) winnings[nKey] = { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                        winnings[nKey].normalWinnings += r.normalPayout;
+                        winnings[nKey].totalWinnings += r.normalPayout;
+                    }
+                }
+                if (!r.excludeInverse && r.inversePayout > 0) {
+                    var iName = (r.inverseOwner || '').trim();
+                    if (iName && iName !== '(unclaimed)' && iName !== 'Numbers not generated' && iName !== '(error)') {
+                        var iKey = iName.toLowerCase();
+                        if (!winnings[iKey]) winnings[iKey] = { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                        winnings[iKey].inverseWinnings += r.inversePayout;
+                        winnings[iKey].totalWinnings += r.inversePayout;
+                    }
+                }
+            });
+
+            return winnings;
+        }
+
+        function renderPayoutGroups() {
+            var container = document.getElementById('payout-groups-container');
+            var summaryEl = document.getElementById('payout-groups-summary');
+            if (!container) return;
+
+            var users = getUniqueUsers();
+            var winnings = computeUserWinnings();
+
+            if (users.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-light);">No users yet.</div>';
+                if (summaryEl) summaryEl.innerHTML = '';
+                return;
+            }
+
+            var html = '<table class="users-table">';
+            html += '<thead><tr>';
+            html += '<th>Name</th>';
+            html += '<th style="text-align:center;">Normal $</th>';
+            html += '<th style="text-align:center;">Inverse $</th>';
+            html += '<th style="text-align:center;">Total $</th>';
+            html += '<th>Payout To</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            users.forEach(function(u) {
+                var w = winnings[u.key] || { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                var currentRecipient = getPayoutRecipient(u.key);
+
+                html += '<tr>';
+                html += '<td style="font-weight:600;">' + escapeHtml(u.name) + '</td>';
+                html += '<td style="text-align:center;">$' + w.normalWinnings + '</td>';
+                html += '<td style="text-align:center;">$' + w.inverseWinnings + '</td>';
+                html += '<td style="text-align:center;font-weight:600;">$' + w.totalWinnings + '</td>';
+                html += '<td>';
+                html += '<select class="user-note-input" onchange="setPayoutGroup(\'' + u.key.replace(/'/g, "\\'") + '\', this.value)" style="width:100%;padding:0.4rem;">';
+                users.forEach(function(opt) {
+                    var selected = (opt.key === currentRecipient) ? ' selected' : '';
+                    html += '<option value="' + escapeHtml(opt.key) + '"' + selected + '>' + escapeHtml(opt.name) + '</option>';
+                });
+                html += '</select>';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            if (!summaryEl) return;
+
+            var grouped = {};
+            users.forEach(function(u) {
+                var recipient = getPayoutRecipient(u.key);
+                if (!grouped[recipient]) {
+                    var recipientUser = users.find(function(x) { return x.key === recipient; });
+                    grouped[recipient] = { name: recipientUser ? recipientUser.name : recipient, members: [], normalTotal: 0, inverseTotal: 0, grandTotal: 0 };
+                }
+                var w = winnings[u.key] || { normalWinnings: 0, inverseWinnings: 0, totalWinnings: 0 };
+                grouped[recipient].members.push(u.name);
+                grouped[recipient].normalTotal += w.normalWinnings;
+                grouped[recipient].inverseTotal += w.inverseWinnings;
+                grouped[recipient].grandTotal += w.totalWinnings;
+            });
+
+            var gKeys = Object.keys(grouped).filter(function(key) {
+                return grouped[key].members.length > 1 || grouped[key].grandTotal > 0;
+            }).sort(function(a, b) {
+                return grouped[b].grandTotal - grouped[a].grandTotal;
+            });
+
+            var overallNormal = 0, overallInverse = 0, overallTotal = 0;
+            var shtml = '<div style="margin-top:1.5rem;">';
+            shtml += '<h3 style="margin-bottom:0.75rem;"><i class="fas fa-wallet" style="margin-right:0.4rem;"></i>Payout Summary by Recipient</h3>';
+            shtml += '<table class="users-table">';
+            shtml += '<thead><tr><th>Recipient</th><th>Linked Users</th><th style="text-align:center;">Normal $</th><th style="text-align:center;">Inverse $</th><th style="text-align:center;">Total Owed</th></tr></thead>';
+            shtml += '<tbody>';
+
+            gKeys.forEach(function(key) {
+                var g = grouped[key];
+                overallNormal += g.normalTotal;
+                overallInverse += g.inverseTotal;
+                overallTotal += g.grandTotal;
+                shtml += '<tr>';
+                shtml += '<td style="font-weight:600;">' + escapeHtml(g.name) + '</td>';
+                shtml += '<td>' + g.members.map(function(m) { return escapeHtml(m); }).join(', ') + '</td>';
+                shtml += '<td style="text-align:center;">$' + g.normalTotal + '</td>';
+                shtml += '<td style="text-align:center;">$' + g.inverseTotal + '</td>';
+                shtml += '<td style="text-align:center;font-weight:600;color:var(--success);">$' + g.grandTotal + '</td>';
+                shtml += '</tr>';
+            });
+
+            shtml += '<tr style="border-top:2px solid var(--border-light);font-weight:700;">';
+            shtml += '<td>TOTAL</td><td></td>';
+            shtml += '<td style="text-align:center;">$' + overallNormal + '</td>';
+            shtml += '<td style="text-align:center;">$' + overallInverse + '</td>';
+            shtml += '<td style="text-align:center;color:var(--success);">$' + overallTotal + '</td>';
+            shtml += '</tr>';
+            shtml += '</tbody></table></div>';
+            summaryEl.innerHTML = shtml;
+        }
+
+        // =============================================
+        // Grid Rendering
+        // =============================================
+        function getWinningCells(mode) {
+            var wins = {};
+            if (!numbersGenerated) return wins;
+
+            gamesData.forEach(function(game) {
+                if (game.score1 === null || game.score2 === null) return;
+                if (game.score1 === 0 && game.score2 === 0) return;
+
+                var exclusion = getRoundExclusion(game.round);
+                if (mode === 'normal' && exclusion.excludeNormal) return;
+                if (mode === 'inverse' && exclusion.excludeInverse) return;
+
+                var isTeam1Winner = game.score1 > game.score2;
+                var winnerScore = isTeam1Winner ? game.score1 : game.score2;
+                var loserScore = isTeam1Winner ? game.score2 : game.score1;
+                var winnerDigit = winnerScore % 10;
+                var loserDigit = loserScore % 10;
+
+                var rowDigit, colDigit;
+                if (mode === 'normal') { rowDigit = winnerDigit; colDigit = loserDigit; }
+                else { rowDigit = loserDigit; colDigit = winnerDigit; }
+
+                var owner = getSquareOwner(rowDigit, colDigit);
+                if (owner.row >= 0 && owner.col >= 0) {
+                    var key = owner.row + ',' + owner.col;
+                    wins[key] = (wins[key] || 0) + 1;
+                }
+            });
+
+            return wins;
+        }
+
+        function getActiveCells(mode) {
+            var active = {};
+            if (!numbersGenerated) return active;
+
+            gamesData.forEach(function(game) {
+                if (game._liveState !== 'live') return;
+                if (game.score1 === null || game.score2 === null) return;
+                if (game.score1 === 0 && game.score2 === 0) return;
+
+                var exclusion = getRoundExclusion(game.round);
+                if (mode === 'normal' && exclusion.excludeNormal) return;
+                if (mode === 'inverse' && exclusion.excludeInverse) return;
+
+                var isTeam1Leading = game.score1 >= game.score2;
+                var leadScore = isTeam1Leading ? game.score1 : game.score2;
+                var trailScore = isTeam1Leading ? game.score2 : game.score1;
+                var leadDigit = leadScore % 10;
+                var trailDigit = trailScore % 10;
+
+                var rowDigit, colDigit;
+                if (mode === 'normal') { rowDigit = leadDigit; colDigit = trailDigit; }
+                else { rowDigit = trailDigit; colDigit = leadDigit; }
+
+                var owner = getSquareOwner(rowDigit, colDigit);
+                if (owner.row >= 0 && owner.col >= 0) {
+                    var key = owner.row + ',' + owner.col;
+                    var t1 = (game.team1 || '').split(' ').pop() || 'TM1';
+                    var t2 = (game.team2 || '').split(' ').pop() || 'TM2';
+                    var gameInfo = { team1: t1, team2: t2, score1: game.score1, score2: game.score2, period: game._livePeriod || '', clock: game._liveClock || '' };
+                    if (!active[key]) active[key] = [];
+                    active[key].push(gameInfo);
+                }
+            });
+
+            return active;
+        }
+
+        var _liveGridInterval = null;
+
+        function setGridWinnerMode(mode) {
+            gridWinnerMode = mode;
+            document.querySelectorAll('.grid-mode-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-grid-mode') === mode);
+            });
+            var legendItem = document.getElementById('legend-winner-item');
+            var legendLabel = document.getElementById('legend-winner-label');
+            if (legendItem) legendItem.style.display = (mode === 'off' || mode === 'live') ? 'none' : '';
+            if (legendLabel) legendLabel.textContent = mode === 'normal' ? 'Normal Winner' : mode === 'inverse' ? 'Inverse Winner' : 'Winning Square';
+
+            if (mode === 'live') {
+                fetchLiveScores();
+                if (_liveGridInterval) clearInterval(_liveGridInterval);
+                _liveGridInterval = setInterval(fetchLiveScores, 60000);
+            } else {
+                if (_liveGridInterval) { clearInterval(_liveGridInterval); _liveGridInterval = null; }
+            }
+
+            renderGrid();
+        }
+
+        function getUniqueGridNames() {
+            var names = new Set();
+            for (var r = 0; r < 10; r++) {
+                for (var c = 0; c < 10; c++) {
+                    if (gridData[r][c]) names.add(gridData[r][c]);
+                }
+            }
+            return Array.from(names).sort(function(a, b) { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+        }
+
+        function renderFilterChips() {
+            var chipsEl = document.getElementById('grid-filter-chips');
+            var clearBtn = document.getElementById('grid-filter-clear');
+            if (!chipsEl) return;
+            var html = '';
+            gridFilterNames.forEach(function(name, i) {
+                html += '<span class="filter-chip">' + escapeHtml(name) +
+                    ' <span class="chip-remove" onclick="removeFilterName(' + i + ')">&times;</span></span>';
+            });
+            chipsEl.innerHTML = html;
+            if (clearBtn) clearBtn.style.display = gridFilterNames.length > 0 ? '' : 'none';
+        }
+
+        function addFilterName(name) {
+            var trimmed = name.trim();
+            if (!trimmed) return;
+            if (gridFilterNames.some(function(n) { return n.toLowerCase() === trimmed.toLowerCase(); })) return;
+            gridFilterNames.push(trimmed);
+            renderFilterChips();
+            renderGrid();
+            var input = document.getElementById('grid-filter-input');
+            if (input) input.value = '';
+            hideFilterDropdown();
+        }
+
+        function removeFilterName(index) {
+            gridFilterNames.splice(index, 1);
+            renderFilterChips();
+            renderGrid();
+        }
+
+        function clearGridFilter() {
+            gridFilterNames = [];
+            renderFilterChips();
+            renderGrid();
+            var input = document.getElementById('grid-filter-input');
+            if (input) input.value = '';
+            hideFilterDropdown();
+        }
+
+        function showFilterDropdown(query) {
+            var dropdown = document.getElementById('grid-filter-dropdown');
+            if (!dropdown) return;
+            var allNames = getUniqueGridNames();
+            var q = (query || '').toLowerCase();
+            var filtered = allNames.filter(function(n) {
+                return n.toLowerCase().includes(q) && !gridFilterNames.some(function(f) { return f.toLowerCase() === n.toLowerCase(); });
+            });
+            if (filtered.length === 0) {
+                if (q) {
+                    dropdown.innerHTML = '<div class="dropdown-empty">No matching names</div>';
+                    dropdown.classList.add('show');
+                } else {
+                    dropdown.classList.remove('show');
+                }
+                return;
+            }
+            dropdown.innerHTML = filtered.map(function(n) {
+                return '<div class="dropdown-item" onmousedown="addFilterName(\'' + escapeHtml(n).replace(/'/g, "\\'") + '\')">' + escapeHtml(n) + '</div>';
+            }).join('');
+            dropdown.classList.add('show');
+        }
+
+        function hideFilterDropdown() {
+            var dropdown = document.getElementById('grid-filter-dropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+
+        // Init filter event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterInput = document.getElementById('grid-filter-input');
+            if (!filterInput) return;
+
+            filterInput.addEventListener('input', function() { showFilterDropdown(this.value); });
+            filterInput.addEventListener('focus', function() { showFilterDropdown(this.value); });
+            filterInput.addEventListener('blur', function() { setTimeout(hideFilterDropdown, 200); });
+            filterInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var q = this.value.trim().toLowerCase();
+                    var allNames = getUniqueGridNames();
+                    var exact = allNames.find(function(n) { return n.toLowerCase() === q; });
+                    var matches = allNames.filter(function(n) { return n.toLowerCase().includes(q); });
+                    if (exact) addFilterName(exact);
+                    else if (matches.length === 1) addFilterName(matches[0]);
+                    else if (q) addFilterName(this.value.trim());
+                }
+                if (e.key === 'Escape') { hideFilterDropdown(); this.blur(); }
+            });
+        });
+
+        function renderGrid() {
+            var container = document.getElementById('grid-container');
+            if (!container) return;
+            var claimedCount = 0;
+
+            var winnerMode = (gridWinnerMode === 'normal' || gridWinnerMode === 'inverse') ? gridWinnerMode : null;
+            var winningCells = winnerMode ? getWinningCells(winnerMode) : {};
+            var liveMode = (gridWinnerMode === 'live') ? 'normal' : null;
+            var activeCells = liveMode ? getActiveCells(liveMode) : {};
+            var hasActiveCells = Object.keys(activeCells).length > 0;
+
+            var legendActiveItem = document.getElementById('legend-active-item');
+            if (legendActiveItem) legendActiveItem.style.display = hasActiveCells ? '' : 'none';
+
+            var html = '<table class="squares-grid">';
+
+            // Header row
+            html += '<tr>';
+            html += '<th class="corner-cell">W \\ L</th>';
+            for (var c = 0; c < 10; c++) {
+                var label = numbersGenerated ? colNumbers[c] : '?';
+                html += '<th class="col-header">';
+                if (numbersGenerated) html += '<span class="team-label">Loser</span>';
+                html += label + '</th>';
+            }
+            html += '</tr>';
+
+            // Data rows
+            for (var r = 0; r < 10; r++) {
+                html += '<tr>';
+                var rowLabel = numbersGenerated ? rowNumbers[r] : '?';
+                html += '<th class="row-header">';
+                if (numbersGenerated) html += '<span class="team-label">Winner</span>';
+                html += rowLabel + '</th>';
+
+                for (var c = 0; c < 10; c++) {
+                    var name = gridData[r][c];
+                    var cellKey = r + ',' + c;
+                    var winCount = winningCells[cellKey] || 0;
+                    var isWinner = winCount > 0;
+                    var activeGames = activeCells[cellKey] || null;
+                    var isActive = !!activeGames;
+
+                    var liveBadge = '';
+                    if (isActive) {
+                        var badges = activeGames.map(function(g) {
+                            var timeStr = g.clock ? g.clock + ' ' + g.period : g.period;
+                            return '<span class="live-dot"></span>' +
+                                escapeHtml(g.team1) + ' ' + g.score1 + ' - ' + g.score2 + ' ' + escapeHtml(g.team2) +
+                                (timeStr ? '<br>' + escapeHtml(timeStr) : '');
+                        });
+                        liveBadge = '<div class="cell-live-badge">' + badges.join('<br>') + '</div>';
+                    }
+
+                    if (name) {
+                        claimedCount++;
+                        var paidCheck = isUserPaid(name) ? '<span class="cell-paid-check"><i class="fas fa-check-circle"></i></span>' : '';
+                        var nameLower = name.toLowerCase();
+                        var isFiltered = gridFilterNames.length > 0;
+                        var isMatch = isFiltered && gridFilterNames.some(function(f) { return nameLower === f.toLowerCase(); });
+                        var filterClass = isFiltered ? (isMatch ? ' cell-filter-highlight' : ' cell-filter-dim') : '';
+                        var winnerClass = isWinner ? ' cell-winner' : '';
+                        var activeClass = isActive ? ' cell-active' : '';
+                        var winBadge = winCount > 1 ? '<span class="cell-winner-count">' + winCount + 'x</span>' : '';
+                        html += '<td class="cell-claimed' + winnerClass + activeClass + filterClass + '" style="position:relative;">' + liveBadge + paidCheck + winBadge + escapeHtml(name) + '</td>';
+                    } else {
+                        var dimClass = gridFilterNames.length > 0 ? ' cell-filter-dim' : '';
+                        var winnerClass2 = isWinner ? ' cell-winner' : '';
+                        var activeClass2 = isActive ? ' cell-active' : '';
+                        html += '<td class="cell-unclaimed' + winnerClass2 + activeClass2 + dimClass + '" onclick="claimSquare(' + r + ',' + c + ')">' + liveBadge + '</td>';
+                    }
+                }
+                html += '</tr>';
+            }
+
+            html += '</table>';
+            container.innerHTML = html;
+
+            var countEl = document.getElementById('squares-claimed-count');
+            if (countEl) countEl.textContent = claimedCount;
+
+            var fullMsg = document.getElementById('grid-full-message');
+            if (fullMsg) fullMsg.style.display = claimedCount >= 100 ? '' : 'none';
+        }
+
+        // =============================================
+        // Square Claiming
+        // =============================================
+        function claimSquare(row, col) {
+            if (gridData[row][col]) return;
+
+            var rowLabel = numbersGenerated ? rowNumbers[row] : '?';
+            var colLabel = numbersGenerated ? colNumbers[col] : '?';
+
+            var bodyHtml =
+                '<p style="margin-bottom:0.75rem;color:var(--text-medium);font-size:0.9rem;">' +
+                'Claiming square at Row <strong>' + rowLabel + '</strong>, Column <strong>' + colLabel + '</strong>' +
+                '</p>' +
+                '<input type="text" id="claim-name-input" class="modal-input" placeholder="Enter your name" autocomplete="off">';
+
+            var buttonsHtml =
+                '<button class="btn btn-success" onclick="saveClaimedSquare(' + row + ',' + col + ')">' +
+                '<i class="fas fa-check"></i> Save</button>' +
+                '<button class="btn btn-outline" onclick="closeModal()">Cancel</button>';
+
+            openModal('Claim Square', bodyHtml, buttonsHtml);
+
+            setTimeout(function() {
+                var input = document.getElementById('claim-name-input');
+                if (input) {
+                    input.focus();
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') saveClaimedSquare(row, col);
+                    });
+                }
+            }, 100);
+        }
+
+        async function saveClaimedSquare(row, col) {
+            var input = document.getElementById('claim-name-input');
+            var name = input ? input.value.trim() : '';
+
+            if (!name) {
+                setModalStatus('Please enter a name.', 'error');
+                if (input) input.focus();
+                return;
+            }
+
+            // Check with Sheets for race condition
+            if (SHEETS_CONFIGURED) {
+                try {
+                    setModalStatus('Checking availability...', 'info');
+                    var response = await fetch(SCRIPT_URL + '?action=getData&projectId=' + PROJECT_ID);
+                    var data = await response.json();
+                    if (data.grid && data.grid[row] && data.grid[row][col]) {
+                        for (var r = 0; r < 10 && r < data.grid.length; r++) {
+                            for (var c = 0; c < 10 && c < data.grid[r].length; c++) {
+                                gridData[r][c] = data.grid[r][c] || '';
+                            }
+                        }
+                        renderGrid();
+                        setModalStatus('This square was already claimed by "' + data.grid[row][col] + '". Please pick another.', 'error');
+                        var modalBtns = document.querySelector('.modal-buttons');
+                        if (modalBtns) {
+                            modalBtns.innerHTML =
+                                '<button class="btn btn-success" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh Page</button>' +
+                                '<button class="btn btn-outline" onclick="closeModal()">Close</button>';
+                        }
+                        return;
+                    }
+                } catch(e) {
+                    console.error('Error checking square availability:', e);
+                }
+            }
+
+            gridData[row][col] = name;
+            closeModal();
+            renderGrid();
+
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'claimSquare', projectId: PROJECT_ID, row: row, col: col, name: name })
+                    });
+                } catch(e) { console.error('Error saving square:', e); }
+            }
+        }
+
+        // =============================================
+        // Random Number Generation
+        // =============================================
+        function generateNumbers() {
+            if (numbersGenerated) return;
+
+            rowNumbers = fisherYatesShuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            colNumbers = fisherYatesShuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            numbersGenerated = true;
+
+            var btn = document.getElementById('btn-generate-numbers');
+            if (btn) btn.disabled = true;
+
+            renderGrid();
+
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'generateNumbers', projectId: PROJECT_ID, rowNumbers: rowNumbers.join(','), colNumbers: colNumbers.join(',') })
+                    });
+                } catch(e) { console.error('Error saving numbers:', e); }
+            }
+        }
+
+        function fisherYatesShuffle(arr) {
+            var shuffled = arr.slice();
+            for (var i = shuffled.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = shuffled[i];
+                shuffled[i] = shuffled[j];
+                shuffled[j] = temp;
+            }
+            return shuffled;
+        }
+
+        // =============================================
+        // Configuration Tab
+        // =============================================
+        var showScoreboardOnScores = true;
+
+        function renderConfig() {
+            var tbody = document.getElementById('config-table-body');
+            if (!tbody) return;
+            var html = '';
+
+            configData.forEach(function(item, index) {
+                html += '<tr>';
+                html += '<td>' + escapeHtml(item.round) + '</td>';
+                html += '<td>' + item.gamesCount + '</td>';
+                html += '<td><input type="number" min="0" step="1" class="config-input" value="' + item.amount + '" oninput="updateConfigAmount(' + index + ', \'amount\', this.value)" onchange="updateConfigAmount(' + index + ', \'amount\', this.value)"></td>';
+                html += '<td><input type="number" min="0" step="1" class="config-input" value="' + item.inverseAmount + '" oninput="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)" onchange="updateConfigAmount(' + index + ', \'inverseAmount\', this.value)"></td>';
+                html += '<td style="text-align:center;"><input type="checkbox" ' + (item.excludeNormal ? 'checked' : '') + ' onchange="toggleRoundExclusion(' + index + ', \'excludeNormal\', this.checked)"></td>';
+                html += '<td style="text-align:center;"><input type="checkbox" ' + (item.excludeInverse ? 'checked' : '') + ' onchange="toggleRoundExclusion(' + index + ', \'excludeInverse\', this.checked)"></td>';
+                html += '</tr>';
+            });
+
+            var totals = calculateTotals();
+            html += '<tr class="total-row">';
+            html += '<td>Totals</td>';
+            html += '<td>' + configData.reduce(function(sum, item) { return sum + item.gamesCount; }, 0) + '</td>';
+            html += '<td id="config-total-normal-cell">$' + totals.totalNormal + '</td>';
+            html += '<td id="config-total-inverse-cell">$' + totals.totalInverse + '</td>';
+            html += '<td colspan="2"></td>';
+            html += '</tr>';
+
+            tbody.innerHTML = html;
+
+            document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
+            document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
+            document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+
+            var sbToggle = document.getElementById('scoreboard-visibility-toggle');
+            if (sbToggle) sbToggle.checked = showScoreboardOnScores;
+        }
+
+        function updateConfigAmount(index, field, value) {
+            var parsed = parseInt(value, 10);
+            configData[index][field] = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+            var totals = calculateTotals();
+            var normalCell = document.getElementById('config-total-normal-cell');
+            var inverseCell = document.getElementById('config-total-inverse-cell');
+            if (normalCell) normalCell.textContent = '$' + totals.totalNormal;
+            if (inverseCell) inverseCell.textContent = '$' + totals.totalInverse;
+            document.getElementById('total-normal-payout').textContent = '$' + totals.totalNormal;
+            document.getElementById('total-inverse-payout').textContent = '$' + totals.totalInverse;
+            document.getElementById('total-grand-payout').textContent = '$' + totals.grandTotal;
+        }
+
+        function toggleRoundExclusion(index, field, checked) {
+            configData[index][field] = checked;
+        }
+
+        function toggleScoreboardVisibility() {
+            showScoreboardOnScores = !showScoreboardOnScores;
+            lsSet('show_scoreboard', showScoreboardOnScores);
+            renderScoresView();
+        }
+
+        function calculateTotals() {
+            var totalNormal = 0, totalInverse = 0;
+            configData.forEach(function(item) {
+                totalNormal += item.gamesCount * item.amount;
+                totalInverse += item.gamesCount * item.inverseAmount;
+            });
+            return { totalNormal: totalNormal, totalInverse: totalInverse, grandTotal: totalNormal + totalInverse };
+        }
+
+        function saveConfig() {
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveConfig',
+                            projectId: PROJECT_ID,
+                            rounds: configData.map(function(item) {
+                                return { round: item.round, amount: item.amount, inverseAmount: item.inverseAmount, excludeNormal: item.excludeNormal, excludeInverse: item.excludeInverse };
+                            })
+                        })
+                    });
+                } catch(e) { console.error('Error saving config:', e); }
+            }
+
+            lsSet('config', configData);
+
+            var statusEl = document.getElementById('config-status');
+            statusEl.innerHTML = '<div class="status-message success mt-1"><i class="fas fa-check-circle"></i> Configuration saved successfully!</div>';
+            setTimeout(function() { statusEl.innerHTML = ''; }, 3000);
+        }
+
+        // =============================================
+        // Live Score Feed
+        // =============================================
+        var liveFeedEnabled = false;
+        var liveFeedInterval = null;
+        var liveScoreboardData = [];
+        var lockedGameIds = new Set();
+        var linkedGames = {};
+        var scoreboardExpanded = true;
+        var scoreboardPublicExpanded = true;
+        var lastFetchTime = null;
+        var expandedRounds = {};
+
+        function saveLiveFeedPref() {
+            lsSet('live_feed_enabled', liveFeedEnabled);
+        }
+
+        function saveLockedGames() {
+            lsSet('locked_games', Array.from(lockedGameIds));
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'saveLockedGames', projectId: PROJECT_ID, lockedGameIds: Array.from(lockedGameIds) }) });
+                } catch(e) { console.error('Error saving locked games:', e); }
+            }
+        }
+
+        function saveLinkedGames() {
+            lsSet('linked_games', linkedGames);
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'saveLinkedGames', projectId: PROJECT_ID, linkedGames: linkedGames }) });
+                } catch(e) { console.error('Error saving linked games:', e); }
+            }
+        }
+
+        function linkGame(gameId, apiGameId) {
+            if (!apiGameId) {
+                delete linkedGames[gameId];
+                var game = gamesData[gameId - 1];
+                if (game && !lockedGameIds.has(gameId)) {
+                    game._liveState = null;
+                    game._livePeriod = '';
+                    game._liveClock = '';
+                    game._liveMessage = '';
+                    game._apiGameId = null;
+                }
+                saveLinkedGames();
+                renderScoreEntry();
+                return;
+            }
+            linkedGames[gameId] = apiGameId;
+            saveLinkedGames();
+
+            var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
+            if (apiGame) {
+                var game = gamesData[gameId - 1];
+                if (game) {
+                    game.team1 = apiGame.away.name || '';
+                    game.team2 = apiGame.home.name || '';
+                    var awayScore = apiGame.away.score ? parseInt(apiGame.away.score, 10) : null;
+                    var homeScore = apiGame.home.score ? parseInt(apiGame.home.score, 10) : null;
+                    game.score1 = awayScore;
+                    game.score2 = homeScore;
+                    game._liveState = apiGame.gameState;
+                    game._livePeriod = apiGame.periodText || '';
+                    game._liveClock = apiGame.clock || '';
+                    game._liveMessage = apiGame.detail || '';
+                    game._apiGameId = apiGame.id;
+                }
+            }
+            renderScoreEntry();
+        }
+
+        function toggleLiveFeed() {
+            liveFeedEnabled = !liveFeedEnabled;
+            saveLiveFeedPref();
+            if (liveFeedEnabled) { startLiveFeed(); }
+            else { stopLiveFeed(); }
+            renderScoreEntry();
+        }
+
+        function startLiveFeed() {
+            fetchLiveScores();
+            if (liveFeedInterval) clearInterval(liveFeedInterval);
+            liveFeedInterval = setInterval(fetchLiveScores, 60000);
+        }
+
+        function stopLiveFeed() {
+            if (liveFeedInterval) { clearInterval(liveFeedInterval); liveFeedInterval = null; }
+        }
+
+        async function fetchLiveScores() {
+            if (!ESPN_API_URL) return;
+            try {
+                var response = await fetch(ESPN_API_URL);
+                var data = await response.json();
+                if (data && data.events) {
+                    liveScoreboardData = [];
+                    data.events.forEach(function(ev) {
+                        var g = normalizeEspnGame(ev, currentSportKey);
+                        if (g) liveScoreboardData.push(g);
+                    });
+                    lastFetchTime = new Date();
+                    if (liveFeedEnabled || gridWinnerMode === 'live') {
+                        autoPopulateScores();
+                    }
+                    renderScoreEntry();
+                    renderTodayScoreboard();
+                    if (gridWinnerMode === 'live') renderGrid();
+                }
+            } catch(e) {
+                console.error('Error fetching live scores:', e);
+                var errHtml = '<div class="sb-no-games"><i class="fas fa-exclamation-triangle" style="margin-right:0.4rem;color:var(--warning);"></i>Could not load scores. Will retry.</div>';
+                var c1 = document.getElementById('today-scoreboard-container');
+                if (c1) c1.innerHTML = errHtml;
+                var c2 = document.getElementById('today-scoreboard-container-public');
+                if (c2) c2.innerHTML = errHtml;
+            }
+        }
+
+        function autoPopulateScores() {
+            Object.keys(linkedGames).forEach(function(gameIdStr) {
+                var gameId = parseInt(gameIdStr, 10);
+                if (lockedGameIds.has(gameId)) return;
+                var apiGameId = linkedGames[gameIdStr];
+                var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
+                if (!apiGame || !apiGame.home || !apiGame.away) return;
+                var game = gamesData[gameId - 1];
+                if (!game) return;
+
+                game.team1 = apiGame.away.name || game.team1;
+                game.team2 = apiGame.home.name || game.team2;
+                var awayScore = apiGame.away.score ? parseInt(apiGame.away.score, 10) : null;
+                var homeScore = apiGame.home.score ? parseInt(apiGame.home.score, 10) : null;
+                if (awayScore !== null && homeScore !== null) {
+                    game.score1 = awayScore;
+                    game.score2 = homeScore;
+                }
+                game._liveState = apiGame.gameState;
+                game._livePeriod = apiGame.periodText || '';
+                game._liveClock = apiGame.clock || '';
+                game._liveMessage = apiGame.detail || '';
+                game._apiGameId = apiGame.id;
+            });
+        }
+
+        function lockInScore(id) {
+            var game = gamesData[id - 1];
+            if (!game || game.score1 === null || game.score2 === null) return;
+            if (game.score1 === game.score2) {
+                showGameStatus(id, 'Cannot lock in tied score. Wait for a final result.', 'error');
+                return;
+            }
+
+            lockedGameIds.add(id);
+            saveLockedGames();
+
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'saveScore', projectId: PROJECT_ID, gameId: id, team1: game.team1, team2: game.team2, score1: game.score1, score2: game.score2 })
+                    });
+                } catch(e) { console.error('Error saving locked score:', e); }
+            }
+
+            renderScoreEntry();
+            showGameStatus(id, 'Score locked in!', 'success');
+        }
+
+        function toggleScoreboard() {
+            scoreboardExpanded = !scoreboardExpanded;
+            var body = document.getElementById('scoreboard-body');
+            if (body) body.classList.toggle('expanded', scoreboardExpanded);
+            var chevron = document.getElementById('scoreboard-chevron');
+            if (chevron) chevron.style.transform = scoreboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function toggleScoreboardPublic() {
+            scoreboardPublicExpanded = !scoreboardPublicExpanded;
+            var body = document.getElementById('scoreboard-body-public');
+            if (body) body.classList.toggle('expanded', scoreboardPublicExpanded);
+            var chevron = document.getElementById('scoreboard-chevron-public');
+            if (chevron) chevron.style.transform = scoreboardPublicExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function refreshPublicScoreboard() { fetchLiveScores(); }
+        function refreshScoreboard() { fetchLiveScores(); }
+
+        function buildScoreboardHtml() {
+            if (liveScoreboardData.length === 0) {
+                return '<div class="sb-no-games"><i class="fas fa-tv" style="margin-right:0.4rem;"></i>No games on the scoreboard right now.</div>';
+            }
+            var html = '<div class="scoreboard-games">';
+            liveScoreboardData.forEach(function(g) {
+                var state = g.gameState || 'pre';
+                var stateClass = state === 'live' ? 'sb-live' : (state === 'final' ? 'sb-final' : 'sb-pre');
+                html += '<div class="sb-game-card ' + stateClass + '">';
+                html += '<div class="sb-teams">';
+                html += '<div class="sb-team-row"><span class="sb-team-name' + (state === 'final' && g.away.winner ? ' sb-winner' : '') + '">';
+                if (g.away.seed) html += '<span class="sb-seed">[' + g.away.seed + ']</span>';
+                html += escapeHtml(g.away.name || 'TBD') + '</span><span class="sb-score">' + (g.away.score || '-') + '</span></div>';
+                html += '<div class="sb-team-row"><span class="sb-team-name' + (state === 'final' && g.home.winner ? ' sb-winner' : '') + '">';
+                if (g.home.seed) html += '<span class="sb-seed">[' + g.home.seed + ']</span>';
+                html += escapeHtml(g.home.name || 'TBD') + '</span><span class="sb-score">' + (g.home.score || '-') + '</span></div>';
+                html += '</div>';
+                if (g.headline) html += '<div class="sb-status" style="color:var(--info);font-weight:600;margin-bottom:0.1rem;">' + escapeHtml(g.headline) + '</div>';
+                html += '<div class="sb-status">';
+                if (state === 'live') html += '<span class="pulse-dot-sm" style="width:6px;height:6px;border-radius:50%;background:#C62828;animation:pulse 1s infinite;display:inline-block;"></span>' + escapeHtml(g.detail || 'LIVE');
+                else if (state === 'final') html += '<i class="fas fa-check-circle" style="color:var(--success);font-size:0.65rem;"></i> ' + escapeHtml(g.detail || 'FINAL');
+                else html += '<i class="fas fa-clock" style="font-size:0.65rem;"></i> ' + escapeHtml(g.startTime || 'TBD');
+                if (g.network) html += ' &middot; ' + escapeHtml(g.network);
+                html += '</div></div>';
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderTodayScoreboard() {
+            var scoreboardHtml = buildScoreboardHtml();
+            var c1 = document.getElementById('today-scoreboard-container');
+            if (c1) c1.innerHTML = scoreboardHtml;
+            var c2 = document.getElementById('today-scoreboard-container-public');
+            if (c2) c2.innerHTML = scoreboardHtml;
+        }
+
+        // =============================================
+        // Score Entry Tab (Admin)
+        // =============================================
+        function renderScoreEntry() {
+            var container = document.getElementById('scores-container');
+            if (!container) return;
+            var sportIcon = currentSportConfig ? currentSportConfig.icon : 'fa-trophy';
+            var html = '';
+
+            html += '<div class="section-header"><i class="fas fa-pen-to-square"></i><h2>Score Entry</h2></div>';
+
+            // Live Feed Controls
+            html += '<div class="live-feed-controls">';
+            html += '<div class="live-feed-toggle-group">';
+            html += '<span class="live-feed-label"><i class="fas fa-satellite-dish" style="margin-right:0.3rem;"></i>Live Score Feed</span>';
+            html += '<label class="toggle-switch"><input type="checkbox" id="live-feed-toggle" ' + (liveFeedEnabled ? 'checked' : '') + ' onchange="toggleLiveFeed()"><span class="toggle-slider"></span></label>';
+            html += '</div>';
+            html += '<div class="live-feed-status' + (liveFeedEnabled ? '' : ' inactive') + '">';
+            html += '<span class="pulse-dot"></span>';
+            if (liveFeedEnabled && lastFetchTime) html += 'Live &middot; Updated ' + lastFetchTime.toLocaleTimeString();
+            else if (liveFeedEnabled) html += 'Connecting...';
+            else html += 'Off &middot; Manual entry mode';
+            html += '</div></div>';
+
+            // Scoreboard
+            if (liveFeedEnabled) {
+                html += '<div class="today-scoreboard">';
+                html += '<div class="scoreboard-header" onclick="toggleScoreboard()">';
+                html += '<h3><i class="fas fa-tv"></i> Today\'s Scoreboard</h3>';
+                html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
+                html += '<button class="scoreboard-refresh-btn" onclick="event.stopPropagation();refreshScoreboard()"><i class="fas fa-sync-alt"></i> Refresh</button>';
+                html += '<i class="fas fa-chevron-down" id="scoreboard-chevron" style="font-size:0.8rem;transition:transform 0.3s ease;' + (scoreboardExpanded ? 'transform:rotate(180deg);' : '') + '"></i>';
+                html += '</div></div>';
+                html += '<div class="scoreboard-body' + (scoreboardExpanded ? ' expanded' : '') + '" id="scoreboard-body">';
+                html += '<div id="today-scoreboard-container">';
+                if (liveScoreboardData.length === 0) html += '<div class="sb-no-games"><i class="fas fa-spinner fa-spin" style="margin-right:0.4rem;"></i>Loading scoreboard...</div>';
+                html += '</div></div></div>';
+            }
+
+            if (!numbersGenerated) {
+                html += '<div class="status-message warning mb-2"><i class="fas fa-exclamation-triangle"></i> Numbers have not been generated yet. Square matching will not work until numbers are generated on the Grid tab.</div>';
+            }
+
+            // Rounds
+            ROUNDS.forEach(function(round) {
+                var roundGames = gamesData.filter(function(g) { return g.round === round.name; });
+                var completedCount = roundGames.filter(function(g) {
+                    return lockedGameIds.has(g.gameId) || (g.score1 !== null && g.score2 !== null && !g._liveState);
+                }).length;
+                var isExpanded = expandedRounds[round.name] || false;
+
+                html += '<div class="round-section">';
+                html += '<div class="round-header' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRound(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')">';
+                html += '<h3><i class="fas ' + sportIcon + '" style="font-size:0.85rem;"></i> ' + escapeHtml(round.name);
+                html += ' <span class="round-badge">' + completedCount + ' / ' + round.count + '</span></h3>';
+                html += '<i class="fas fa-chevron-down chevron"></i></div>';
+
+                html += '<div class="round-body' + (isExpanded ? ' expanded' : '') + '"><div class="games-grid">';
+
+                roundGames.forEach(function(game) {
+                    var isLocked = lockedGameIds.has(game.gameId);
+                    var hasScores = game.score1 !== null && game.score2 !== null;
+                    var isCompleted = isLocked || (hasScores && !game._liveState);
+                    var isLive = game._liveState === 'live';
+                    var isFinal = game._liveState === 'final';
+
+                    var cardClass = 'game-card';
+                    if (isLocked) cardClass += ' completed locked-in';
+                    else if (isCompleted) cardClass += ' completed';
+                    else if (isLive) cardClass += ' in-progress';
+
+                    html += '<div class="' + cardClass + '" id="game-card-' + game.gameId + '">';
+
+                    html += '<div class="game-number">';
+                    if (isLocked) html += '<i class="fas fa-lock" style="color:var(--info);margin-right:0.3rem;"></i>';
+                    else if (isCompleted) html += '<i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem;"></i>';
+                    html += 'Game ' + game.gameId;
+
+                    if (liveFeedEnabled && !isLocked) {
+                        if (isLive) {
+                            html += '<span class="live-badge live"><span class="pulse-dot-sm"></span>LIVE';
+                            if (game._liveClock) html += ' ' + (game._liveMessage || game._livePeriod) + ' ' + game._liveClock;
+                            html += '</span>';
+                        } else if (isFinal) {
+                            html += '<span class="live-badge final"><i class="fas fa-flag-checkered" style="font-size:0.55rem;"></i> FINAL</span>';
+                        }
+                    }
+                    if (isLocked) html += '<span class="live-badge locked"><i class="fas fa-lock" style="font-size:0.55rem;"></i> LOCKED</span>';
+                    html += '</div>';
+
+                    // Link to Live Game
+                    var currentLinkedId = linkedGames[game.gameId];
+                    if (liveFeedEnabled && !isLocked && liveScoreboardData.length > 0) {
+                        var usedApiIds = {};
+                        Object.keys(linkedGames).forEach(function(gid) {
+                            if (parseInt(gid, 10) !== game.gameId) usedApiIds[linkedGames[gid]] = true;
+                        });
+
+                        if (currentLinkedId) {
+                            var linkedApiGame = liveScoreboardData.find(function(g) { return g.id === currentLinkedId; });
+                            var linkedLabel = linkedApiGame ? (linkedApiGame.away.name + ' vs ' + linkedApiGame.home.name) : ('Game #' + currentLinkedId);
+                            html += '<div class="link-game-row"><span class="linked-info"><i class="fas fa-link"></i> Linked: ' + escapeHtml(linkedLabel) + '</span>';
+                            html += '<button class="btn-unlink" onclick="linkGame(' + game.gameId + ', null)"><i class="fas fa-unlink"></i> Unlink</button></div>';
+                        } else {
+                            html += '<div class="link-game-row"><select class="link-game-select" onchange="linkGame(' + game.gameId + ', this.value)"><option value="">Link to live game...</option>';
+                            liveScoreboardData.forEach(function(sg) {
+                                if (usedApiIds[sg.id]) return;
+                                var label = (sg.away.name || 'TBD') + ' vs ' + (sg.home.name || 'TBD');
+                                if (sg.gameState === 'live') label += ' (LIVE)';
+                                else if (sg.gameState === 'final') label += ' (FINAL)';
+                                else label += ' (' + (sg.startTime || 'TBD') + ')';
+                                html += '<option value="' + sg.id + '">' + escapeHtml(label) + '</option>';
+                            });
+                            html += '</select></div>';
+                        }
+                    }
+
+                    // Game inputs
+                    html += '<div class="game-inputs"><div class="game-matchup-row">';
+                    var inputDisabled = (isLocked || currentLinkedId) ? ' disabled' : '';
+                    html += '<div class="team-input-group"><input type="text" placeholder="Team 1" id="team1-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team1) + '"' + inputDisabled + '>';
+                    html += '<input type="number" placeholder="Score" id="score1-' + game.gameId + '" class="score-input" min="0"' + (game.score1 !== null ? ' value="' + game.score1 + '"' : '') + inputDisabled + '></div>';
+                    html += '<span class="vs-label">vs</span>';
+                    html += '<div class="team-input-group"><input type="text" placeholder="Team 2" id="team2-' + game.gameId + '" class="team-input" value="' + escapeHtml(game.team2) + '"' + inputDisabled + '>';
+                    html += '<input type="number" placeholder="Score" id="score2-' + game.gameId + '" class="score-input" min="0"' + (game.score2 !== null ? ' value="' + game.score2 + '"' : '') + inputDisabled + '></div>';
+                    html += '</div>';
+
+                    if (isLocked) {
+                        // no buttons
+                    } else if (liveFeedEnabled && isFinal && hasScores && game.score1 !== game.score2) {
+                        html += '<div style="display:flex;gap:0.5rem;align-items:center;">';
+                        html += '<button class="btn-lock-in" onclick="lockInScore(' + game.gameId + ')"><i class="fas fa-lock"></i> Lock In Score</button>';
+                        html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')"><i class="fas fa-check"></i> Save</button>';
+                        html += '</div>';
+                    } else if (liveFeedEnabled && isLive && hasScores) {
+                        html += '<div class="live-score-display"><i class="fas fa-satellite-dish" style="margin-right:0.3rem;color:var(--warning);"></i>Score updating live — lock in when final</div>';
+                    } else {
+                        html += '<button class="btn btn-success btn-sm" onclick="saveGameScore(' + game.gameId + ')"><i class="fas fa-check"></i> Save</button>';
+                    }
+
+                    html += '</div>'; // .game-inputs
+
+                    var showResult = isLocked || (isCompleted && hasScores);
+                    html += '<div class="game-result" id="game-result-' + game.gameId + '" style="' + (showResult ? '' : 'display:none;') + '">';
+                    if (showResult && hasScores && game.score1 !== game.score2) html += buildResultHtml(game);
+                    html += '</div>';
+
+                    html += '</div>'; // .game-card
+                });
+
+                html += '</div></div></div>'; // .games-grid, .round-body, .round-section
+            });
+
+            container.innerHTML = html;
+
+            if (liveFeedEnabled && liveScoreboardData.length > 0) renderTodayScoreboard();
+        }
+
+        // =============================================
+        // Scores View (Read-only, public)
+        // =============================================
+        function renderScoresView() {
+            var container = document.getElementById('scores-view-container');
+            if (!container) return;
+            var sportIcon = currentSportConfig ? currentSportConfig.icon : 'fa-trophy';
+
+            var html = '<div class="section-header"><i class="fas ' + sportIcon + '"></i><h2>Game Scores</h2></div>';
+
+            if (showScoreboardOnScores) {
+                html += '<div class="today-scoreboard">';
+                html += '<div class="scoreboard-header" onclick="toggleScoreboardPublic()">';
+                html += '<h3><i class="fas fa-tv"></i> Today\'s Scoreboard</h3>';
+                html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
+                html += '<button class="scoreboard-refresh-btn" onclick="event.stopPropagation();refreshPublicScoreboard()"><i class="fas fa-sync-alt"></i> Refresh</button>';
+                html += '<i class="fas fa-chevron-down" id="scoreboard-chevron-public" style="font-size:0.8rem;transition:transform 0.3s ease;' + (scoreboardPublicExpanded ? 'transform:rotate(180deg);' : '') + '"></i>';
+                html += '</div></div>';
+                html += '<div class="scoreboard-body' + (scoreboardPublicExpanded ? ' expanded' : '') + '" id="scoreboard-body-public">';
+                html += '<div id="today-scoreboard-container-public">';
+                if (liveScoreboardData.length === 0) html += '<div class="sb-no-games"><i class="fas fa-spinner fa-spin" style="margin-right:0.4rem;"></i>Loading scoreboard...</div>';
+                html += '</div></div></div>';
+            }
+
+            ROUNDS.forEach(function(round) {
+                var roundGames = gamesData.filter(function(g) { return g.round === round.name; });
+                var completedCount = roundGames.filter(function(g) { return g.score1 !== null && g.score2 !== null; }).length;
+                var isExpanded = expandedRounds[round.name] || false;
+
+                html += '<div class="round-section">';
+                html += '<div class="round-header' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRound(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')">';
+                html += '<h3><i class="fas ' + sportIcon + '" style="font-size:0.85rem;"></i> ' + escapeHtml(round.name);
+                html += ' <span class="round-badge">' + completedCount + ' / ' + round.count + '</span></h3>';
+                html += '<i class="fas fa-chevron-down chevron"></i></div>';
+
+                html += '<div class="round-body' + (isExpanded ? ' expanded' : '') + '"><div class="games-grid">';
+
+                roundGames.forEach(function(game) {
+                    var hasScores = game.score1 !== null && game.score2 !== null;
+                    var cardClass = 'game-card' + (hasScores ? ' completed' : '');
+
+                    html += '<div class="' + cardClass + '"><div class="game-number">';
+                    if (hasScores) html += '<i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem;"></i>';
+                    html += 'Game ' + game.gameId + '</div>';
+
+                    if (game.team1 || game.team2) {
+                        html += '<div style="font-size:0.88rem;margin-bottom:0.35rem;">';
+                        html += '<strong>' + escapeHtml(game.team1 || 'TBD') + '</strong>';
+                        if (hasScores) html += ' <span style="font-weight:700;color:var(--secondary);">' + game.score1 + '</span>';
+                        html += '<span class="vs-label" style="display:inline;padding:0 0.4rem;">vs</span>';
+                        html += '<strong>' + escapeHtml(game.team2 || 'TBD') + '</strong>';
+                        if (hasScores) html += ' <span style="font-weight:700;color:var(--secondary);">' + game.score2 + '</span>';
+                        html += '</div>';
+                    } else {
+                        html += '<div style="font-size:0.82rem;color:var(--text-light);font-style:italic;">No teams entered yet</div>';
+                    }
+
+                    if (hasScores && game.score1 !== game.score2) {
+                        html += '<div class="game-result" style="display:block;">' + buildResultHtml(game) + '</div>';
+                    }
+
+                    html += '</div>';
+                });
+
+                html += '</div></div></div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleRound(roundName) {
+            expandedRounds[roundName] = !expandedRounds[roundName];
+            renderScoreEntry();
+            renderScoresView();
+        }
+
+        // =============================================
+        // Save Game Score
+        // =============================================
+        function saveGameScore(id) {
+            var team1Input = document.getElementById('team1-' + id);
+            var team2Input = document.getElementById('team2-' + id);
+            var score1Input = document.getElementById('score1-' + id);
+            var score2Input = document.getElementById('score2-' + id);
+
+            var team1 = team1Input ? team1Input.value.trim() : '';
+            var team2 = team2Input ? team2Input.value.trim() : '';
+            var score1Str = score1Input ? score1Input.value : '';
+            var score2Str = score2Input ? score2Input.value : '';
+
+            if (!team1 || !team2) { showGameStatus(id, 'Both team names are required.', 'error'); return; }
+            if (score1Str === '' || score2Str === '') { showGameStatus(id, 'Both scores are required.', 'error'); return; }
+
+            var score1 = parseInt(score1Str, 10);
+            var score2 = parseInt(score2Str, 10);
+            if (isNaN(score1) || isNaN(score2)) { showGameStatus(id, 'Scores must be valid numbers.', 'error'); return; }
+            if (score1 === score2) { showGameStatus(id, 'Scores cannot be equal (no ties).', 'error'); return; }
+
+            var game = gamesData[id - 1];
+            game.team1 = team1;
+            game.team2 = team2;
+            game.score1 = score1;
+            game.score2 = score2;
+
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'saveScore', projectId: PROJECT_ID, gameId: id, team1: team1, team2: team2, score1: score1, score2: score2 })
+                    });
+                } catch(e) { console.error('Error saving score:', e); }
+            }
+
+            renderScoreEntry();
+            showGameStatus(id, 'Score saved successfully!', 'success');
+        }
+
+        function buildResultHtml(game) {
+            var isTeam1Winner = game.score1 > game.score2;
+            var winnerTeam = isTeam1Winner ? game.team1 : game.team2;
+            var winnerScore = isTeam1Winner ? game.score1 : game.score2;
+            var loserScore = isTeam1Winner ? game.score2 : game.score1;
+            var winnerDigit = winnerScore % 10;
+            var loserDigit = loserScore % 10;
+
+            var html = '<div class="result-winner"><i class="fas fa-trophy" style="color:var(--accent);margin-right:0.3rem;"></i>' + escapeHtml(winnerTeam) + ' wins ' + winnerScore + ' - ' + loserScore + '</div>';
+            html += '<div class="result-info"><strong>Winner digit:</strong> ' + winnerDigit + ' | <strong>Loser digit:</strong> ' + loserDigit + '</div>';
+
+            var normalOwner = getSquareOwner(winnerDigit, loserDigit);
+            var normalPayout = getPayoutForRound(game.round, false);
+            html += '<div class="result-info"><i class="fas fa-square" style="color:var(--primary);margin-right:0.3rem;font-size:0.7rem;"></i>';
+            html += '<strong>Normal:</strong> ' + escapeHtml(normalOwner.name);
+            if (normalOwner.row >= 0) html += ' (Row ' + normalOwner.row + ', Col ' + normalOwner.col + ')';
+            html += ' &mdash; <strong>$' + normalPayout + '</strong></div>';
+
+            var inverseOwner = getSquareOwner(loserDigit, winnerDigit);
+            var inversePayout = getPayoutForRound(game.round, true);
+            html += '<div class="result-info"><i class="fas fa-arrows-rotate" style="color:var(--info);margin-right:0.3rem;font-size:0.7rem;"></i>';
+            html += '<strong>Inverse:</strong> ' + escapeHtml(inverseOwner.name);
+            if (inverseOwner.row >= 0) html += ' (Row ' + inverseOwner.row + ', Col ' + inverseOwner.col + ')';
+            html += ' &mdash; <strong>$' + inversePayout + '</strong></div>';
+
+            return html;
+        }
+
+        function showGameStatus(id, message, type) {
+            var cardEl = document.getElementById('game-card-' + id);
+            if (!cardEl) return;
+            var existing = cardEl.querySelector('.game-status-msg');
+            if (existing) existing.remove();
+            var statusDiv = document.createElement('div');
+            statusDiv.className = 'status-message ' + type + ' mt-1 game-status-msg';
+            statusDiv.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '"></i> ' + escapeHtml(message);
+            cardEl.appendChild(statusDiv);
+            setTimeout(function() { if (statusDiv.parentNode) statusDiv.remove(); }, 3000);
+        }
+
+        function getSquareOwner(winnerDigit, loserDigit) {
+            if (!numbersGenerated) return { name: 'Numbers not generated', row: -1, col: -1 };
+            var gridRow = -1, gridCol = -1;
+            for (var i = 0; i < 10; i++) { if (rowNumbers[i] === winnerDigit) { gridRow = i; break; } }
+            for (var j = 0; j < 10; j++) { if (colNumbers[j] === loserDigit) { gridCol = j; break; } }
+            if (gridRow < 0 || gridCol < 0) return { name: '(error)', row: -1, col: -1 };
+            return { name: gridData[gridRow][gridCol] || '(unclaimed)', row: gridRow, col: gridCol };
+        }
+
+        function getPayoutForRound(roundName, isInverse) {
+            for (var i = 0; i < configData.length; i++) {
+                if (configData[i].round === roundName) return isInverse ? configData[i].inverseAmount : configData[i].amount;
+            }
+            return 0;
+        }
+
+        function getRoundExclusion(roundName) {
+            var cfg = configData.find(function(c) { return c.round === roundName; });
+            return cfg ? { excludeNormal: cfg.excludeNormal, excludeInverse: cfg.excludeInverse } : { excludeNormal: false, excludeInverse: false };
+        }
+
+        // =============================================
+        // Results Tab
+        // =============================================
+        var resultsMode = 'normal';
+
+        function switchResultsMode(mode) {
+            resultsMode = mode;
+            document.querySelectorAll('.results-subtab').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-results-mode') === mode);
+            });
+            renderResults();
+        }
+
+        function computeResults() {
+            var results = [];
+            gamesData.forEach(function(game) {
+                if (game.score1 === null || game.score2 === null) return;
+                if (game.score1 === 0 && game.score2 === 0) return;
+
+                var exclusion = getRoundExclusion(game.round);
+                var isTeam1Winner = game.score1 > game.score2;
+                var winnerTeam = isTeam1Winner ? game.team1 : game.team2;
+                var winnerScore = isTeam1Winner ? game.score1 : game.score2;
+                var loserScore = isTeam1Winner ? game.score2 : game.score1;
+                var winnerDigit = winnerScore % 10;
+                var loserDigit = loserScore % 10;
+
+                var normalOwner = getSquareOwner(winnerDigit, loserDigit);
+                var normalPayout = exclusion.excludeNormal ? 0 : getPayoutForRound(game.round, false);
+                var inverseOwner = getSquareOwner(loserDigit, winnerDigit);
+                var inversePayout = exclusion.excludeInverse ? 0 : getPayoutForRound(game.round, true);
+
+                results.push({
+                    gameId: game.gameId, round: game.round,
+                    winnerTeam: winnerTeam, loserTeam: isTeam1Winner ? game.team2 : game.team1,
+                    winnerScore: winnerScore, loserScore: loserScore,
+                    winnerDigit: winnerDigit, loserDigit: loserDigit,
+                    normalOwner: normalOwner.name, normalPayout: normalPayout,
+                    inverseOwner: inverseOwner.name, inversePayout: inversePayout,
+                    excludeNormal: exclusion.excludeNormal, excludeInverse: exclusion.excludeInverse
+                });
+            });
+            return results;
+        }
+
+        function computeLeaderboard(results, mode) {
+            var map = {};
+            results.forEach(function(r) {
+                if ((mode === 'normal' || mode === 'combined') && !r.excludeNormal) {
+                    var name = (r.normalOwner || '').trim();
+                    if (name && name !== '(unclaimed)' && name !== 'Numbers not generated' && name !== '(error)') {
+                        var key = name.toLowerCase();
+                        if (!map[key]) map[key] = { name: name, wins: 0, totalWinnings: 0 };
+                        map[key].wins += 1;
+                        map[key].totalWinnings += r.normalPayout;
+                    }
+                }
+                if ((mode === 'inverse' || mode === 'combined') && !r.excludeInverse) {
+                    var name2 = (r.inverseOwner || '').trim();
+                    if (name2 && name2 !== '(unclaimed)' && name2 !== 'Numbers not generated' && name2 !== '(error)') {
+                        var key2 = name2.toLowerCase();
+                        if (!map[key2]) map[key2] = { name: name2, wins: 0, totalWinnings: 0 };
+                        map[key2].wins += 1;
+                        map[key2].totalWinnings += r.inversePayout;
+                    }
+                }
+            });
+
+            var leaderboard = Object.keys(map).map(function(key) { return map[key]; });
+            leaderboard.sort(function(a, b) {
+                if (b.totalWinnings !== a.totalWinnings) return b.totalWinnings - a.totalWinnings;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return a.name.localeCompare(b.name);
+            });
+            return leaderboard;
+        }
+
+        function renderResults() {
+            var container = document.getElementById('results-content');
+            if (!container) return;
+            var results = computeResults();
+
+            if (results.length === 0) {
+                container.innerHTML = '<div class="results-empty"><i class="fas fa-clipboard-list"></i><p>No games completed yet</p><p class="results-empty-sub">Enter scores in the Scores tab to see results here.</p></div>';
+                return;
+            }
+
+            var html = '<div class="results-summary"><div class="summary-stat"><div class="stat-value">' + results.length + '</div><div class="stat-label">Games Completed</div></div></div>';
+
+            html += '<div class="card"><div class="results-section-title"><i class="fas fa-list-ol"></i> Game Results</div>';
+            html += '<div class="results-table-wrapper"><table class="results-table"><thead><tr>';
+            html += '<th>Round</th><th>Game #</th><th>Teams</th><th>Score</th><th>W Digit</th><th>L Digit</th>';
+
+            if (resultsMode === 'combined') {
+                html += '<th>Normal Owner</th><th>Normal Payout</th><th>Inverse Owner</th><th>Inverse Payout</th>';
+            } else {
+                html += '<th>Square Owner</th><th>Payout</th>';
+            }
+            html += '</tr></thead><tbody>';
+
+            var filteredResults = results.filter(function(r) {
+                if (resultsMode === 'normal') return !r.excludeNormal;
+                if (resultsMode === 'inverse') return !r.excludeInverse;
+                return !r.excludeNormal || !r.excludeInverse;
+            });
+
+            filteredResults.forEach(function(r) {
+                html += '<tr>';
+                html += '<td>' + escapeHtml(r.round) + '</td>';
+                html += '<td class="text-center">' + r.gameId + '</td>';
+                html += '<td>' + escapeHtml(r.winnerTeam) + ' vs ' + escapeHtml(r.loserTeam) + '</td>';
+                html += '<td>' + r.winnerScore + ' - ' + r.loserScore + '</td>';
+                html += '<td class="text-center">' + r.winnerDigit + '</td>';
+                html += '<td class="text-center">' + r.loserDigit + '</td>';
+
+                if (resultsMode === 'combined') {
+                    html += '<td>' + (r.excludeNormal ? '<span style="color:var(--text-light);font-style:italic;">N/A</span>' : escapeHtml(r.normalOwner)) + '</td>';
+                    html += '<td class="payout-cell">' + (r.excludeNormal ? '-' : '$' + r.normalPayout) + '</td>';
+                    html += '<td>' + (r.excludeInverse ? '<span style="color:var(--text-light);font-style:italic;">N/A</span>' : escapeHtml(r.inverseOwner)) + '</td>';
+                    html += '<td class="payout-cell">' + (r.excludeInverse ? '-' : '$' + r.inversePayout) + '</td>';
+                } else if (resultsMode === 'normal') {
+                    html += '<td>' + escapeHtml(r.normalOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.normalPayout + '</td>';
+                } else {
+                    html += '<td>' + escapeHtml(r.inverseOwner) + '</td>';
+                    html += '<td class="payout-cell">$' + r.inversePayout + '</td>';
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div></div>';
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // Leaderboard Tab
+        // =============================================
+        var leaderboardMode = 'normal';
+
+        function switchLeaderboardMode(mode) {
+            leaderboardMode = mode;
+            document.querySelectorAll('.leaderboard-subtab').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-leaderboard-mode') === mode);
+            });
+            renderLeaderboardTab();
+        }
+
+        function renderLeaderboardTab() {
+            var container = document.getElementById('leaderboard-content');
+            if (!container) return;
+            var results = computeResults();
+
+            if (results.length === 0) {
+                container.innerHTML = '<div class="results-empty"><i class="fas fa-ranking-star"></i><p>No games completed yet</p><p class="results-empty-sub">Results will appear here once games have been scored.</p></div>';
+                return;
+            }
+
+            var leaderboard = computeLeaderboard(results, leaderboardMode);
+            var totalPaidOut = 0;
+            leaderboard.forEach(function(entry) { totalPaidOut += entry.totalWinnings; });
+            var totalPoolUsers = getUniqueUsers().length;
+            var winnerPct = totalPoolUsers > 0 ? Math.round((leaderboard.length / totalPoolUsers) * 100) : 0;
+
+            var html = '<div class="results-summary">';
+            html += '<div class="summary-stat"><div class="stat-value">' + leaderboard.length + '</div><div class="stat-label">Unique Winners</div></div>';
+            html += '<div class="summary-stat"><div class="stat-value">$' + totalPaidOut + '</div><div class="stat-label">Total Paid Out</div></div>';
+            html += '<div class="summary-stat"><div class="stat-value">' + winnerPct + '%</div><div class="stat-label">% of Pool Winners</div></div>';
+            html += '</div>';
+
+            html += '<div class="card">';
+            if (leaderboard.length === 0) {
+                html += '<p class="text-muted text-center" style="padding:1rem;">No winners yet.</p>';
+            } else {
+                html += '<div class="results-table-wrapper"><table class="results-table"><thead><tr>';
+                html += '<th style="text-align:center;">Rank</th><th>Name</th><th style="text-align:center;">Games Won</th><th>Total Winnings</th>';
+                html += '</tr></thead><tbody>';
+
+                leaderboard.forEach(function(entry, index) {
+                    var rank = index + 1;
+                    var isLeader = rank === 1;
+                    html += '<tr class="' + (isLeader ? 'leader-row' : '') + '">';
+                    html += '<td class="rank-cell">' + rank + '</td>';
+                    html += '<td' + (isLeader ? ' style="font-weight:700;"' : '') + '>' + escapeHtml(entry.name) + '</td>';
+                    html += '<td class="text-center">' + entry.wins + '</td>';
+                    html += '<td class="winnings-cell">$' + entry.totalWinnings + '</td>';
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // Data Loading (Google Sheets + localStorage)
+        // =============================================
+        function renderAll() {
+            renderGrid();
+            renderConfig();
+            renderScoreEntry();
+            renderScoresView();
+            renderResults();
+            renderLeaderboardTab();
+            renderUsersTab();
+            applyAdminState();
+
+            if (numbersGenerated) {
+                var btn = document.getElementById('btn-generate-numbers');
+                if (btn) btn.disabled = true;
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('active');
+        }
+
+        async function loadData() {
+            if (!SHEETS_CONFIGURED) {
+                // Load from localStorage
+                loadFromLocalStorage();
+                renderAll();
+                return;
+            }
+
+            showLoading();
+            try {
+                var response = await fetch(SCRIPT_URL + '?action=getData&projectId=' + PROJECT_ID);
+                var data = await response.json();
+
+                if (data.grid && Array.isArray(data.grid)) {
+                    for (var r = 0; r < 10 && r < data.grid.length; r++) {
+                        for (var c = 0; c < 10 && c < data.grid[r].length; c++) {
+                            gridData[r][c] = data.grid[r][c] || '';
+                        }
+                    }
+                }
+
+                if (data.numbers) {
+                    if (data.numbers.generated) {
+                        numbersGenerated = true;
+                        if (data.numbers.rowNumbers) rowNumbers = data.numbers.rowNumbers.split(',').map(Number);
+                        if (data.numbers.colNumbers) colNumbers = data.numbers.colNumbers.split(',').map(Number);
+                    }
+                }
+
+                if (data.config && Array.isArray(data.config)) {
+                    data.config.forEach(function(item, index) {
+                        if (index < configData.length) {
+                            configData[index].amount = item.amount || 0;
+                            configData[index].inverseAmount = item.inverseAmount || 0;
+                            if (item.excludeNormal !== undefined) configData[index].excludeNormal = !!item.excludeNormal;
+                            if (item.excludeInverse !== undefined) configData[index].excludeInverse = !!item.excludeInverse;
+                        }
+                    });
+                }
+
+                if (data.games && Array.isArray(data.games)) {
+                    data.games.forEach(function(item) {
+                        var game = gamesData.find(function(g) { return g.gameId === item.gameId; });
+                        if (game) {
+                            game.team1 = item.team1 || '';
+                            game.team2 = item.team2 || '';
+                            game.score1 = (item.score1 !== null && item.score1 !== '') ? Number(item.score1) : null;
+                            game.score2 = (item.score2 !== null && item.score2 !== '') ? Number(item.score2) : null;
+                        }
+                    });
+                }
+
+                if (data.linkedGames && typeof data.linkedGames === 'object') {
+                    linkedGames = data.linkedGames;
+                    lsSet('linked_games', linkedGames);
+                }
+                if (data.lockedGameIds && Array.isArray(data.lockedGameIds)) {
+                    lockedGameIds = new Set(data.lockedGameIds);
+                    lsSet('locked_games', Array.from(lockedGameIds));
+                }
+                if (data.paidUsers && typeof data.paidUsers === 'object') {
+                    paidUsers = data.paidUsers;
+                    lsSet('paid_users', paidUsers);
+                }
+                if (data.userNotes && typeof data.userNotes === 'object') {
+                    userNotes = data.userNotes;
+                    lsSet('user_notes', userNotes);
+                }
+                if (data.payoutGroups && typeof data.payoutGroups === 'object') {
+                    payoutGroups = data.payoutGroups;
+                }
+                if (data.adminPassword) {
+                    ADMIN_PASSWORD = data.adminPassword;
+                }
+
+                renderAll();
+            } catch(e) {
+                console.error('Error loading data from Google Sheets:', e);
+                loadFromLocalStorage();
+                renderAll();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            var savedPaid = lsGet('paid_users');
+            if (savedPaid) paidUsers = savedPaid;
+            var savedNotes = lsGet('user_notes');
+            if (savedNotes) userNotes = savedNotes;
+            var savedGroups = lsGet('payout_groups');
+            if (savedGroups) payoutGroups = savedGroups;
+            var savedFeed = lsGet('live_feed_enabled');
+            if (savedFeed === true) liveFeedEnabled = true;
+            var savedLocked = lsGet('locked_games');
+            if (savedLocked) lockedGameIds = new Set(savedLocked);
+            var savedLinked = lsGet('linked_games');
+            if (savedLinked) linkedGames = savedLinked;
+            var savedConfig = lsGet('config');
+            if (savedConfig && Array.isArray(savedConfig)) {
+                savedConfig.forEach(function(item, index) {
+                    if (index < configData.length) {
+                        configData[index].amount = item.amount || 0;
+                        configData[index].inverseAmount = item.inverseAmount || 0;
+                        if (item.excludeNormal !== undefined) configData[index].excludeNormal = !!item.excludeNormal;
+                        if (item.excludeInverse !== undefined) configData[index].excludeInverse = !!item.excludeInverse;
+                    }
+                });
+            }
+            var savedSb = lsGet('show_scoreboard');
+            if (savedSb === false) showScoreboardOnScores = false;
+        }
+
+        // =============================================
+        // Initialize
+        // =============================================
+        function initApp() {
+            if (!PROJECT_ID) {
+                document.body.innerHTML = '<div style="text-align:center;padding:4rem 1rem;"><h2 style="color:var(--secondary);">No project ID specified</h2><p style="margin-top:1rem;"><a href="index.html" style="color:var(--primary);">Return to Hub</a></p></div>';
+                return;
+            }
+
+            // Load project metadata from registry
+            try {
+                var raw = localStorage.getItem('mybracketly_projects_index');
+                var projects = raw ? JSON.parse(raw) : [];
+                projectMeta = projects.find(function(p) { return p.id === PROJECT_ID; });
+            } catch(e) {
+                projectMeta = null;
+            }
+
+            if (!projectMeta) {
+                document.body.innerHTML = '<div style="text-align:center;padding:4rem 1rem;"><h2 style="color:var(--secondary);">Project not found</h2><p style="margin-top:1rem;"><a href="index.html" style="color:var(--primary);">Return to Hub</a></p></div>';
+                return;
+            }
+
+            // Set sport
+            currentSportKey = projectMeta.sport || 'ncaa-basketball';
+            currentSportConfig = SPORTS_REGISTRY[currentSportKey] || SPORTS_REGISTRY['ncaa-basketball'];
+            ESPN_API_URL = currentSportConfig.url;
+
+            // Update header UI
+            var subtitleEl = document.getElementById('board-subtitle');
+            if (subtitleEl) subtitleEl.textContent = projectMeta.name || 'Squares Board';
+            var iconEl = document.getElementById('header-sport-icon');
+            if (iconEl && currentSportConfig.icon) {
+                iconEl.className = 'fas ' + currentSportConfig.icon;
+            }
+            document.title = 'MyBracketly - ' + (projectMeta.name || 'Squares Board');
+
+            // Load Google Sheets URL
+            var sheetsUrl = localStorage.getItem(SHEETS_URL_KEY) || '';
+            if (sheetsUrl) {
+                SCRIPT_URL = sheetsUrl;
+                SHEETS_CONFIGURED = true;
+            }
+
+            // Initialize rounds and games based on sport
+            initRoundsAndGames();
+
+            // Load data and render
+            loadData();
+
+            // Start live feed if previously enabled
+            if (liveFeedEnabled) {
+                startLiveFeed();
+            } else if (showScoreboardOnScores) {
+                fetchLiveScores();
+            }
+        }
+
+        // Run init
+        initApp();
+    </script>
+</body>
+</html>

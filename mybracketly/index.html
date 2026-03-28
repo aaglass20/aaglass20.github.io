@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBracketly - Your Hub for Every Competition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/hub.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-icon"><i class="fas fa-trophy"></i></div>
+            <h1 class="app-title">My<span>Bracketly</span></h1>
+            <p class="app-subtitle">Your Hub for Every Competition</p>
+        </div>
+    </header>
+
+    <!-- Hero / Intro -->
+    <div class="hub-hero">
+        <p class="hero-tagline">Build It. Own It. Play It.</p>
+        <p class="hero-subtitle">Create tournaments, squares boards, and competitions for any sport or activity.</p>
+    </div>
+
+    <!-- Wizard: What do you want to create? -->
+    <section id="wizardSection" class="wizard-section">
+        <h2><i class="fas fa-wand-magic-sparkles" style="color:var(--primary); margin-right:0.5rem;"></i> What do you want to create?</h2>
+        <p class="wizard-subtitle">Choose your competition type to get started.</p>
+
+        <div class="wizard-cards">
+            <!-- Tournament Bracket -->
+            <div class="wizard-card" onclick="window.hubApp.startCreateBracket()">
+                <div class="card-icon"><i class="fas fa-sitemap"></i></div>
+                <h3>Tournament Bracket</h3>
+                <p>Single elimination, double elimination, round robin, or mixed formats. Perfect for any sport, game night, or competition.</p>
+            </div>
+
+            <!-- Squares Board -->
+            <div class="wizard-card" onclick="window.hubApp.showSquaresSetup()">
+                <div class="card-icon"><i class="fas fa-table-cells"></i></div>
+                <h3>Squares Board</h3>
+                <p>100-square grid game with live ESPN scores. Great for big games, playoffs, and watch parties. Track payouts automatically.</p>
+            </div>
+
+            <!-- Custom Event (Coming Soon) -->
+            <div class="wizard-card disabled">
+                <div class="coming-soon">Coming Soon</div>
+                <div class="card-icon"><i class="fas fa-calendar-star"></i></div>
+                <h3>Custom Event</h3>
+                <p>Organize any activity with custom rules, scoring, and tracking. Card games, challenges, office pools, and more.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Squares Setup Form (hidden by default) -->
+    <div id="squaresSetup" class="squares-setup" style="display:none;">
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-table-cells"></i>
+                <h2>Create Squares Board</h2>
+            </div>
+            <p class="section-subtext">Set up a 100-square grid game with live ESPN scores.</p>
+
+            <div class="form-group">
+                <label for="squaresName">Board Name</label>
+                <input type="text" id="squaresName" class="form-input" placeholder="e.g. Super Bowl Squares 2026, NFL Playoff Squares" maxlength="60">
+            </div>
+
+            <div class="form-group">
+                <label>Select Sport</label>
+                <div id="sportGrid" class="sport-select-grid"></div>
+            </div>
+
+            <div class="flex-between mt-2">
+                <button class="btn btn-outline" onclick="window.hubApp.hideSquaresSetup()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary btn-lg" onclick="window.hubApp.createSquaresProject()">
+                    <i class="fas fa-plus"></i> Create Board
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard: Your Projects -->
+    <section id="dashboardSection" class="dashboard-section" style="display:none;">
+        <div class="dashboard-header">
+            <h2><i class="fas fa-folder-open"></i> Your Projects</h2>
+            <div class="dashboard-controls">
+                <button class="filter-btn active" data-filter="all" onclick="window.hubApp.setFilter('all')">All</button>
+                <button class="filter-btn" data-filter="bracket" onclick="window.hubApp.setFilter('bracket')">Brackets</button>
+                <button class="filter-btn" data-filter="squares" onclick="window.hubApp.setFilter('squares')">Squares</button>
+                <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.8rem; color:var(--text-medium); cursor:pointer;">
+                    <input type="checkbox" onchange="window.hubApp.toggleArchived()"> Archived
+                </label>
+            </div>
+        </div>
+
+        <div id="statsSection" class="stats-banner" style="display:none;"></div>
+        <div id="projectList" class="project-cards"></div>
+    </section>
+
+    <!-- Empty State (when no projects) -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <i class="fas fa-rocket" style="font-size:4rem; color:var(--primary); margin-bottom:1rem; display:block;"></i>
+        <h3 style="color:var(--secondary); font-size:1.2rem;">No projects yet</h3>
+        <p>Create your first tournament bracket or squares board above to get started!</p>
+    </div>
+
+    <!-- Google Sheets Settings -->
+    <div style="max-width:1200px; margin:0 auto; padding:0 1rem 2rem;">
+        <details class="landing-config">
+            <summary>
+                <i class="fas fa-cog" style="color:var(--primary);"></i> Google Sheets Settings
+                <i class="fas fa-chevron-right chevron" style="margin-left:auto; font-size:0.8rem;"></i>
+            </summary>
+            <div style="margin-top:1rem;">
+                <p class="section-subtext">Connect a Google Sheet to sync your data across devices. <a href="setup/google-sheets-setup.md" target="_blank">Setup Guide</a></p>
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label>Apps Script URL</label>
+                        <input type="text" id="globalSheetsUrl" class="form-input" placeholder="Paste your deployed Apps Script URL...">
+                    </div>
+                    <button class="btn btn-primary" onclick="window.hubApp.saveSheetsConfig()" style="margin-bottom:0;">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Footer -->
+    <footer style="text-align:center; padding:1.5rem; color:var(--text-light); font-size:0.8rem; border-top:1px solid var(--border-light);">
+        <p>Powered by <strong style="color:var(--secondary);">Bracketly</strong> &mdash; Turn Anything Into a Competition.</p>
+    </footer>
+
+    <!-- Status Message -->
+    <div id="statusMsg" class="status-msg" style="position:fixed; bottom:1rem; left:50%; transform:translateX(-50%); z-index:3000; max-width:400px;"></div>
+
+    <script type="module" src="js/hub.js"></script>
+</body>
+</html>

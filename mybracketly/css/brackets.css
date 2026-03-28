@@ -1,0 +1,85 @@
+/* ============================================
+   MyBracketly - Brackets Page Styles
+   Bracket-specific styles (not in design-system.css)
+   ============================================ */
+
+/* Participant list */
+.participant-input-area { margin-top: 1rem; }
+.participant-list { list-style: none; margin-top: 1rem; }
+.participant-list li { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border-light); animation: fadeIn 0.2s ease; }
+.participant-list li:last-child { border-bottom: none; }
+.participant-list .participant-number { width: 28px; height: 28px; border-radius: 50%; background: var(--secondary); color: var(--text-on-dark); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+.participant-list .participant-name { flex: 1; font-weight: 500; }
+.participant-list .remove-btn { background: none; border: none; color: var(--error); cursor: pointer; font-size: 1rem; padding: 0.25rem; transition: var(--transition-fast); }
+.participant-list .remove-btn:hover { transform: scale(1.2); }
+
+/* Bracket View */
+.bracket-container { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1rem 0; }
+.bracket { display: flex; gap: 0; min-width: max-content; padding: 1rem; }
+.bracket-round { display: flex; flex-direction: column; justify-content: center; min-width: 220px; position: relative; }
+.round-title { text-align: center; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; padding: 0.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); color: var(--text-on-dark); border-radius: var(--radius-sm); }
+.bracket-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 8px; }
+
+.match-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); margin: 4px 8px; position: relative; cursor: pointer; }
+.match-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+.match-card.completed { border-left: 3px solid var(--success); }
+
+.match-slot { display: flex; align-items: center; padding: 0.4rem 0.6rem; gap: 0.5rem; font-size: 0.85rem; border-bottom: 1px solid var(--border-light); transition: var(--transition-fast); min-height: 32px; }
+.match-slot:last-child { border-bottom: none; }
+.match-slot.winner { background: var(--winner-bg); font-weight: 700; }
+.match-slot.loser { background: var(--loser-bg); color: var(--text-light); }
+.match-slot .seed { font-size: 0.7rem; font-weight: 700; color: var(--text-light); min-width: 20px; }
+.match-slot .team-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.match-slot .team-name.tbd { color: var(--text-light); font-style: italic; }
+.match-slot .score-display { font-weight: 700; min-width: 24px; text-align: center; color: var(--secondary); }
+
+/* Round Robin Table */
+.rr-table-wrapper { overflow-x: auto; border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+.rr-table { border-collapse: collapse; width: 100%; min-width: max-content; }
+.rr-table th, .rr-table td { padding: 0.5rem 0.6rem; text-align: center; border: 1px solid var(--border-light); font-size: 0.85rem; min-width: 50px; }
+.rr-table thead th { background: linear-gradient(180deg, var(--secondary) 0%, var(--secondary-light) 100%); color: var(--text-on-dark); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 2; }
+.rr-table .row-header { background: var(--secondary); color: var(--text-on-dark); font-weight: 700; font-size: 0.8rem; text-align: left; padding-left: 0.75rem; position: sticky; left: 0; z-index: 1; min-width: 120px; }
+.rr-table .diagonal-cell { background: var(--border-light); }
+.rr-table td.rr-win { background: var(--winner-bg); color: var(--success); font-weight: 700; }
+.rr-table td.rr-loss { background: var(--loser-bg); color: var(--error); font-weight: 700; }
+.rr-table td.rr-draw { background: #FFF8E1; color: var(--warning); font-weight: 700; }
+.rr-cell-btn { background: none; border: none; cursor: pointer; width: 100%; height: 100%; padding: 0.3rem; font-family: var(--font-main); font-size: 0.85rem; color: inherit; font-weight: inherit; transition: var(--transition-fast); }
+.rr-cell-btn:hover { background: var(--bg-hover); }
+
+/* Standings Table */
+.standings-table { border-collapse: collapse; width: 100%; }
+.standings-table th, .standings-table td { padding: 0.6rem 0.75rem; text-align: center; border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+.standings-table thead th { background: var(--secondary); color: var(--text-on-dark); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+.standings-table .rank-cell { font-weight: 700; color: var(--primary); }
+.standings-table .name-cell { text-align: left; font-weight: 600; }
+.standings-table tbody tr:nth-child(even) { background: var(--bg-stripe); }
+.standings-table tbody tr:hover { background: var(--bg-hover); }
+.standings-table .qualified { background: var(--winner-bg) !important; }
+
+/* Bracket-specific sections */
+.bracket-section-label { text-align: center; font-weight: 900; font-size: 1rem; color: var(--secondary); text-transform: uppercase; letter-spacing: 2px; padding: 0.75rem; margin: 1rem 0 0.5rem; background: linear-gradient(90deg, transparent, var(--border-light), transparent); }
+.losers-bracket { border-top: 3px dashed var(--border-medium); padding-top: 1rem; margin-top: 1rem; }
+
+/* Tournament type grid (bracket-specific sizing) */
+.tournament-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+
+/* Landing specific */
+.landing-container { max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem; }
+.landing-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.landing-header h2 { font-size: 1.35rem; font-weight: 700; color: var(--secondary); }
+.tournament-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.archive-toggle { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-medium); cursor: pointer; }
+.archive-toggle input { cursor: pointer; }
+
+@media (max-width: 768px) {
+    .tournament-type-grid { grid-template-columns: 1fr; }
+    .tournament-cards { grid-template-columns: 1fr; }
+    .bracket-round { min-width: 180px; }
+    .match-slot { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
+    .landing-header { flex-direction: column; align-items: stretch; }
+}
+
+@media print {
+    .tab-content:not(#tab-bracket) { display: none !important; }
+    .bracket-container { overflow: visible; }
+}

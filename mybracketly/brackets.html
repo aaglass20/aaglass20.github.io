@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBracketly - Tournament Brackets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/brackets.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-icon"><i class="fas fa-trophy"></i></div>
+            <h1 class="app-title">My<span>Bracketly</span></h1>
+            <p class="app-subtitle" id="tournamentSubtitle">Tournament Brackets</p>
+        </div>
+    </header>
+
+    <!-- Tab Bar (shown when viewing a tournament) -->
+    <nav class="tab-bar" id="tabBar">
+        <a class="tab-btn back-btn" href="index.html" id="backBtn">
+            <i class="fas fa-arrow-left"></i> Hub
+        </a>
+        <button class="tab-btn active" data-tab="bracket" onclick="switchTab('bracket')">
+            <i class="fas fa-sitemap"></i>Bracket
+        </button>
+        <button class="tab-btn" data-tab="standings" onclick="switchTab('standings')">
+            <i class="fas fa-list-ol"></i>Standings
+        </button>
+        <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">
+            <i class="fas fa-gamepad"></i>Matches
+        </button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i>Settings
+        </button>
+    </nav>
+
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landingPage" class="landing-container">
+        <div class="landing-header">
+            <h2><i class="fas fa-trophy" style="color:var(--primary); margin-right:0.5rem;"></i> Your Tournaments</h2>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                <label class="archive-toggle">
+                    <input type="checkbox" id="showArchived" onchange="renderLanding()"> Show archived
+                </label>
+                <button class="btn btn-primary" onclick="showCreateWizard()">
+                    <i class="fas fa-plus"></i> Create Tournament
+                </button>
+            </div>
+        </div>
+        <div id="tournamentList" class="tournament-cards"></div>
+
+        <details class="landing-config mt-3">
+            <summary>
+                <i class="fas fa-cog" style="color:var(--primary);"></i> Google Sheets Settings
+                <i class="fas fa-chevron-right chevron" style="margin-left:auto;font-size:0.8rem;"></i>
+            </summary>
+            <div style="margin-top:1rem;">
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label>Apps Script URL</label>
+                        <input type="text" id="globalSheetsUrl" class="form-input" placeholder="Paste your deployed Apps Script URL...">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveGlobalSheetsConfig()" style="margin-bottom:0;">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+                <div id="globalSheetsStatus" style="margin-top:0.5rem; font-size:0.85rem;"></div>
+            </div>
+        </details>
+    </div>
+
+    <!-- ==================== SETUP WIZARD ==================== -->
+    <div id="setupWizard" class="setup-container">
+        <div class="step-indicator" id="stepIndicator">
+            <div class="step-dot active" data-step="1"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
+            <div class="step-dot" data-step="4"></div>
+        </div>
+        <div class="setup-step active" id="step1">
+            <div class="card">
+                <div class="section-header"><i class="fas fa-trophy"></i><h2>Create Your Tournament</h2></div>
+                <p class="section-subtext">Set up a new tournament bracket in just a few steps.</p>
+                <div class="form-group">
+                    <label for="tournamentName">Tournament Name</label>
+                    <input type="text" id="tournamentName" class="form-input" placeholder="e.g. Spring Championship 2026" maxlength="60">
+                </div>
+                <div class="form-group">
+                    <label for="participantCount">Number of Participants</label>
+                    <input type="number" id="participantCount" class="form-input" placeholder="e.g. 8, 16, 32..." min="3" max="128">
+                    <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Minimum 3 participants. For elimination brackets, byes are added automatically if needed.</small>
+                </div>
+                <div class="flex-between mt-2">
+                    <button class="btn btn-outline" onclick="cancelCreate()"><i class="fas fa-times"></i> Cancel</button>
+                    <button class="btn btn-primary btn-lg" onclick="goToStep(2)">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="setup-step" id="step2">
+            <div class="card">
+                <div class="section-header"><i class="fas fa-chess"></i><h2>Tournament Format</h2></div>
+                <p class="section-subtext">Choose how your tournament will be structured.</p>
+                <div class="tournament-type-grid">
+                    <div class="type-card" onclick="selectType('single')" data-type="single"><i class="fas fa-sitemap"></i><h3>Single Elimination</h3><p>Lose once and you're out. Fast and dramatic.</p></div>
+                    <div class="type-card" onclick="selectType('double')" data-type="double"><i class="fas fa-rotate"></i><h3>Double Elimination</h3><p>Must lose twice to be eliminated. Winners and losers brackets.</p></div>
+                    <div class="type-card" onclick="selectType('roundrobin')" data-type="roundrobin"><i class="fas fa-arrows-spin"></i><h3>Round Robin</h3><p>Everyone plays everyone. Most wins takes it.</p></div>
+                    <div class="type-card" onclick="selectType('rr_single')" data-type="rr_single"><i class="fas fa-filter"></i><h3>Round Robin &rarr; Single Elim</h3><p>Round robin group stage, then top players advance to single elimination playoff.</p></div>
+                    <div class="type-card" onclick="selectType('rr_double')" data-type="rr_double"><i class="fas fa-layer-group"></i><h3>Round Robin &rarr; Double Elim</h3><p>Round robin group stage, then top players advance to double elimination playoff.</p></div>
+                </div>
+                <div class="flex-between mt-2">
+                    <button class="btn btn-outline" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="btn btn-primary btn-lg" id="step2Next" onclick="goToStep(3)" disabled>Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="setup-step" id="step3"><div class="card" id="step3Content"></div></div>
+        <div class="setup-step" id="step4"><div class="card" id="step4Content"></div></div>
+    </div>
+
+    <!-- ==================== TOURNAMENT VIEW (tab contents) ==================== -->
+    <div class="tab-content" id="tab-bracket"><div id="bracketView"></div></div>
+    <div class="tab-content" id="tab-standings"><div id="standingsView"></div></div>
+    <div class="tab-content" id="tab-matches"><div id="matchesView"></div></div>
+    <div class="tab-content" id="tab-settings"><div id="settingsView"></div></div>
+
+    <!-- Score Entry Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="scoreModalTitle">Enter Score</h3>
+                <button class="modal-close" onclick="closeScoreModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="scoreModalBody"></div>
+            <div class="modal-footer" id="scoreModalFooter"></div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color:var(--text-medium);font-weight:500;">Loading tournament data...</p>
+    </div>
+
+    <!-- Status Message -->
+    <div id="statusMsg" class="status-msg" style="position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:3000;max-width:400px;"></div>
+
+<script>
+/* ============================================
+   MyBracketly - Tournament Bracket Generator
+   Ported to modular structure
+   ============================================ */
+
+// ---- Configuration ----
+let SCRIPT_URL = '';
+let SHEETS_CONFIGURED = false;
+
+// ---- Multi-Tournament State ----
+let tournamentsIndex = []; // [{id, name, type, status, participantCount, createdAt, updatedAt}]
+let currentTournamentId = null;
+
+// Hub project ID from URL param
+let hubProjectId = null;
+
+let tournament = {
+    name: '', type: '', participants: [], matches: [], rrMatches: [],
+    rrAdvanceCount: 4, phase: 'rr'
+};
+
+// ---- Local Storage Keys ----
+const LS_INDEX_KEY = 'mybracketly_bracket_index';
+const LS_PREFIX = 'mybracketly_bracket_';
+const LS_SHEETS_KEY = 'mybracketly_sheets_url';
+const LS_ACTIVE_KEY = 'mybracketly_bracket_active_id';
+const LS_OLD_KEY = 'tournament_bracket_data'; // for migration from old format
+const LS_OLD_INDEX_KEY = 'tournaments_index'; // for migration from old format
+
+// ---- Generate unique ID ----
+function generateId() {
+    return 't_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+}
+
+// ---- Initialization ----
+function init() {
+    // Restore sheets URL
+    const savedUrl = localStorage.getItem(LS_SHEETS_KEY);
+    if (savedUrl) { SCRIPT_URL = savedUrl; SHEETS_CONFIGURED = true; }
+
+    // Migrate old single-tournament data
+    migrateOldData();
+
+    // Load index
+    const savedIndex = localStorage.getItem(LS_INDEX_KEY);
+    if (savedIndex) {
+        try { tournamentsIndex = JSON.parse(savedIndex); } catch(e) { tournamentsIndex = []; }
+    }
+
+    // Check URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    hubProjectId = urlParams.get('id');
+    const isNew = urlParams.get('new') === '1';
+    const directTournament = urlParams.get('tournament');
+
+    // If new=1 with a project ID, show create wizard directly
+    if (hubProjectId && isNew) {
+        showCreateWizard();
+        return;
+    }
+
+    // If a specific tournament ID is passed via ?tournament=xxx (direct link/share)
+    if (directTournament && tournamentsIndex.find(t => t.id === directTournament)) {
+        openTournament(directTournament);
+        return;
+    }
+
+    // If a hub project ID is given, try to find its tournament
+    if (hubProjectId) {
+        // Look for a tournament associated with this hub project
+        const existing = tournamentsIndex.find(t => t.hubProjectId === hubProjectId);
+        if (existing) {
+            openTournament(existing.id);
+            return;
+        }
+        // If no tournament found for this hub project, check if there's one with this exact id
+        const byId = tournamentsIndex.find(t => t.id === hubProjectId);
+        if (byId) {
+            openTournament(byId.id);
+            return;
+        }
+    }
+
+    // Show landing page
+    showLanding();
+}
+
+function migrateOldData() {
+    const oldData = localStorage.getItem(LS_OLD_KEY);
+    if (!oldData) return;
+
+    try {
+        const data = JSON.parse(oldData);
+        if (data.participants && data.participants.length > 0 && data.type) {
+            const id = generateId();
+            const entry = {
+                id: id,
+                name: data.name || 'Migrated Tournament',
+                type: data.type,
+                status: 'active',
+                participantCount: data.participants.length,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            let idx = [];
+            const savedIdx = localStorage.getItem(LS_INDEX_KEY);
+            if (savedIdx) { try { idx = JSON.parse(savedIdx); } catch(e) { idx = []; } }
+            idx.push(entry);
+            localStorage.setItem(LS_INDEX_KEY, JSON.stringify(idx));
+            localStorage.setItem(LS_PREFIX + id, oldData);
+            localStorage.removeItem(LS_OLD_KEY);
+        }
+    } catch(e) {
+        console.error('Migration failed', e);
+    }
+}
+
+// ---- Landing Page ----
+function showLanding() {
+    currentTournamentId = null;
+    localStorage.removeItem(LS_ACTIVE_KEY);
+    document.getElementById('landingPage').style.display = 'block';
+    document.getElementById('setupWizard').style.display = 'none';
+    document.getElementById('tabBar').classList.remove('visible');
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById('tournamentSubtitle').textContent = 'Tournament Brackets';
+
+    // Update back button to go to hub
+    document.getElementById('backBtn').href = 'index.html';
+
+    // Populate global sheets URL
+    const urlInput = document.getElementById('globalSheetsUrl');
+    if (urlInput) urlInput.value = SCRIPT_URL || '';
+    updateGlobalSheetsStatus();
+
+    renderLanding();
+}
+
+function renderLanding() {
+    const container = document.getElementById('tournamentList');
+    const showArchived = document.getElementById('showArchived').checked;
+
+    let filtered = tournamentsIndex.filter(t => showArchived || t.status !== 'archived');
+    // Sort: active first, then completed, then archived; within each group sort by updatedAt desc
+    const statusOrder = { active: 0, completed: 1, archived: 2 };
+    filtered.sort((a, b) => {
+        const so = (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
+        if (so !== 0) return so;
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <i class="fas fa-trophy"></i>
+                <h3>${tournamentsIndex.length > 0 ? 'No active tournaments' : 'No tournaments yet'}</h3>
+                <p>${tournamentsIndex.length > 0 ? 'Toggle "Show archived" to see past tournaments.' : 'Click "Create Tournament" to get started!'}</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = filtered.map(t => {
+        const typeLabel = getFormatLabel(t.type);
+        const statusClass = t.status || 'active';
+        const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+        const date = t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() : '';
+        const isArchived = t.status === 'archived';
+
+        return `
+        <div class="t-card ${isArchived ? 'archived' : ''}" onclick="openTournament('${t.id}')">
+            <div class="t-card-status ${statusClass}">${statusLabel}</div>
+            <div class="t-card-name">${escapeHtml(t.name)}</div>
+            <div class="t-card-meta">
+                <span><i class="fas fa-chess"></i> ${escapeHtml(typeLabel)}</span>
+                <span><i class="fas fa-users"></i> ${t.participantCount} players</span>
+                <span><i class="fas fa-calendar"></i> ${date}</span>
+            </div>
+            <div class="t-card-actions" onclick="event.stopPropagation();">
+                <button class="btn btn-primary btn-sm" onclick="openTournament('${t.id}')"><i class="fas fa-eye"></i> Open</button>
+                ${isArchived
+                    ? `<button class="btn btn-outline btn-sm" onclick="unarchiveTournament('${t.id}')"><i class="fas fa-box-open"></i> Unarchive</button>`
+                    : `<button class="btn btn-outline btn-sm" onclick="archiveTournament('${t.id}')"><i class="fas fa-archive"></i> Archive</button>`
+                }
+                <button class="btn btn-danger btn-sm" onclick="deleteTournament('${t.id}')"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function saveGlobalSheetsConfig() {
+    const url = document.getElementById('globalSheetsUrl').value.trim();
+    if (url) {
+        SCRIPT_URL = url;
+        SHEETS_CONFIGURED = true;
+        localStorage.setItem(LS_SHEETS_KEY, url);
+        showStatus('Google Sheets URL saved', 'success');
+    } else {
+        SCRIPT_URL = '';
+        SHEETS_CONFIGURED = false;
+        localStorage.removeItem(LS_SHEETS_KEY);
+    }
+    updateGlobalSheetsStatus();
+}
+
+function updateGlobalSheetsStatus() {
+    const el = document.getElementById('globalSheetsStatus');
+    if (!el) return;
+    el.innerHTML = SHEETS_CONFIGURED
+        ? '<span style="color:var(--success);"><i class="fas fa-check-circle"></i> Connected</span>'
+        : '<span style="color:var(--error);"><i class="fas fa-times-circle"></i> Not connected</span>';
+}
+
+// ---- Open / Close Tournament ----
+function openTournament(id) {
+    const entry = tournamentsIndex.find(t => t.id === id);
+    if (!entry) { showStatus('Tournament not found', 'error'); return; }
+
+    currentTournamentId = id;
+    localStorage.setItem(LS_ACTIVE_KEY, id);
+
+    // Load tournament data
+    const saved = localStorage.getItem(LS_PREFIX + id);
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            tournament = {
+                name: '', type: '', participants: [], matches: [], rrMatches: [],
+                rrAdvanceCount: 4, phase: 'rr', ...data
+            };
+        } catch(e) {
+            showStatus('Failed to load tournament data', 'error');
+            return;
+        }
+    } else {
+        showStatus('No data found for this tournament', 'error');
+        return;
+    }
+
+    // Update URL without reload
+    const url = new URL(window.location);
+    url.searchParams.set('tournament', id);
+    url.searchParams.delete('new');
+    window.history.replaceState({}, '', url);
+
+    // Hide landing & wizard, show tournament view
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('setupWizard').style.display = 'none';
+    document.getElementById('tabBar').classList.add('visible');
+    document.getElementById('tournamentSubtitle').textContent = tournament.name;
+
+    // Update back button - go to hub
+    document.getElementById('backBtn').href = 'index.html';
+
+    // Auto-detect completed status
+    autoDetectCompleted();
+
+    switchTab('bracket');
+    renderStandings();
+    renderMatches();
+    renderSettings();
+}
+
+function closeTournament() {
+    // Navigate back to hub
+    window.location.href = 'index.html';
+}
+
+// ---- Create Tournament (Wizard) ----
+let currentStep = 1;
+let selectedType = '';
+let participantNames = [];
+let newTournament = { name: '', participantCount: 0 };
+
+function showCreateWizard() {
+    currentStep = 1;
+    selectedType = '';
+    participantNames = [];
+    newTournament = { name: '', participantCount: 0 };
+
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('setupWizard').style.display = 'block';
+
+    // Reset wizard UI
+    document.getElementById('tournamentName').value = '';
+    document.getElementById('participantCount').value = '';
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('step2Next').disabled = true;
+
+    // Reset step dots
+    document.querySelectorAll('.step-dot').forEach(dot => {
+        dot.classList.remove('active', 'completed');
+    });
+    document.querySelector('.step-dot[data-step="1"]').classList.add('active');
+
+    // Show step 1
+    document.querySelectorAll('.setup-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step1').classList.add('active');
+}
+
+function cancelCreate() {
+    document.getElementById('setupWizard').style.display = 'none';
+    // If we came from the hub with new=1, go back to hub
+    if (hubProjectId) {
+        window.location.href = 'index.html';
+        return;
+    }
+    showLanding();
+}
+
+function goToStep(step) {
+    if (step > currentStep) {
+        if (currentStep === 1) {
+            const name = document.getElementById('tournamentName').value.trim();
+            const count = parseInt(document.getElementById('participantCount').value);
+            if (!name) { showStatus('Please enter a tournament name', 'error'); return; }
+            if (!count || count < 3 || count > 128) { showStatus('Enter a participant count between 3 and 128', 'error'); return; }
+            newTournament.name = name;
+            newTournament.participantCount = count;
+        }
+        if (currentStep === 2 && !selectedType) {
+            showStatus('Please select a tournament format', 'error'); return;
+        }
+    }
+
+    currentStep = step;
+    document.querySelectorAll('.step-dot').forEach(dot => {
+        const s = parseInt(dot.dataset.step);
+        dot.classList.toggle('active', s === step);
+        dot.classList.toggle('completed', s < step);
+    });
+    document.querySelectorAll('.setup-step').forEach(s => s.classList.remove('active'));
+
+    if (step === 3) buildStep3();
+    if (step === 4) buildStep4();
+
+    const stepEl = document.getElementById('step' + step);
+    if (stepEl) stepEl.classList.add('active');
+}
+
+function selectType(type) {
+    selectedType = type;
+    document.querySelectorAll('.type-card').forEach(c => c.classList.toggle('selected', c.dataset.type === type));
+    document.getElementById('step2Next').disabled = false;
+}
+
+function buildStep3() {
+    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
+    const container = document.getElementById('step3Content');
+
+    if (isHybrid) {
+        let defaultAdvance = 4;
+        if (newTournament.participantCount <= 4) defaultAdvance = 2;
+        else if (newTournament.participantCount <= 8) defaultAdvance = 4;
+        else if (newTournament.participantCount <= 16) defaultAdvance = 8;
+        else defaultAdvance = Math.min(16, Math.floor(newTournament.participantCount / 2));
+
+        container.innerHTML = `
+            <div class="section-header"><i class="fas fa-filter"></i><h2>Playoff Settings</h2></div>
+            <p class="section-subtext">Configure how many participants advance from the round robin stage to the ${selectedType === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>
+            <div class="form-group">
+                <label for="advanceCount">Number Advancing to Playoffs</label>
+                <input type="number" id="advanceCount" class="form-input" value="${defaultAdvance}" min="2" max="${Math.min(newTournament.participantCount, 32)}">
+                <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Powers of 2 (2, 4, 8, 16) work best for elimination brackets.</small>
+            </div>
+            <div class="flex-between mt-2">
+                <button class="btn btn-outline" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+                <button class="btn btn-primary btn-lg" onclick="saveHybridSettings(); goToStep(4);">Next <i class="fas fa-arrow-right"></i></button>
+            </div>`;
+    } else {
+        // Non-hybrid: step 3 is participant names
+        container.innerHTML = buildParticipantNamesHTML(3);
+        initParticipantNameHandlers();
+    }
+}
+
+function saveHybridSettings() {
+    const count = parseInt(document.getElementById('advanceCount').value);
+    if (!count || count < 2) { showStatus('At least 2 must advance', 'error'); return; }
+    newTournament.rrAdvanceCount = count;
+}
+
+function buildStep4() {
+    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
+    if (!isHybrid) return;
+    const container = document.getElementById('step4Content');
+    container.innerHTML = buildParticipantNamesHTML(4);
+    initParticipantNameHandlers();
+}
+
+function buildParticipantNamesHTML(backStep) {
+    const count = newTournament.participantCount;
+    return `
+        <div class="section-header"><i class="fas fa-users"></i><h2>Participant Names</h2></div>
+        <p class="section-subtext">Enter all ${count} participant names. Order determines seeding (1st = top seed).</p>
+        <div class="participant-input-area">
+            <div class="inline-form">
+                <div class="form-group">
+                    <input type="text" id="newParticipantName" class="form-input" placeholder="Enter participant name..." maxlength="40" onkeydown="if(event.key==='Enter'){addParticipant();}">
+                </div>
+                <button class="btn btn-primary" onclick="addParticipant()" style="margin-bottom:0;white-space:nowrap;"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <button class="btn btn-outline btn-sm" onclick="randomizeSeeds()"><i class="fas fa-shuffle"></i> Randomize Order</button>
+                <button class="btn btn-outline btn-sm" onclick="clearParticipants()"><i class="fas fa-trash"></i> Clear All</button>
+            </div>
+        </div>
+        <div class="mt-1" id="participantProgress" style="font-size:0.85rem;color:var(--text-light);">0 / ${count} participants added</div>
+        <ul class="participant-list" id="participantList"></ul>
+        <div class="flex-between mt-2">
+            <button class="btn btn-outline" onclick="goToStep(${backStep - 1})"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn btn-success btn-lg" id="startTournamentBtn" onclick="createAndStartTournament()" disabled><i class="fas fa-play"></i> Start Tournament</button>
+        </div>`;
+}
+
+function initParticipantNameHandlers() {
+    participantNames = [];
+    renderParticipantList();
+}
+
+function addParticipant() {
+    const input = document.getElementById('newParticipantName');
+    const name = input.value.trim();
+    if (!name) return;
+    if (participantNames.length >= newTournament.participantCount) { showStatus('All participant slots are filled', 'error'); return; }
+    if (participantNames.some(n => n.toLowerCase() === name.toLowerCase())) { showStatus('Duplicate name', 'error'); return; }
+    participantNames.push(name);
+    input.value = '';
+    input.focus();
+    renderParticipantList();
+}
+
+function removeParticipant(index) { participantNames.splice(index, 1); renderParticipantList(); }
+function clearParticipants() { participantNames = []; renderParticipantList(); }
+
+function randomizeSeeds() {
+    for (let i = participantNames.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [participantNames[i], participantNames[j]] = [participantNames[j], participantNames[i]];
+    }
+    renderParticipantList();
+}
+
+function renderParticipantList() {
+    const list = document.getElementById('participantList');
+    const progress = document.getElementById('participantProgress');
+    const startBtn = document.getElementById('startTournamentBtn');
+    if (!list) return;
+    list.innerHTML = participantNames.map((name, i) => `
+        <li><span class="participant-number">${i + 1}</span><span class="participant-name">${escapeHtml(name)}</span>
+        <button class="remove-btn" onclick="removeParticipant(${i})" title="Remove"><i class="fas fa-times"></i></button></li>
+    `).join('');
+    progress.textContent = `${participantNames.length} / ${newTournament.participantCount} participants added`;
+    startBtn.disabled = participantNames.length < newTournament.participantCount;
+}
+
+// ---- Create & Start Tournament ----
+function createAndStartTournament() {
+    const id = hubProjectId || generateId();
+
+    tournament = {
+        name: newTournament.name,
+        type: selectedType,
+        participants: participantNames.map((name, i) => ({ name, seed: i + 1 })),
+        matches: [],
+        rrMatches: [],
+        rrAdvanceCount: newTournament.rrAdvanceCount || 4,
+        phase: 'rr'
+    };
+
+    generateTournament();
+
+    // Save to index
+    const entry = {
+        id: id,
+        hubProjectId: hubProjectId || null,
+        name: tournament.name,
+        type: tournament.type,
+        status: 'active',
+        participantCount: tournament.participants.length,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    };
+    tournamentsIndex.push(entry);
+    saveIndex();
+
+    // Save tournament data
+    currentTournamentId = id;
+    saveTournament();
+
+    // Save to sheets
+    saveToSheets();
+
+    // Open the tournament
+    document.getElementById('setupWizard').style.display = 'none';
+    openTournament(id);
+    showStatus('Tournament created!', 'success');
+}
+
+// ---- Tournament Management ----
+function archiveTournament(id) {
+    const entry = tournamentsIndex.find(t => t.id === id);
+    if (!entry) return;
+    entry.status = 'archived';
+    entry.updatedAt = new Date().toISOString();
+    saveIndex();
+    renderLanding();
+    saveIndexToSheets(id, 'archive');
+    showStatus(`"${entry.name}" archived`, 'success');
+}
+
+function unarchiveTournament(id) {
+    const entry = tournamentsIndex.find(t => t.id === id);
+    if (!entry) return;
+    entry.status = 'active';
+    entry.updatedAt = new Date().toISOString();
+    saveIndex();
+    renderLanding();
+    saveIndexToSheets(id, 'unarchive');
+    showStatus(`"${entry.name}" restored`, 'success');
+}
+
+function deleteTournament(id) {
+    const entry = tournamentsIndex.find(t => t.id === id);
+    if (!entry) return;
+    if (!confirm(`Delete "${entry.name}"? This cannot be undone.`)) return;
+
+    tournamentsIndex = tournamentsIndex.filter(t => t.id !== id);
+    localStorage.removeItem(LS_PREFIX + id);
+    saveIndex();
+    renderLanding();
+
+    // Delete from sheets
+    if (SHEETS_CONFIGURED && SCRIPT_URL) {
+        fetch(SCRIPT_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'deleteTournament', id: id })
+        }).catch(err => console.error('Sheets delete error:', err));
+    }
+
+    showStatus(`"${entry.name}" deleted`, 'success');
+}
+
+function resetTournamentData() {
+    if (!confirm('Reset all match data? Participants and format will be kept.')) return;
+
+    // Re-generate matches
+    generateTournament();
+    saveTournament();
+    saveToSheets();
+    renderBracket();
+    renderStandings();
+    renderMatches();
+    showStatus('Tournament data reset', 'success');
+}
+
+function autoDetectCompleted() {
+    const entry = tournamentsIndex.find(t => t.id === currentTournamentId);
+    if (!entry || entry.status !== 'active') return;
+
+    const type = tournament.type;
+    let isComplete = false;
+
+    if (type === 'roundrobin') {
+        isComplete = tournament.rrMatches.length > 0 && tournament.rrMatches.every(m => m.completed);
+    } else if (type === 'single' || type === 'double') {
+        const finals = tournament.matches.filter(m => m.roundName === 'Final' || m.roundName === 'Grand Final' || m.bracket === 'grand_final');
+        isComplete = finals.length > 0 && finals.every(m => m.winner);
+    } else if ((type === 'rr_single' || type === 'rr_double') && tournament.phase === 'elimination') {
+        const finals = tournament.matches.filter(m => m.roundName === 'Final' || m.roundName === 'Grand Final' || m.bracket === 'grand_final');
+        isComplete = finals.length > 0 && finals.every(m => m.winner);
+    }
+
+    if (isComplete) {
+        entry.status = 'completed';
+        entry.updatedAt = new Date().toISOString();
+        saveIndex();
+    }
+}
+
+// ---- Save / Load ----
+function saveIndex() {
+    localStorage.setItem(LS_INDEX_KEY, JSON.stringify(tournamentsIndex));
+}
+
+function saveTournament() {
+    if (!currentTournamentId) return;
+    localStorage.setItem(LS_PREFIX + currentTournamentId, JSON.stringify(tournament));
+
+    // Update index entry
+    const entry = tournamentsIndex.find(t => t.id === currentTournamentId);
+    if (entry) {
+        entry.updatedAt = new Date().toISOString();
+        entry.name = tournament.name;
+        saveIndex();
+    }
+
+    autoDetectCompleted();
+}
+
+function exportData() {
+    const blob = new Blob([JSON.stringify(tournament, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tournament-${tournament.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ---- Google Sheets Integration ----
+function saveToSheets() {
+    if (!SHEETS_CONFIGURED || !SCRIPT_URL || !currentTournamentId) return;
+
+    fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'saveTournament', id: currentTournamentId, data: JSON.stringify(tournament) })
+    }).catch(err => console.error('Sheets save error:', err));
+}
+
+function saveIndexToSheets(id, action) {
+    if (!SHEETS_CONFIGURED || !SCRIPT_URL) return;
+    fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: action + 'Tournament', id: id })
+    }).catch(err => console.error('Sheets index error:', err));
+}
+
+function syncToSheets() {
+    if (!SHEETS_CONFIGURED || !SCRIPT_URL) { showStatus('Configure Google Sheets URL first', 'error'); return; }
+    saveToSheets();
+    showStatus('Data pushed to Google Sheets', 'success');
+}
+
+function loadFromSheets() {
+    if (!SHEETS_CONFIGURED || !SCRIPT_URL || !currentTournamentId) return;
+
+    showLoading(true);
+    fetch(SCRIPT_URL + '?action=getTournament&id=' + encodeURIComponent(currentTournamentId))
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.name) {
+                tournament = { name: '', type: '', participants: [], matches: [], rrMatches: [], rrAdvanceCount: 4, phase: 'rr', ...data };
+                saveTournament();
+                renderBracket();
+                renderStandings();
+                renderMatches();
+                showStatus('Data loaded from Google Sheets', 'success');
+            }
+        })
+        .catch(err => { console.error('Sheets load error:', err); showStatus('Could not load from Sheets', 'error'); })
+        .finally(() => showLoading(false));
+}
+
+// ---- Tournament Generation ----
+function generateTournament() {
+    const type = tournament.type;
+    const participants = tournament.participants;
+    if (type === 'single') { tournament.matches = generateSingleElimination(participants); }
+    else if (type === 'double') { tournament.matches = generateDoubleElimination(participants); }
+    else if (type === 'roundrobin') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; }
+    else if (type === 'rr_single' || type === 'rr_double') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; tournament.phase = 'rr'; }
+}
+
+function generateSingleElimination(participants, idOffset = 0) {
+    const n = participants.length;
+    const bracketSize = nextPowerOf2(n);
+    const numRounds = Math.log2(bracketSize);
+    const matches = [];
+    let matchId = idOffset + 1;
+    const seeded = seedBracket(participants, bracketSize);
+
+    const firstRoundMatches = [];
+    for (let i = 0; i < bracketSize; i += 2) {
+        const p1 = seeded[i], p2 = seeded[i + 1];
+        const match = { id: matchId++, round: 1, roundName: getRoundName(1, numRounds), matchNum: Math.floor(i/2)+1, bracket: 'winners', slot1: p1 ? {name:p1.name,seed:p1.seed,score:null} : null, slot2: p2 ? {name:p2.name,seed:p2.seed,score:null} : null, winner: null, nextMatchId: null };
+        if (!match.slot1 && match.slot2) { match.winner = match.slot2.name; match.slot1 = {name:'BYE',seed:null,score:null}; }
+        else if (match.slot1 && !match.slot2) { match.winner = match.slot1.name; match.slot2 = {name:'BYE',seed:null,score:null}; }
+        else if (!match.slot1 && !match.slot2) { match.slot1 = {name:'BYE',seed:null,score:null}; match.slot2 = {name:'BYE',seed:null,score:null}; }
+        firstRoundMatches.push(match); matches.push(match);
+    }
+
+    let prevRoundMatches = firstRoundMatches;
+    for (let round = 2; round <= numRounds; round++) {
+        const roundMatches = [];
+        for (let i = 0; i < prevRoundMatches.length; i += 2) {
+            const match = { id: matchId++, round, roundName: getRoundName(round, numRounds), matchNum: Math.floor(i/2)+1, bracket: 'winners', slot1: {name:null,seed:null,score:null}, slot2: {name:null,seed:null,score:null}, winner: null, nextMatchId: null };
+            prevRoundMatches[i].nextMatchId = match.id; prevRoundMatches[i].nextSlot = 1;
+            if (prevRoundMatches[i+1]) { prevRoundMatches[i+1].nextMatchId = match.id; prevRoundMatches[i+1].nextSlot = 2; }
+            roundMatches.push(match); matches.push(match);
+        }
+        prevRoundMatches = roundMatches;
+    }
+    propagateByes(matches);
+    return matches;
+}
+
+function propagateByes(matches) {
+    let changed = true;
+    while (changed) {
+        changed = false;
+        for (const match of matches) {
+            if (match.winner && match.nextMatchId) {
+                const nextMatch = matches.find(m => m.id === match.nextMatchId);
+                if (nextMatch) {
+                    const slot = match.nextSlot === 1 ? 'slot1' : 'slot2';
+                    const wp = tournament.participants.find(p => p.name === match.winner);
+                    if (nextMatch[slot].name !== match.winner) {
+                        nextMatch[slot].name = match.winner; nextMatch[slot].seed = wp ? wp.seed : null;
+                        if (nextMatch.slot1.name === 'BYE' && nextMatch.slot2.name && nextMatch.slot2.name !== 'BYE') { nextMatch.winner = nextMatch.slot2.name; changed = true; }
+                        else if (nextMatch.slot2.name === 'BYE' && nextMatch.slot1.name && nextMatch.slot1.name !== 'BYE') { nextMatch.winner = nextMatch.slot1.name; changed = true; }
+                        changed = true;
+                    }
+                }
+            }
+        }
+    }
+}
+
+function generateDoubleElimination(participants) {
+    const n = participants.length, bracketSize = nextPowerOf2(n), numWR = Math.log2(bracketSize);
+    const matches = []; let matchId = 1;
+    const seeded = seedBracket(participants, bracketSize);
+    const winnerRounds = []; let prevWM = [];
+
+    const firstRound = [];
+    for (let i = 0; i < bracketSize; i += 2) {
+        const p1 = seeded[i], p2 = seeded[i+1];
+        const m = { id: matchId++, round: 1, roundName: 'Winners R1', matchNum: Math.floor(i/2)+1, bracket: 'winners', slot1: p1 ? {name:p1.name,seed:p1.seed,score:null} : {name:'BYE',seed:null,score:null}, slot2: p2 ? {name:p2.name,seed:p2.seed,score:null} : {name:'BYE',seed:null,score:null}, winner: null, nextMatchId: null, loserNextMatchId: null };
+        if (m.slot1.name === 'BYE' && m.slot2.name !== 'BYE') m.winner = m.slot2.name;
+        else if (m.slot2.name === 'BYE' && m.slot1.name !== 'BYE') m.winner = m.slot1.name;
+        firstRound.push(m); matches.push(m);
+    }
+    winnerRounds.push(firstRound); prevWM = firstRound;
+
+    for (let round = 2; round <= numWR; round++) {
+        const rm = [];
+        for (let i = 0; i < prevWM.length; i += 2) {
+            const m = { id: matchId++, round, roundName: round === numWR ? 'Winners Final' : `Winners R${round}`, matchNum: Math.floor(i/2)+1, bracket: 'winners', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null, loserNextMatchId:null };
+            prevWM[i].nextMatchId = m.id; prevWM[i].nextSlot = 1;
+            if (prevWM[i+1]) { prevWM[i+1].nextMatchId = m.id; prevWM[i+1].nextSlot = 2; }
+            rm.push(m); matches.push(m);
+        }
+        winnerRounds.push(rm); prevWM = rm;
+    }
+
+    const numLR = 2 * (numWR - 1); let prevLM = [];
+    for (let lr = 1; lr <= numLR; lr++) {
+        const isDropIn = (lr % 2 === 1); const rm = [];
+        if (lr === 1) {
+            const losersR1 = winnerRounds[0]; const nm = Math.floor(losersR1.length / 2);
+            for (let i = 0; i < nm; i++) {
+                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+                if (losersR1[i*2]) losersR1[i*2].loserNextMatchId = m.id;
+                if (losersR1[i*2+1]) losersR1[i*2+1].loserNextMatchId = m.id;
+                rm.push(m); matches.push(m);
+            }
+        } else if (isDropIn) {
+            const wrIdx = Math.ceil(lr / 2); const feedWR = winnerRounds[wrIdx] || [];
+            for (let i = 0; i < prevLM.length; i++) {
+                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+                prevLM[i].nextMatchId = m.id; prevLM[i].nextSlot = 1;
+                if (feedWR[i]) feedWR[i].loserNextMatchId = m.id;
+                rm.push(m); matches.push(m);
+            }
+        } else {
+            const nm = Math.floor(prevLM.length / 2);
+            for (let i = 0; i < nm; i++) {
+                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+                prevLM[i*2].nextMatchId = m.id; prevLM[i*2].nextSlot = 1;
+                if (prevLM[i*2+1]) { prevLM[i*2+1].nextMatchId = m.id; prevLM[i*2+1].nextSlot = 2; }
+                rm.push(m); matches.push(m);
+            }
+        }
+        prevLM = rm;
+    }
+
+    const gf = { id: matchId++, round: numWR + numLR + 1, roundName: 'Grand Final', matchNum: 1, bracket: 'grand_final', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+    const wf = winnerRounds[winnerRounds.length-1][0];
+    wf.nextMatchId = gf.id; wf.nextSlot = 1;
+    if (prevLM.length > 0) { prevLM[prevLM.length-1].nextMatchId = gf.id; prevLM[prevLM.length-1].nextSlot = 2; }
+    matches.push(gf);
+    propagateByesDouble(matches);
+    return matches;
+}
+
+function propagateByesDouble(matches) {
+    let changed = true, iter = 0;
+    while (changed && iter < 100) {
+        changed = false; iter++;
+        for (const match of matches) {
+            if (!match.winner) continue;
+            if (match.nextMatchId) {
+                const nm = matches.find(m => m.id === match.nextMatchId);
+                if (nm) {
+                    const slot = match.nextSlot === 1 ? 'slot1' : 'slot2';
+                    const p = tournament.participants.find(p => p.name === match.winner);
+                    if (nm[slot].name !== match.winner) { nm[slot].name = match.winner; nm[slot].seed = p ? p.seed : null; changed = true; }
+                }
+            }
+            if (match.loserNextMatchId && match.bracket === 'winners') {
+                const loser = match.slot1.name === match.winner ? match.slot2 : match.slot1;
+                if (loser && loser.name && loser.name !== 'BYE') {
+                    const lm = matches.find(m => m.id === match.loserNextMatchId);
+                    if (lm) {
+                        if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; changed = true; }
+                        else if (!lm.slot2.name) { lm.slot2.name = loser.name; lm.slot2.seed = loser.seed; changed = true; }
+                    }
+                }
+            }
+            if (match.nextMatchId) {
+                const nm = matches.find(m => m.id === match.nextMatchId);
+                if (nm && !nm.winner) {
+                    if (nm.slot1.name === 'BYE' && nm.slot2.name && nm.slot2.name !== 'BYE') { nm.winner = nm.slot2.name; changed = true; }
+                    else if (nm.slot2.name === 'BYE' && nm.slot1.name && nm.slot1.name !== 'BYE') { nm.winner = nm.slot1.name; changed = true; }
+                }
+            }
+        }
+    }
+}
+
+function generateRoundRobin(participants) {
+    const matches = []; let matchId = 1;
+    const pList = [...participants];
+    if (pList.length % 2 !== 0) pList.push({ name: 'BYE', seed: null });
+    const numRounds = pList.length - 1, half = pList.length / 2;
+    for (let round = 0; round < numRounds; round++) {
+        for (let i = 0; i < half; i++) {
+            const p1 = pList[i], p2 = pList[pList.length - 1 - i];
+            if (p1.name === 'BYE' || p2.name === 'BYE') continue;
+            matches.push({ id: matchId++, round: round+1, p1: p1.name, p1Seed: p1.seed, p2: p2.name, p2Seed: p2.seed, p1Score: null, p2Score: null, completed: false });
+        }
+        pList.splice(1, 0, pList.pop());
+    }
+    return matches;
+}
+
+// ---- Utility ----
+function nextPowerOf2(n) { let p = 1; while (p < n) p *= 2; return p; }
+function seedBracket(participants, bracketSize) {
+    const seeds = Array(bracketSize).fill(null);
+    function place(seed, pos, size) {
+        if (size === 1) { seeds[pos] = participants[seed-1] || null; return; }
+        const h = size/2; place(seed, pos, h); place(size+1-seed, pos+h, h);
+    }
+    place(1, 0, bracketSize); return seeds;
+}
+function getRoundName(round, totalRounds) {
+    const r = totalRounds - round;
+    if (r === 0) return 'Final'; if (r === 1) return 'Semifinals'; if (r === 2) return 'Quarterfinals';
+    return `Round ${round}`;
+}
+function escapeHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function getFormatLabel(type) {
+    return { single:'Single Elimination', double:'Double Elimination', roundrobin:'Round Robin', rr_single:'Round Robin \u2192 Single Elim', rr_double:'Round Robin \u2192 Double Elim' }[type] || type;
+}
+
+// ---- Tab Switching ----
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn:not(.back-btn)').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tabId));
+    if (tabId === 'bracket') renderBracket();
+    else if (tabId === 'standings') renderStandings();
+    else if (tabId === 'matches') renderMatches();
+    else if (tabId === 'settings') renderSettings();
+}
+
+// ---- Bracket Rendering ----
+function renderBracket() {
+    const view = document.getElementById('bracketView');
+    const type = tournament.type;
+    const isHybrid = type === 'rr_single' || type === 'rr_double';
+    if (type === 'roundrobin' || (isHybrid && tournament.phase === 'rr')) renderRoundRobinView(view);
+    else if (type === 'single' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_single')) renderSingleElimBracket(view);
+    else if (type === 'double' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_double')) renderDoubleElimBracket(view);
+}
+
+function renderSingleElimBracket(container) {
+    const matches = tournament.matches.filter(m => m.bracket !== 'losers' && m.bracket !== 'grand_final');
+    if (matches.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-sitemap"></i><h3>No bracket data</h3></div>'; return; }
+    const maxRound = Math.max(...matches.map(m => m.round));
+    let html = '<div class="section-header"><i class="fas fa-sitemap"></i><h2>Bracket</h2></div><div class="bracket-container"><div class="bracket">';
+    for (let round = 1; round <= maxRound; round++) {
+        const rm = matches.filter(m => m.round === round).sort((a,b) => a.matchNum - b.matchNum);
+        html += `<div class="bracket-round"><div class="round-title">${rm[0]?.roundName || 'Round '+round}</div><div class="bracket-matches">`;
+        for (const match of rm) html += renderMatchCard(match);
+        html += '</div></div>';
+    }
+    const finalMatch = matches.find(m => m.round === maxRound);
+    if (finalMatch && finalMatch.winner) {
+        html += `<div class="bracket-round" style="min-width:160px;"><div class="round-title" style="background:linear-gradient(135deg,var(--accent-dark),var(--accent));">Champion</div><div class="bracket-matches"><div class="match-card completed" style="border-left:3px solid var(--accent);"><div class="match-slot winner"><span class="team-name"><i class="fas fa-trophy" style="color:var(--accent);margin-right:4px;"></i>${escapeHtml(finalMatch.winner)}</span></div></div></div></div>`;
+    }
+    html += '</div></div>';
+    container.innerHTML = html;
+}
+
+function renderDoubleElimBracket(container) {
+    const wm = tournament.matches.filter(m => m.bracket === 'winners');
+    const lm = tournament.matches.filter(m => m.bracket === 'losers');
+    const gf = tournament.matches.find(m => m.bracket === 'grand_final');
+    let html = '<div class="section-header"><i class="fas fa-sitemap"></i><h2>Bracket</h2></div>';
+    html += '<div class="bracket-section-label"><i class="fas fa-crown" style="color:var(--accent);"></i> Winners Bracket</div><div class="bracket-container"><div class="bracket">';
+    const maxWR = wm.length > 0 ? Math.max(...wm.map(m => m.round)) : 0;
+    for (let r = 1; r <= maxWR; r++) {
+        const rm = wm.filter(m => m.round === r).sort((a,b) => a.matchNum-b.matchNum);
+        html += `<div class="bracket-round"><div class="round-title">${rm[0]?.roundName || 'Round '+r}</div><div class="bracket-matches">`;
+        for (const m of rm) html += renderMatchCard(m);
+        html += '</div></div>';
+    }
+    html += '</div></div>';
+    if (lm.length > 0) {
+        html += '<div class="losers-bracket"><div class="bracket-section-label"><i class="fas fa-arrow-down" style="color:var(--error);"></i> Losers Bracket</div><div class="bracket-container"><div class="bracket">';
+        const maxLR = Math.max(...lm.map(m => m.round));
+        for (let r = 1; r <= maxLR; r++) {
+            const rm = lm.filter(m => m.round === r).sort((a,b) => a.matchNum-b.matchNum);
+            if (rm.length === 0) continue;
+            html += `<div class="bracket-round"><div class="round-title">${rm[0]?.roundName || 'Losers R'+r}</div><div class="bracket-matches">`;
+            for (const m of rm) html += renderMatchCard(m);
+            html += '</div></div>';
+        }
+        html += '</div></div></div>';
+    }
+    if (gf) {
+        html += '<div class="bracket-section-label"><i class="fas fa-trophy" style="color:var(--accent);"></i> Grand Final</div><div style="max-width:300px;margin:0 auto;">';
+        html += renderMatchCard(gf);
+        if (gf.winner) {
+            html += `<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);"><div style="font-size:2rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div><div style="font-weight:900;font-size:1.2rem;color:var(--secondary);">${escapeHtml(gf.winner)}</div><div style="font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Champion</div></div>`;
+        }
+        html += '</div>';
+    }
+    container.innerHTML = html;
+}
+
+function renderRoundRobinView(container) {
+    const participants = tournament.participants, rrMatches = tournament.rrMatches;
+    const isHybrid = tournament.type === 'rr_single' || tournament.type === 'rr_double';
+    let html = '<div class="section-header"><i class="fas fa-arrows-spin"></i><h2>Round Robin</h2></div>';
+    if (isHybrid) {
+        const allDone = rrMatches.every(m => m.completed);
+        html += `<p class="section-subtext">Top ${tournament.rrAdvanceCount} will advance to the ${tournament.type === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>`;
+        if (allDone && tournament.phase === 'rr') {
+            html += `<div class="text-center mb-2"><button class="btn btn-success btn-lg" onclick="advanceToElimination()"><i class="fas fa-arrow-right"></i> Advance to Playoffs</button></div>`;
+        }
+    }
+    const standings = computeRRStandings();
+    html += '<div class="rr-table-wrapper"><table class="rr-table"><thead><tr><th style="min-width:120px;">Participant</th>';
+    for (const p of participants) html += `<th>${escapeHtml(p.name.substring(0,8))}</th>`;
+    html += '<th>W</th><th>L</th><th>D</th><th>Pts</th></tr></thead><tbody>';
+    for (const p of participants) {
+        const s = standings.find(s => s.name === p.name);
+        const q = isHybrid && standings.indexOf(s) < tournament.rrAdvanceCount;
+        html += `<tr${q ? ' class="qualified"' : ''}><td class="row-header">${q ? '<i class="fas fa-check" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>' : ''}${escapeHtml(p.name)}</td>`;
+        for (const opp of participants) {
+            if (p.name === opp.name) { html += '<td class="diagonal-cell">&mdash;</td>'; continue; }
+            const match = rrMatches.find(m => (m.p1===p.name&&m.p2===opp.name)||(m.p2===p.name&&m.p1===opp.name));
+            if (match && match.completed) {
+                const isP1 = match.p1===p.name, my = isP1?match.p1Score:match.p2Score, their = isP1?match.p2Score:match.p1Score;
+                const cls = my>their?'rr-win':my<their?'rr-loss':'rr-draw';
+                html += `<td class="${cls}"><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">${my}-${their}</button></td>`;
+            } else if (match) { html += `<td><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">vs</button></td>`; }
+            else { html += '<td>&mdash;</td>'; }
+        }
+        html += `<td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td><strong>${s.points}</strong></td></tr>`;
+    }
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+function renderMatchCard(match) {
+    const isCompleted = !!match.winner;
+    let html = `<div class="match-card ${isCompleted?'completed':''}" onclick="openScoreModal(${match.id},'elim')">`;
+    html += renderMatchSlot(match.slot1, match.winner);
+    html += renderMatchSlot(match.slot2, match.winner);
+    html += '</div>';
+    return html;
+}
+
+function renderMatchSlot(slot, winner) {
+    if (!slot) return '<div class="match-slot"><span class="team-name tbd">TBD</span></div>';
+    const name = slot.name, isW = winner&&name===winner, isL = winner&&name!==winner&&name!=='BYE';
+    let cls = 'match-slot'; if (isW) cls += ' winner'; else if (isL) cls += ' loser';
+    let html = `<div class="${cls}">`;
+    if (slot.seed) html += `<span class="seed">${slot.seed}</span>`;
+    if (!name) html += '<span class="team-name tbd">TBD</span>';
+    else if (name === 'BYE') html += '<span class="team-name tbd">BYE</span>';
+    else html += `<span class="team-name">${escapeHtml(name)}</span>`;
+    if (slot.score !== null && slot.score !== undefined && name !== 'BYE' && name) html += `<span class="score-display">${slot.score}</span>`;
+    html += '</div>'; return html;
+}
+
+// ---- Score Entry Modal ----
+function openScoreModal(matchId, type) {
+    const modal = document.getElementById('scoreModal'), title = document.getElementById('scoreModalTitle');
+    const body = document.getElementById('scoreModalBody'), footer = document.getElementById('scoreModalFooter');
+    if (type === 'rr') {
+        const match = tournament.rrMatches.find(m => m.id === matchId);
+        if (!match) return;
+        title.textContent = `${match.p1} vs ${match.p2}`;
+        body.innerHTML = `<div class="form-group"><label>${escapeHtml(match.p1)} Score</label><input type="number" id="modalScore1" class="form-input" value="${match.p1Score!==null?match.p1Score:''}" min="0"></div><div class="form-group"><label>${escapeHtml(match.p2)} Score</label><input type="number" id="modalScore2" class="form-input" value="${match.p2Score!==null?match.p2Score:''}" min="0"></div>`;
+        footer.innerHTML = `${match.completed?'<button class="btn btn-danger btn-sm" onclick="clearRRScore('+matchId+')"><i class="fas fa-undo"></i> Clear</button>':''}<button class="btn btn-outline" onclick="closeScoreModal()">Cancel</button><button class="btn btn-primary" onclick="saveRRScore(${matchId})"><i class="fas fa-save"></i> Save</button>`;
+    } else {
+        const match = tournament.matches.find(m => m.id === matchId);
+        if (!match) return;
+        if (match.slot1?.name==='BYE'||match.slot2?.name==='BYE') return;
+        if (!match.slot1?.name||!match.slot2?.name) { showStatus('Both participants must be determined first','error'); return; }
+        title.textContent = `${match.slot1.name} vs ${match.slot2.name}`;
+        body.innerHTML = `<div class="form-group"><label>${escapeHtml(match.slot1.name)} Score</label><input type="number" id="modalScore1" class="form-input" value="${match.slot1.score!==null?match.slot1.score:''}" min="0"></div><div class="form-group"><label>${escapeHtml(match.slot2.name)} Score</label><input type="number" id="modalScore2" class="form-input" value="${match.slot2.score!==null?match.slot2.score:''}" min="0"></div><p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Or just pick the winner:</p><div style="display:flex;gap:0.5rem;margin-top:0.5rem;"><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},1)">${escapeHtml(match.slot1.name)}</button><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},2)">${escapeHtml(match.slot2.name)}</button></div>`;
+        footer.innerHTML = `${match.winner?'<button class="btn btn-danger btn-sm" onclick="clearElimScore('+matchId+')"><i class="fas fa-undo"></i> Clear</button>':''}<button class="btn btn-outline" onclick="closeScoreModal()">Cancel</button><button class="btn btn-primary" onclick="saveElimScore(${matchId})"><i class="fas fa-save"></i> Save</button>`;
+    }
+    modal.classList.add('active');
+}
+
+function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active'); }
+
+function saveRRScore(matchId) {
+    const s1 = parseInt(document.getElementById('modalScore1').value), s2 = parseInt(document.getElementById('modalScore2').value);
+    if (isNaN(s1)||isNaN(s2)||s1<0||s2<0) { showStatus('Please enter valid scores','error'); return; }
+    const match = tournament.rrMatches.find(m => m.id === matchId);
+    match.p1Score = s1; match.p2Score = s2; match.completed = true;
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+    showStatus('Score saved', 'success');
+}
+
+function clearRRScore(matchId) {
+    const match = tournament.rrMatches.find(m => m.id === matchId);
+    match.p1Score = null; match.p2Score = null; match.completed = false;
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+}
+
+function saveElimScore(matchId) {
+    const s1 = parseInt(document.getElementById('modalScore1').value), s2 = parseInt(document.getElementById('modalScore2').value);
+    if (isNaN(s1)||isNaN(s2)||s1<0||s2<0) { showStatus('Please enter valid scores','error'); return; }
+    if (s1 === s2) { showStatus('Scores cannot be tied in elimination','error'); return; }
+    const match = tournament.matches.find(m => m.id === matchId);
+    match.slot1.score = s1; match.slot2.score = s2;
+    match.winner = s1 > s2 ? match.slot1.name : match.slot2.name;
+    advanceWinner(match);
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+    showStatus('Score saved', 'success');
+}
+
+function quickWin(matchId, slotNum) {
+    const match = tournament.matches.find(m => m.id === matchId);
+    const winner = slotNum===1?match.slot1:match.slot2, loser = slotNum===1?match.slot2:match.slot1;
+    match.winner = winner.name;
+    if (winner.score===null) winner.score = 1; if (loser.score===null) loser.score = 0;
+    advanceWinner(match);
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+    showStatus(`${winner.name} advances!`, 'success');
+}
+
+function clearElimScore(matchId) {
+    const match = tournament.matches.find(m => m.id === matchId);
+    if (match.nextMatchId) {
+        const nm = tournament.matches.find(m => m.id === match.nextMatchId);
+        if (nm && nm.winner) { showStatus('Cannot clear: later matches depend on this result. Clear those first.','error'); closeScoreModal(); return; }
+    }
+    match.slot1.score = null; match.slot2.score = null;
+    const oldWinner = match.winner; match.winner = null;
+    if (match.nextMatchId) {
+        const nm = tournament.matches.find(m => m.id === match.nextMatchId);
+        if (nm) { const slot = match.nextSlot===1?'slot1':'slot2'; if (nm[slot].name===oldWinner) { nm[slot].name=null; nm[slot].seed=null; nm[slot].score=null; } }
+    }
+    if (match.loserNextMatchId) {
+        const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
+        if (lm) {
+            const ln = match.slot1.name===oldWinner ? match.slot2.name : match.slot1.name;
+            if (lm.slot1.name===ln) lm.slot1 = {name:null,seed:null,score:null};
+            else if (lm.slot2.name===ln) lm.slot2 = {name:null,seed:null,score:null};
+        }
+    }
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+}
+
+function advanceWinner(match) {
+    const winner = match.slot1.name===match.winner?match.slot1:match.slot2;
+    const loser = match.slot1.name===match.winner?match.slot2:match.slot1;
+    if (match.nextMatchId) {
+        const nm = tournament.matches.find(m => m.id === match.nextMatchId);
+        if (nm) { const slot = match.nextSlot===1?'slot1':'slot2'; nm[slot].name = winner.name; nm[slot].seed = winner.seed; }
+    }
+    if (match.loserNextMatchId && loser.name && loser.name !== 'BYE') {
+        const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
+        if (lm) {
+            if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; }
+            else if (!lm.slot2.name) { lm.slot2.name = loser.name; lm.slot2.seed = loser.seed; }
+        }
+    }
+}
+
+// ---- Round Robin Standings ----
+function computeRRStandings() {
+    const standings = {};
+    for (const p of tournament.participants) standings[p.name] = { name:p.name,seed:p.seed,wins:0,losses:0,draws:0,points:0,pointsFor:0,pointsAgainst:0 };
+    for (const match of tournament.rrMatches) {
+        if (!match.completed) continue;
+        const p1 = standings[match.p1], p2 = standings[match.p2];
+        if (!p1||!p2) continue;
+        p1.pointsFor += match.p1Score; p1.pointsAgainst += match.p2Score;
+        p2.pointsFor += match.p2Score; p2.pointsAgainst += match.p1Score;
+        if (match.p1Score > match.p2Score) { p1.wins++; p1.points += 3; p2.losses++; }
+        else if (match.p2Score > match.p1Score) { p2.wins++; p2.points += 3; p1.losses++; }
+        else { p1.draws++; p1.points += 1; p2.draws++; p2.points += 1; }
+    }
+    return Object.values(standings).sort((a,b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        const ad = a.pointsFor-a.pointsAgainst, bd = b.pointsFor-b.pointsAgainst;
+        if (bd !== ad) return bd - ad;
+        return b.pointsFor - a.pointsFor;
+    });
+}
+
+function advanceToElimination() {
+    const standings = computeRRStandings();
+    const advancers = standings.slice(0, tournament.rrAdvanceCount);
+    const ap = advancers.map((s,i) => ({name:s.name, seed:i+1}));
+    if (tournament.type === 'rr_single') tournament.matches = generateSingleElimination(ap);
+    else tournament.matches = generateDoubleElimination(ap);
+    tournament.phase = 'elimination';
+    saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+    showStatus(`${advancers.map(a=>a.name).join(', ')} advance to playoffs!`, 'success');
+}
+
+// ---- Standings Rendering ----
+function renderStandings() {
+    const view = document.getElementById('standingsView');
+    const type = tournament.type;
+    const isRR = type==='roundrobin'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='rr');
+    let html = '<div class="section-header"><i class="fas fa-list-ol"></i><h2>Standings</h2></div>';
+
+    if (isRR||type==='rr_single'||type==='rr_double') {
+        const standings = computeRRStandings();
+        const isHybrid = type==='rr_single'||type==='rr_double';
+        html += '<div class="card"><div class="rr-table-wrapper"><table class="standings-table"><thead><tr><th>#</th><th style="text-align:left;">Participant</th><th>W</th><th>L</th><th>D</th><th>PF</th><th>PA</th><th>Diff</th><th>Pts</th></tr></thead><tbody>';
+        standings.forEach((s,i) => {
+            const q = isHybrid && i < tournament.rrAdvanceCount;
+            html += `<tr${q?' class="qualified"':''}><td class="rank-cell">${i+1}</td><td class="name-cell">${q?'<i class="fas fa-arrow-up" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>':''}${escapeHtml(s.name)}</td><td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td>${s.pointsFor}</td><td>${s.pointsAgainst}</td><td>${s.pointsFor-s.pointsAgainst>0?'+':''}${s.pointsFor-s.pointsAgainst}</td><td><strong>${s.points}</strong></td></tr>`;
+        });
+        html += '</tbody></table></div></div>';
+    }
+
+    if (type==='single'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination')) {
+        const em = tournament.matches;
+        const completed = em.filter(m=>m.winner).length;
+        const total = em.filter(m=>m.slot1?.name!=='BYE'&&m.slot2?.name!=='BYE').length;
+        html += `<div class="card"><div class="card-title">Elimination Progress</div><p style="margin-top:0.5rem;font-size:0.9rem;color:var(--text-medium);">${completed} / ${total} matches completed</p><div style="background:var(--border-light);border-radius:8px;height:12px;margin-top:0.5rem;overflow:hidden;"><div style="background:linear-gradient(90deg,var(--primary),var(--accent));height:100%;width:${total>0?(completed/total*100):0}%;border-radius:8px;transition:width 0.5s;"></div></div></div>`;
+        const gf = em.find(m=>m.bracket==='grand_final');
+        const finals = em.filter(m=>m.roundName==='Final'||m.bracket==='grand_final');
+        const champion = (gf&&gf.winner)||(finals.length>0&&finals[finals.length-1].winner);
+        if (champion) {
+            html += `<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);"><div style="font-size:3rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div><div style="font-weight:900;font-size:1.4rem;color:var(--secondary);">${escapeHtml(champion)}</div><div style="font-size:0.9rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Tournament Champion</div></div>`;
+        }
+    }
+    view.innerHTML = html;
+}
+
+// ---- Matches List ----
+function renderMatches() {
+    const view = document.getElementById('matchesView');
+    let html = '<div class="section-header"><i class="fas fa-gamepad"></i><h2>All Matches</h2></div>';
+    const type = tournament.type;
+    const hasRR = type==='roundrobin'||type==='rr_single'||type==='rr_double';
+    const hasElim = type==='single'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination');
+
+    if (hasRR) {
+        html += '<div class="card"><div class="card-header"><span class="card-title">Round Robin Matches</span></div>';
+        const rrByRound = {};
+        for (const m of tournament.rrMatches) { if (!rrByRound[m.round]) rrByRound[m.round]=[]; rrByRound[m.round].push(m); }
+        for (const round of Object.keys(rrByRound).sort((a,b)=>a-b)) {
+            html += `<div style="margin-bottom:0.75rem;"><div style="font-weight:700;font-size:0.85rem;color:var(--secondary);margin-bottom:0.4rem;">Round ${round}</div>`;
+            for (const match of rrByRound[round]) {
+                const badge = match.completed ? `<span class="badge badge-success"><i class="fas fa-check"></i> ${match.p1Score}-${match.p2Score}</span>` : `<span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>`;
+                html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.5rem;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="openScoreModal(${match.id},'rr')"><span style="font-size:0.9rem;">${escapeHtml(match.p1)} <span style="color:var(--text-light);">vs</span> ${escapeHtml(match.p2)}</span>${badge}</div>`;
+            }
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+    if (hasElim && tournament.matches.length > 0) {
+        html += '<div class="card"><div class="card-header"><span class="card-title">Elimination Matches</span></div>';
+        const elimByRound = {};
+        for (const m of tournament.matches) { const k = m.roundName||'Round '+m.round; if (!elimByRound[k]) elimByRound[k]=[]; elimByRound[k].push(m); }
+        for (const [rn, rm] of Object.entries(elimByRound)) {
+            html += `<div style="margin-bottom:0.75rem;"><div style="font-weight:700;font-size:0.85rem;color:var(--secondary);margin-bottom:0.4rem;">${escapeHtml(rn)}</div>`;
+            for (const match of rm) {
+                if (match.slot1?.name==='BYE'||match.slot2?.name==='BYE') continue;
+                const n1 = match.slot1?.name||'TBD', n2 = match.slot2?.name||'TBD';
+                const badge = match.winner ? `<span class="badge badge-success"><i class="fas fa-check"></i> ${match.slot1?.score??''}-${match.slot2?.score??''}</span>` : (n1!=='TBD'&&n2!=='TBD' ? `<span class="badge badge-warning"><i class="fas fa-clock"></i> Ready</span>` : `<span class="badge badge-info"><i class="fas fa-hourglass"></i> Waiting</span>`);
+                html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.5rem;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="openScoreModal(${match.id},'elim')"><span style="font-size:0.9rem;">${n1==='TBD'?'<em style="color:var(--text-light);">TBD</em>':escapeHtml(n1)} <span style="color:var(--text-light);">vs</span> ${n2==='TBD'?'<em style="color:var(--text-light);">TBD</em>':escapeHtml(n2)}</span>${badge}</div>`;
+            }
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+    view.innerHTML = html;
+}
+
+// ---- Settings ----
+function renderSettings() {
+    const view = document.getElementById('settingsView');
+    const entry = tournamentsIndex.find(t => t.id === currentTournamentId);
+    const status = entry ? entry.status : 'active';
+
+    let html = '<div class="section-header"><i class="fas fa-cog"></i><h2>Settings</h2></div>';
+
+    // Tournament Info
+    html += `<div class="card"><div class="card-title">Tournament Info</div><div style="margin-top:0.75rem;"><div style="display:grid;grid-template-columns:140px 1fr;gap:0.4rem;font-size:0.9rem;">
+        <strong>Name:</strong><span>${escapeHtml(tournament.name)}</span>
+        <strong>Format:</strong><span>${getFormatLabel(tournament.type)}</span>
+        <strong>Participants:</strong><span>${tournament.participants.length}</span>
+        <strong>Status:</strong><span class="badge badge-${status==='completed'?'success':status==='archived'?'info':'warning'}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
+        ${tournament.type==='rr_single'||tournament.type==='rr_double'?`<strong>Advance to Playoff:</strong><span>${tournament.rrAdvanceCount}</span>`:''}
+    </div></div></div>`;
+
+    // Share link
+    const shareUrl = window.location.origin + window.location.pathname + '?tournament=' + currentTournamentId;
+    html += `<div class="card"><div class="card-title"><i class="fas fa-link" style="color:var(--info);margin-right:0.5rem;"></i>Share Link</div>
+        <div style="margin-top:0.5rem;"><input type="text" class="form-input" value="${escapeHtml(shareUrl)}" readonly onclick="this.select();" style="font-size:0.85rem;"></div></div>`;
+
+    // Sheets sync
+    html += `<div class="card"><div class="card-title"><i class="fas fa-table" style="color:var(--success);margin-right:0.5rem;"></i>Google Sheets Sync</div>
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="syncToSheets()"><i class="fas fa-upload"></i> Push to Sheets</button>
+            <button class="btn btn-outline btn-sm" onclick="loadFromSheets()"><i class="fas fa-download"></i> Pull from Sheets</button>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-light);">
+            ${SHEETS_CONFIGURED?'<span style="color:var(--success);"><i class="fas fa-check-circle"></i> Connected</span>':'<span style="color:var(--error);"><i class="fas fa-times-circle"></i> Not connected - configure in the Hub settings</span>'}
+        </div></div>`;
+
+    // Actions
+    html += `<div class="card" style="border:2px solid var(--error-light);">
+        <div class="card-title" style="color:var(--error);"><i class="fas fa-exclamation-triangle" style="margin-right:0.5rem;"></i>Actions</div>
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+            ${status!=='archived'?`<button class="btn btn-outline btn-sm" onclick="archiveAndReturn()"><i class="fas fa-archive"></i> Archive Tournament</button>`:`<button class="btn btn-outline btn-sm" onclick="unarchiveHere()"><i class="fas fa-box-open"></i> Unarchive</button>`}
+            <button class="btn btn-danger btn-sm" onclick="resetTournamentData()"><i class="fas fa-undo"></i> Reset Match Data</button>
+            <button class="btn btn-outline btn-sm" onclick="exportData()"><i class="fas fa-download"></i> Export JSON</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAndReturn()"><i class="fas fa-trash"></i> Delete Tournament</button>
+        </div></div>`;
+
+    view.innerHTML = html;
+}
+
+function archiveAndReturn() {
+    archiveTournament(currentTournamentId);
+    closeTournament();
+}
+
+function unarchiveHere() {
+    unarchiveTournament(currentTournamentId);
+    renderSettings();
+}
+
+function deleteAndReturn() {
+    const entry = tournamentsIndex.find(t => t.id === currentTournamentId);
+    if (!entry) return;
+    if (!confirm(`Delete "${entry.name}"? This cannot be undone.`)) return;
+
+    tournamentsIndex = tournamentsIndex.filter(t => t.id !== currentTournamentId);
+    localStorage.removeItem(LS_PREFIX + currentTournamentId);
+    saveIndex();
+
+    if (SHEETS_CONFIGURED && SCRIPT_URL) {
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ action: 'deleteTournament', id: currentTournamentId })
+        }).catch(err => console.error('Sheets delete error:', err));
+    }
+
+    closeTournament();
+    showStatus(`"${entry.name}" deleted`, 'success');
+}
+
+// ---- UI Helpers ----
+function showStatus(msg, type) {
+    const el = document.getElementById('statusMsg');
+    el.className = 'status-msg ' + type;
+    el.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${escapeHtml(msg)}`;
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => { el.className = 'status-msg'; }, 3000);
+}
+
+function showLoading(show) { document.getElementById('loadingOverlay').classList.toggle('active', show); }
+
+// ---- Init ----
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

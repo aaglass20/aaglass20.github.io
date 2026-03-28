@@ -1,0 +1,297 @@
+/* ============================================
+   MyBracketly Hub - Home Page Styles
+   ============================================ */
+
+/* --- Hero Section --- */
+.hub-hero {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hub-hero .hero-tagline {
+    font-size: 1.1rem;
+    color: var(--text-medium);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+}
+
+.hub-hero .hero-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+/* --- Wizard Section --- */
+.wizard-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.wizard-section h2 {
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+}
+
+.wizard-section .wizard-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.wizard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.wizard-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.wizard-card:hover {
+    border-color: var(--primary-light);
+    background: var(--bg-hover);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.wizard-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wizard-card.disabled:hover {
+    border-color: var(--border-light);
+    background: var(--bg-card);
+    transform: none;
+    box-shadow: none;
+}
+
+.wizard-card .card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+}
+
+.wizard-card .card-icon i {
+    font-size: 1.8rem;
+    color: var(--primary);
+}
+
+.wizard-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+}
+
+.wizard-card p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+.wizard-card .coming-soon {
+    position: absolute;
+    top: 12px;
+    right: -28px;
+    background: var(--warning);
+    color: var(--text-dark);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.2rem 2rem;
+    transform: rotate(45deg);
+    letter-spacing: 0.5px;
+}
+
+/* --- Dashboard Section --- */
+.dashboard-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.dashboard-header h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dashboard-header h2 i {
+    color: var(--primary);
+}
+
+.dashboard-controls {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.filter-btn {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    color: var(--text-medium);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.filter-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+.filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* --- Project Card Enhancements --- */
+.t-card .t-card-type-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.t-card .t-card-type-icon i {
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+.t-card .t-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.t-card .t-card-sport {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* --- Squares Setup Form --- */
+.squares-setup {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.sport-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.sport-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1rem 0.5rem;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-card);
+    text-align: center;
+}
+
+.sport-option:hover {
+    border-color: var(--primary-light);
+    background: var(--bg-hover);
+}
+
+.sport-option.selected {
+    border-color: var(--primary);
+    background: #FFF3E0;
+    box-shadow: 0 0 0 3px rgba(255,109,0,0.15);
+}
+
+.sport-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.sport-option span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+/* --- Stats Banner --- */
+.stats-banner {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item .stat-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.stat-item .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+    .wizard-cards { grid-template-columns: 1fr; }
+    .dashboard-header { flex-direction: column; align-items: stretch; }
+    .dashboard-controls { justify-content: space-between; }
+    .stats-banner { gap: 1rem; }
+    .sport-select-grid { grid-template-columns: repeat(2, 1fr); }
+}
