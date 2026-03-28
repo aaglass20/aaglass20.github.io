@@ -40,6 +40,11 @@ This handles tournament bracket data storage. Create the following tabs in your 
 
 ```javascript
 function doGet(e) {
+  if (!e || !e.parameter) {
+    return ContentService.createTextOutput(JSON.stringify({status: 'ok', message: 'MyBracketly API ready'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   var action = e.parameter.action;
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
@@ -55,6 +60,11 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  if (!e || !e.postData) {
+    return ContentService.createTextOutput(JSON.stringify({error: 'No data received'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   var data = JSON.parse(e.postData.contents);
   var action = data.action;
   var ss = SpreadsheetApp.getActiveSpreadsheet();
