@@ -71,8 +71,8 @@ function renderDashboard() {
 
     let html = '';
     sorted.forEach(function (proj) {
-        const typeIcon = proj.type === 'bracket' ? 'fa-sitemap' : 'fa-table-cells';
-        const typeLabel = proj.type === 'bracket' ? 'Bracket' : 'Squares';
+        const typeIcon = proj.type === 'bracket' ? 'fa-sitemap' : proj.type === 'headtohead' ? 'fa-people-arrows' : 'fa-table-cells';
+        const typeLabel = proj.type === 'bracket' ? 'Bracket' : proj.type === 'headtohead' ? 'Head to Head' : 'Squares';
         const sportConfig = proj.sport ? SPORTS_REGISTRY[proj.sport] : null;
         const sportLabel = sportConfig ? sportConfig.label : '';
         const sportIcon = sportConfig ? sportConfig.icon : '';
@@ -114,6 +114,8 @@ function openProject(id, type) {
         window.location.href = 'brackets.html?id=' + id;
     } else if (type === 'squares') {
         window.location.href = 'squares.html?id=' + id;
+    } else if (type === 'headtohead') {
+        window.location.href = 'headtohead.html?id=' + id;
     }
 }
 
@@ -187,6 +189,68 @@ function createSquaresProject() {
     window.location.href = 'squares.html?id=' + proj.id + '&new=1';
 }
 
+// --- Wizard: Create Head to Head ---
+const H2H_MODES = {
+    bestof: { label: 'Best-of Series', icon: 'fa-handshake', desc: 'Best of 1, 3, 5, or 7' },
+    koth: { label: 'King of the Hill', icon: 'fa-crown', desc: 'Winner stays, challengers rotate' },
+    swiss: { label: 'Swiss Format', icon: 'fa-scale-balanced', desc: 'Matched by similar records' },
+    firstto: { label: 'First to X', icon: 'fa-bullseye', desc: 'First to reach target wins' },
+    accumulation: { label: 'Score Accumulation', icon: 'fa-chart-line', desc: 'Points-based over multiple matches' },
+    lives: { label: 'Elimination (Lives)', icon: 'fa-heart', desc: 'Lose a life each loss, last alive wins' },
+    gauntlet: { label: 'Gauntlet Mode', icon: 'fa-bolt', desc: 'One player faces everyone in a row' }
+};
+
+let selectedH2HMode = null;
+
+function showH2HSetup() {
+    document.getElementById('wizardSection').style.display = 'none';
+    document.getElementById('h2hSetup').style.display = 'block';
+    selectedH2HMode = null;
+    renderH2HModeSelector();
+}
+
+function hideH2HSetup() {
+    document.getElementById('h2hSetup').style.display = 'none';
+    document.getElementById('wizardSection').style.display = 'block';
+}
+
+function renderH2HModeSelector() {
+    const container = document.getElementById('h2hModeGrid');
+    let html = '';
+    Object.keys(H2H_MODES).forEach(function (key) {
+        const mode = H2H_MODES[key];
+        html += '<div class="sport-option' + (selectedH2HMode === key ? ' selected' : '') + '" onclick="window.hubApp.selectH2HMode(\'' + key + '\')">';
+        html += '<i class="fas ' + mode.icon + '"></i>';
+        html += '<span>' + mode.label + '</span>';
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function selectH2HMode(key) {
+    selectedH2HMode = key;
+    renderH2HModeSelector();
+}
+
+function createH2HProject() {
+    const name = document.getElementById('h2hName').value.trim();
+    if (!name) {
+        showStatus('Please enter a session name', 'error');
+        return;
+    }
+    if (!selectedH2HMode) {
+        showStatus('Please select a mode', 'error');
+        return;
+    }
+
+    const proj = createProject('headtohead', {
+        name: name,
+        mode: selectedH2HMode
+    });
+
+    window.location.href = 'headtohead.html?id=' + proj.id + '&mode=' + selectedH2HMode + '&new=1';
+}
+
 // --- Filters ---
 function setFilter(type) {
     filterType = type;
@@ -224,6 +288,10 @@ window.hubApp = {
     hideSquaresSetup: hideSquaresSetup,
     selectSport: selectSport,
     createSquaresProject: createSquaresProject,
+    showH2HSetup: showH2HSetup,
+    hideH2HSetup: hideH2HSetup,
+    selectH2HMode: selectH2HMode,
+    createH2HProject: createH2HProject,
     setFilter: setFilter,
     toggleArchived: toggleArchived,
     saveSheetsConfig: saveSheetsConfig

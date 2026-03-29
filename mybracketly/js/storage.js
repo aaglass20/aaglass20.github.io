@@ -71,6 +71,7 @@ export function createProject(type, metadata) {
         type: type,
         name: metadata.name || 'Untitled',
         sport: metadata.sport || null,
+        mode: metadata.mode || null,
         status: 'active',
         participantCount: metadata.participantCount || 0,
         createdAt: now,
@@ -97,6 +98,7 @@ export function deleteProject(id) {
     saveIndex(index);
     removeItem('bracket_' + id);
     removeItem('squares_' + id);
+    removeItem('headtohead_' + id);
 }
 
 export function archiveProject(id) {

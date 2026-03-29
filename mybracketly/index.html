@@ -46,6 +46,13 @@
                 <p>100-square grid game with live ESPN scores. Great for big games, playoffs, and watch parties. Track payouts automatically.</p>
             </div>
 
+            <!-- Head to Head -->
+            <div class="wizard-card" onclick="window.hubApp.showH2HSetup()">
+                <div class="card-icon"><i class="fas fa-people-arrows"></i></div>
+                <h3>Head to Head</h3>
+                <p>Best-of series, King of the Hill, Swiss rounds, elimination with lives, and more competitive modes.</p>
+            </div>
+
             <!-- Custom Event (Coming Soon) -->
             <div class="wizard-card disabled">
                 <div class="coming-soon">Coming Soon</div>
@@ -81,6 +88,36 @@
                 </button>
                 <button class="btn btn-primary btn-lg" onclick="window.hubApp.createSquaresProject()">
                     <i class="fas fa-plus"></i> Create Board
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- H2H Setup Form (hidden by default) -->
+    <div id="h2hSetup" class="squares-setup" style="display:none;">
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-people-arrows"></i>
+                <h2>Create Head to Head</h2>
+            </div>
+            <p class="section-subtext">Choose a competitive mode and set up your matchup.</p>
+
+            <div class="form-group">
+                <label for="h2hName">Session Name</label>
+                <input type="text" id="h2hName" class="form-input" placeholder="e.g. Friday Game Night, Ping Pong Challenge" maxlength="60">
+            </div>
+
+            <div class="form-group">
+                <label>Select Mode</label>
+                <div id="h2hModeGrid" class="sport-select-grid"></div>
+            </div>
+
+            <div class="flex-between mt-2">
+                <button class="btn btn-outline" onclick="window.hubApp.hideH2HSetup()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary btn-lg" onclick="window.hubApp.createH2HProject()">
+                    <i class="fas fa-plus"></i> Create
                 </button>
             </div>
         </div>

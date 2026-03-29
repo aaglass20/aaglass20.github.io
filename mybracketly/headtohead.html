@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBracketly - Head to Head</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/headtohead.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-icon"><i class="fas fa-people-arrows"></i></div>
+            <h1 class="app-title">My<span>Bracketly</span></h1>
+            <p class="app-subtitle" id="pageSubtitle">Head to Head</p>
+        </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar" id="tabBar">
+        <a class="tab-btn back-btn" href="index.html" id="backBtn">
+            <i class="fas fa-arrow-left"></i> Hub
+        </a>
+        <button class="tab-btn active" data-tab="play" onclick="switchTab('play')">
+            <i class="fas fa-gamepad"></i>Play
+        </button>
+        <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+            <i class="fas fa-clock-rotate-left"></i>History
+        </button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i>Settings
+        </button>
+    </nav>
+
+    <!-- ==================== SETUP VIEW ==================== -->
+    <div id="setupView" class="h2h-container" style="margin-top:2rem;">
+        <div id="setupContent"></div>
+    </div>
+
+    <!-- ==================== ACTIVE GAME TABS ==================== -->
+    <div class="tab-content active" id="tab-play">
+        <div class="h2h-container" id="playView"></div>
+    </div>
+    <div class="tab-content" id="tab-history">
+        <div class="h2h-container" id="historyView"></div>
+    </div>
+    <div class="tab-content" id="tab-settings">
+        <div class="h2h-container" id="settingsView"></div>
+    </div>
+
+    <!-- Score Entry Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="scoreModalTitle">Enter Score</h3>
+                <button class="modal-close" onclick="closeScoreModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="scoreModalBody"></div>
+            <div class="modal-footer" id="scoreModalFooter"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color:var(--text-medium);font-weight:500;">Loading...</p>
+    </div>
+
+    <!-- Status Message -->
+    <div id="statusMsg" class="status-msg" style="position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:3000;max-width:400px;"></div>
+
+<script>
+/* ============================================
+   MyBracketly - Head to Head
+   All 7 competitive modes in one file
+   ============================================ */
+
+// ---- Mode Registry ----
+var MODES = {
+    bestof:       { label: 'Best-of Series',       icon: 'fa-handshake',       minPlayers: 2, maxPlayers: 2,  desc: 'Classic head-to-head series' },
+    koth:         { label: 'King of the Hill',      icon: 'fa-crown',           minPlayers: 3, maxPlayers: 50, desc: 'Beat the king to take the throne' },
+    swiss:        { label: 'Swiss Format',          icon: 'fa-scale-balanced',  minPlayers: 4, maxPlayers: 64, desc: 'Pair by record each round' },
+    firstto:      { label: 'First to X',            icon: 'fa-bullseye',        minPlayers: 2, maxPlayers: 20, desc: 'Race to a win target' },
+    accumulation: { label: 'Score Accumulation',    icon: 'fa-chart-line',      minPlayers: 2, maxPlayers: 20, desc: 'Earn points per match' },
+    lives:        { label: 'Elimination (Lives)',   icon: 'fa-heart',           minPlayers: 3, maxPlayers: 30, desc: 'Lose lives until eliminated' },
+    gauntlet:     { label: 'Gauntlet',              icon: 'fa-bolt',            minPlayers: 3, maxPlayers: 50, desc: 'One player faces everyone' }
+};
+
+// ---- State ----
+var projectId = null;
+var state = null;
+var LS_KEY = '';
+var isNewProject = false;
+var timerInterval = null;
+
+// ---- URL Params ----
+var urlParams = new URLSearchParams(window.location.search);
+var paramId = urlParams.get('id');
+var paramMode = urlParams.get('mode');
+var paramNew = urlParams.get('new') === '1';
+
+// ---- Init ----
+function init() {
+    if (paramId) {
+        projectId = paramId;
+        LS_KEY = 'mybracketly_h2h_' + projectId;
+        var saved = localStorage.getItem(LS_KEY);
+        if (saved) {
+            try { state = JSON.parse(saved); } catch(e) { state = null; }
+        }
+    }
+
+    if (state && state.started) {
+        // Active session
+        isNewProject = false;
+        showActiveView();
+    } else if (paramId && paramNew) {
+        // New project from hub
+        isNewProject = true;
+        showSetupView(paramMode || null);
+    } else if (paramMode) {
+        // Mode pre-selected, no project yet
+        isNewProject = true;
+        showSetupView(paramMode);
+    } else if (!paramId) {
+        // No ID — redirect to hub
+        window.location.href = 'index.html';
+    } else {
+        // ID but no saved state and not new — show setup
+        isNewProject = true;
+        showSetupView(paramMode || null);
+    }
+}
+
+// ---- Utility Functions ----
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
+
+function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.innerHTML = '<i class="fas ' + (type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle') + '"></i> ' + escapeHtml(msg);
+    el.className = 'status-msg ' + (type || 'success');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(function() { el.className = 'status-msg'; }, 3000);
+}
+
+function saveState() {
+    if (!LS_KEY) return;
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    // Update project registry
+    updateProjectRegistry();
+}
+
+function updateProjectRegistry() {
+    try {
+        var idx = JSON.parse(localStorage.getItem('mybracketly_projects_index') || '[]');
+        var proj = null;
+        for (var i = 0; i < idx.length; i++) {
+            if (idx[i].id === projectId) { proj = idx[i]; break; }
+        }
+        if (proj) {
+            proj.updatedAt = new Date().toISOString();
+            if (state && state.players) proj.participantCount = state.players.length;
+            localStorage.setItem('mybracketly_projects_index', JSON.stringify(idx));
+        }
+    } catch(e) {}
+}
+
+function formatTime(date) {
+    if (!date) return '';
+    var d = new Date(date);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function formatTimestamp(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(function(el) { el.classList.remove('active'); });
+    var tab = document.getElementById('tab-' + tabId);
+    if (tab) tab.classList.add('active');
+    var btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
+    if (btn) btn.classList.add('active');
+
+    if (tabId === 'play') renderPlay();
+    else if (tabId === 'history') renderHistory();
+    else if (tabId === 'settings') renderSettings();
+}
+
+function closeScoreModal() {
+    document.getElementById('scoreModal').classList.remove('active');
+}
+
+function openScoreModal(title, bodyHtml, footerHtml) {
+    document.getElementById('scoreModalTitle').textContent = title;
+    document.getElementById('scoreModalBody').innerHTML = bodyHtml;
+    document.getElementById('scoreModalFooter').innerHTML = footerHtml;
+    document.getElementById('scoreModal').classList.add('active');
+}
+
+// ---- Setup View ----
+function showSetupView(preselectedMode) {
+    document.getElementById('tabBar').classList.remove('visible');
+    document.getElementById('setupView').style.display = 'block';
+    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+
+    var setupState = {
+        step: 1,
+        mode: preselectedMode || null,
+        players: ['', ''],
+        config: {}
+    };
+
+    renderSetup(setupState);
+}
+
+function renderSetup(ss) {
+    var el = document.getElementById('setupContent');
+    var html = '';
+
+    if (ss.step === 1) {
+        // Mode selection
+        html += '<div class="card">';
+        html += '<div class="section-header"><i class="fas fa-people-arrows"></i><h2>Choose Your Mode</h2></div>';
+        html += '<p class="section-subtext">Select a competitive format for your Head to Head session.</p>';
+        html += '<div class="mode-card-grid">';
+        Object.keys(MODES).forEach(function(key) {
+            var m = MODES[key];
+            var sel = ss.mode === key ? ' selected' : '';
+            html += '<div class="mode-card type-card' + sel + '" onclick="setupSelectMode(\'' + key + '\')">';
+            html += '<i class="fas ' + m.icon + '"></i>';
+            html += '<h3>' + m.label + '</h3>';
+            html += '<p>' + m.desc + '</p>';
+            html += '</div>';
+        });
+        html += '</div>';
+        html += '<div class="flex-between mt-2">';
+        html += '<a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Hub</a>';
+        html += '<button class="btn btn-primary btn-lg" onclick="setupGoToPlayers()"' + (!ss.mode ? ' disabled' : '') + '>Next <i class="fas fa-arrow-right"></i></button>';
+        html += '</div></div>';
+    } else if (ss.step === 2) {
+        // Player entry
+        var m = MODES[ss.mode];
+        html += '<div class="card">';
+        html += '<div class="section-header"><i class="fas fa-users"></i><h2>Add Players</h2></div>';
+        html += '<p class="section-subtext">' + m.label + ' requires ' + m.minPlayers + (m.minPlayers !== m.maxPlayers ? '-' + m.maxPlayers : '') + ' players.</p>';
+        html += '<div class="player-input-list" id="playerInputList">';
+        for (var i = 0; i < ss.players.length; i++) {
+            html += '<div class="player-input-row">';
+            html += '<span style="min-width:24px;color:var(--text-light);font-size:0.85rem;font-weight:600;">' + (i+1) + '.</span>';
+            html += '<input type="text" class="form-input" value="' + escapeHtml(ss.players[i]) + '" placeholder="Player ' + (i+1) + ' name" onchange="setupUpdatePlayer(' + i + ', this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();setupAddPlayer();}">';
+            if (ss.players.length > m.minPlayers) {
+                html += '<button class="remove-btn" onclick="setupRemovePlayer(' + i + ')"><i class="fas fa-times"></i></button>';
+            }
+            html += '</div>';
+        }
+        html += '</div>';
+        if (ss.players.length < m.maxPlayers) {
+            html += '<button class="btn btn-outline btn-sm" onclick="setupAddPlayer()"><i class="fas fa-plus"></i> Add Player</button>';
+        }
+        html += '<div class="flex-between mt-2">';
+        html += '<button class="btn btn-outline" onclick="setupBackToModes()"><i class="fas fa-arrow-left"></i> Back</button>';
+        html += '<button class="btn btn-primary btn-lg" onclick="setupGoToConfig()">Next <i class="fas fa-arrow-right"></i></button>';
+        html += '</div></div>';
+    } else if (ss.step === 3) {
+        // Mode-specific config
+        html += '<div class="card">';
+        html += '<div class="section-header"><i class="fas fa-sliders"></i><h2>Configure ' + MODES[ss.mode].label + '</h2></div>';
+        html += renderModeConfig(ss);
+        html += '<div class="flex-between mt-2">';
+        html += '<button class="btn btn-outline" onclick="setupBackToPlayers()"><i class="fas fa-arrow-left"></i> Back</button>';
+        html += '<button class="btn btn-success btn-lg" onclick="setupStart()"><i class="fas fa-play"></i> Start Session</button>';
+        html += '</div></div>';
+    }
+
+    el.innerHTML = html;
+
+    // Store setup state on window for access from onclick handlers
+    window._setupState = ss;
+}
+
+function renderModeConfig(ss) {
+    var html = '';
+    switch (ss.mode) {
+        case 'bestof':
+            var sl = ss.config.seriesLength || 3;
+            html += '<p class="section-subtext">How many games in the series?</p>';
+            html += '<div class="radio-group">';
+            [1,3,5,7].forEach(function(n) {
+                var sel = sl === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'seriesLength\',' + n + ')">';
+                html += '<input type="radio" name="seriesLength"' + (sl===n?' checked':'') + '>';
+                html += 'Best of ' + n;
+                html += '</div>';
+            });
+            html += '</div>';
+            break;
+        case 'koth':
+            var ec = ss.config.endCondition || 'streak';
+            var st = ss.config.streakTarget || 5;
+            var tm = ss.config.timeMinutes || 60;
+            html += '<p class="section-subtext">When does the session end?</p>';
+            html += '<div class="radio-group mb-2">';
+            ['streak','time','manual'].forEach(function(v) {
+                var labels = {streak:'Win Streak Target', time:'Time Limit', manual:'Manual (No End)'};
+                var sel = ec === v ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'endCondition\',\'' + v + '\')">';
+                html += labels[v];
+                html += '</div>';
+            });
+            html += '</div>';
+            if (ec === 'streak') {
+                html += '<div class="form-group"><label>Streak Target</label>';
+                html += '<input type="number" class="form-input" style="max-width:120px;" value="' + st + '" min="2" max="50" onchange="setupSetConfig(\'streakTarget\',parseInt(this.value))">';
+                html += '</div>';
+            } else if (ec === 'time') {
+                html += '<div class="form-group"><label>Time Limit (minutes)</label>';
+                html += '<input type="number" class="form-input" style="max-width:120px;" value="' + tm + '" min="5" max="600" onchange="setupSetConfig(\'timeMinutes\',parseInt(this.value))">';
+                html += '</div>';
+            }
+            break;
+        case 'swiss':
+            var tr = ss.config.totalRounds || 4;
+            html += '<p class="section-subtext">How many rounds?</p>';
+            html += '<div class="radio-group">';
+            [3,4,5,6,7].forEach(function(n) {
+                var sel = tr === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'totalRounds\',' + n + ')">';
+                html += n + ' Rounds';
+                html += '</div>';
+            });
+            html += '</div>';
+            break;
+        case 'firstto':
+            var tgt = ss.config.target || 10;
+            html += '<p class="section-subtext">First player to reach this many wins.</p>';
+            html += '<div class="radio-group mb-2">';
+            [5,10,15,20].forEach(function(n) {
+                var sel = tgt === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'target\',' + n + ')">';
+                html += n + ' Wins';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '<div class="form-group"><label>Or enter custom target</label>';
+            html += '<input type="number" class="form-input" style="max-width:120px;" value="' + tgt + '" min="1" max="1000" onchange="setupSetConfig(\'target\',parseInt(this.value))">';
+            html += '</div>';
+            break;
+        case 'accumulation':
+            var wp = ss.config.winPoints != null ? ss.config.winPoints : 3;
+            var dp = ss.config.drawPoints != null ? ss.config.drawPoints : 1;
+            var lp = ss.config.lossPoints != null ? ss.config.lossPoints : 0;
+            html += '<p class="section-subtext">Points awarded per match result.</p>';
+            html += '<div class="form-group"><label>Win Points</label>';
+            html += '<input type="number" class="form-input" style="max-width:100px;" value="' + wp + '" min="0" max="100" onchange="setupSetConfig(\'winPoints\',parseInt(this.value))"></div>';
+            html += '<div class="form-group"><label>Draw Points</label>';
+            html += '<input type="number" class="form-input" style="max-width:100px;" value="' + dp + '" min="0" max="100" onchange="setupSetConfig(\'drawPoints\',parseInt(this.value))"></div>';
+            html += '<div class="form-group"><label>Loss Points</label>';
+            html += '<input type="number" class="form-input" style="max-width:100px;" value="' + lp + '" min="0" max="100" onchange="setupSetConfig(\'lossPoints\',parseInt(this.value))"></div>';
+            break;
+        case 'lives':
+            var sl2 = ss.config.startingLives || 3;
+            html += '<p class="section-subtext">How many lives does each player start with?</p>';
+            html += '<div class="radio-group">';
+            [1,2,3,4,5].forEach(function(n) {
+                var sel = sl2 === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'startingLives\',' + n + ')">';
+                html += n + ' ' + (n === 1 ? 'Life' : 'Lives');
+                html += '</div>';
+            });
+            html += '</div>';
+            break;
+        case 'gauntlet':
+            html += '<p class="section-subtext">Select which player will run the gauntlet (faces everyone in sequence).</p>';
+            html += '<div class="form-group"><label>Gauntlet Player</label>';
+            html += '<select class="form-select" onchange="setupSetConfig(\'gauntletPlayer\',this.value)">';
+            html += '<option value="">-- Select --</option>';
+            ss.players.forEach(function(p) {
+                if (p.trim()) {
+                    var sel = ss.config.gauntletPlayer === p.trim() ? ' selected' : '';
+                    html += '<option value="' + escapeHtml(p.trim()) + '"' + sel + '>' + escapeHtml(p.trim()) + '</option>';
+                }
+            });
+            html += '</select></div>';
+            break;
+    }
+    return html;
+}
+
+// Setup step handlers (global for onclick)
+window._setupState = { step: 1, mode: null, players: ['', ''], config: {} };
+
+function setupSelectMode(key) {
+    var ss = window._setupState;
+    ss.mode = key;
+    // Set default player count
+    var m = MODES[key];
+    if (ss.players.length < m.minPlayers) {
+        while (ss.players.length < m.minPlayers) ss.players.push('');
+    }
+    if (ss.players.length > m.maxPlayers) {
+        ss.players = ss.players.slice(0, m.maxPlayers);
+    }
+    renderSetup(ss);
+}
+
+function setupGoToPlayers() {
+    var ss = window._setupState;
+    if (!ss.mode) { showStatus('Please select a mode', 'error'); return; }
+    ss.step = 2;
+    renderSetup(ss);
+}
+
+function setupBackToModes() {
+    var ss = window._setupState;
+    ss.step = 1;
+    renderSetup(ss);
+}
+
+function setupUpdatePlayer(idx, val) {
+    window._setupState.players[idx] = val;
+}
+
+function setupAddPlayer() {
+    var ss = window._setupState;
+    var m = MODES[ss.mode];
+    if (ss.players.length < m.maxPlayers) {
+        ss.players.push('');
+        renderSetup(ss);
+        // Focus new input
+        setTimeout(function() {
+            var inputs = document.querySelectorAll('.player-input-row input');
+            if (inputs.length) inputs[inputs.length - 1].focus();
+        }, 50);
+    }
+}
+
+function setupRemovePlayer(idx) {
+    var ss = window._setupState;
+    ss.players.splice(idx, 1);
+    renderSetup(ss);
+}
+
+function setupGoToConfig() {
+    var ss = window._setupState;
+    // Validate players
+    var m = MODES[ss.mode];
+    // Read current input values
+    var inputs = document.querySelectorAll('.player-input-row input');
+    inputs.forEach(function(inp, i) { ss.players[i] = inp.value; });
+
+    var names = ss.players.map(function(p) { return p.trim(); }).filter(function(p) { return p.length > 0; });
+    if (names.length < m.minPlayers) {
+        showStatus('Need at least ' + m.minPlayers + ' players', 'error');
+        return;
+    }
+    // Check for duplicates
+    var seen = {};
+    for (var i = 0; i < names.length; i++) {
+        var lower = names[i].toLowerCase();
+        if (seen[lower]) { showStatus('Duplicate player name: ' + names[i], 'error'); return; }
+        seen[lower] = true;
+    }
+    ss.players = names;
+
+    // Set defaults
+    if (ss.mode === 'bestof' && !ss.config.seriesLength) ss.config.seriesLength = 3;
+    if (ss.mode === 'koth' && !ss.config.endCondition) ss.config.endCondition = 'streak';
+    if (ss.mode === 'koth' && !ss.config.streakTarget) ss.config.streakTarget = 5;
+    if (ss.mode === 'koth' && !ss.config.timeMinutes) ss.config.timeMinutes = 60;
+    if (ss.mode === 'swiss' && !ss.config.totalRounds) ss.config.totalRounds = 4;
+    if (ss.mode === 'firstto' && !ss.config.target) ss.config.target = 10;
+    if (ss.mode === 'accumulation' && ss.config.winPoints == null) ss.config.winPoints = 3;
+    if (ss.mode === 'accumulation' && ss.config.drawPoints == null) ss.config.drawPoints = 1;
+    if (ss.mode === 'accumulation' && ss.config.lossPoints == null) ss.config.lossPoints = 0;
+    if (ss.mode === 'lives' && !ss.config.startingLives) ss.config.startingLives = 3;
+
+    ss.step = 3;
+    renderSetup(ss);
+}
+
+function setupBackToPlayers() {
+    var ss = window._setupState;
+    ss.step = 2;
+    renderSetup(ss);
+}
+
+function setupSetConfig(key, value) {
+    var ss = window._setupState;
+    ss.config[key] = value;
+    renderSetup(ss);
+}
+
+function setupStart() {
+    var ss = window._setupState;
+    // Validate mode-specific config
+    if (ss.mode === 'gauntlet' && !ss.config.gauntletPlayer) {
+        showStatus('Please select the gauntlet player', 'error');
+        return;
+    }
+
+    // Build initial state
+    state = buildInitialState(ss.mode, ss.players, ss.config);
+    saveState();
+    showActiveView();
+    showStatus('Session started!', 'success');
+}
+
+function buildInitialState(mode, players, config) {
+    var now = new Date().toISOString();
+    var s = {
+        mode: mode,
+        players: players.slice(),
+        config: JSON.parse(JSON.stringify(config)),
+        matches: [],
+        started: true,
+        completed: false,
+        winner: null,
+        createdAt: now,
+        updatedAt: now
+    };
+
+    switch (mode) {
+        case 'bestof':
+            s.p1Wins = 0;
+            s.p2Wins = 0;
+            break;
+        case 'koth':
+            s.currentKing = players[0];
+            s.currentStreak = 0;
+            s.queue = players.slice(1);
+            if (config.endCondition === 'time') {
+                s.timerStart = null; // Set on first match
+                s.timerEnd = null;
+            }
+            break;
+        case 'swiss':
+            s.currentRound = 0; // 0 = not started, rounds are 1-indexed
+            s.rounds = []; // Array of round objects {pairings: [...], completed: bool}
+            s.standings = {};
+            players.forEach(function(p) {
+                s.standings[p] = { wins: 0, losses: 0, draws: 0, points: 0, opponents: [], buchholz: 0 };
+            });
+            break;
+        case 'firstto':
+            s.wins = {};
+            players.forEach(function(p) { s.wins[p] = 0; });
+            break;
+        case 'accumulation':
+            s.points = {};
+            s.records = {};
+            players.forEach(function(p) {
+                s.points[p] = 0;
+                s.records[p] = { w: 0, l: 0, d: 0 };
+            });
+            break;
+        case 'lives':
+            s.lives = {};
+            s.eliminated = [];
+            players.forEach(function(p) { s.lives[p] = config.startingLives; });
+            break;
+        case 'gauntlet':
+            s.gauntletPlayer = config.gauntletPlayer;
+            s.opponents = players.filter(function(p) { return p !== config.gauntletPlayer; });
+            s.currentOpponentIdx = 0;
+            s.gWins = 0;
+            s.gLosses = 0;
+            s.currentStreak = 0;
+            s.longestStreak = 0;
+            s.opponentResults = []; // 'win', 'loss' per opponent
+            break;
+    }
+    return s;
+}
+
+// ---- Active View ----
+function showActiveView() {
+    document.getElementById('setupView').style.display = 'none';
+    document.getElementById('tabBar').classList.add('visible');
+    document.getElementById('pageSubtitle').textContent = MODES[state.mode] ? MODES[state.mode].label : 'Head to Head';
+    switchTab('play');
+}
+
+function renderPlay() {
+    if (!state) return;
+    var el = document.getElementById('playView');
+    switch (state.mode) {
+        case 'bestof': el.innerHTML = renderBestOf(); break;
+        case 'koth': el.innerHTML = renderKOTH(); break;
+        case 'swiss': el.innerHTML = renderSwiss(); break;
+        case 'firstto': el.innerHTML = renderFirstTo(); break;
+        case 'accumulation': el.innerHTML = renderAccumulation(); break;
+        case 'lives': el.innerHTML = renderLives(); break;
+        case 'gauntlet': el.innerHTML = renderGauntlet(); break;
+        default: el.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Unknown mode</h3></div>';
+    }
+}
+
+// ================================================
+// 1. BEST-OF SERIES
+// ================================================
+function renderBestOf() {
+    var p1 = state.players[0];
+    var p2 = state.players[1];
+    var needed = Math.ceil(state.config.seriesLength / 2);
+    var seriesOver = state.p1Wins >= needed || state.p2Wins >= needed;
+    var winner = state.p1Wins >= needed ? p1 : (state.p2Wins >= needed ? p2 : null);
+
+    if (seriesOver && !state.completed) {
+        state.completed = true;
+        state.winner = winner;
+        saveState();
+    }
+
+    var p1Class = 'series-player';
+    var p2Class = 'series-player';
+    if (seriesOver) {
+        if (winner === p1) p1Class += ' winner';
+        else p2Class += ' winner';
+    } else {
+        if (state.p1Wins > state.p2Wins) p1Class += ' leading';
+        else if (state.p2Wins > state.p1Wins) p2Class += ' leading';
+    }
+
+    var html = '';
+    html += '<div class="mode-header"><i class="fas fa-handshake"></i>';
+    html += '<h2>Best of ' + state.config.seriesLength + '</h2>';
+    html += '<p>' + escapeHtml(p1) + ' vs ' + escapeHtml(p2) + '</p></div>';
+
+    // Series display
+    html += '<div class="series-display">';
+    html += '<div class="' + p1Class + '">';
+    html += '<div class="player-name">' + escapeHtml(p1) + '</div>';
+    html += '<div class="win-count">' + state.p1Wins + '</div>';
+    html += '<div class="series-score-label">Wins</div>';
+    html += renderSeriesDots(state.p1Wins, needed, 'won-p1');
+    html += '</div>';
+    html += '<div class="' + p2Class + '">';
+    html += '<div class="player-name">' + escapeHtml(p2) + '</div>';
+    html += '<div class="win-count">' + state.p2Wins + '</div>';
+    html += '<div class="series-score-label">Wins</div>';
+    html += renderSeriesDots(state.p2Wins, needed, 'won-p2');
+    html += '</div>';
+    html += '</div>';
+
+    if (seriesOver) {
+        html += '<div class="winner-celebration" style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-trophy" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">' + escapeHtml(winner) + ' Wins!</h2>';
+        html += '<p style="color:var(--text-medium);">' + state.p1Wins + ' - ' + state.p2Wins + '</p>';
+        html += '<button class="btn btn-outline mt-2" onclick="bestofReset()"><i class="fas fa-redo"></i> Play Again</button>';
+        html += '</div>';
+    } else {
+        // Game number
+        var gameNum = state.p1Wins + state.p2Wins + 1;
+        html += '<div style="text-align:center;margin-bottom:1rem;color:var(--text-light);font-weight:600;">Game ' + gameNum + ' of ' + state.config.seriesLength + '</div>';
+        // Quick result buttons
+        html += '<div class="quick-result">';
+        html += '<button class="result-btn p1" onclick="bestofWin(0)"><span class="btn-label">Winner</span>' + escapeHtml(p1) + '</button>';
+        html += '<button class="result-btn p2" onclick="bestofWin(1)"><span class="btn-label">Winner</span>' + escapeHtml(p2) + '</button>';
+        html += '</div>';
+        // Optional score entry
+        html += '<div style="text-align:center;"><button class="btn btn-outline btn-sm" onclick="bestofScoreModal()"><i class="fas fa-pencil"></i> Enter with Scores</button></div>';
+    }
+
+    return html;
+}
+
+function renderSeriesDots(wins, needed, cls) {
+    var html = '<div class="series-dots">';
+    for (var i = 0; i < needed; i++) {
+        html += '<div class="series-dot' + (i < wins ? ' ' + cls : '') + '"></div>';
+    }
+    html += '</div>';
+    return html;
+}
+
+function bestofWin(playerIdx) {
+    if (state.completed) return;
+    var match = {
+        p1: state.players[0],
+        p2: state.players[1],
+        winner: state.players[playerIdx],
+        timestamp: new Date().toISOString()
+    };
+    state.matches.push(match);
+    if (playerIdx === 0) state.p1Wins++;
+    else state.p2Wins++;
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+}
+
+function bestofScoreModal() {
+    var body = '<div class="form-group"><label>' + escapeHtml(state.players[0]) + ' Score</label>';
+    body += '<input type="number" class="form-input" id="modalScore1" min="0"></div>';
+    body += '<div class="form-group"><label>' + escapeHtml(state.players[1]) + ' Score</label>';
+    body += '<input type="number" class="form-input" id="modalScore2" min="0"></div>';
+    var footer = '<button class="btn btn-outline" onclick="closeScoreModal()">Cancel</button>';
+    footer += '<button class="btn btn-primary" onclick="bestofSubmitScore()">Submit</button>';
+    openScoreModal('Enter Game Score', body, footer);
+}
+
+function bestofSubmitScore() {
+    var s1 = parseInt(document.getElementById('modalScore1').value);
+    var s2 = parseInt(document.getElementById('modalScore2').value);
+    if (isNaN(s1) || isNaN(s2)) { showStatus('Enter valid scores', 'error'); return; }
+    if (s1 === s2) { showStatus('Scores cannot be tied — someone must win', 'error'); return; }
+    var winnerIdx = s1 > s2 ? 0 : 1;
+    var match = {
+        p1: state.players[0],
+        p2: state.players[1],
+        score1: s1,
+        score2: s2,
+        winner: state.players[winnerIdx],
+        timestamp: new Date().toISOString()
+    };
+    state.matches.push(match);
+    if (winnerIdx === 0) state.p1Wins++;
+    else state.p2Wins++;
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    closeScoreModal();
+    renderPlay();
+}
+
+function bestofReset() {
+    state.p1Wins = 0;
+    state.p2Wins = 0;
+    state.completed = false;
+    state.winner = null;
+    state.matches = [];
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+    showStatus('Series reset', 'success');
+}
+
+// ================================================
+// 2. KING OF THE HILL
+// ================================================
+function renderKOTH() {
+    var html = '';
+    html += '<div class="mode-header"><i class="fas fa-crown"></i><h2>King of the Hill</h2>';
+    var condLabel = state.config.endCondition === 'streak' ? 'Streak to ' + state.config.streakTarget :
+                    state.config.endCondition === 'time' ? 'Time Limit' : 'Manual';
+    html += '<p>' + condLabel + ' &bull; ' + state.players.length + ' players</p></div>';
+
+    // Check if ended
+    var ended = state.completed;
+    if (!ended && state.config.endCondition === 'streak' && state.currentStreak >= state.config.streakTarget) {
+        state.completed = true;
+        state.winner = state.currentKing;
+        ended = true;
+        saveState();
+    }
+
+    // Timer check
+    if (!ended && state.config.endCondition === 'time' && state.timerEnd) {
+        if (new Date().getTime() >= new Date(state.timerEnd).getTime()) {
+            state.completed = true;
+            state.winner = state.currentKing;
+            ended = true;
+            saveState();
+        }
+    }
+
+    // Arena
+    html += '<div class="koth-arena">';
+    html += '<div class="koth-king">';
+    html += '<div class="crown"><i class="fas fa-crown"></i></div>';
+    html += '<div class="player-name">' + escapeHtml(state.currentKing) + '</div>';
+    if (state.currentStreak > 0) {
+        html += '<div class="koth-streak"><i class="fas fa-fire"></i> ' + state.currentStreak + ' win streak</div>';
+    }
+    html += '</div>';
+
+    // Timer display
+    if (state.config.endCondition === 'time' && state.timerEnd && !ended) {
+        var remaining = Math.max(0, Math.floor((new Date(state.timerEnd).getTime() - Date.now()) / 1000));
+        var mins = Math.floor(remaining / 60);
+        var secs = remaining % 60;
+        html += '<div class="koth-timer" id="kothTimer">' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + '</div>';
+        startKOTHTimer();
+    }
+
+    if (ended) {
+        html += '</div>'; // close arena
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-crown" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">' + escapeHtml(state.winner) + ' is the King!</h2>';
+        html += '<p style="color:var(--text-medium);">Final streak: ' + state.currentStreak + '</p>';
+        html += '</div>';
+        return html;
+    }
+
+    // Challenger
+    if (state.queue.length > 0) {
+        var challenger = state.queue[0];
+        html += '<div class="koth-vs">VS</div>';
+        html += '<div class="koth-challenger"><div class="player-name">' + escapeHtml(challenger) + '</div></div>';
+        html += '</div>'; // close arena
+
+        // Action buttons
+        html += '<div class="quick-result">';
+        html += '<button class="result-btn p1" onclick="kothResult(\'king\')"><span class="btn-label">Winner</span><i class="fas fa-crown" style="margin-right:4px;color:var(--accent);"></i> ' + escapeHtml(state.currentKing) + '</button>';
+        html += '<button class="result-btn p2" onclick="kothResult(\'challenger\')"><span class="btn-label">Winner</span>' + escapeHtml(challenger) + '</button>';
+        html += '</div>';
+    } else {
+        html += '<div style="text-align:center;color:var(--text-light);margin-top:1rem;">No more challengers in queue</div>';
+        html += '</div>';
+    }
+
+    // Queue
+    if (state.queue.length > 1) {
+        html += '<div class="koth-queue"><h3><i class="fas fa-list-ol" style="margin-right:0.5rem;"></i>Up Next</h3>';
+        for (var i = 1; i < state.queue.length; i++) {
+            html += '<div class="koth-queue-item">';
+            html += '<span class="queue-rank">' + i + '</span>';
+            html += '<span class="queue-name">' + escapeHtml(state.queue[i]) + '</span>';
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+
+    return html;
+}
+
+function kothResult(who) {
+    if (state.completed || state.queue.length === 0) return;
+    var challenger = state.queue[0];
+    var match = {
+        king: state.currentKing,
+        challenger: challenger,
+        winner: who === 'king' ? state.currentKing : challenger,
+        timestamp: new Date().toISOString()
+    };
+    state.matches.push(match);
+
+    // Start timer on first match if time-based
+    if (state.config.endCondition === 'time' && !state.timerStart) {
+        state.timerStart = new Date().toISOString();
+        state.timerEnd = new Date(Date.now() + state.config.timeMinutes * 60000).toISOString();
+    }
+
+    if (who === 'king') {
+        // King defends
+        state.currentStreak++;
+        state.queue.shift();
+        state.queue.push(challenger); // Challenger goes to back
+    } else {
+        // Challenger wins — becomes new king
+        var oldKing = state.currentKing;
+        state.queue.shift();
+        state.queue.push(oldKing); // Old king goes to back
+        state.currentKing = challenger;
+        state.currentStreak = 1;
+    }
+
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+}
+
+function startKOTHTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(function() {
+        if (!state || state.completed || state.config.endCondition !== 'time' || !state.timerEnd) {
+            clearInterval(timerInterval);
+            return;
+        }
+        var remaining = Math.max(0, Math.floor((new Date(state.timerEnd).getTime() - Date.now()) / 1000));
+        var el = document.getElementById('kothTimer');
+        if (el) {
+            var mins = Math.floor(remaining / 60);
+            var secs = remaining % 60;
+            el.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+            el.className = remaining < 60 ? 'koth-timer warning' : 'koth-timer';
+        }
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            state.completed = true;
+            state.winner = state.currentKing;
+            saveState();
+            renderPlay();
+        }
+    }, 1000);
+}
+
+// ================================================
+// 3. SWISS FORMAT
+// ================================================
+function renderSwiss() {
+    var html = '';
+    var totalRounds = state.config.totalRounds;
+    html += '<div class="mode-header"><i class="fas fa-scale-balanced"></i><h2>Swiss Format</h2>';
+    html += '<p>' + state.players.length + ' players &bull; ' + totalRounds + ' rounds</p></div>';
+
+    // Check completion
+    if (state.currentRound > totalRounds && !state.completed) {
+        state.completed = true;
+        var sorted = getSwissStandings();
+        state.winner = sorted.length > 0 ? sorted[0].name : null;
+        saveState();
+    }
+
+    if (state.currentRound === 0) {
+        // Not started yet — generate first round
+        html += '<div class="card text-center">';
+        html += '<p style="color:var(--text-medium);margin-bottom:1rem;">Ready to begin the Swiss tournament?</p>';
+        html += '<button class="btn btn-primary btn-lg" onclick="swissStartRound()"><i class="fas fa-play"></i> Generate Round 1 Pairings</button>';
+        html += '</div>';
+    } else {
+        // Round navigation
+        html += '<div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">';
+        for (var r = 1; r <= Math.min(state.currentRound, totalRounds); r++) {
+            var rClass = r === state.currentRound ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+            html += '<button class="' + rClass + '" onclick="swissViewRound(' + r + ')">R' + r + '</button>';
+        }
+        html += '</div>';
+
+        // Current/viewed round
+        var viewRound = window._swissViewRound || state.currentRound;
+        if (viewRound > totalRounds) viewRound = totalRounds;
+        var round = state.rounds[viewRound - 1];
+
+        if (round) {
+            html += '<div class="swiss-round-header"><h3>Round <span class="round-number">' + viewRound + '</span> of ' + totalRounds + '</h3></div>';
+
+            // Pairings
+            html += '<div class="swiss-pairings">';
+            for (var pi = 0; pi < round.pairings.length; pi++) {
+                var pair = round.pairings[pi];
+                var completed = pair.winner !== undefined;
+                var pairClass = 'swiss-pairing' + (completed ? ' completed' : '') + (pair.bye ? ' bye' : '');
+
+                html += '<div class="' + pairClass + '" style="' + (completed ? 'border-left-color:var(--success);' : '') + '">';
+                html += '<span class="pairing-player' + (completed && pair.winner === pair.p1 ? ' winner-pick' : '') + '">';
+                html += escapeHtml(pair.p1);
+                if (completed && pair.winner === pair.p1) html += ' <i class="fas fa-check" style="color:var(--success);"></i>';
+                html += '</span>';
+                html += '<span class="pairing-vs">vs</span>';
+
+                if (pair.bye) {
+                    html += '<span class="pairing-player" style="font-style:italic;color:var(--text-light);">BYE</span>';
+                } else {
+                    html += '<span class="pairing-player' + (completed && pair.winner === pair.p2 ? ' winner-pick' : '') + '">';
+                    html += escapeHtml(pair.p2);
+                    if (completed && pair.winner === pair.p2) html += ' <i class="fas fa-check" style="color:var(--success);"></i>';
+                    html += '</span>';
+                }
+
+                if (!completed && !pair.bye && viewRound === state.currentRound && state.currentRound <= totalRounds) {
+                    html += '<div style="display:flex;gap:0.3rem;">';
+                    html += '<button class="btn btn-sm btn-primary" onclick="swissSetWinner(' + pi + ',\'' + escapeHtml(pair.p1).replace(/'/g, "\\'") + '\')" title="' + escapeHtml(pair.p1) + ' wins">P1</button>';
+                    html += '<button class="btn btn-sm btn-secondary" onclick="swissSetWinner(' + pi + ',\'' + escapeHtml(pair.p2).replace(/'/g, "\\'") + '\')" title="' + escapeHtml(pair.p2) + ' wins">P2</button>';
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            }
+            html += '</div>';
+
+            // Check if round is complete
+            if (viewRound === state.currentRound && state.currentRound <= totalRounds) {
+                var allDone = round.pairings.every(function(p) { return p.winner !== undefined; });
+                if (allDone && state.currentRound < totalRounds) {
+                    html += '<div style="text-align:center;margin-bottom:1rem;">';
+                    html += '<button class="btn btn-primary btn-lg" onclick="swissStartRound()"><i class="fas fa-forward"></i> Generate Round ' + (state.currentRound + 1) + '</button>';
+                    html += '</div>';
+                } else if (allDone && state.currentRound === totalRounds) {
+                    html += '<div style="text-align:center;margin-bottom:1rem;">';
+                    html += '<button class="btn btn-success btn-lg" onclick="swissFinish()"><i class="fas fa-flag-checkered"></i> Complete Tournament</button>';
+                    html += '</div>';
+                }
+            }
+        }
+
+        // Standings
+        html += renderSwissStandings();
+    }
+
+    if (state.completed) {
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-trophy" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">Tournament Complete!</h2>';
+        if (state.winner) html += '<p style="color:var(--text-medium);">Winner: ' + escapeHtml(state.winner) + '</p>';
+        html += '</div>';
+    }
+
+    return html;
+}
+
+window._swissViewRound = null;
+
+function swissViewRound(r) {
+    window._swissViewRound = r;
+    renderPlay();
+}
+
+function swissStartRound() {
+    state.currentRound++;
+    window._swissViewRound = state.currentRound;
+    var pairings = generateSwissPairings();
+    state.rounds.push({ pairings: pairings, completed: false });
+    saveState();
+    renderPlay();
+}
+
+function generateSwissPairings() {
+    var players = state.players.slice();
+    var standings = state.standings;
+
+    // Sort by points (descending), then by buchholz
+    players.sort(function(a, b) {
+        var diff = (standings[b].points || 0) - (standings[a].points || 0);
+        if (diff !== 0) return diff;
+        return (standings[b].buchholz || 0) - (standings[a].buchholz || 0);
+    });
+
+    // Build set of past pairings
+    var pastPairs = {};
+    for (var r = 0; r < state.rounds.length; r++) {
+        var round = state.rounds[r];
+        for (var p = 0; p < round.pairings.length; p++) {
+            var pair = round.pairings[p];
+            if (!pair.bye) {
+                var key1 = pair.p1 + '|' + pair.p2;
+                var key2 = pair.p2 + '|' + pair.p1;
+                pastPairs[key1] = true;
+                pastPairs[key2] = true;
+            }
+        }
+    }
+
+    var pairings = [];
+    var paired = {};
+
+    // Try to pair adjacent players avoiding rematches
+    for (var i = 0; i < players.length; i++) {
+        if (paired[players[i]]) continue;
+        var found = false;
+        for (var j = i + 1; j < players.length; j++) {
+            if (paired[players[j]]) continue;
+            var key = players[i] + '|' + players[j];
+            if (!pastPairs[key]) {
+                pairings.push({ p1: players[i], p2: players[j], bye: false });
+                paired[players[i]] = true;
+                paired[players[j]] = true;
+                found = true;
+                break;
+            }
+        }
+        if (!found && !paired[players[i]]) {
+            // If no fresh opponent, pair with next unpaired anyway
+            for (var k = i + 1; k < players.length; k++) {
+                if (!paired[players[k]]) {
+                    pairings.push({ p1: players[i], p2: players[k], bye: false });
+                    paired[players[i]] = true;
+                    paired[players[k]] = true;
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Handle bye for odd player
+    for (var m = 0; m < players.length; m++) {
+        if (!paired[players[m]]) {
+            pairings.push({ p1: players[m], p2: null, bye: true, winner: players[m] });
+            // Auto-win bye
+            standings[players[m]].wins++;
+            standings[players[m]].points++;
+        }
+    }
+
+    return pairings;
+}
+
+function swissSetWinner(pairIdx, winnerName) {
+    var round = state.rounds[state.currentRound - 1];
+    if (!round) return;
+    var pair = round.pairings[pairIdx];
+    if (!pair || pair.bye || pair.winner !== undefined) return;
+
+    pair.winner = winnerName;
+    var loser = pair.winner === pair.p1 ? pair.p2 : pair.p1;
+
+    // Update standings
+    state.standings[winnerName].wins++;
+    state.standings[winnerName].points++;
+    state.standings[winnerName].opponents.push(loser);
+    state.standings[loser].losses++;
+    state.standings[loser].opponents.push(winnerName);
+
+    // Recalculate buchholz for everyone
+    recalcBuchholz();
+
+    // Add to matches
+    state.matches.push({
+        round: state.currentRound,
+        p1: pair.p1,
+        p2: pair.p2,
+        winner: winnerName,
+        timestamp: new Date().toISOString()
+    });
+
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+}
+
+function recalcBuchholz() {
+    var standings = state.standings;
+    state.players.forEach(function(p) {
+        var buch = 0;
+        var opps = standings[p].opponents;
+        for (var i = 0; i < opps.length; i++) {
+            if (standings[opps[i]]) buch += standings[opps[i]].points;
+        }
+        standings[p].buchholz = buch;
+    });
+}
+
+function getSwissStandings() {
+    var standings = state.standings;
+    var sorted = state.players.map(function(p) {
+        return {
+            name: p,
+            wins: standings[p].wins,
+            losses: standings[p].losses,
+            points: standings[p].points,
+            buchholz: standings[p].buchholz
+        };
+    });
+    sorted.sort(function(a, b) {
+        if (b.points !== a.points) return b.points - a.points;
+        return b.buchholz - a.buchholz;
+    });
+    return sorted;
+}
+
+function renderSwissStandings() {
+    var sorted = getSwissStandings();
+    var html = '<div class="card mt-2"><div class="section-header"><i class="fas fa-list-ol"></i><h2>Standings</h2></div>';
+    html += '<div style="overflow-x:auto;"><table class="swiss-standings"><thead><tr>';
+    html += '<th>#</th><th>Player</th><th>W</th><th>L</th><th>Pts</th><th>Buchholz</th>';
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < sorted.length; i++) {
+        var s = sorted[i];
+        var rowClass = i === 0 ? ' class="rank-1"' : '';
+        html += '<tr' + rowClass + '>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td style="font-weight:600;">' + escapeHtml(s.name) + '</td>';
+        html += '<td>' + s.wins + '</td>';
+        html += '<td>' + s.losses + '</td>';
+        html += '<td style="font-weight:700;color:var(--primary);">' + s.points + '</td>';
+        html += '<td>' + s.buchholz + '</td>';
+        html += '</tr>';
+    }
+    html += '</tbody></table></div></div>';
+    return html;
+}
+
+function swissFinish() {
+    state.currentRound = state.config.totalRounds + 1;
+    state.completed = true;
+    var sorted = getSwissStandings();
+    state.winner = sorted.length > 0 ? sorted[0].name : null;
+    saveState();
+    renderPlay();
+    showStatus('Tournament complete!', 'success');
+}
+
+// ================================================
+// 4. FIRST TO X
+// ================================================
+function renderFirstTo() {
+    var target = state.config.target;
+    var html = '';
+    html += '<div class="mode-header"><i class="fas fa-bullseye"></i><h2>First to ' + target + '</h2>';
+    html += '<p>' + state.players.length + ' players</p></div>';
+
+    // Check winner
+    var ftWinner = null;
+    state.players.forEach(function(p) {
+        if (state.wins[p] >= target && !ftWinner) ftWinner = p;
+    });
+    if (ftWinner && !state.completed) {
+        state.completed = true;
+        state.winner = ftWinner;
+        saveState();
+    }
+
+    // Sort by wins descending
+    var sorted = state.players.slice().sort(function(a, b) { return state.wins[b] - state.wins[a]; });
+
+    // Progress bars
+    html += '<div style="margin-bottom:1.5rem;">';
+    sorted.forEach(function(p) {
+        var pct = Math.min(100, Math.round((state.wins[p] / target) * 100));
+        var isWinner = p === ftWinner;
+        html += '<div class="firstto-progress" style="padding:1rem 1.25rem;margin-bottom:0.5rem;' + (isWinner ? 'border:2px solid var(--accent);background:#FFFDE7;' : '') + '">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">';
+        html += '<span style="font-weight:700;color:var(--secondary);">' + escapeHtml(p);
+        if (isWinner) html += ' <i class="fas fa-trophy" style="color:var(--accent);"></i>';
+        html += '</span>';
+        html += '<span style="font-weight:900;font-size:1.2rem;color:var(--primary);">' + state.wins[p] + ' / ' + target + '</span>';
+        html += '</div>';
+        html += '<div class="firstto-track"><div class="firstto-bar p1" style="width:' + pct + '%;"></div></div>';
+        html += '</div>';
+    });
+    html += '</div>';
+
+    if (state.completed) {
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-trophy" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">' + escapeHtml(ftWinner) + ' Wins!</h2>';
+        html += '<p style="color:var(--text-medium);">Reached ' + target + ' wins first</p>';
+        html += '</div>';
+    } else {
+        // Match entry
+        html += '<div class="card">';
+        html += '<div class="section-header"><i class="fas fa-plus-circle"></i><h2>Record Win</h2></div>';
+        if (state.players.length === 2) {
+            html += '<div class="quick-result">';
+            html += '<button class="result-btn p1" onclick="firsttoWin(\'' + escapeHtml(state.players[0]).replace(/'/g, "\\'") + '\')"><span class="btn-label">Winner</span>' + escapeHtml(state.players[0]) + '</button>';
+            html += '<button class="result-btn p2" onclick="firsttoWin(\'' + escapeHtml(state.players[1]).replace(/'/g, "\\'") + '\')"><span class="btn-label">Winner</span>' + escapeHtml(state.players[1]) + '</button>';
+            html += '</div>';
+        } else {
+            html += '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">';
+            state.players.forEach(function(p) {
+                html += '<button class="btn btn-outline" onclick="firsttoWin(\'' + escapeHtml(p).replace(/'/g, "\\'") + '\')">' + escapeHtml(p) + '</button>';
+            });
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+
+    return html;
+}
+
+function firsttoWin(playerName) {
+    if (state.completed) return;
+    state.wins[playerName]++;
+    state.matches.push({
+        winner: playerName,
+        timestamp: new Date().toISOString()
+    });
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+}
+
+// ================================================
+// 5. SCORE ACCUMULATION
+// ================================================
+function renderAccumulation() {
+    var html = '';
+    html += '<div class="mode-header"><i class="fas fa-chart-line"></i><h2>Score Accumulation</h2>';
+    html += '<p>W=' + state.config.winPoints + ' / D=' + state.config.drawPoints + ' / L=' + state.config.lossPoints + '</p></div>';
+
+    // Leaderboard
+    var sorted = state.players.slice().sort(function(a, b) { return state.points[b] - state.points[a]; });
+
+    html += '<div class="accumulation-leaderboard">';
+    sorted.forEach(function(p, idx) {
+        var r = state.records[p];
+        var isLeader = idx === 0 && state.points[p] > 0;
+        html += '<div class="accumulation-row' + (isLeader ? ' leader' : '') + '">';
+        html += '<div class="rank">' + (idx + 1) + '</div>';
+        html += '<div class="rank-name">' + escapeHtml(p) + '</div>';
+        html += '<div class="rank-matches" style="text-align:center;">' + r.w + 'W ' + r.l + 'L ' + r.d + 'D</div>';
+        html += '<div class="rank-points">' + state.points[p] + ' pts</div>';
+        html += '</div>';
+    });
+    html += '</div>';
+
+    // Match entry
+    html += '<div class="card mt-2">';
+    html += '<div class="section-header"><i class="fas fa-plus-circle"></i><h2>Record Match</h2></div>';
+    html += '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">';
+    html += '<div class="form-group" style="margin-bottom:0;flex:1;min-width:120px;"><label>Player 1</label>';
+    html += '<select class="form-select" id="accumP1">';
+    state.players.forEach(function(p) { html += '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>'; });
+    html += '</select></div>';
+    html += '<div class="form-group" style="margin-bottom:0;flex:1;min-width:120px;"><label>Player 2</label>';
+    html += '<select class="form-select" id="accumP2">';
+    state.players.forEach(function(p, i) { html += '<option value="' + escapeHtml(p) + '"' + (i===1?' selected':'') + '>' + escapeHtml(p) + '</option>'; });
+    html += '</select></div>';
+    html += '<div class="form-group" style="margin-bottom:0;min-width:100px;"><label>Result</label>';
+    html += '<select class="form-select" id="accumResult">';
+    html += '<option value="p1">P1 Wins</option><option value="p2">P2 Wins</option><option value="draw">Draw</option>';
+    html += '</select></div>';
+    html += '<button class="btn btn-primary" onclick="accumSubmit()"><i class="fas fa-check"></i> Submit</button>';
+    html += '</div></div>';
+
+    return html;
+}
+
+function accumSubmit() {
+    var p1 = document.getElementById('accumP1').value;
+    var p2 = document.getElementById('accumP2').value;
+    var result = document.getElementById('accumResult').value;
+
+    if (p1 === p2) { showStatus('Players must be different', 'error'); return; }
+
+    var winner = result === 'p1' ? p1 : (result === 'p2' ? p2 : null);
+    var loser = result === 'p1' ? p2 : (result === 'p2' ? p1 : null);
+
+    if (result === 'draw') {
+        state.points[p1] += state.config.drawPoints;
+        state.points[p2] += state.config.drawPoints;
+        state.records[p1].d++;
+        state.records[p2].d++;
+    } else {
+        state.points[winner] += state.config.winPoints;
+        state.points[loser] += state.config.lossPoints;
+        state.records[winner].w++;
+        state.records[loser].l++;
+    }
+
+    state.matches.push({
+        p1: p1,
+        p2: p2,
+        result: result,
+        winner: winner,
+        timestamp: new Date().toISOString()
+    });
+
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+    showStatus('Match recorded', 'success');
+}
+
+// ================================================
+// 6. ELIMINATION WITH LIVES
+// ================================================
+function renderLives() {
+    var html = '';
+    var sl = state.config.startingLives;
+    html += '<div class="mode-header"><i class="fas fa-heart"></i><h2>Elimination</h2>';
+    html += '<p>' + sl + ' ' + (sl === 1 ? 'life' : 'lives') + ' each &bull; ' + state.players.length + ' players</p></div>';
+
+    // Check for winner
+    var alive = state.players.filter(function(p) { return state.lives[p] > 0; });
+    if (alive.length <= 1 && !state.completed) {
+        state.completed = true;
+        state.winner = alive.length === 1 ? alive[0] : null;
+        saveState();
+    }
+
+    // Player cards grid
+    html += '<div class="lives-grid">';
+    // Show alive first, then eliminated
+    var sortedPlayers = state.players.slice().sort(function(a, b) {
+        var aAlive = state.lives[a] > 0 ? 1 : 0;
+        var bAlive = state.lives[b] > 0 ? 1 : 0;
+        if (aAlive !== bAlive) return bAlive - aAlive;
+        return state.lives[b] - state.lives[a];
+    });
+
+    sortedPlayers.forEach(function(p) {
+        var isElim = state.lives[p] <= 0;
+        var isLastStanding = alive.length === 1 && alive[0] === p;
+        var cardClass = 'lives-card' + (isElim ? ' eliminated' : '') + (isLastStanding ? ' last-standing' : '');
+        html += '<div class="' + cardClass + '">';
+        html += '<div class="player-name">' + escapeHtml(p);
+        if (isLastStanding) html += ' <i class="fas fa-crown" style="color:var(--accent);"></i>';
+        html += '</div>';
+        // Hearts
+        html += '<div class="lives-hearts">';
+        for (var h = 0; h < sl; h++) {
+            if (h < state.lives[p]) {
+                html += '<span class="lives-heart"><i class="fas fa-heart"></i></span>';
+            } else {
+                html += '<span class="lives-heart lost"><i class="fas fa-heart"></i></span>';
+            }
+        }
+        html += '</div>';
+        // Elimination order
+        if (isElim) {
+            var elimIdx = state.eliminated.indexOf(p);
+            html += '<div style="font-size:0.75rem;color:var(--text-light);margin-top:0.4rem;">Eliminated #' + (elimIdx + 1) + '</div>';
+        }
+        html += '</div>';
+    });
+    html += '</div>';
+
+    if (state.completed && state.winner) {
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin:1.25rem 0;">';
+        html += '<i class="fas fa-trophy" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">' + escapeHtml(state.winner) + ' Wins!</h2>';
+        html += '<p style="color:var(--text-medium);">Last one standing</p>';
+        html += '</div>';
+    } else if (!state.completed) {
+        // Match entry
+        html += '<div class="card mt-2">';
+        html += '<div class="section-header"><i class="fas fa-plus-circle"></i><h2>Record Match</h2></div>';
+        html += '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">';
+        html += '<div class="form-group" style="margin-bottom:0;flex:1;min-width:120px;"><label>Player 1</label>';
+        html += '<select class="form-select" id="livesP1">';
+        alive.forEach(function(p) { html += '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>'; });
+        html += '</select></div>';
+        html += '<div class="form-group" style="margin-bottom:0;flex:1;min-width:120px;"><label>Player 2</label>';
+        html += '<select class="form-select" id="livesP2">';
+        alive.forEach(function(p, i) { html += '<option value="' + escapeHtml(p) + '"' + (i===1?' selected':'') + '>' + escapeHtml(p) + '</option>'; });
+        html += '</select></div>';
+        html += '<div class="form-group" style="margin-bottom:0;min-width:100px;"><label>Winner</label>';
+        html += '<select class="form-select" id="livesWinner"><option value="p1">P1 Wins</option><option value="p2">P2 Wins</option></select></div>';
+        html += '<button class="btn btn-primary" onclick="livesSubmit()"><i class="fas fa-check"></i> Submit</button>';
+        html += '</div></div>';
+    }
+
+    return html;
+}
+
+function livesSubmit() {
+    var p1 = document.getElementById('livesP1').value;
+    var p2 = document.getElementById('livesP2').value;
+    var result = document.getElementById('livesWinner').value;
+
+    if (p1 === p2) { showStatus('Players must be different', 'error'); return; }
+
+    var winner = result === 'p1' ? p1 : p2;
+    var loser = result === 'p1' ? p2 : p1;
+
+    state.lives[loser]--;
+    if (state.lives[loser] <= 0) {
+        state.eliminated.push(loser);
+    }
+
+    state.matches.push({
+        p1: p1,
+        p2: p2,
+        winner: winner,
+        loser: loser,
+        timestamp: new Date().toISOString()
+    });
+
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+    if (state.lives[loser] <= 0) {
+        showStatus(loser + ' has been eliminated!', 'error');
+    } else {
+        showStatus('Match recorded', 'success');
+    }
+}
+
+// ================================================
+// 7. GAUNTLET MODE
+// ================================================
+function renderGauntlet() {
+    var html = '';
+    var gp = state.gauntletPlayer;
+    var totalOpponents = state.opponents.length;
+    var completed = state.currentOpponentIdx >= totalOpponents;
+
+    if (completed && !state.completed) {
+        state.completed = true;
+        saveState();
+    }
+
+    html += '<div class="mode-header"><i class="fas fa-bolt"></i><h2>Gauntlet Mode</h2>';
+    html += '<p>' + escapeHtml(gp) + ' vs ' + totalOpponents + ' opponents</p></div>';
+
+    // Gauntlet player card
+    html += '<div class="gauntlet-player">';
+    html += '<div class="player-label"><i class="fas fa-bolt" style="margin-right:4px;"></i> Gauntlet Runner</div>';
+    html += '<div class="player-name">' + escapeHtml(gp) + '</div>';
+    html += '<div class="gauntlet-stats">';
+    html += '<div class="stat"><div class="stat-value wins">' + state.gWins + '</div><div class="stat-label">Wins</div></div>';
+    html += '<div class="stat"><div class="stat-value losses">' + state.gLosses + '</div><div class="stat-label">Losses</div></div>';
+    html += '<div class="stat"><div class="stat-value streak">' + state.currentStreak + '</div><div class="stat-label">Streak</div></div>';
+    html += '<div class="stat"><div class="stat-value">' + state.longestStreak + '</div><div class="stat-label">Best</div></div>';
+    html += '</div>';
+    // Progress bar
+    var pct = totalOpponents > 0 ? Math.round((state.currentOpponentIdx / totalOpponents) * 100) : 0;
+    html += '<div class="gauntlet-progress"><div class="progress-fill" style="width:' + pct + '%;"></div></div>';
+    html += '<div style="text-align:center;font-size:0.85rem;color:var(--text-light);margin-top:0.25rem;">' + state.currentOpponentIdx + ' / ' + totalOpponents + ' opponents</div>';
+    html += '</div>';
+
+    if (completed) {
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-flag-checkered" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">Gauntlet Complete!</h2>';
+        html += '<p style="color:var(--text-medium);">Record: ' + state.gWins + 'W - ' + state.gLosses + 'L | Longest streak: ' + state.longestStreak + '</p>';
+        html += '</div>';
+    } else {
+        // Current opponent
+        var currentOpp = state.opponents[state.currentOpponentIdx];
+        html += '<div class="card text-center" style="margin-bottom:1rem;">';
+        html += '<div style="font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.25rem;">Current Opponent (#' + (state.currentOpponentIdx + 1) + ')</div>';
+        html += '<div style="font-size:1.3rem;font-weight:700;color:var(--secondary);margin-bottom:1rem;">' + escapeHtml(currentOpp) + '</div>';
+        html += '<div class="quick-result">';
+        html += '<button class="result-btn p1" onclick="gauntletResult(\'win\')"><span class="btn-label">Winner</span><i class="fas fa-bolt" style="margin-right:4px;"></i> ' + escapeHtml(gp) + '</button>';
+        html += '<button class="result-btn p2" onclick="gauntletResult(\'loss\')"><span class="btn-label">Winner</span>' + escapeHtml(currentOpp) + '</button>';
+        html += '</div></div>';
+    }
+
+    // Opponent list
+    html += '<div class="gauntlet-opponent-list">';
+    html += '<div style="font-weight:700;color:var(--secondary);font-size:0.9rem;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border-light);">Opponents</div>';
+    for (var i = 0; i < state.opponents.length; i++) {
+        var opp = state.opponents[i];
+        var oppClass = 'gauntlet-opponent';
+        var statusIcon = '';
+        if (i < state.opponentResults.length) {
+            if (state.opponentResults[i] === 'win') {
+                oppClass += ' defeated';
+                statusIcon = '<i class="fas fa-check" style="color:var(--success);"></i>';
+            } else {
+                statusIcon = '<i class="fas fa-times" style="color:var(--error);"></i>';
+            }
+        } else if (i === state.currentOpponentIdx && !completed) {
+            oppClass += ' current';
+            statusIcon = '<i class="fas fa-arrow-right" style="color:var(--primary);"></i>';
+        } else {
+            statusIcon = '<span style="color:var(--text-light);">&bull;</span>';
+        }
+        html += '<div class="' + oppClass + '">';
+        html += '<span class="opponent-number">' + (i + 1) + '</span>';
+        html += '<span class="opponent-name">' + escapeHtml(opp) + '</span>';
+        html += '<span style="margin-left:auto;">' + statusIcon + '</span>';
+        html += '</div>';
+    }
+    html += '</div>';
+
+    return html;
+}
+
+function gauntletResult(outcome) {
+    if (state.completed || state.currentOpponentIdx >= state.opponents.length) return;
+    var opp = state.opponents[state.currentOpponentIdx];
+    var winner = outcome === 'win' ? state.gauntletPlayer : opp;
+
+    state.opponentResults.push(outcome);
+    if (outcome === 'win') {
+        state.gWins++;
+        state.currentStreak++;
+        if (state.currentStreak > state.longestStreak) state.longestStreak = state.currentStreak;
+    } else {
+        state.gLosses++;
+        state.currentStreak = 0;
+    }
+    state.currentOpponentIdx++;
+
+    state.matches.push({
+        gauntletPlayer: state.gauntletPlayer,
+        opponent: opp,
+        winner: winner,
+        result: outcome,
+        timestamp: new Date().toISOString()
+    });
+
+    state.updatedAt = new Date().toISOString();
+    saveState();
+    renderPlay();
+}
+
+// ================================================
+// HISTORY TAB
+// ================================================
+function renderHistory() {
+    var el = document.getElementById('historyView');
+    if (!state || state.matches.length === 0) {
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><h3>No matches yet</h3><p>Play some games to see your match history here.</p></div>';
+        return;
+    }
+
+    var html = '<div class="card">';
+    html += '<div class="section-header"><i class="fas fa-clock-rotate-left"></i><h2>Match History</h2></div>';
+    html += '<div style="overflow-x:auto;"><table class="swiss-standings"><thead><tr>';
+    html += '<th>#</th>';
+
+    switch (state.mode) {
+        case 'bestof':
+            html += '<th>Players</th><th>Score</th><th>Winner</th><th>Time</th>';
+            break;
+        case 'koth':
+            html += '<th>King</th><th>Challenger</th><th>Winner</th><th>Time</th>';
+            break;
+        case 'swiss':
+            html += '<th>Round</th><th>Players</th><th>Winner</th><th>Time</th>';
+            break;
+        case 'firstto':
+            html += '<th>Winner</th><th>Time</th>';
+            break;
+        case 'accumulation':
+            html += '<th>Players</th><th>Result</th><th>Time</th>';
+            break;
+        case 'lives':
+            html += '<th>Players</th><th>Winner</th><th>Time</th>';
+            break;
+        case 'gauntlet':
+            html += '<th>Opponent</th><th>Result</th><th>Time</th>';
+            break;
+    }
+
+    html += '</tr></thead><tbody>';
+
+    // Show matches in reverse order (newest first)
+    var matches = state.matches.slice().reverse();
+    matches.forEach(function(m, idx) {
+        var num = state.matches.length - idx;
+        html += '<tr><td>' + num + '</td>';
+
+        switch (state.mode) {
+            case 'bestof':
+                html += '<td>' + escapeHtml(m.p1) + ' vs ' + escapeHtml(m.p2) + '</td>';
+                html += '<td>' + (m.score1 !== undefined ? m.score1 + '-' + m.score2 : '-') + '</td>';
+                html += '<td style="font-weight:600;color:var(--success);">' + escapeHtml(m.winner) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'koth':
+                html += '<td>' + escapeHtml(m.king) + '</td>';
+                html += '<td>' + escapeHtml(m.challenger) + '</td>';
+                html += '<td style="font-weight:600;color:var(--success);">' + escapeHtml(m.winner) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'swiss':
+                html += '<td>R' + m.round + '</td>';
+                html += '<td>' + escapeHtml(m.p1) + ' vs ' + escapeHtml(m.p2) + '</td>';
+                html += '<td style="font-weight:600;color:var(--success);">' + escapeHtml(m.winner) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'firstto':
+                html += '<td style="font-weight:600;color:var(--success);">' + escapeHtml(m.winner) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'accumulation':
+                html += '<td>' + escapeHtml(m.p1) + ' vs ' + escapeHtml(m.p2) + '</td>';
+                var resLabel = m.result === 'draw' ? 'Draw' : escapeHtml(m.winner) + ' wins';
+                html += '<td style="font-weight:600;color:var(--success);">' + resLabel + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'lives':
+                html += '<td>' + escapeHtml(m.p1) + ' vs ' + escapeHtml(m.p2) + '</td>';
+                html += '<td style="font-weight:600;color:var(--success);">' + escapeHtml(m.winner) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'gauntlet':
+                html += '<td>' + escapeHtml(m.opponent) + '</td>';
+                html += '<td style="font-weight:600;color:' + (m.result === 'win' ? 'var(--success)' : 'var(--error)') + ';">' + (m.result === 'win' ? 'Win' : 'Loss') + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+        }
+
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div></div>';
+    el.innerHTML = html;
+}
+
+// ================================================
+// SETTINGS TAB
+// ================================================
+function renderSettings() {
+    var el = document.getElementById('settingsView');
+    if (!state) {
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-cog"></i><h3>No active session</h3></div>';
+        return;
+    }
+
+    var modeInfo = MODES[state.mode] || {};
+    var html = '<div class="card">';
+    html += '<div class="section-header"><i class="fas fa-info-circle"></i><h2>Session Info</h2></div>';
+    html += '<div style="display:grid;gap:0.5rem;font-size:0.9rem;">';
+    html += '<div><strong>Mode:</strong> ' + (modeInfo.label || state.mode) + '</div>';
+    html += '<div><strong>Players:</strong> ' + state.players.map(escapeHtml).join(', ') + '</div>';
+    html += '<div><strong>Matches Played:</strong> ' + state.matches.length + '</div>';
+    html += '<div><strong>Status:</strong> ' + (state.completed ? '<span style="color:var(--success);">Completed</span>' : '<span style="color:var(--primary);">Active</span>') + '</div>';
+    if (state.winner) html += '<div><strong>Winner:</strong> <span style="color:var(--accent-dark);font-weight:700;">' + escapeHtml(state.winner) + '</span></div>';
+    html += '<div><strong>Created:</strong> ' + formatTime(state.createdAt) + '</div>';
+    html += '<div><strong>Last Updated:</strong> ' + formatTime(state.updatedAt) + '</div>';
+
+    // Mode-specific info
+    switch (state.mode) {
+        case 'bestof':
+            html += '<div><strong>Series Length:</strong> Best of ' + state.config.seriesLength + '</div>';
+            html += '<div><strong>Score:</strong> ' + state.p1Wins + ' - ' + state.p2Wins + '</div>';
+            break;
+        case 'koth':
+            html += '<div><strong>Current King:</strong> ' + escapeHtml(state.currentKing) + '</div>';
+            html += '<div><strong>Current Streak:</strong> ' + state.currentStreak + '</div>';
+            html += '<div><strong>End Condition:</strong> ' + state.config.endCondition + '</div>';
+            break;
+        case 'swiss':
+            html += '<div><strong>Rounds:</strong> ' + Math.min(state.currentRound, state.config.totalRounds) + ' / ' + state.config.totalRounds + '</div>';
+            break;
+        case 'firstto':
+            html += '<div><strong>Target:</strong> ' + state.config.target + ' wins</div>';
+            break;
+        case 'lives':
+            html += '<div><strong>Starting Lives:</strong> ' + state.config.startingLives + '</div>';
+            html += '<div><strong>Eliminated:</strong> ' + state.eliminated.length + ' / ' + state.players.length + '</div>';
+            break;
+        case 'gauntlet':
+            html += '<div><strong>Gauntlet Player:</strong> ' + escapeHtml(state.gauntletPlayer) + '</div>';
+            html += '<div><strong>Record:</strong> ' + state.gWins + 'W - ' + state.gLosses + 'L</div>';
+            break;
+    }
+
+    html += '</div></div>';
+
+    // Actions
+    html += '<div class="card">';
+    html += '<div class="section-header"><i class="fas fa-wrench"></i><h2>Actions</h2></div>';
+    html += '<div style="display:flex;flex-direction:column;gap:0.75rem;">';
+    html += '<button class="btn btn-outline" onclick="exportSession()"><i class="fas fa-download"></i> Export JSON</button>';
+    html += '<button class="btn btn-outline" style="color:var(--warning);border-color:var(--warning);" onclick="resetSession()"><i class="fas fa-undo"></i> Reset Data</button>';
+    html += '<button class="btn btn-danger" onclick="deleteSession()"><i class="fas fa-trash"></i> Delete Session</button>';
+    html += '</div></div>';
+
+    el.innerHTML = html;
+}
+
+function exportSession() {
+    if (!state) return;
+    var dataStr = JSON.stringify(state, null, 2);
+    var blob = new Blob([dataStr], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'h2h_' + state.mode + '_' + projectId + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showStatus('Session exported', 'success');
+}
+
+function resetSession() {
+    if (!state) return;
+    if (!confirm('Reset all match data for this session? This cannot be undone.')) return;
+    var mode = state.mode;
+    var players = state.players.slice();
+    var config = JSON.parse(JSON.stringify(state.config));
+    state = buildInitialState(mode, players, config);
+    saveState();
+    renderPlay();
+    showStatus('Session data reset', 'success');
+}
+
+function deleteSession() {
+    if (!confirm('Delete this entire session? This cannot be undone.')) return;
+    localStorage.removeItem(LS_KEY);
+    // Remove from project index
+    try {
+        var idx = JSON.parse(localStorage.getItem('mybracketly_projects_index') || '[]');
+        idx = idx.filter(function(p) { return p.id !== projectId; });
+        localStorage.setItem('mybracketly_projects_index', JSON.stringify(idx));
+    } catch(e) {}
+    // Also remove legacy key if present
+    localStorage.removeItem('mybracketly_headtohead_' + projectId);
+    window.location.href = 'index.html';
+}
+
+// ---- Start ----
+init();
+</script>
+
+</body>
+</html>
