@@ -434,6 +434,7 @@
                 <p class="section-subtext">Choose how your tournament will be structured.</p>
                 <div class="tournament-type-grid">
                     <div class="type-card" onclick="selectType('single')" data-type="single"><i class="fas fa-sitemap"></i><h3>Single Elimination</h3><p>Lose once and you're out. Fast and dramatic.</p></div>
+                    <div class="type-card" onclick="selectType('single_consolation')" data-type="single_consolation"><i class="fas fa-medal"></i><h3>Single Elim + 3rd Place</h3><p>Single elimination with a consolation match for 3rd/4th place between semifinal losers.</p></div>
                     <div class="type-card" onclick="selectType('double')" data-type="double"><i class="fas fa-rotate"></i><h3>Double Elimination</h3><p>Must lose twice to be eliminated. Winners and losers brackets.</p></div>
                     <div class="type-card" onclick="selectType('roundrobin')" data-type="roundrobin"><i class="fas fa-arrows-spin"></i><h3>Round Robin</h3><p>Everyone plays everyone. Most wins takes it.</p></div>
                     <div class="type-card" onclick="selectType('rr_single')" data-type="rr_single"><i class="fas fa-filter"></i><h3>Round Robin &rarr; Single Elim</h3><p>Round robin group stage, then top players advance to single elimination playoff.</p></div>
@@ -1004,6 +1005,10 @@ function autoDetectCompleted() {
 
     if (type === 'roundrobin') {
         isComplete = tournament.rrMatches.length > 0 && tournament.rrMatches.every(m => m.completed);
+    } else if (type === 'single_consolation') {
+        const finalMatch = tournament.matches.find(m => m.roundName === 'Final');
+        const consolation = tournament.matches.find(m => m.bracket === 'consolation');
+        isComplete = finalMatch && finalMatch.winner && consolation && consolation.winner;
     } else if (type === 'single' || type === 'double') {
         const finals = tournament.matches.filter(m => m.roundName === 'Final' || m.roundName === 'Grand Final' || m.bracket === 'grand_final');
         isComplete = finals.length > 0 && finals.every(m => m.winner);
@@ -1100,6 +1105,7 @@ function generateTournament() {
     const type = tournament.type;
     const participants = tournament.participants;
     if (type === 'single') { tournament.matches = generateSingleElimination(participants); }
+    else if (type === 'single_consolation') { tournament.matches = generateSingleWithConsolation(participants); }
     else if (type === 'double') { tournament.matches = generateDoubleElimination(participants); }
     else if (type === 'roundrobin') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; }
     else if (type === 'rr_single' || type === 'rr_double') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; tournament.phase = 'rr'; }
@@ -1166,6 +1172,7 @@ function generateDoubleElimination(participants) {
     const seeded = seedBracket(participants, bracketSize);
     const winnerRounds = []; let prevWM = [];
 
+    // --- Winners Bracket ---
     const firstRound = [];
     for (let i = 0; i < bracketSize; i += 2) {
         const p1 = seeded[i], p2 = seeded[i+1];
@@ -1187,43 +1194,94 @@ function generateDoubleElimination(participants) {
         winnerRounds.push(rm); prevWM = rm;
     }
 
-    const numLR = 2 * (numWR - 1); let prevLM = [];
-    for (let lr = 1; lr <= numLR; lr++) {
-        const isDropIn = (lr % 2 === 1); const rm = [];
-        if (lr === 1) {
-            const losersR1 = winnerRounds[0]; const nm = Math.floor(losersR1.length / 2);
-            for (let i = 0; i < nm; i++) {
-                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
-                if (losersR1[i*2]) losersR1[i*2].loserNextMatchId = m.id;
-                if (losersR1[i*2+1]) losersR1[i*2+1].loserNextMatchId = m.id;
-                rm.push(m); matches.push(m);
-            }
-        } else if (isDropIn) {
-            const wrIdx = Math.ceil(lr / 2); const feedWR = winnerRounds[wrIdx] || [];
-            for (let i = 0; i < prevLM.length; i++) {
-                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
-                prevLM[i].nextMatchId = m.id; prevLM[i].nextSlot = 1;
-                if (feedWR[i]) feedWR[i].loserNextMatchId = m.id;
-                rm.push(m); matches.push(m);
-            }
-        } else {
-            const nm = Math.floor(prevLM.length / 2);
-            for (let i = 0; i < nm; i++) {
-                const m = { id: matchId++, round: lr, roundName: `Losers R${lr}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
-                prevLM[i*2].nextMatchId = m.id; prevLM[i*2].nextSlot = 1;
-                if (prevLM[i*2+1]) { prevLM[i*2+1].nextMatchId = m.id; prevLM[i*2+1].nextSlot = 2; }
-                rm.push(m); matches.push(m);
-            }
+    // --- Losers Bracket (iterative: reduce WR[0] losers, then alternate drop-in / reduce) ---
+    let loserRoundNum = 0;
+    let prevLM = [];
+
+    // LR1: WR[0] losers play each other (reduce round)
+    if (winnerRounds[0].length >= 2) {
+        loserRoundNum++;
+        const rm = [];
+        const wr0 = winnerRounds[0];
+        const numLR1 = Math.floor(wr0.length / 2);
+        for (let i = 0; i < numLR1; i++) {
+            const m = { id: matchId++, round: loserRoundNum, roundName: `Losers R${loserRoundNum}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+            wr0[i*2].loserNextMatchId = m.id;
+            wr0[i*2+1].loserNextMatchId = m.id;
+            rm.push(m); matches.push(m);
         }
         prevLM = rm;
     }
 
-    const gf = { id: matchId++, round: numWR + numLR + 1, roundName: 'Grand Final', matchNum: 1, bracket: 'grand_final', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+    // For each subsequent WR round (index 1+), alternate drop-in then reduce
+    for (let wrIdx = 1; wrIdx < winnerRounds.length; wrIdx++) {
+        const feedWR = winnerRounds[wrIdx];
+
+        // Drop-in round: WR losers drop into LB against LB survivors
+        loserRoundNum++;
+        let dropRM = [];
+        const dropCount = Math.max(prevLM.length, feedWR.length);
+        for (let i = 0; i < dropCount; i++) {
+            const m = { id: matchId++, round: loserRoundNum, roundName: `Losers R${loserRoundNum}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+            if (prevLM[i]) { prevLM[i].nextMatchId = m.id; prevLM[i].nextSlot = 1; }
+            if (feedWR[i]) { feedWR[i].loserNextMatchId = m.id; }
+            dropRM.push(m); matches.push(m);
+        }
+        prevLM = dropRM;
+
+        // Reduce round: pair up LB survivors (only if more than 1 match in previous round)
+        if (prevLM.length > 1) {
+            loserRoundNum++;
+            const reduceRM = [];
+            const numReduce = Math.floor(prevLM.length / 2);
+            for (let i = 0; i < numReduce; i++) {
+                const m = { id: matchId++, round: loserRoundNum, roundName: `Losers R${loserRoundNum}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+                prevLM[i*2].nextMatchId = m.id; prevLM[i*2].nextSlot = 1;
+                prevLM[i*2+1].nextMatchId = m.id; prevLM[i*2+1].nextSlot = 2;
+                reduceRM.push(m); matches.push(m);
+            }
+            prevLM = reduceRM;
+        }
+    }
+
+    // --- Grand Final (GF1) ---
+    const gf = { id: matchId++, round: 9000, roundName: 'Grand Final', matchNum: 1, bracket: 'grand_final', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
     const wf = winnerRounds[winnerRounds.length-1][0];
     wf.nextMatchId = gf.id; wf.nextSlot = 1;
     if (prevLM.length > 0) { prevLM[prevLM.length-1].nextMatchId = gf.id; prevLM[prevLM.length-1].nextSlot = 2; }
     matches.push(gf);
+
+    // --- Grand Final Reset (GF2) ---
+    const gfReset = { id: matchId++, round: 9001, roundName: 'Grand Final Reset', matchNum: 1, bracket: 'grand_final_reset', isReset: true, slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
+    gf.nextMatchId = gfReset.id;
+    matches.push(gfReset);
+
     propagateByesDouble(matches);
+    return matches;
+}
+
+function generateSingleWithConsolation(participants) {
+    const matches = generateSingleElimination(participants);
+    const maxRound = Math.max(...matches.map(m => m.round));
+    // Find semifinal matches (round before final)
+    const semis = matches.filter(m => m.round === maxRound - 1);
+    if (semis.length === 2) {
+        const consolationId = Math.max(...matches.map(m => m.id)) + 1;
+        const consolation = {
+            id: consolationId,
+            round: maxRound,
+            roundName: '3rd Place Match',
+            matchNum: 1,
+            bracket: 'consolation',
+            slot1: {name:null,seed:null,score:null},
+            slot2: {name:null,seed:null,score:null},
+            winner: null,
+            nextMatchId: null
+        };
+        semis[0].loserNextMatchId = consolation.id;
+        semis[1].loserNextMatchId = consolation.id;
+        matches.push(consolation);
+    }
     return matches;
 }
 
@@ -1281,12 +1339,17 @@ function generateRoundRobin(participants) {
 // ---- Utility ----
 function nextPowerOf2(n) { let p = 1; while (p < n) p *= 2; return p; }
 function seedBracket(participants, bracketSize) {
-    const seeds = Array(bracketSize).fill(null);
-    function place(seed, pos, size) {
-        if (size === 1) { seeds[pos] = participants[seed-1] || null; return; }
-        const h = size/2; place(seed, pos, h); place(size+1-seed, pos+h, h);
+    let positions = [1];
+    while (positions.length < bracketSize) {
+        const next = [];
+        const sum = positions.length * 2 + 1;
+        for (let i = 0; i < positions.length; i++) {
+            next.push(positions[i]);
+            next.push(sum - positions[i]);
+        }
+        positions = next;
     }
-    place(1, 0, bracketSize); return seeds;
+    return positions.map(function(seed) { return participants[seed - 1] || null; });
 }
 function getRoundName(round, totalRounds) {
     const r = totalRounds - round;
@@ -1295,7 +1358,7 @@ function getRoundName(round, totalRounds) {
 }
 function escapeHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function getFormatLabel(type) {
-    return { single:'Single Elimination', double:'Double Elimination', roundrobin:'Round Robin', rr_single:'Round Robin \u2192 Single Elim', rr_double:'Round Robin \u2192 Double Elim' }[type] || type;
+    return { single:'Single Elimination', single_consolation:'Single Elim + 3rd Place', double:'Double Elimination', roundrobin:'Round Robin', rr_single:'Round Robin \u2192 Single Elim', rr_double:'Round Robin \u2192 Double Elim' }[type] || type;
 }
 
 // ---- Tab Switching ----
@@ -1314,26 +1377,43 @@ function renderBracket() {
     const type = tournament.type;
     const isHybrid = type === 'rr_single' || type === 'rr_double';
     if (type === 'roundrobin' || (isHybrid && tournament.phase === 'rr')) renderRoundRobinView(view);
-    else if (type === 'single' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_single')) renderSingleElimBracket(view);
+    else if (type === 'single' || type === 'single_consolation' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_single')) renderSingleElimBracket(view);
     else if (type === 'double' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_double')) renderDoubleElimBracket(view);
 }
 
 function renderSingleElimBracket(container) {
-    const matches = tournament.matches.filter(m => m.bracket !== 'losers' && m.bracket !== 'grand_final');
-    if (matches.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-sitemap"></i><h3>No bracket data</h3></div>'; return; }
-    const maxRound = Math.max(...matches.map(m => m.round));
+    const mainMatches = tournament.matches.filter(m => m.bracket !== 'losers' && m.bracket !== 'grand_final' && m.bracket !== 'consolation');
+    if (mainMatches.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-sitemap"></i><h3>No bracket data</h3></div>'; return; }
+    const maxRound = Math.max(...mainMatches.map(m => m.round));
     let html = '<div class="section-header"><i class="fas fa-sitemap"></i><h2>Bracket</h2></div><div class="bracket-container"><div class="bracket">';
     for (let round = 1; round <= maxRound; round++) {
-        const rm = matches.filter(m => m.round === round).sort((a,b) => a.matchNum - b.matchNum);
+        const rm = mainMatches.filter(m => m.round === round).sort((a,b) => a.matchNum - b.matchNum);
         html += `<div class="bracket-round"><div class="round-title">${rm[0]?.roundName || 'Round '+round}</div><div class="bracket-matches">`;
         for (const match of rm) html += renderMatchCard(match);
         html += '</div></div>';
     }
-    const finalMatch = matches.find(m => m.round === maxRound);
+    const finalMatch = mainMatches.find(m => m.round === maxRound && m.roundName === 'Final');
     if (finalMatch && finalMatch.winner) {
         html += `<div class="bracket-round" style="min-width:160px;"><div class="round-title" style="background:linear-gradient(135deg,var(--accent-dark),var(--accent));">Champion</div><div class="bracket-matches"><div class="match-card completed" style="border-left:3px solid var(--accent);"><div class="match-slot winner"><span class="team-name"><i class="fas fa-trophy" style="color:var(--accent);margin-right:4px;"></i>${escapeHtml(finalMatch.winner)}</span></div></div></div></div>`;
     }
     html += '</div></div>';
+
+    // Consolation (3rd place) match
+    const consolation = tournament.matches.find(m => m.bracket === 'consolation');
+    if (consolation) {
+        html += '<div class="bracket-section-label"><i class="fas fa-medal" style="color:var(--primary);"></i> 3rd Place Match</div><div style="max-width:300px;margin:0 auto;">';
+        html += renderMatchCard(consolation);
+        if (consolation.winner) {
+            const loserName = consolation.slot1.name === consolation.winner ? consolation.slot2.name : consolation.slot1.name;
+            html += `<div class="card text-center" style="border:2px solid var(--primary-light);background:linear-gradient(135deg,#FFF3E0,#FFF8E1);margin-top:0.5rem;">
+                <div style="display:flex;justify-content:center;gap:2rem;padding:0.5rem;">
+                    <div><div style="font-size:1.5rem;"><i class="fas fa-medal" style="color:#CD7F32;"></i></div><div style="font-weight:700;color:var(--secondary);">${escapeHtml(consolation.winner)}</div><div style="font-size:0.75rem;color:var(--text-light);text-transform:uppercase;">3rd Place</div></div>
+                    <div><div style="font-size:1.5rem;"><span style="color:var(--text-light);">4</span></div><div style="font-weight:600;color:var(--text-medium);">${escapeHtml(loserName)}</div><div style="font-size:0.75rem;color:var(--text-light);text-transform:uppercase;">4th Place</div></div>
+                </div></div>`;
+        }
+        html += '</div>';
+    }
+
     container.innerHTML = html;
 }
 
@@ -1341,6 +1421,7 @@ function renderDoubleElimBracket(container) {
     const wm = tournament.matches.filter(m => m.bracket === 'winners');
     const lm = tournament.matches.filter(m => m.bracket === 'losers');
     const gf = tournament.matches.find(m => m.bracket === 'grand_final');
+    const gfReset = tournament.matches.find(m => m.bracket === 'grand_final_reset');
     let html = '<div class="section-header"><i class="fas fa-sitemap"></i><h2>Bracket</h2></div>';
     html += '<div class="bracket-section-label"><i class="fas fa-crown" style="color:var(--accent);"></i> Winners Bracket</div><div class="bracket-container"><div class="bracket">';
     const maxWR = wm.length > 0 ? Math.max(...wm.map(m => m.round)) : 0;
@@ -1366,8 +1447,31 @@ function renderDoubleElimBracket(container) {
     if (gf) {
         html += '<div class="bracket-section-label"><i class="fas fa-trophy" style="color:var(--accent);"></i> Grand Final</div><div style="max-width:300px;margin:0 auto;">';
         html += renderMatchCard(gf);
+
+        // Determine champion: from GF Reset if it was played, otherwise from GF1
+        let champion = null;
+        if (gfReset && gfReset.winner) {
+            champion = gfReset.winner;
+        } else if (gf.winner && gf.winner === gf.slot1.name) {
+            // WB champion won GF1, no reset needed
+            champion = gf.winner;
+        }
+
         if (gf.winner) {
-            html += `<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);"><div style="font-size:2rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div><div style="font-weight:900;font-size:1.2rem;color:var(--secondary);">${escapeHtml(gf.winner)}</div><div style="font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Champion</div></div>`;
+            if (gf.winner === gf.slot2.name) {
+                // LB champion won GF1 — show reset match
+                if (gfReset) {
+                    html += '<div style="margin-top:0.75rem;text-align:center;font-size:0.85rem;font-weight:600;color:var(--text-medium);"><i class="fas fa-rotate" style="color:var(--primary);margin-right:4px;"></i> Grand Final Reset</div>';
+                    html += renderMatchCard(gfReset);
+                }
+            } else {
+                // WB champion won GF1 — reset not needed
+                html += '<div style="margin-top:0.75rem;text-align:center;font-size:0.8rem;color:var(--text-light);font-style:italic;">Reset not needed &mdash; Winners bracket champion won</div>';
+            }
+        }
+
+        if (champion) {
+            html += `<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);"><div style="font-size:2rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div><div style="font-weight:900;font-size:1.2rem;color:var(--secondary);">${escapeHtml(champion)}</div><div style="font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Champion</div></div>`;
         }
         html += '</div>';
     }
@@ -1494,15 +1598,41 @@ function quickWin(matchId, slotNum) {
 
 function clearElimScore(matchId) {
     const match = tournament.matches.find(m => m.id === matchId);
+
+    // Special handling for Grand Final: check if reset match has a winner
+    if (match.bracket === 'grand_final') {
+        const resetMatch = tournament.matches.find(m => m.bracket === 'grand_final_reset');
+        if (resetMatch && resetMatch.winner) {
+            showStatus('Cannot clear Grand Final: clear the Grand Final Reset first.','error');
+            closeScoreModal(); return;
+        }
+        // Clear the reset match too
+        if (resetMatch) {
+            resetMatch.slot1 = {name:null,seed:null,score:null};
+            resetMatch.slot2 = {name:null,seed:null,score:null};
+            resetMatch.winner = null;
+        }
+        match.slot1.score = null; match.slot2.score = null; match.winner = null;
+        closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+        return;
+    }
+
+    // Grand Final Reset: just clear it
+    if (match.bracket === 'grand_final_reset') {
+        match.slot1.score = null; match.slot2.score = null; match.winner = null;
+        closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+        return;
+    }
+
     if (match.nextMatchId) {
         const nm = tournament.matches.find(m => m.id === match.nextMatchId);
-        if (nm && nm.winner) { showStatus('Cannot clear: later matches depend on this result. Clear those first.','error'); closeScoreModal(); return; }
+        if (nm && nm.bracket !== 'grand_final_reset' && nm.winner) { showStatus('Cannot clear: later matches depend on this result. Clear those first.','error'); closeScoreModal(); return; }
     }
     match.slot1.score = null; match.slot2.score = null;
     const oldWinner = match.winner; match.winner = null;
     if (match.nextMatchId) {
         const nm = tournament.matches.find(m => m.id === match.nextMatchId);
-        if (nm) { const slot = match.nextSlot===1?'slot1':'slot2'; if (nm[slot].name===oldWinner) { nm[slot].name=null; nm[slot].seed=null; nm[slot].score=null; } }
+        if (nm && nm.bracket !== 'grand_final_reset') { const slot = match.nextSlot===1?'slot1':'slot2'; if (nm[slot].name===oldWinner) { nm[slot].name=null; nm[slot].seed=null; nm[slot].score=null; } }
     }
     if (match.loserNextMatchId) {
         const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
@@ -1518,9 +1648,40 @@ function clearElimScore(matchId) {
 function advanceWinner(match) {
     const winner = match.slot1.name===match.winner?match.slot1:match.slot2;
     const loser = match.slot1.name===match.winner?match.slot2:match.slot1;
+
+    // Special handling for Grand Final
+    if (match.bracket === 'grand_final') {
+        // slot1 = WB champion, slot2 = LB champion
+        if (match.winner === match.slot1.name) {
+            // WB champion wins — no reset needed, clear reset match
+            const resetMatch = tournament.matches.find(m => m.bracket === 'grand_final_reset');
+            if (resetMatch) {
+                resetMatch.slot1 = {name:null,seed:null,score:null};
+                resetMatch.slot2 = {name:null,seed:null,score:null};
+                resetMatch.winner = null;
+            }
+        } else {
+            // LB champion wins GF1 — populate reset match with both players
+            const resetMatch = tournament.matches.find(m => m.bracket === 'grand_final_reset');
+            if (resetMatch) {
+                resetMatch.slot1.name = match.slot1.name; resetMatch.slot1.seed = match.slot1.seed;
+                resetMatch.slot2.name = match.slot2.name; resetMatch.slot2.seed = match.slot2.seed;
+            }
+        }
+        return;
+    }
+
+    // Grand Final Reset has no advancement
+    if (match.bracket === 'grand_final_reset') {
+        return;
+    }
+
     if (match.nextMatchId) {
         const nm = tournament.matches.find(m => m.id === match.nextMatchId);
-        if (nm) { const slot = match.nextSlot===1?'slot1':'slot2'; nm[slot].name = winner.name; nm[slot].seed = winner.seed; }
+        if (nm && nm.bracket !== 'grand_final_reset') {
+            const slot = match.nextSlot===1?'slot1':'slot2';
+            nm[slot].name = winner.name; nm[slot].seed = winner.seed;
+        }
     }
     if (match.loserNextMatchId && loser.name && loser.name !== 'BYE') {
         const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
@@ -1582,16 +1743,32 @@ function renderStandings() {
         html += '</tbody></table></div></div>';
     }
 
-    if (type==='single'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination')) {
+    if (type==='single'||type==='single_consolation'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination')) {
         const em = tournament.matches;
-        const completed = em.filter(m=>m.winner).length;
-        const total = em.filter(m=>m.slot1?.name!=='BYE'&&m.slot2?.name!=='BYE').length;
+        const completed = em.filter(m=>m.winner && m.bracket!=='grand_final_reset').length;
+        const total = em.filter(m=>m.slot1?.name!=='BYE'&&m.slot2?.name!=='BYE'&&m.bracket!=='grand_final_reset').length;
         html += `<div class="card"><div class="card-title">Elimination Progress</div><p style="margin-top:0.5rem;font-size:0.9rem;color:var(--text-medium);">${completed} / ${total} matches completed</p><div style="background:var(--border-light);border-radius:8px;height:12px;margin-top:0.5rem;overflow:hidden;"><div style="background:linear-gradient(90deg,var(--primary),var(--accent));height:100%;width:${total>0?(completed/total*100):0}%;border-radius:8px;transition:width 0.5s;"></div></div></div>`;
         const gf = em.find(m=>m.bracket==='grand_final');
+        const gfReset = em.find(m=>m.bracket==='grand_final_reset');
         const finals = em.filter(m=>m.roundName==='Final'||m.bracket==='grand_final');
-        const champion = (gf&&gf.winner)||(finals.length>0&&finals[finals.length-1].winner);
+        let champion = null;
+        if (gfReset && gfReset.winner) champion = gfReset.winner;
+        else if (gf && gf.winner && gf.winner === gf.slot1?.name) champion = gf.winner;
+        else if (!gf && finals.length>0 && finals[finals.length-1].winner) champion = finals[finals.length-1].winner;
         if (champion) {
             html += `<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);"><div style="font-size:3rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div><div style="font-weight:900;font-size:1.4rem;color:var(--secondary);">${escapeHtml(champion)}</div><div style="font-size:0.9rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Tournament Champion</div></div>`;
+        }
+
+        // 3rd/4th place from consolation match
+        const consolation = em.find(m=>m.bracket==='consolation');
+        if (consolation && consolation.winner) {
+            const thirdPlace = consolation.winner;
+            const fourthPlace = consolation.slot1.name === consolation.winner ? consolation.slot2.name : consolation.slot1.name;
+            html += `<div class="card"><div class="card-title"><i class="fas fa-medal" style="color:#CD7F32;margin-right:0.5rem;"></i>3rd / 4th Place</div>
+                <div style="margin-top:0.5rem;display:flex;gap:2rem;justify-content:center;">
+                    <div style="text-align:center;"><div style="font-weight:700;color:var(--secondary);font-size:1.1rem;">${escapeHtml(thirdPlace)}</div><div style="font-size:0.8rem;color:var(--text-light);">3rd Place</div></div>
+                    <div style="text-align:center;"><div style="font-weight:600;color:var(--text-medium);font-size:1.1rem;">${escapeHtml(fourthPlace)}</div><div style="font-size:0.8rem;color:var(--text-light);">4th Place</div></div>
+                </div></div>`;
         }
     }
     view.innerHTML = html;
