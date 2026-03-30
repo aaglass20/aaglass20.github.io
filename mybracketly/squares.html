@@ -413,6 +413,19 @@
             ]
         };
 
+        // Category options per sport (for dynamic "Add Category" dropdown)
+        var CATEGORY_OPTIONS = {
+            'mlb': ['Regular Season', 'All Star Game', 'Wild Card', 'Division Series', 'Championship Series', 'World Series'],
+            'nfl': ['Regular Season', 'Pro Bowl', 'Wild Card', 'Divisional', 'Conference Championship', 'Super Bowl'],
+            'nba': ['Regular Season', 'All Star Game', 'Play-In', 'Round 1', 'Round 2', 'Conference Finals', 'Finals'],
+            'nhl': ['Regular Season', 'All Star Game', 'Round 1', 'Round 2', 'Conference Finals', 'Stanley Cup'],
+            'ncaa-basketball': ['Regular Season', 'Conference Tournament', 'First Four', 'Round of 64', 'Round of 32', 'Sweet 16', 'Elite Eight', 'Final Four', 'Championship'],
+            'ncaa-football': ['Regular Season', 'Bowl Game', 'First Round', 'Quarterfinals', 'Semifinals', 'Championship'],
+            'mls': ['Regular Season', 'Group Stage', 'Round of 16', 'Quarterfinals', 'Semifinals', 'Final'],
+            'epl': ['Regular Season', 'FA Cup', 'Round of 16', 'Quarterfinals', 'Semifinals', 'Final'],
+            '_default': ['Game 1', 'Game 2', 'Game 3', 'Round 1', 'Round 2', 'Finals']
+        };
+
         // =============================================
         // ESPN Normalize Helper
         // =============================================
@@ -699,39 +712,138 @@
         var PRICE_PER_SQUARE = 25;
 
         function initRoundsAndGames() {
-            var preset = ROUND_PRESETS[currentSportKey] || ROUND_PRESETS['_default'];
-            ROUNDS = preset.map(function(r) { return { name: r.name, count: r.count }; });
-
-            configData = ROUNDS.map(function(r) {
-                return {
-                    round: r.name,
-                    gamesCount: r.count,
-                    amount: 0,
-                    inverseAmount: 0,
-                    excludeNormal: false,
-                    excludeInverse: false
-                };
-            });
-
+            // Start with empty rounds and games — user adds dynamically
+            ROUNDS = [];
+            configData = [];
             gamesData = [];
-            var gameId = 1;
-            ROUNDS.forEach(function(round) {
-                for (var i = 0; i < round.count; i++) {
-                    gamesData.push({
-                        gameId: gameId++,
-                        round: round.name,
-                        team1: '',
-                        team2: '',
-                        score1: null,
-                        score2: null,
-                        _liveState: null,
-                        _livePeriod: '',
-                        _liveClock: '',
-                        _liveMessage: '',
-                        _apiGameId: null
-                    });
-                }
+        }
+
+        function loadPresetRounds() {
+            if (ROUNDS.length > 0) {
+                if (!confirm('This will add all preset categories for this sport. Continue?')) return;
+            }
+            var preset = ROUND_PRESETS[currentSportKey] || ROUND_PRESETS['_default'];
+            preset.forEach(function(r) {
+                addCategory(r.name, r.count);
             });
+            lsSet('config', configData);
+            lsSet('games', gamesData);
+            lsSet('rounds', ROUNDS);
+            renderConfig();
+            renderScoreEntry();
+            showStatus('Preset categories loaded', 'success');
+        }
+
+        function addCategory(name, gameCount) {
+            // Check for duplicate
+            if (ROUNDS.some(function(r) { return r.name === name; })) {
+                showStatus('Category "' + name + '" already exists', 'error');
+                return false;
+            }
+            gameCount = gameCount || 0;
+            ROUNDS.push({ name: name, count: gameCount });
+            configData.push({
+                round: name,
+                gamesCount: gameCount,
+                amount: 0,
+                inverseAmount: 0,
+                excludeNormal: false,
+                excludeInverse: false
+            });
+            // Add games for this category
+            for (var i = 0; i < gameCount; i++) {
+                addGameToCategory(name, true);
+            }
+            return true;
+        }
+
+        function addGameToCategory(categoryName, skipSave) {
+            var nextGameId = gamesData.length > 0 ? Math.max.apply(null, gamesData.map(function(g) { return g.gameId; })) + 1 : 1;
+            gamesData.push({
+                gameId: nextGameId,
+                round: categoryName,
+                team1: '',
+                team2: '',
+                score1: null,
+                score2: null,
+                _liveState: null,
+                _livePeriod: '',
+                _liveClock: '',
+                _liveMessage: '',
+                _apiGameId: null
+            });
+            // Update round count
+            var round = ROUNDS.find(function(r) { return r.name === categoryName; });
+            if (round) round.count++;
+            var cfg = configData.find(function(c) { return c.round === categoryName; });
+            if (cfg) cfg.gamesCount++;
+
+            if (!skipSave) {
+                lsSet('games', gamesData);
+                lsSet('rounds', ROUNDS);
+                lsSet('config', configData);
+            }
+            return nextGameId;
+        }
+
+        function uiAddCategory() {
+            var select = document.getElementById('add-category-select');
+            var customInput = document.getElementById('add-category-custom');
+            var name = select.value === '_custom' ? (customInput ? customInput.value.trim() : '') : select.value;
+            if (!name) { showStatus('Please select or enter a category name', 'error'); return; }
+
+            if (addCategory(name, 0)) {
+                lsSet('config', configData);
+                lsSet('games', gamesData);
+                lsSet('rounds', ROUNDS);
+                renderConfig();
+                renderScoreEntry();
+                showStatus('Category "' + name + '" added', 'success');
+                // Expand the new category
+                expandedRounds[name] = true;
+            }
+        }
+
+        function uiAddGame(categoryName) {
+            var newId = addGameToCategory(categoryName);
+            renderScoreEntry();
+            renderConfig();
+            showStatus('Game ' + newId + ' added to ' + categoryName, 'success');
+        }
+
+        function uiRemoveGame(gameId) {
+            if (!confirm('Remove Game ' + gameId + '? This cannot be undone.')) return;
+            var game = gamesData.find(function(g) { return g.gameId === gameId; });
+            if (!game) return;
+            var roundName = game.round;
+            gamesData = gamesData.filter(function(g) { return g.gameId !== gameId; });
+            // Update round count
+            var round = ROUNDS.find(function(r) { return r.name === roundName; });
+            if (round) round.count = Math.max(0, round.count - 1);
+            var cfg = configData.find(function(c) { return c.round === roundName; });
+            if (cfg) cfg.gamesCount = Math.max(0, cfg.gamesCount - 1);
+            // Remove linked/locked refs
+            delete linkedGames[gameId];
+            lockedGameIds.delete(gameId);
+            lsSet('games', gamesData);
+            lsSet('rounds', ROUNDS);
+            lsSet('config', configData);
+            renderScoreEntry();
+            renderConfig();
+            showStatus('Game removed', 'success');
+        }
+
+        function uiRemoveCategory(categoryName) {
+            if (!confirm('Remove category "' + categoryName + '" and all its games?')) return;
+            gamesData = gamesData.filter(function(g) { return g.round !== categoryName; });
+            ROUNDS = ROUNDS.filter(function(r) { return r.name !== categoryName; });
+            configData = configData.filter(function(c) { return c.round !== categoryName; });
+            lsSet('games', gamesData);
+            lsSet('rounds', ROUNDS);
+            lsSet('config', configData);
+            renderScoreEntry();
+            renderConfig();
+            showStatus('Category "' + categoryName + '" removed', 'success');
         }
 
         // =============================================
@@ -1584,7 +1696,7 @@
         function linkGame(gameId, apiGameId) {
             if (!apiGameId) {
                 delete linkedGames[gameId];
-                var game = gamesData[gameId - 1];
+                var game = gamesData.find(function(g) { return g.gameId === gameId; });
                 if (game && !lockedGameIds.has(gameId)) {
                     game._liveState = null;
                     game._livePeriod = '';
@@ -1601,7 +1713,7 @@
 
             var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
             if (apiGame) {
-                var game = gamesData[gameId - 1];
+                var game = gamesData.find(function(g) { return g.gameId === gameId; });
                 if (game) {
                     game.team1 = apiGame.away.name || '';
                     game.team2 = apiGame.home.name || '';
@@ -1673,7 +1785,7 @@
                 var apiGameId = linkedGames[gameIdStr];
                 var apiGame = liveScoreboardData.find(function(g) { return g.id === apiGameId; });
                 if (!apiGame || !apiGame.home || !apiGame.away) return;
-                var game = gamesData[gameId - 1];
+                var game = gamesData.find(function(g) { return g.gameId === gameId; });
                 if (!game) return;
 
                 game.team1 = apiGame.away.name || game.team1;
@@ -1693,7 +1805,7 @@
         }
 
         function lockInScore(id) {
-            var game = gamesData[id - 1];
+            var game = gamesData.find(function(g) { return g.gameId === id; });
             if (!game || game.score1 === null || game.score2 === null) return;
             if (game.score1 === game.score2) {
                 showGameStatus(id, 'Cannot lock in tied score. Wait for a final result.', 'error');
@@ -1817,6 +1929,35 @@
                 html += '<div class="status-message warning mb-2"><i class="fas fa-exclamation-triangle"></i> Numbers have not been generated yet. Square matching will not work until numbers are generated on the Grid tab.</div>';
             }
 
+            // Add Category controls
+            if (isAdmin) {
+                var catOptions = CATEGORY_OPTIONS[currentSportKey] || CATEGORY_OPTIONS['_default'];
+                // Filter out already-added categories
+                var availableCats = catOptions.filter(function(c) { return !ROUNDS.some(function(r) { return r.name === c; }); });
+
+                html += '<div class="card" style="margin-bottom:1rem;padding:1rem;">';
+                html += '<div style="display:flex;gap:0.5rem;align-items:flex-end;flex-wrap:wrap;">';
+                html += '<div class="form-group" style="flex:1;min-width:180px;margin:0;">';
+                html += '<label style="font-size:0.8rem;">Add Category</label>';
+                html += '<select class="form-select" id="add-category-select" onchange="if(this.value===\'_custom\'){document.getElementById(\'add-category-custom\').style.display=\'block\';}else{document.getElementById(\'add-category-custom\').style.display=\'none\';}">';
+                html += '<option value="">-- Select --</option>';
+                availableCats.forEach(function(c) {
+                    html += '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+                });
+                html += '<option value="_custom">Custom...</option>';
+                html += '</select></div>';
+                html += '<input type="text" class="form-input" id="add-category-custom" placeholder="Custom category name" maxlength="40" style="display:none;max-width:180px;">';
+                html += '<button class="btn btn-primary btn-sm" onclick="uiAddCategory()"><i class="fas fa-plus"></i> Add</button>';
+                if (ROUNDS.length === 0) {
+                    html += '<button class="btn btn-outline btn-sm" onclick="loadPresetRounds()" title="Load all preset categories for this sport"><i class="fas fa-list"></i> Load Preset</button>';
+                }
+                html += '</div></div>';
+            }
+
+            if (ROUNDS.length === 0) {
+                html += '<div class="empty-state"><i class="fas fa-folder-plus" style="color:var(--primary);"></i><h3>No categories yet</h3><p>Add a category above to start adding games.</p></div>';
+            }
+
             // Rounds
             ROUNDS.forEach(function(round) {
                 var roundGames = gamesData.filter(function(g) { return g.round === round.name; });
@@ -1921,8 +2062,21 @@
                     if (showResult && hasScores && game.score1 !== game.score2) html += buildResultHtml(game);
                     html += '</div>';
 
+                    // Remove game button (admin, only if game has no scores)
+                    if (isAdmin && !hasScores && !isLocked) {
+                        html += '<div style="text-align:right;margin-top:0.3rem;"><button class="btn btn-sm" style="font-size:0.7rem;padding:0.2rem 0.4rem;color:var(--error);border:none;background:transparent;" onclick="event.stopPropagation();uiRemoveGame(' + game.gameId + ')" title="Remove game"><i class="fas fa-times"></i> Remove</button></div>';
+                    }
+
                     html += '</div>'; // .game-card
                 });
+
+                // Add Game / Remove Category buttons (admin only)
+                if (isAdmin) {
+                    html += '<div style="display:flex;gap:0.5rem;margin-top:0.75rem;padding:0 0.25rem;">';
+                    html += '<button class="btn btn-outline btn-sm" onclick="uiAddGame(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')"><i class="fas fa-plus"></i> Add Game</button>';
+                    html += '<button class="btn btn-sm" style="color:var(--error);border:1px solid var(--error-light);background:transparent;" onclick="uiRemoveCategory(\'' + escapeHtml(round.name).replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i> Remove Category</button>';
+                    html += '</div>';
+                }
 
                 html += '</div></div></div>'; // .games-grid, .round-body, .round-section
             });
@@ -2030,11 +2184,13 @@
             if (isNaN(score1) || isNaN(score2)) { showGameStatus(id, 'Scores must be valid numbers.', 'error'); return; }
             if (score1 === score2) { showGameStatus(id, 'Scores cannot be equal (no ties).', 'error'); return; }
 
-            var game = gamesData[id - 1];
+            var game = gamesData.find(function(g) { return g.gameId === id; });
+            if (!game) { showGameStatus(id, 'Game not found.', 'error'); return; }
             game.team1 = team1;
             game.team2 = team2;
             game.score1 = score1;
             game.score2 = score2;
+            lsSet('games', gamesData);
 
             if (SHEETS_CONFIGURED) {
                 try {
@@ -2431,16 +2587,20 @@
             if (savedLocked) lockedGameIds = new Set(savedLocked);
             var savedLinked = lsGet('linked_games');
             if (savedLinked) linkedGames = savedLinked;
+            // Restore dynamic rounds
+            var savedRounds = lsGet('rounds');
+            if (savedRounds && Array.isArray(savedRounds)) {
+                ROUNDS = savedRounds;
+            }
+            // Restore games
+            var savedGames = lsGet('games');
+            if (savedGames && Array.isArray(savedGames)) {
+                gamesData = savedGames;
+            }
+            // Restore config (full replace since rounds are dynamic)
             var savedConfig = lsGet('config');
             if (savedConfig && Array.isArray(savedConfig)) {
-                savedConfig.forEach(function(item, index) {
-                    if (index < configData.length) {
-                        configData[index].amount = item.amount || 0;
-                        configData[index].inverseAmount = item.inverseAmount || 0;
-                        if (item.excludeNormal !== undefined) configData[index].excludeNormal = !!item.excludeNormal;
-                        if (item.excludeInverse !== undefined) configData[index].excludeInverse = !!item.excludeInverse;
-                    }
-                });
+                configData = savedConfig;
             }
             var savedSb = lsGet('show_scoreboard');
             if (savedSb === false) showScoreboardOnScores = false;
