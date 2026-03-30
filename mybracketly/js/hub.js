@@ -197,7 +197,8 @@ const H2H_MODES = {
     firstto: { label: 'First to X', icon: 'fa-bullseye', desc: 'First to reach target wins' },
     accumulation: { label: 'Score Accumulation', icon: 'fa-chart-line', desc: 'Points-based over multiple matches' },
     lives: { label: 'Elimination (Lives)', icon: 'fa-heart', desc: 'Lose a life each loss, last alive wins' },
-    gauntlet: { label: 'Gauntlet Mode', icon: 'fa-bolt', desc: 'One player faces everyone in a row' }
+    gauntlet: { label: 'Gauntlet Mode', icon: 'fa-bolt', desc: 'One player faces everyone in a row' },
+    pushluck: { label: 'Push Your Luck', icon: 'fa-dice', desc: 'Roll, bank, or bust — race to a target score' }
 };
 
 let selectedH2HMode = null;

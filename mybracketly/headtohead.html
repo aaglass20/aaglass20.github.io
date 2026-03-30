@@ -87,7 +87,8 @@ var MODES = {
     firstto:      { label: 'First to X',            icon: 'fa-bullseye',        minPlayers: 2, maxPlayers: 20, desc: 'Race to a win target' },
     accumulation: { label: 'Score Accumulation',    icon: 'fa-chart-line',      minPlayers: 2, maxPlayers: 20, desc: 'Earn points per match' },
     lives:        { label: 'Elimination (Lives)',   icon: 'fa-heart',           minPlayers: 3, maxPlayers: 30, desc: 'Lose lives until eliminated' },
-    gauntlet:     { label: 'Gauntlet',              icon: 'fa-bolt',            minPlayers: 3, maxPlayers: 50, desc: 'One player faces everyone' }
+    gauntlet:     { label: 'Gauntlet',              icon: 'fa-bolt',            minPlayers: 3, maxPlayers: 50, desc: 'One player faces everyone' },
+    pushluck:     { label: 'Push Your Luck',        icon: 'fa-dice',            minPlayers: 2, maxPlayers: 20, desc: 'Roll, bank, or bust — race to a target score' }
 };
 
 // ---- State ----
@@ -394,6 +395,21 @@ function renderModeConfig(ss) {
             });
             html += '</select></div>';
             break;
+        case 'pushluck':
+            var tgtScore = ss.config.targetScore || 100;
+            html += '<p class="section-subtext">Players take turns scoring points. Bank to keep your turn score, or bust and lose it all. First to reach the target triggers the final round.</p>';
+            html += '<div class="form-group"><label>Target Score</label>';
+            html += '<div class="radio-group mb-2">';
+            [50, 100, 150, 200].forEach(function(n) {
+                var sel = tgtScore === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'targetScore\',' + n + ')">';
+                html += n + ' Points';
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '<input type="number" class="form-input" style="max-width:140px;" value="' + tgtScore + '" min="10" max="10000" onchange="setupSetConfig(\'targetScore\',parseInt(this.value))">';
+            html += '<small style="color:var(--text-light);display:block;margin-top:0.3rem;">Or enter a custom target</small></div>';
+            break;
     }
     return html;
 }
@@ -485,6 +501,7 @@ function setupGoToConfig() {
     if (ss.mode === 'accumulation' && ss.config.drawPoints == null) ss.config.drawPoints = 1;
     if (ss.mode === 'accumulation' && ss.config.lossPoints == null) ss.config.lossPoints = 0;
     if (ss.mode === 'lives' && !ss.config.startingLives) ss.config.startingLives = 3;
+    if (ss.mode === 'pushluck' && !ss.config.targetScore) ss.config.targetScore = 100;
 
     ss.step = 3;
     renderSetup(ss);
@@ -580,6 +597,15 @@ function buildInitialState(mode, players, config) {
             s.longestStreak = 0;
             s.opponentResults = []; // 'win', 'loss' per opponent
             break;
+        case 'pushluck':
+            s.scores = {};
+            players.forEach(function(p) { s.scores[p] = 0; });
+            s.currentPlayerIdx = 0;
+            s.turnScore = 0;
+            s.finalRound = false;       // true once someone reaches target
+            s.triggerPlayer = null;      // who triggered the final round
+            s.finalRoundPlayers = {};    // tracks who has had their final turn
+            break;
     }
     return s;
 }
@@ -603,6 +629,7 @@ function renderPlay() {
         case 'accumulation': el.innerHTML = renderAccumulation(); break;
         case 'lives': el.innerHTML = renderLives(); break;
         case 'gauntlet': el.innerHTML = renderGauntlet(); break;
+        case 'pushluck': el.innerHTML = renderPushLuck(); break;
         default: el.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Unknown mode</h3></div>';
     }
 }
@@ -1573,6 +1600,268 @@ function gauntletResult(outcome) {
 }
 
 // ================================================
+// 8. PUSH YOUR LUCK (Dice Game)
+// ================================================
+function renderPushLuck() {
+    var target = state.config.targetScore || 100;
+    var currentPlayer = state.players[state.currentPlayerIdx];
+    var html = '';
+
+    // Check if game is over
+    if (state.completed) {
+        // Find winner (highest score)
+        var sorted = state.players.slice().sort(function(a, b) { return state.scores[b] - state.scores[a]; });
+        html += '<div class="card text-center" style="border:2px solid var(--accent);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);">';
+        html += '<div style="font-size:3rem;margin-bottom:0.5rem;"><i class="fas fa-trophy" style="color:var(--accent);"></i></div>';
+        html += '<div style="font-weight:900;font-size:1.4rem;color:var(--secondary);">' + escapeHtml(sorted[0]) + ' Wins!</div>';
+        html += '<div style="font-size:1.1rem;color:var(--primary);font-weight:700;">' + state.scores[sorted[0]] + ' points</div>';
+        html += '<div class="mt-2"><button class="btn btn-primary" onclick="resetPushLuck()"><i class="fas fa-redo"></i> Play Again</button></div>';
+        html += '</div>';
+    }
+
+    // Scoreboard
+    html += '<div class="card">';
+    html += '<div class="section-header"><i class="fas fa-dice"></i><h2>Scoreboard</h2></div>';
+    if (state.finalRound && !state.completed) {
+        html += '<div style="background:var(--warning);color:var(--text-dark);padding:0.5rem 1rem;border-radius:var(--radius-sm);margin-bottom:1rem;font-weight:600;font-size:0.85rem;text-align:center;">';
+        html += '<i class="fas fa-exclamation-triangle"></i> Final Round! ' + escapeHtml(state.triggerPlayer) + ' reached ' + target + '. Everyone else gets one more turn.';
+        html += '</div>';
+    }
+    html += '<div style="display:grid;gap:0.5rem;">';
+    state.players.forEach(function(p, idx) {
+        var isCurrent = idx === state.currentPlayerIdx && !state.completed;
+        var score = state.scores[p];
+        var pct = Math.min(100, (score / target) * 100);
+        var reachedTarget = score >= target;
+        html += '<div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.75rem;border-radius:var(--radius-sm);' +
+            (isCurrent ? 'background:var(--bg-hover);border:2px solid var(--primary);' : 'border:1px solid var(--border-light);') + '">';
+        if (isCurrent) html += '<i class="fas fa-caret-right" style="color:var(--primary);font-size:1.2rem;"></i>';
+        html += '<div style="flex:1;">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        html += '<span style="font-weight:' + (isCurrent ? '700' : '500') + ';' + (reachedTarget ? 'color:var(--success);' : '') + '">' + escapeHtml(p) + '</span>';
+        html += '<span style="font-weight:700;font-size:1.1rem;color:' + (reachedTarget ? 'var(--success)' : 'var(--secondary)') + ';">' + score + '</span>';
+        html += '</div>';
+        html += '<div style="background:var(--border-light);border-radius:4px;height:6px;margin-top:0.3rem;overflow:hidden;">';
+        html += '<div style="background:' + (reachedTarget ? 'var(--success)' : 'linear-gradient(90deg,var(--primary),var(--accent))') + ';height:100%;width:' + pct + '%;border-radius:4px;transition:width 0.4s;"></div>';
+        html += '</div></div></div>';
+    });
+    html += '</div>';
+    html += '<div style="text-align:center;margin-top:0.75rem;font-size:0.8rem;color:var(--text-light);">Target: ' + target + ' points</div>';
+    html += '</div>';
+
+    // Current Turn (only if game active)
+    if (!state.completed) {
+        html += '<div class="card" style="border:2px solid var(--primary);">';
+        html += '<div style="text-align:center;margin-bottom:1rem;">';
+        html += '<div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:0.3rem;">Current Turn</div>';
+        html += '<div style="font-size:1.3rem;font-weight:900;color:var(--secondary);">' + escapeHtml(currentPlayer) + '</div>';
+        html += '</div>';
+
+        // Turn score
+        html += '<div style="text-align:center;margin-bottom:1.25rem;">';
+        html += '<div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);">Turn Score</div>';
+        html += '<div style="font-size:2.5rem;font-weight:900;color:var(--primary);">' + state.turnScore + '</div>';
+        if (state.turnScore > 0) {
+            html += '<div style="font-size:0.85rem;color:var(--text-medium);">Bank for ' + (state.scores[currentPlayer] + state.turnScore) + ' total</div>';
+        }
+        html += '</div>';
+
+        // Score buttons
+        html += '<div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;">';
+        html += '<button class="btn btn-primary btn-lg" onclick="plAddScore(10)" style="min-width:80px;font-size:1.1rem;">+10</button>';
+        html += '<button class="btn btn-primary" onclick="plAddScore(5)" style="min-width:70px;">+5</button>';
+        html += '<button class="btn btn-outline" onclick="plAddScore(1)" style="min-width:60px;">+1</button>';
+        html += '</div>';
+
+        // Action buttons
+        html += '<div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">';
+        html += '<button class="btn btn-success btn-lg" onclick="plBank()" style="min-width:140px;"' + (state.turnScore === 0 ? ' disabled' : '') + '><i class="fas fa-piggy-bank"></i> Bank (' + state.turnScore + ')</button>';
+        html += '<button class="btn btn-danger" onclick="plBust()" style="min-width:120px;"><i class="fas fa-skull-crossbones"></i> Bust!</button>';
+        html += '</div>';
+
+        // Manual score fix
+        html += '<details style="margin-top:1rem;"><summary style="cursor:pointer;font-size:0.8rem;color:var(--text-light);">Manual Score Fix</summary>';
+        html += '<div style="display:flex;gap:0.5rem;align-items:flex-end;margin-top:0.5rem;">';
+        html += '<div class="form-group" style="flex:1;margin:0;"><label style="font-size:0.8rem;">Player</label><select class="form-select" id="plFixPlayer">';
+        state.players.forEach(function(p) { html += '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>'; });
+        html += '</select></div>';
+        html += '<div class="form-group" style="width:80px;margin:0;"><label style="font-size:0.8rem;">Score</label><input type="number" class="form-input" id="plFixScore" min="0" value="0"></div>';
+        html += '<button class="btn btn-outline btn-sm" onclick="plFixScore()">Set</button>';
+        html += '</div></details>';
+
+        html += '</div>';
+    }
+
+    return html;
+}
+
+function plAddScore(amount) {
+    state.turnScore += amount;
+    saveState();
+    renderPlay();
+}
+
+function plBank() {
+    if (state.turnScore === 0) return;
+    var currentPlayer = state.players[state.currentPlayerIdx];
+    var bankedAmount = state.turnScore;
+    state.scores[currentPlayer] += bankedAmount;
+    var target = state.config.targetScore || 100;
+
+    // Record the turn
+    state.matches.push({
+        player: currentPlayer,
+        action: 'bank',
+        turnScore: bankedAmount,
+        totalScore: state.scores[currentPlayer],
+        timestamp: new Date().toISOString()
+    });
+
+    // Check if this player triggered the final round
+    if (!state.finalRound && state.scores[currentPlayer] >= target) {
+        state.finalRound = true;
+        state.triggerPlayer = currentPlayer;
+        state.finalRoundPlayers = {};
+        // The trigger player has finished their turn, mark them
+        state.finalRoundPlayers[currentPlayer] = true;
+    } else if (state.finalRound) {
+        state.finalRoundPlayers[currentPlayer] = true;
+    }
+
+    state.turnScore = 0;
+
+    // Check if game is over (everyone after trigger player has had a turn)
+    if (state.finalRound) {
+        var allDone = true;
+        for (var i = 0; i < state.players.length; i++) {
+            if (state.players[i] !== state.triggerPlayer && !state.finalRoundPlayers[state.players[i]]) {
+                allDone = false;
+                break;
+            }
+        }
+        if (allDone) {
+            // Game over — highest score wins
+            var sorted = state.players.slice().sort(function(a, b) { return state.scores[b] - state.scores[a]; });
+            state.winner = sorted[0];
+            state.completed = true;
+            saveState();
+            renderPlay();
+            showStatus(state.winner + ' wins with ' + state.scores[state.winner] + ' points!', 'success');
+            return;
+        }
+    }
+
+    // Advance to next player
+    plNextPlayer();
+    saveState();
+    renderPlay();
+    showStatus(escapeHtml(currentPlayer) + ' banked ' + bankedAmount + ' points!', 'success');
+}
+
+function plBust() {
+    var currentPlayer = state.players[state.currentPlayerIdx];
+    var lostAmount = state.turnScore;
+
+    // Record the bust
+    state.matches.push({
+        player: currentPlayer,
+        action: 'bust',
+        turnScore: lostAmount,
+        totalScore: state.scores[currentPlayer],
+        timestamp: new Date().toISOString()
+    });
+
+    if (state.finalRound) {
+        state.finalRoundPlayers[currentPlayer] = true;
+    }
+
+    state.turnScore = 0;
+
+    // Check game over in final round
+    if (state.finalRound) {
+        var allDone = true;
+        for (var i = 0; i < state.players.length; i++) {
+            if (state.players[i] !== state.triggerPlayer && !state.finalRoundPlayers[state.players[i]]) {
+                allDone = false;
+                break;
+            }
+        }
+        if (allDone) {
+            var sorted = state.players.slice().sort(function(a, b) { return state.scores[b] - state.scores[a]; });
+            state.winner = sorted[0];
+            state.completed = true;
+            saveState();
+            renderPlay();
+            showStatus(state.winner + ' wins with ' + state.scores[state.winner] + ' points!', 'success');
+            return;
+        }
+    }
+
+    plNextPlayer();
+    saveState();
+    renderPlay();
+    showStatus(escapeHtml(currentPlayer) + ' busted! Lost ' + lostAmount + ' points.', 'error');
+}
+
+function plNextPlayer() {
+    // In final round, skip the trigger player and anyone who already went
+    var startIdx = (state.currentPlayerIdx + 1) % state.players.length;
+    var attempts = 0;
+    var idx = startIdx;
+    while (attempts < state.players.length) {
+        if (state.finalRound && state.players[idx] === state.triggerPlayer) {
+            idx = (idx + 1) % state.players.length;
+            attempts++;
+            continue;
+        }
+        if (state.finalRound && state.finalRoundPlayers[state.players[idx]]) {
+            idx = (idx + 1) % state.players.length;
+            attempts++;
+            continue;
+        }
+        break;
+    }
+    state.currentPlayerIdx = idx;
+}
+
+function plFixScore() {
+    var player = document.getElementById('plFixPlayer').value;
+    var score = parseInt(document.getElementById('plFixScore').value);
+    if (!player || isNaN(score) || score < 0) {
+        showStatus('Invalid score', 'error');
+        return;
+    }
+    state.scores[player] = score;
+    state.matches.push({
+        player: player,
+        action: 'fix',
+        turnScore: 0,
+        totalScore: score,
+        timestamp: new Date().toISOString()
+    });
+    saveState();
+    renderPlay();
+    showStatus(escapeHtml(player) + ' score set to ' + score, 'success');
+}
+
+function resetPushLuck() {
+    if (!confirm('Start a new game with the same players?')) return;
+    state.scores = {};
+    state.players.forEach(function(p) { state.scores[p] = 0; });
+    state.currentPlayerIdx = 0;
+    state.turnScore = 0;
+    state.finalRound = false;
+    state.triggerPlayer = null;
+    state.finalRoundPlayers = {};
+    state.matches = [];
+    state.completed = false;
+    state.winner = null;
+    saveState();
+    renderPlay();
+    showStatus('New game started!', 'success');
+}
+
+// ================================================
 // HISTORY TAB
 // ================================================
 function renderHistory() {
@@ -1608,6 +1897,9 @@ function renderHistory() {
             break;
         case 'gauntlet':
             html += '<th>Opponent</th><th>Result</th><th>Time</th>';
+            break;
+        case 'pushluck':
+            html += '<th>Player</th><th>Action</th><th>Turn Pts</th><th>Total</th><th>Time</th>';
             break;
     }
 
@@ -1656,6 +1948,16 @@ function renderHistory() {
             case 'gauntlet':
                 html += '<td>' + escapeHtml(m.opponent) + '</td>';
                 html += '<td style="font-weight:600;color:' + (m.result === 'win' ? 'var(--success)' : 'var(--error)') + ';">' + (m.result === 'win' ? 'Win' : 'Loss') + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
+            case 'pushluck':
+                var actionColor = m.action === 'bank' ? 'var(--success)' : m.action === 'bust' ? 'var(--error)' : 'var(--info)';
+                var actionLabel = m.action === 'bank' ? 'Bank' : m.action === 'bust' ? 'Bust' : 'Fix';
+                var actionIcon = m.action === 'bank' ? 'fa-piggy-bank' : m.action === 'bust' ? 'fa-skull-crossbones' : 'fa-wrench';
+                html += '<td>' + escapeHtml(m.player) + '</td>';
+                html += '<td style="font-weight:600;color:' + actionColor + ';"><i class="fas ' + actionIcon + '"></i> ' + actionLabel + '</td>';
+                html += '<td>' + (m.action === 'bust' ? '-' + m.turnScore : (m.action === 'bank' ? '+' + m.turnScore : '-')) + '</td>';
+                html += '<td style="font-weight:600;">' + m.totalScore + '</td>';
                 html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
                 break;
         }
@@ -1713,6 +2015,12 @@ function renderSettings() {
         case 'gauntlet':
             html += '<div><strong>Gauntlet Player:</strong> ' + escapeHtml(state.gauntletPlayer) + '</div>';
             html += '<div><strong>Record:</strong> ' + state.gWins + 'W - ' + state.gLosses + 'L</div>';
+            break;
+        case 'pushluck':
+            html += '<div><strong>Target Score:</strong> ' + (state.config.targetScore || 100) + ' points</div>';
+            var sorted = state.players.slice().sort(function(a, b) { return state.scores[b] - state.scores[a]; });
+            html += '<div><strong>Leader:</strong> ' + escapeHtml(sorted[0]) + ' (' + state.scores[sorted[0]] + ' pts)</div>';
+            html += '<div><strong>Final Round:</strong> ' + (state.finalRound ? 'Yes' : 'No') + '</div>';
             break;
     }
 

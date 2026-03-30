@@ -1221,3 +1221,65 @@
         height: 12px;
     }
 }
+
+/* ============================================
+   8. Push Your Luck
+   ============================================ */
+.pushluck-scoreboard {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.pushluck-player-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light);
+    transition: var(--transition);
+}
+
+.pushluck-player-row.current {
+    background: var(--bg-hover);
+    border: 2px solid var(--primary);
+}
+
+.pushluck-turn-score {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--primary);
+    text-align: center;
+}
+
+.pushluck-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pushluck-score-btns {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.pushluck-score-btns .btn {
+    font-size: 1.1rem;
+    min-width: 70px;
+}
+
+@keyframes bustShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+.bust-animation {
+    animation: bustShake 0.5s ease;
+}
