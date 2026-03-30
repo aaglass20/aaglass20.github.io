@@ -502,25 +502,37 @@ function buildStep3() {
     const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
     const container = document.getElementById('step3Content');
 
-    if (isHybrid) {
-        let defaultAdvance = 4;
-        if (newTournament.participantCount <= 4) defaultAdvance = 2;
-        else if (newTournament.participantCount <= 8) defaultAdvance = 4;
-        else if (newTournament.participantCount <= 16) defaultAdvance = 8;
-        else defaultAdvance = Math.min(16, Math.floor(newTournament.participantCount / 2));
+    const isRoundRobin = selectedType === 'roundrobin';
+    if (isHybrid || isRoundRobin) {
+        let defaultGroups = newTournament.groupCount || 1;
+        let html = '<div class="section-header"><i class="fas fa-layer-group"></i><h2>Group Settings</h2></div>';
+        html += '<p class="section-subtext">Split participants into groups for the round robin stage. Use 1 group if everyone should play everyone.</p>';
+        html += '<div class="form-group"><label for="groupCount">Number of Groups</label>';
+        html += '<div class="radio-group">';
+        const maxGroups = Math.min(8, Math.floor(newTournament.participantCount / 2));
+        for (let g = 1; g <= maxGroups; g++) {
+            const sel = defaultGroups === g ? ' selected' : '';
+            html += `<div class="radio-option${sel}" onclick="document.getElementById('groupCount').value=${g}; document.querySelectorAll('.radio-option').forEach(o=>o.classList.remove('selected')); this.classList.add('selected');"><input type="radio" name="groupCount" ${defaultGroups===g?'checked':''}> ${g} ${g===1?'Group (all play all)':'Groups'}</div>`;
+        }
+        html += '</div>';
+        html += '<input type="hidden" id="groupCount" value="' + defaultGroups + '">';
+        html += '</div>';
 
-        container.innerHTML = `
-            <div class="section-header"><i class="fas fa-filter"></i><h2>Playoff Settings</h2></div>
-            <p class="section-subtext">Configure how many participants advance from the round robin stage to the ${selectedType === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>
-            <div class="form-group">
-                <label for="advanceCount">Number Advancing to Playoffs</label>
-                <input type="number" id="advanceCount" class="form-input" value="${defaultAdvance}" min="2" max="${Math.min(newTournament.participantCount, 32)}">
-                <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Powers of 2 (2, 4, 8, 16) work best for elimination brackets.</small>
-            </div>
-            <div class="flex-between mt-2">
-                <button class="btn btn-outline" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
-                <button class="btn btn-primary btn-lg" onclick="saveHybridSettings(); goToStep(4);">Next <i class="fas fa-arrow-right"></i></button>
-            </div>`;
+        if (isHybrid) {
+            const gc = newTournament.groupCount || 1;
+            const playersPerGroup = Math.floor(newTournament.participantCount / Math.max(1, gc));
+            let defaultAdvance = newTournament.rrAdvanceCount || Math.max(1, Math.floor(playersPerGroup / 2));
+            if (defaultAdvance > playersPerGroup) defaultAdvance = Math.max(1, playersPerGroup - 1);
+            html += `<div class="form-group"><label for="advanceCount">Teams Advancing Per Group</label>`;
+            html += `<input type="number" id="advanceCount" class="form-input" value="${defaultAdvance}" min="1" max="${playersPerGroup}">`;
+            html += '<small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Top N from each group advance to the elimination bracket. Total advancing: <strong id="totalAdvancing">' + (defaultAdvance * gc) + '</strong>. Powers of 2 work best.</small></div>';
+        }
+
+        html += '<div class="flex-between mt-2">';
+        html += '<button class="btn btn-outline" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>';
+        html += '<button class="btn btn-primary btn-lg" onclick="saveGroupSettings(); goToStep(4);">Next <i class="fas fa-arrow-right"></i></button>';
+        html += '</div>';
+        container.innerHTML = html;
     } else if (selectedType === 'consolation') {
         container.innerHTML = `
             <div class="section-header"><i class="fas fa-ranking-star"></i><h2>Consolation Settings</h2></div>
@@ -558,10 +570,19 @@ function buildStep3() {
     }
 }
 
+function saveGroupSettings() {
+    const groups = parseInt(document.getElementById('groupCount').value) || 1;
+    newTournament.groupCount = groups;
+    const advEl = document.getElementById('advanceCount');
+    if (advEl) {
+        const count = parseInt(advEl.value);
+        if (!count || count < 2) { showStatus('At least 2 must advance', 'error'); return; }
+        newTournament.rrAdvanceCount = count;
+    }
+}
+
 function saveHybridSettings() {
-    const count = parseInt(document.getElementById('advanceCount').value);
-    if (!count || count < 2) { showStatus('At least 2 must advance', 'error'); return; }
-    newTournament.rrAdvanceCount = count;
+    saveGroupSettings();
 }
 
 function saveConsolationSettings() {
@@ -572,7 +593,8 @@ function saveConsolationSettings() {
 function buildStep4() {
     const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
     const isConsolation = selectedType === 'consolation';
-    if (!isHybrid && !isConsolation) return;
+    const isRR = selectedType === 'roundrobin';
+    if (!isHybrid && !isConsolation && !isRR) return;
     const container = document.getElementById('step4Content');
     container.innerHTML = buildParticipantNamesHTML(4);
     initParticipantNameHandlers();
@@ -631,27 +653,85 @@ function randomizeSeeds() {
     renderParticipantList();
 }
 
+// Track group assignments for participants
+let participantGroups = {}; // name -> group index (0-based)
+
 function renderParticipantList() {
     const list = document.getElementById('participantList');
     const progress = document.getElementById('participantProgress');
     const startBtn = document.getElementById('startTournamentBtn');
     if (!list) return;
-    list.innerHTML = participantNames.map((name, i) => `
-        <li><span class="participant-number">${i + 1}</span><span class="participant-name">${escapeHtml(name)}</span>
-        <button class="remove-btn" onclick="removeParticipant(${i})" title="Remove"><i class="fas fa-times"></i></button></li>
-    `).join('');
+    const groupCount = newTournament.groupCount || 1;
+    const showGroups = groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double');
+    const groupLabels = 'ABCDEFGH'.split('');
+
+    list.innerHTML = participantNames.map((name, i) => {
+        let groupHtml = '';
+        if (showGroups) {
+            const assigned = participantGroups[name] != null ? participantGroups[name] : Math.floor(i * groupCount / newTournament.participantCount);
+            participantGroups[name] = assigned;
+            groupHtml = `<select class="form-select" style="width:auto;padding:0.2rem 0.5rem;font-size:0.8rem;min-width:80px;" onchange="participantGroups['${escapeHtml(name).replace(/'/g, "\\'")}'] = parseInt(this.value); renderParticipantList();">`;
+            for (let g = 0; g < groupCount; g++) {
+                groupHtml += `<option value="${g}"${assigned === g ? ' selected' : ''}>Group ${groupLabels[g]}</option>`;
+            }
+            groupHtml += '</select>';
+        }
+        return `<li><span class="participant-number">${i + 1}</span><span class="participant-name">${escapeHtml(name)}</span>${groupHtml}
+        <button class="remove-btn" onclick="removeParticipant(${i})" title="Remove"><i class="fas fa-times"></i></button></li>`;
+    }).join('');
+
+    if (showGroups && participantNames.length > 0) {
+        // Show group summary
+        let summary = '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">';
+        for (let g = 0; g < groupCount; g++) {
+            const count = participantNames.filter(n => (participantGroups[n] || 0) === g).length;
+            summary += `<span class="badge badge-info">Group ${groupLabels[g]}: ${count} players</span>`;
+        }
+        summary += '</div>';
+        list.innerHTML += summary;
+
+        // Auto-distribute button
+        list.innerHTML += `<div style="margin-top:0.5rem;"><button class="btn btn-outline btn-sm" onclick="autoDistributeGroups()"><i class="fas fa-shuffle"></i> Auto-distribute evenly</button></div>`;
+    }
+
     progress.textContent = `${participantNames.length} / ${newTournament.participantCount} participants added`;
     startBtn.disabled = participantNames.length < newTournament.participantCount;
+}
+
+function autoDistributeGroups() {
+    const groupCount = newTournament.groupCount || 1;
+    participantNames.forEach((name, i) => {
+        participantGroups[name] = i % groupCount;
+    });
+    renderParticipantList();
+    showStatus('Players distributed evenly across groups', 'success');
 }
 
 // ---- Create & Start Tournament ----
 function createAndStartTournament() {
     const id = hubProjectId || generateId();
 
+    const allParticipants = participantNames.map((name, i) => ({ name, seed: i + 1 }));
+    const groupCount = newTournament.groupCount || 1;
+    const groupLabels = 'ABCDEFGH'.split('');
+    let groups = [];
+
+    if (groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double')) {
+        for (let g = 0; g < groupCount; g++) {
+            const groupPlayers = participantNames
+                .filter(name => (participantGroups[name] || 0) === g)
+                .map((name, i) => ({ name, seed: i + 1 }));
+            groups.push({ name: 'Group ' + groupLabels[g], participants: groupPlayers });
+        }
+    } else {
+        groups = [{ name: 'Group A', participants: allParticipants }];
+    }
+
     tournament = {
         name: newTournament.name,
         type: selectedType,
-        participants: participantNames.map((name, i) => ({ name, seed: i + 1 })),
+        participants: allParticipants,
+        groups: groups,
         matches: [],
         rrMatches: [],
         rrAdvanceCount: newTournament.rrAdvanceCount || 4,
@@ -881,8 +961,17 @@ function generateTournament() {
     else if (type === 'single_consolation') { tournament.matches = generateSingleWithConsolation(participants); }
     else if (type === 'consolation') { tournament.matches = generateConsolationBracket(participants); }
     else if (type === 'double') { tournament.matches = generateDoubleElimination(participants); }
-    else if (type === 'roundrobin') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; }
-    else if (type === 'rr_single' || type === 'rr_double') { tournament.rrMatches = generateRoundRobin(participants); tournament.matches = []; tournament.phase = 'rr'; }
+    else if (type === 'roundrobin' || type === 'rr_single' || type === 'rr_double') {
+        tournament.rrMatches = [];
+        const groups = tournament.groups || [{ name: 'Group A', participants: participants }];
+        groups.forEach(function(group) {
+            const groupMatches = generateRoundRobin(group.participants, tournament.rrMatches.length);
+            groupMatches.forEach(function(m) { m.group = group.name; });
+            tournament.rrMatches = tournament.rrMatches.concat(groupMatches);
+        });
+        tournament.matches = [];
+        if (type === 'rr_single' || type === 'rr_double') tournament.phase = 'rr';
+    }
 }
 
 function generateSingleElimination(participants, idOffset = 0) {
@@ -1332,8 +1421,8 @@ function propagateByesDouble(matches) {
     }
 }
 
-function generateRoundRobin(participants) {
-    const matches = []; let matchId = 1;
+function generateRoundRobin(participants, idOffset) {
+    const matches = []; let matchId = (idOffset || 0) + 1;
     const pList = [...participants];
     if (pList.length % 2 !== 0) pList.push({ name: 'BYE', seed: null });
     const numRounds = pList.length - 1, half = pList.length / 2;
@@ -1623,38 +1712,103 @@ function renderDoubleElimBracket(container) {
 }
 
 function renderRoundRobinView(container) {
-    const participants = tournament.participants, rrMatches = tournament.rrMatches;
+    const rrMatches = tournament.rrMatches;
     const isHybrid = tournament.type === 'rr_single' || tournament.type === 'rr_double';
+    const groups = tournament.groups || [{ name: 'Group A', participants: tournament.participants }];
+    const hasMultipleGroups = groups.length > 1;
     let html = '<div class="section-header"><i class="fas fa-arrows-spin"></i><h2>Round Robin</h2></div>';
+
     if (isHybrid) {
         const allDone = rrMatches.every(m => m.completed);
-        html += `<p class="section-subtext">Top ${tournament.rrAdvanceCount} will advance to the ${tournament.type === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>`;
+        const advPerGroup = tournament.rrAdvanceCount;
+        const totalAdv = advPerGroup * groups.length;
+        html += `<p class="section-subtext">Top ${advPerGroup} from each group${hasMultipleGroups ? ' (' + totalAdv + ' total)' : ''} will advance to the ${tournament.type === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>`;
         if (allDone && tournament.phase === 'rr') {
             html += `<div class="text-center mb-2"><button class="btn btn-success btn-lg" onclick="advanceToElimination()"><i class="fas fa-arrow-right"></i> Advance to Playoffs</button></div>`;
         }
     }
-    const standings = computeRRStandings();
-    html += '<div class="rr-table-wrapper"><table class="rr-table"><thead><tr><th style="min-width:120px;">Participant</th>';
-    for (const p of participants) html += `<th>${escapeHtml(p.name.substring(0,8))}</th>`;
-    html += '<th>W</th><th>L</th><th>D</th><th>Pts</th></tr></thead><tbody>';
-    for (const p of participants) {
-        const s = standings.find(s => s.name === p.name);
-        const q = isHybrid && standings.indexOf(s) < tournament.rrAdvanceCount;
-        html += `<tr${q ? ' class="qualified"' : ''}><td class="row-header">${q ? '<i class="fas fa-check" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>' : ''}${escapeHtml(p.name)}</td>`;
-        for (const opp of participants) {
-            if (p.name === opp.name) { html += '<td class="diagonal-cell">&mdash;</td>'; continue; }
-            const match = rrMatches.find(m => (m.p1===p.name&&m.p2===opp.name)||(m.p2===p.name&&m.p1===opp.name));
-            if (match && match.completed) {
-                const isP1 = match.p1===p.name, my = isP1?match.p1Score:match.p2Score, their = isP1?match.p2Score:match.p1Score;
-                const cls = my>their?'rr-win':my<their?'rr-loss':'rr-draw';
-                html += `<td class="${cls}"><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">${my}-${their}</button></td>`;
-            } else if (match) { html += `<td><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">vs</button></td>`; }
-            else { html += '<td>&mdash;</td>'; }
+
+    // Render each group separately
+    groups.forEach(function(group) {
+        const groupParticipants = group.participants;
+        const groupMatches = rrMatches.filter(m => m.group === group.name);
+        const standings = computeRRStandingsForGroup(groupParticipants, groupMatches);
+        const advPerGroup = isHybrid ? tournament.rrAdvanceCount : 0;
+
+        if (hasMultipleGroups) {
+            html += `<div class="bracket-section-label" style="margin-top:1rem;"><i class="fas fa-layer-group" style="color:var(--primary);"></i> ${escapeHtml(group.name)}</div>`;
         }
-        html += `<td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td><strong>${s.points}</strong></td></tr>`;
-    }
-    html += '</tbody></table></div>';
+
+        html += '<div class="rr-table-wrapper" style="margin-bottom:1rem;"><table class="rr-table"><thead><tr><th style="min-width:120px;">Participant</th>';
+        for (const p of groupParticipants) html += `<th>${escapeHtml(p.name.substring(0,8))}</th>`;
+        html += '<th>W</th><th>L</th><th>D</th><th>Pts</th></tr></thead><tbody>';
+
+        for (const p of groupParticipants) {
+            const s = standings.find(s => s.name === p.name);
+            const q = isHybrid && standings.indexOf(s) < advPerGroup;
+            html += `<tr${q ? ' class="qualified"' : ''}><td class="row-header">${q ? '<i class="fas fa-check" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>' : ''}${escapeHtml(p.name)}</td>`;
+            for (const opp of groupParticipants) {
+                if (p.name === opp.name) { html += '<td class="diagonal-cell">&mdash;</td>'; continue; }
+                const match = groupMatches.find(m => (m.p1===p.name&&m.p2===opp.name)||(m.p2===p.name&&m.p1===opp.name));
+                if (match && match.completed) {
+                    const isP1 = match.p1===p.name, my = isP1?match.p1Score:match.p2Score, their = isP1?match.p2Score:match.p1Score;
+                    const cls = my>their?'rr-win':my<their?'rr-loss':'rr-draw';
+                    html += `<td class="${cls}"><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">${my}-${their}</button></td>`;
+                } else if (match) { html += `<td><button class="rr-cell-btn" onclick="openScoreModal(${match.id},'rr')">vs</button></td>`; }
+                else { html += '<td>&mdash;</td>'; }
+            }
+            html += `<td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td><strong>${s.points}</strong></td></tr>`;
+        }
+        html += '</tbody></table></div>';
+    });
+
     container.innerHTML = html;
+}
+
+function computeRRStandingsForGroup(participants, matches) {
+    const standings = {};
+    for (const p of participants) standings[p.name] = { name:p.name,seed:p.seed,wins:0,losses:0,draws:0,points:0,pointsFor:0,pointsAgainst:0 };
+    for (const match of matches) {
+        if (!match.completed) continue;
+        const p1 = standings[match.p1], p2 = standings[match.p2];
+        if (!p1||!p2) continue;
+        p1.pointsFor += match.p1Score; p1.pointsAgainst += match.p2Score;
+        p2.pointsFor += match.p2Score; p2.pointsAgainst += match.p1Score;
+        if (match.p1Score > match.p2Score) { p1.wins++; p1.points += 3; p2.losses++; }
+        else if (match.p2Score > match.p1Score) { p2.wins++; p2.points += 3; p1.losses++; }
+        else { p1.draws++; p1.points += 1; p2.draws++; p2.points += 1; }
+    }
+
+    // Head-to-head lookup for tiebreaker
+    function getH2H(nameA, nameB) {
+        // Returns 1 if A beat B, -1 if B beat A, 0 if draw or not played
+        const m = matches.find(m => m.completed &&
+            ((m.p1 === nameA && m.p2 === nameB) || (m.p1 === nameB && m.p2 === nameA)));
+        if (!m) return 0;
+        const aScore = m.p1 === nameA ? m.p1Score : m.p2Score;
+        const bScore = m.p1 === nameA ? m.p2Score : m.p1Score;
+        if (aScore > bScore) return 1;
+        if (bScore > aScore) return -1;
+        return 0;
+    }
+
+    return Object.values(standings).sort((a,b) => {
+        // 1. Points (wins*3 + draws*1)
+        if (b.points !== a.points) return b.points - a.points;
+        // 2. Head-to-head
+        const h2h = getH2H(a.name, b.name);
+        if (h2h !== 0) return -h2h; // positive = a won, so a should be first (lower index)
+        // 3. Point differential
+        const aDiff = a.pointsFor - a.pointsAgainst, bDiff = b.pointsFor - b.pointsAgainst;
+        if (bDiff !== aDiff) return bDiff - aDiff;
+        // 4. Least points against
+        if (a.pointsAgainst !== b.pointsAgainst) return a.pointsAgainst - b.pointsAgainst;
+        // 5. Most points for
+        if (b.pointsFor !== a.pointsFor) return b.pointsFor - a.pointsFor;
+        // 6. Coin flip (random but deterministic per name pair for consistency within a sort)
+        const hash = (a.name + b.name).split('').reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0);
+        return hash > 0 ? 1 : -1;
+    });
 }
 
 function renderMatchCard(match) {
@@ -1831,35 +1985,28 @@ function advanceWinner(match) {
 
 // ---- Round Robin Standings ----
 function computeRRStandings() {
-    const standings = {};
-    for (const p of tournament.participants) standings[p.name] = { name:p.name,seed:p.seed,wins:0,losses:0,draws:0,points:0,pointsFor:0,pointsAgainst:0 };
-    for (const match of tournament.rrMatches) {
-        if (!match.completed) continue;
-        const p1 = standings[match.p1], p2 = standings[match.p2];
-        if (!p1||!p2) continue;
-        p1.pointsFor += match.p1Score; p1.pointsAgainst += match.p2Score;
-        p2.pointsFor += match.p2Score; p2.pointsAgainst += match.p1Score;
-        if (match.p1Score > match.p2Score) { p1.wins++; p1.points += 3; p2.losses++; }
-        else if (match.p2Score > match.p1Score) { p2.wins++; p2.points += 3; p1.losses++; }
-        else { p1.draws++; p1.points += 1; p2.draws++; p2.points += 1; }
-    }
-    return Object.values(standings).sort((a,b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        const ad = a.pointsFor-a.pointsAgainst, bd = b.pointsFor-b.pointsAgainst;
-        if (bd !== ad) return bd - ad;
-        return b.pointsFor - a.pointsFor;
-    });
+    return computeRRStandingsForGroup(tournament.participants, tournament.rrMatches);
 }
 
 function advanceToElimination() {
-    const standings = computeRRStandings();
-    const advancers = standings.slice(0, tournament.rrAdvanceCount);
-    const ap = advancers.map((s,i) => ({name:s.name, seed:i+1}));
+    const groups = tournament.groups || [{ name: 'Group A', participants: tournament.participants }];
+    const advPerGroup = tournament.rrAdvanceCount;
+    let allAdvancers = [];
+
+    groups.forEach(function(group) {
+        const groupMatches = tournament.rrMatches.filter(m => m.group === group.name);
+        const standings = computeRRStandingsForGroup(group.participants, groupMatches);
+        const groupAdvancers = standings.slice(0, advPerGroup);
+        allAdvancers = allAdvancers.concat(groupAdvancers);
+    });
+
+    const ap = allAdvancers.map((s,i) => ({name:s.name, seed:i+1}));
+
     if (tournament.type === 'rr_single') tournament.matches = generateSingleElimination(ap);
     else tournament.matches = generateDoubleElimination(ap);
     tournament.phase = 'elimination';
     saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
-    showStatus(`${advancers.map(a=>a.name).join(', ')} advance to playoffs!`, 'success');
+    showStatus(`${allAdvancers.map(a=>a.name).join(', ')} advance to playoffs!`, 'success');
 }
 
 // ---- Standings Rendering ----
@@ -1870,14 +2017,27 @@ function renderStandings() {
     let html = '<div class="section-header"><i class="fas fa-list-ol"></i><h2>Standings</h2></div>';
 
     if (isRR||type==='rr_single'||type==='rr_double') {
-        const standings = computeRRStandings();
         const isHybrid = type==='rr_single'||type==='rr_double';
-        html += '<div class="card"><div class="rr-table-wrapper"><table class="standings-table"><thead><tr><th>#</th><th style="text-align:left;">Participant</th><th>W</th><th>L</th><th>D</th><th>PF</th><th>PA</th><th>Diff</th><th>Pts</th></tr></thead><tbody>';
-        standings.forEach((s,i) => {
-            const q = isHybrid && i < tournament.rrAdvanceCount;
-            html += `<tr${q?' class="qualified"':''}><td class="rank-cell">${i+1}</td><td class="name-cell">${q?'<i class="fas fa-arrow-up" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>':''}${escapeHtml(s.name)}</td><td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td>${s.pointsFor}</td><td>${s.pointsAgainst}</td><td>${s.pointsFor-s.pointsAgainst>0?'+':''}${s.pointsFor-s.pointsAgainst}</td><td><strong>${s.points}</strong></td></tr>`;
+        const groups = tournament.groups || [{ name: 'Group A', participants: tournament.participants }];
+        const advPerGroup = isHybrid ? tournament.rrAdvanceCount : 0;
+
+        html += '<p class="section-subtext" style="margin-bottom:0.5rem;">Tiebreakers: Head-to-Head &rarr; Point Diff &rarr; Least Points Against &rarr; Most Points For &rarr; Coin Flip</p>';
+
+        groups.forEach(function(group) {
+            const groupMatches = tournament.rrMatches.filter(m => m.group === group.name);
+            const standings = computeRRStandingsForGroup(group.participants, groupMatches);
+
+            if (groups.length > 1) {
+                html += `<div style="font-weight:700;color:var(--secondary);margin:1rem 0 0.5rem;font-size:1rem;"><i class="fas fa-layer-group" style="color:var(--primary);margin-right:0.4rem;"></i>${escapeHtml(group.name)}</div>`;
+            }
+
+            html += '<div class="card"><div class="rr-table-wrapper"><table class="standings-table"><thead><tr><th>#</th><th style="text-align:left;">Participant</th><th>W</th><th>L</th><th>D</th><th>PF</th><th>PA</th><th>Diff</th><th>Pts</th></tr></thead><tbody>';
+            standings.forEach((s,i) => {
+                const q = isHybrid && i < advPerGroup;
+                html += `<tr${q?' class="qualified"':''}><td class="rank-cell">${i+1}</td><td class="name-cell">${q?'<i class="fas fa-arrow-up" style="color:var(--success);margin-right:4px;font-size:0.7rem;"></i>':''}${escapeHtml(s.name)}</td><td><strong>${s.wins}</strong></td><td>${s.losses}</td><td>${s.draws}</td><td>${s.pointsFor}</td><td>${s.pointsAgainst}</td><td>${s.pointsFor-s.pointsAgainst>0?'+':''}${s.pointsFor-s.pointsAgainst}</td><td><strong>${s.points}</strong></td></tr>`;
+            });
+            html += '</tbody></table></div></div>';
         });
-        html += '</tbody></table></div></div>';
     }
 
     if (type==='single'||type==='single_consolation'||type==='consolation'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination')) {
@@ -1980,7 +2140,7 @@ function renderSettings() {
         <strong>Format:</strong><span>${getFormatLabel(tournament.type)}</span>
         <strong>Participants:</strong><span>${tournament.participants.length}</span>
         <strong>Status:</strong><span class="badge badge-${status==='completed'?'success':status==='archived'?'info':'warning'}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
-        ${tournament.type==='rr_single'||tournament.type==='rr_double'?`<strong>Advance to Playoff:</strong><span>${tournament.rrAdvanceCount}</span>`:''}
+        ${tournament.type==='rr_single'||tournament.type==='rr_double'?`<strong>Advance per Group:</strong><span>${tournament.rrAdvanceCount}</span><strong>Groups:</strong><span>${(tournament.groups||[]).length}</span>`:''}
         ${tournament.type==='consolation'?`<strong>Cross-Bracket:</strong><span>${tournament.crossBracket?'Enabled':'Disabled'}</span><strong>Placement Depth:</strong><span>Through ${tournament.placementDepth||4}th</span>`:''}
     </div></div></div>`;
 
