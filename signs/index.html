@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Softball Wristband Creator</title>
     <style>
+        :root {
+            --print-width: 5.5in;
+            --print-height: 2.2in;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -207,17 +211,59 @@
 
         .hidden { display: none !important; }
 
+        /* Print container (hidden on screen) */
+        #printContainer {
+            display: none;
+        }
         /* Print styles */
         @media print {
-            body { background: #fff; }
-            .header, .setup-panel, .actions-bar, .no-print { display: none !important; }
-            .wristband-container { margin: 0; padding: 0; }
-            .wristband-card { box-shadow: none; border: 2px solid #000; }
-            .wristband-table td select {
+            body { background: #fff; margin: 0; padding: 0; }
+            body > *:not(#printContainer) { display: none !important; }
+            #printContainer {
+                display: flex;
+                flex-wrap: wrap;
+                align-content: flex-start;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .print-wristband {
+                width: var(--print-width);
+                height: var(--print-height);
+                box-sizing: border-box;
+                border: 1px solid #000;
+                overflow: hidden;
+                page-break-inside: avoid;
+            }
+            .print-wristband .wristband-card {
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .print-wristband .wristband-title {
+                font-size: 0.7em;
+                padding: 4px;
+            }
+            .print-wristband .wristband-table {
+                width: 100%;
+                height: calc(100% - 24px);
+            }
+            .print-wristband .wristband-table th {
+                padding: 2px 1px;
+                font-size: 0.55em;
+            }
+            .print-wristband .wristband-table td {
+                padding: 1px;
+                font-size: 0.5em;
+            }
+            .print-wristband .wristband-table td select {
                 -webkit-appearance: none;
                 appearance: none;
                 border: none;
                 background: transparent;
+                font-size: inherit;
             }
         }
 
@@ -371,7 +417,18 @@
     <div class="actions-bar no-print">
         <button class="btn btn-secondary" onclick="backToSetup()">Back to Setup</button>
         <button class="btn btn-success" onclick="saveWristband()">Save Wristband</button>
-        <button class="btn btn-print" onclick="window.print()">Print Wristband</button>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Copies:</label>
+            <input type="number" id="printCopies" value="1" min="1" max="20" style="width:55px; padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;">
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Size:</label>
+            <input type="number" id="printWidth" value="5.5" step="0.1" min="1" max="20" style="width:65px; padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;" onchange="updatePrintSize()">
+            <span style="color:#aaa;">x</span>
+            <input type="number" id="printHeight" value="2.2" step="0.1" min="1" max="20" style="width:65px; padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;" onchange="updatePrintSize()">
+            <span style="color:#aaa;">in</span>
+        </div>
+        <button class="btn btn-print" onclick="printWristband()">Print Wristband</button>
     </div>
     <div class="wristband-card" id="wristbandCard"></div>
 </div>
@@ -384,6 +441,41 @@
 // After deploying Code.gs, paste your web app URL here:
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfv7epK2Kr70Hm3a5CeogzUJeXrEZugpAJ4JrkKRWU_dG5ZKzB9TKRjxPRjhhFCAtx1Q/exec';
 const useGoogleSheets = SCRIPT_URL !== 'PASTE_YOUR_SCRIPT_URL_HERE';
+
+// ===== Print =====
+function updatePrintSize() {
+    const w = document.getElementById('printWidth').value;
+    const h = document.getElementById('printHeight').value;
+    document.documentElement.style.setProperty('--print-width', w + 'in');
+    document.documentElement.style.setProperty('--print-height', h + 'in');
+}
+
+function printWristband() {
+    updatePrintSize();
+    const copies = parseInt(document.getElementById('printCopies').value) || 1;
+    const card = document.getElementById('wristbandCard');
+    const container = document.getElementById('printContainer');
+    container.innerHTML = '';
+
+    // Convert select elements to their displayed text for print
+    for (let i = 0; i < copies; i++) {
+        const clone = card.cloneNode(true);
+        clone.removeAttribute('id');
+        // Replace selects with plain text so print shows selected values
+        clone.querySelectorAll('select').forEach(sel => {
+            const span = document.createElement('span');
+            span.textContent = sel.options[sel.selectedIndex]?.text || '';
+            span.style.cssText = sel.style.cssText;
+            sel.parentNode.replaceChild(span, sel);
+        });
+        const wrapper = document.createElement('div');
+        wrapper.className = 'print-wristband';
+        wrapper.appendChild(clone);
+        container.appendChild(wrapper);
+    }
+
+    window.print();
+}
 
 // ===== Google Sheets API helpers =====
 function showLoading(msg) {
@@ -936,6 +1028,8 @@ document.getElementById('customTermInput').addEventListener('keydown', function(
     if (e.key === 'Enter') addCustomTerm();
 });
 </script>
+
+<div id="printContainer"></div>
 
 </body>
 </html>
