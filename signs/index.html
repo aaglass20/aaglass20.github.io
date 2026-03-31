@@ -217,7 +217,11 @@
         }
         /* Print styles */
         @media print {
-            body { background: #fff; margin: 0; padding: 0; }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body { margin: 0; padding: 0; }
             body > *:not(#printContainer) { display: none !important; }
             #printContainer {
                 display: flex;
