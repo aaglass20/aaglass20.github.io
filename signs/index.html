@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Softball Wristband Creator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #16213e, #0f3460);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+        }
+        .header h1 { font-size: 2em; color: #fff; }
+        .header p { color: #aaa; margin-top: 5px; }
+
+        .setup-panel {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #16213e;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .setup-panel h2 { margin-bottom: 20px; color: #e94560; }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group select, .form-group input {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #0f3460;
+            color: #fff;
+            font-size: 1em;
+            min-width: 150px;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #e94560;
+            color: #fff;
+        }
+        .btn-primary:hover { background: #c73652; }
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+        }
+        .btn-success:hover { background: #218838; }
+        .btn-secondary {
+            background: #555;
+            color: #fff;
+        }
+        .btn-secondary:hover { background: #444; }
+        .btn-print {
+            background: #17a2b8;
+            color: #fff;
+        }
+        .btn-print:hover { background: #138496; }
+
+        .column-config {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .col-config-item {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 160px;
+        }
+        .col-config-item label { font-size: 0.8em; color: #aaa; }
+        .col-config-item input[type="text"] {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #16213e;
+            color: #fff;
+        }
+        .col-config-item input[type="color"] {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .wristband-title-input {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #0f3460;
+            color: #fff;
+            font-size: 1.2em;
+            text-align: center;
+            width: 300px;
+        }
+
+        /* Wristband Table */
+        .wristband-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .wristband-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            color: #000;
+        }
+        .wristband-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 12px;
+            background: #222;
+            color: #fff;
+        }
+        .wristband-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .wristband-table th {
+            padding: 10px 8px;
+            font-weight: bold;
+            font-size: 0.95em;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            border: 2px solid #333;
+        }
+        .wristband-table td {
+            padding: 6px 4px;
+            text-align: center;
+            border: 2px solid #333;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .wristband-table td.play-num {
+            background: #222;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 60px;
+        }
+        .wristband-table td select {
+            width: 100%;
+            padding: 4px;
+            border: none;
+            background: transparent;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            color: inherit;
+        }
+        .wristband-table td select option {
+            color: #000;
+            background: #fff;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .hidden { display: none; }
+
+        /* Print styles */
+        @media print {
+            body { background: #fff; }
+            .header, .setup-panel, .actions-bar, .no-print { display: none !important; }
+            .wristband-container { margin: 0; padding: 0; }
+            .wristband-card { box-shadow: none; border: 2px solid #000; }
+            .wristband-table td select {
+                -webkit-appearance: none;
+                appearance: none;
+                border: none;
+                background: transparent;
+            }
+        }
+
+        /* Saved wristbands list */
+        .saved-list {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+        .saved-item {
+            background: #16213e;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .saved-item span { font-weight: bold; }
+        .saved-item .saved-meta { color: #aaa; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Softball Wristband Creator</h1>
+    <p>Create custom play wristbands for U10, U12, and U14</p>
+</div>
+
+<!-- Step 1: Setup -->
+<div class="setup-panel" id="setupPanel">
+    <h2>Step 1: Configure Your Wristband</h2>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Age Group</label>
+            <select id="ageGroup" onchange="updatePlayOptions()">
+                <option value="U10">U10</option>
+                <option value="U12">U12</option>
+                <option value="U14" selected>U14</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Number of Columns</label>
+            <select id="numColumns" onchange="buildColumnConfig()">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Number of Rows</label>
+            <select id="numRows" onchange="buildRowConfig()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Wristband Title</label>
+            <input type="text" id="wristbandTitle" value="Offense" class="wristband-title-input">
+        </div>
+    </div>
+
+    <h2>Step 2: Define Columns</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Name each column and pick its color. The Play # column is added automatically.</p>
+    <div class="column-config" id="columnConfig"></div>
+
+    <h2 style="margin-top:25px;">Step 3: Define Row Ranges</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Each row starts where the previous one left off. Set the ending number for each row.</p>
+    <div class="column-config" id="rowConfig"></div>
+
+    <h2 style="margin-top:25px;">Templates</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Load a pre-built template to get started quickly.</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+        <button class="btn btn-secondary" onclick="loadTemplate('A')">Template A</button>
+        <button class="btn btn-secondary" onclick="loadTemplate('B')">Template B</button>
+        <button class="btn btn-secondary" onclick="loadTemplate('C')">Template C</button>
+    </div>
+
+    <div style="margin-top:20px;">
+        <button class="btn btn-primary" onclick="generateWristband()">Generate Wristband</button>
+    </div>
+</div>
+
+<!-- Wristband Display -->
+<div class="wristband-container hidden" id="wristbandArea">
+    <div class="actions-bar no-print">
+        <button class="btn btn-secondary" onclick="backToSetup()">Back to Setup</button>
+        <button class="btn btn-success" onclick="saveWristband()">Save Wristband</button>
+        <button class="btn btn-print" onclick="window.print()">Print Wristband</button>
+    </div>
+    <div class="wristband-card" id="wristbandCard"></div>
+</div>
+
+<!-- Saved Wristbands -->
+<div class="saved-list" id="savedList"></div>
+
+<script>
+// Play options by age group — more complex as age increases
+const PLAYS_BY_AGE = {
+    U10: [
+        '(blank)',
+        'Swing Away',
+        'Take Pitch',
+        'Bunt',
+        'Fake Bunt',
+        'Steal',
+        'Free',
+        'Nothing',
+        'Show Bunt'
+    ],
+    U12: [
+        '(blank)',
+        'Swing Away',
+        'Take Pitch',
+        'Bunt',
+        'Fake Bunt',
+        'Steal',
+        'Free',
+        'Nothing',
+        'Show Bunt',
+        'Drop 3',
+        'Sacrifice Bunt',
+        'Squeeze Bunt',
+        'Steal on Ball 4',
+        'Hit and Run'
+    ],
+    U14: [
+        '(blank)',
+        'Swing Away',
+        'Take Pitch',
+        'Bunt',
+        'Fake Bunt',
+        'Steal',
+        'Free',
+        'Nothing',
+        'Show Bunt',
+        'Drop 3',
+        'Sacrifice Bunt',
+        'Squeeze Bunt',
+        'Steal on Ball 4',
+        'Hit and Run',
+        'Steal Pass Ball',
+        'Bunt and Run',
+        'Delay Steal',
+        'Slash',
+        'Safety Squeeze',
+        'Push Bunt',
+        'Double Steal'
+    ]
+};
+
+const DEFAULT_COLORS = [
+    { name: 'Pink', color: '#ff69b4' },
+    { name: 'Yellow', color: '#ffd700' },
+    { name: 'Green', color: '#4caf50' },
+    { name: 'Blue', color: '#2196f3' },
+    { name: 'Orange', color: '#ff9800' },
+    { name: 'Purple', color: '#9c27b0' }
+];
+
+let savedWristbands = JSON.parse(localStorage.getItem('savedWristbands') || '[]');
+
+function buildColumnConfig() {
+    const num = parseInt(document.getElementById('numColumns').value);
+    const container = document.getElementById('columnConfig');
+    container.innerHTML = '';
+
+    for (let i = 0; i < num; i++) {
+        const def = DEFAULT_COLORS[i] || { name: `Column ${i+1}`, color: '#cccccc' };
+        const item = document.createElement('div');
+        item.className = 'col-config-item';
+        item.innerHTML = `
+            <label>Column ${i+1} Name</label>
+            <input type="text" id="colName${i}" value="${def.name}" placeholder="Column name">
+            <label>Color</label>
+            <input type="color" id="colColor${i}" value="${def.color}">
+        `;
+        container.appendChild(item);
+    }
+}
+
+function buildRowConfig() {
+    const numRows = parseInt(document.getElementById('numRows').value);
+    const container = document.getElementById('rowConfig');
+    container.innerHTML = '';
+
+    for (let i = 0; i < numRows; i++) {
+        const item = document.createElement('div');
+        item.className = 'col-config-item';
+        item.style.minWidth = '140px';
+
+        // Default: rows of 10 (1-10, 11-20, etc.)
+        const defaultEnd = (i + 1) * 10;
+
+        item.innerHTML = `
+            <label>Row ${i + 1}</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+                <span id="rowStart${i}" style="font-weight:bold; color:#fff; min-width:24px;">${i === 0 ? 1 : ''}</span>
+                <span style="color:#aaa;">to</span>
+                <input type="number" id="rowEnd${i}" value="${defaultEnd}" min="1" max="999"
+                    style="width:70px; padding:8px; border-radius:6px; border:1px solid #333; background:#16213e; color:#fff; text-align:center;"
+                    onchange="updateRowStarts()">
+            </div>
+        `;
+        container.appendChild(item);
+    }
+    updateRowStarts();
+}
+
+function updateRowStarts() {
+    const numRows = parseInt(document.getElementById('numRows').value);
+    let nextStart = 1;
+    for (let i = 0; i < numRows; i++) {
+        const startEl = document.getElementById(`rowStart${i}`);
+        const endEl = document.getElementById(`rowEnd${i}`);
+        if (startEl) startEl.textContent = nextStart;
+        if (endEl) {
+            endEl.min = nextStart;
+            // If end value is less than start, auto-fix
+            if (parseInt(endEl.value) < nextStart) {
+                endEl.value = nextStart;
+            }
+        }
+        const endVal = parseInt(endEl.value) || nextStart;
+        nextStart = endVal + 1;
+    }
+}
+
+function getRowRanges() {
+    const numRows = parseInt(document.getElementById('numRows').value);
+    const ranges = [];
+    let nextStart = 1;
+    for (let i = 0; i < numRows; i++) {
+        const endVal = parseInt(document.getElementById(`rowEnd${i}`).value) || nextStart;
+        ranges.push(`${nextStart}-${endVal}`);
+        nextStart = endVal + 1;
+    }
+    return ranges;
+}
+
+function getTextColor(bgHex) {
+    const r = parseInt(bgHex.substr(1,2), 16);
+    const g = parseInt(bgHex.substr(3,2), 16);
+    const b = parseInt(bgHex.substr(5,2), 16);
+    const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return luminance > 0.55 ? '#000' : '#fff';
+}
+
+function generateWristband() {
+    const ageGroup = document.getElementById('ageGroup').value;
+    const numCols = parseInt(document.getElementById('numColumns').value);
+    const numRows = parseInt(document.getElementById('numRows').value);
+    const title = document.getElementById('wristbandTitle').value || 'Offense';
+    const plays = PLAYS_BY_AGE[ageGroup];
+    const rowRanges = getRowRanges();
+
+    // Gather column configs
+    const columns = [];
+    for (let i = 0; i < numCols; i++) {
+        columns.push({
+            name: document.getElementById(`colName${i}`).value || `Col ${i+1}`,
+            color: document.getElementById(`colColor${i}`).value
+        });
+    }
+
+    // Build table HTML — Play # always on far left
+    let html = `<div class="wristband-title">${title}</div>`;
+    html += '<table class="wristband-table">';
+
+    // Header row
+    html += '<tr>';
+    html += `<th style="background:#222; color:#fff;">Play #</th>`;
+    for (let c = 0; c < numCols; c++) {
+        const col = columns[c];
+        const textColor = getTextColor(col.color);
+        html += `<th style="background:${col.color}; color:${textColor};">${col.name}</th>`;
+    }
+    html += '</tr>';
+
+    // Data rows
+    for (let r = 0; r < numRows; r++) {
+        html += '<tr>';
+        html += `<td class="play-num">${rowRanges[r]}</td>`;
+        for (let c = 0; c < numCols; c++) {
+            const col = columns[c];
+            const bgColor = col.color + '33';
+            html += `<td style="background:${bgColor};">`;
+            html += `<select data-row="${r}" data-col="${c}">`;
+            for (const play of plays) {
+                const val = play === '(blank)' ? '' : play;
+                html += `<option value="${val}">${play}</option>`;
+            }
+            html += '</select></td>';
+        }
+        html += '</tr>';
+    }
+
+    html += '</table>';
+
+    document.getElementById('wristbandCard').innerHTML = html;
+    document.getElementById('setupPanel').classList.add('hidden');
+    document.getElementById('wristbandArea').classList.remove('hidden');
+}
+
+function backToSetup() {
+    document.getElementById('setupPanel').classList.remove('hidden');
+    document.getElementById('wristbandArea').classList.add('hidden');
+}
+
+function saveWristband() {
+    const title = document.getElementById('wristbandTitle').value || 'Offense';
+    const ageGroup = document.getElementById('ageGroup').value;
+
+    // Capture current selections
+    const selects = document.querySelectorAll('#wristbandCard select');
+    const selections = {};
+    selects.forEach(sel => {
+        const key = `${sel.dataset.row}-${sel.dataset.col}`;
+        selections[key] = sel.value;
+    });
+
+    // Capture column configs
+    const numCols = parseInt(document.getElementById('numColumns').value);
+    const columns = [];
+    for (let i = 0; i < numCols; i++) {
+        columns.push({
+            name: document.getElementById(`colName${i}`).value,
+            color: document.getElementById(`colColor${i}`).value
+        });
+    }
+
+    const numRows = parseInt(document.getElementById('numRows').value);
+    const rowEnds = [];
+    for (let i = 0; i < numRows; i++) {
+        rowEnds.push(parseInt(document.getElementById(`rowEnd${i}`).value));
+    }
+    const wristband = {
+        id: Date.now(),
+        title,
+        ageGroup,
+        numCols,
+        numRows,
+        rowEnds,
+        columns,
+        selections,
+        createdAt: new Date().toLocaleString()
+    };
+
+    savedWristbands.push(wristband);
+    localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
+    renderSavedList();
+    alert('Wristband saved!');
+}
+
+function loadWristband(id) {
+    const wb = savedWristbands.find(w => w.id === id);
+    if (!wb) return;
+
+    document.getElementById('ageGroup').value = wb.ageGroup;
+    document.getElementById('numColumns').value = wb.numCols;
+    document.getElementById('numRows').value = wb.numRows || 5;
+    document.getElementById('wristbandTitle').value = wb.title;
+
+    buildColumnConfig();
+    buildRowConfig();
+
+    // Restore column settings
+    wb.columns.forEach((col, i) => {
+        document.getElementById(`colName${i}`).value = col.name;
+        document.getElementById(`colColor${i}`).value = col.color;
+    });
+
+    // Restore row end values
+    if (wb.rowEnds) {
+        wb.rowEnds.forEach((endVal, i) => {
+            const el = document.getElementById(`rowEnd${i}`);
+            if (el) el.value = endVal;
+        });
+        updateRowStarts();
+    }
+
+    generateWristband();
+
+    // Restore selections
+    const selects = document.querySelectorAll('#wristbandCard select');
+    selects.forEach(sel => {
+        const key = `${sel.dataset.row}-${sel.dataset.col}`;
+        if (wb.selections[key]) {
+            sel.value = wb.selections[key];
+        }
+    });
+}
+
+function deleteWristband(id) {
+    if (!confirm('Delete this wristband?')) return;
+    savedWristbands = savedWristbands.filter(w => w.id !== id);
+    localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
+    renderSavedList();
+}
+
+function renderSavedList() {
+    const container = document.getElementById('savedList');
+    if (savedWristbands.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    let html = '<h2 style="color:#e94560; margin-bottom:15px; padding:0 20px;">Saved Wristbands</h2>';
+    savedWristbands.forEach(wb => {
+        html += `
+            <div class="saved-item">
+                <div>
+                    <span>${wb.title}</span>
+                    <div class="saved-meta">${wb.ageGroup} &bull; ${wb.numCols} columns &bull; ${wb.numRows || '?'} rows &bull; ${wb.createdAt}</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-primary" onclick="loadWristband(${wb.id})" style="padding:8px 16px; font-size:0.85em;">Load</button>
+                    <button class="btn btn-secondary" onclick="deleteWristband(${wb.id})" style="padding:8px 16px; font-size:0.85em;">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+// Pre-saved templates
+// All share: 5 cols (Blue, Gold, White, Pink, Green), 5 rows (1-25, 26-50, 51-75, 76-100, 100-125)
+// Each template shuffles the play assignments differently
+const TEMPLATES = {
+    A: {
+        title: 'Offense',
+        ageGroup: 'U10',
+        numCols: 5,
+        numRows: 5,
+        rowEnds: [25, 50, 75, 100, 125],
+        columns: [
+            { name: 'Blue', color: '#2196f3' },
+            { name: 'Gold', color: '#ffd700' },
+            { name: 'White', color: '#ffffff' },
+            { name: 'Pink', color: '#ff69b4' },
+            { name: 'Green', color: '#4caf50' }
+        ],
+        selections: {
+            '0-0': 'Take Pitch', '0-1': 'Bunt',       '0-2': 'Steal',      '0-3': 'Nothing',   '0-4': 'Show Bunt',
+            '1-0': 'Bunt',       '1-1': 'Take Pitch',  '1-2': 'Show Bunt',  '1-3': 'Steal',     '1-4': 'Nothing',
+            '2-0': 'Show Bunt',  '2-1': 'Steal',       '2-2': 'Nothing',    '2-3': 'Bunt',      '2-4': 'Take Pitch',
+            '3-0': 'Steal',      '3-1': 'Nothing',     '3-2': 'Take Pitch', '3-3': 'Show Bunt', '3-4': 'Bunt',
+            '4-0': 'Nothing',    '4-1': 'Show Bunt',   '4-2': 'Bunt',       '4-3': 'Take Pitch','4-4': 'Steal'
+        }
+    },
+    B: {
+        title: 'Offense',
+        ageGroup: 'U10',
+        numCols: 5,
+        numRows: 5,
+        rowEnds: [25, 50, 75, 100, 125],
+        columns: [
+            { name: 'Blue', color: '#2196f3' },
+            { name: 'Gold', color: '#ffd700' },
+            { name: 'White', color: '#ffffff' },
+            { name: 'Pink', color: '#ff69b4' },
+            { name: 'Green', color: '#4caf50' }
+        ],
+        selections: {
+            '0-0': 'Nothing',    '0-1': 'Show Bunt',   '0-2': 'Take Pitch', '0-3': 'Bunt',      '0-4': 'Steal',
+            '1-0': 'Show Bunt',  '1-1': 'Nothing',     '1-2': 'Steal',      '1-3': 'Take Pitch', '1-4': 'Bunt',
+            '2-0': 'Steal',      '2-1': 'Bunt',        '2-2': 'Nothing',    '2-3': 'Show Bunt', '2-4': 'Take Pitch',
+            '3-0': 'Take Pitch', '3-1': 'Steal',       '3-2': 'Bunt',       '3-3': 'Nothing',   '3-4': 'Show Bunt',
+            '4-0': 'Bunt',       '4-1': 'Take Pitch',  '4-2': 'Show Bunt',  '4-3': 'Steal',     '4-4': 'Nothing'
+        }
+    },
+    C: {
+        title: 'Offense',
+        ageGroup: 'U10',
+        numCols: 5,
+        numRows: 5,
+        rowEnds: [25, 50, 75, 100, 125],
+        columns: [
+            { name: 'Blue', color: '#2196f3' },
+            { name: 'Gold', color: '#ffd700' },
+            { name: 'White', color: '#ffffff' },
+            { name: 'Pink', color: '#ff69b4' },
+            { name: 'Green', color: '#4caf50' }
+        ],
+        selections: {
+            '0-0': 'Steal',      '0-1': 'Take Pitch',  '0-2': 'Nothing',    '0-3': 'Show Bunt', '0-4': 'Bunt',
+            '1-0': 'Take Pitch', '1-1': 'Bunt',        '1-2': 'Show Bunt',  '1-3': 'Nothing',   '1-4': 'Steal',
+            '2-0': 'Nothing',    '2-1': 'Show Bunt',   '2-2': 'Bunt',       '2-3': 'Steal',     '2-4': 'Take Pitch',
+            '3-0': 'Bunt',       '3-1': 'Nothing',     '3-2': 'Steal',      '3-3': 'Take Pitch','3-4': 'Show Bunt',
+            '4-0': 'Show Bunt',  '4-1': 'Steal',       '4-2': 'Take Pitch', '4-3': 'Bunt',      '4-4': 'Nothing'
+        }
+    }
+};
+
+function loadTemplate(key) {
+    const t = TEMPLATES[key];
+    if (!t) return;
+
+    document.getElementById('ageGroup').value = t.ageGroup;
+    document.getElementById('numColumns').value = t.numCols;
+    document.getElementById('numRows').value = t.numRows;
+    document.getElementById('wristbandTitle').value = t.title;
+
+    buildColumnConfig();
+    buildRowConfig();
+
+    // Set column names and colors
+    t.columns.forEach((col, i) => {
+        document.getElementById(`colName${i}`).value = col.name;
+        document.getElementById(`colColor${i}`).value = col.color;
+    });
+
+    // Set row end values
+    t.rowEnds.forEach((endVal, i) => {
+        const el = document.getElementById(`rowEnd${i}`);
+        if (el) el.value = endVal;
+    });
+    updateRowStarts();
+
+    // Generate and fill in selections
+    generateWristband();
+
+    const selects = document.querySelectorAll('#wristbandCard select');
+    selects.forEach(sel => {
+        const key = `${sel.dataset.row}-${sel.dataset.col}`;
+        if (t.selections[key]) {
+            sel.value = t.selections[key];
+        }
+    });
+}
+
+// Initialize
+buildColumnConfig();
+buildRowConfig();
+renderSavedList();
+</script>
+
+</body>
+</html>
