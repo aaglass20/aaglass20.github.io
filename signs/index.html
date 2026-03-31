@@ -235,6 +235,23 @@
             justify-content: space-between;
             align-items: center;
         }
+        .custom-tag {
+            background: #0f3460;
+            border: 1px solid #e94560;
+            border-radius: 20px;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        .custom-tag .remove-tag {
+            cursor: pointer;
+            color: #e94560;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .custom-tag .remove-tag:hover { color: #ff6b81; }
         .saved-item span { font-weight: bold; }
         .saved-item .saved-meta { color: #aaa; font-size: 0.85em; }
     </style>
@@ -297,6 +314,17 @@
     <h2 style="margin-top:25px;">Step 3: Define Row Ranges</h2>
     <p style="color:#aaa; margin-bottom:15px;">Each row starts where the previous one left off. Set the ending number for each row.</p>
     <div class="column-config" id="rowConfig"></div>
+
+    <h2 style="margin-top:25px;">Step 4: Custom Plays</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Add your own play terms. These will appear in the dropdowns alongside the built-in plays.</p>
+    <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:10px;">
+        <div class="form-group">
+            <label>New Play Name</label>
+            <input type="text" id="customTermInput" placeholder="e.g. Hit and Run">
+        </div>
+        <button class="btn btn-success" onclick="addCustomTerm()" style="padding:10px 20px;">Add</button>
+    </div>
+    <div id="customTermsList" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
 
     <h2 style="margin-top:25px;">Templates</h2>
     <p style="color:#aaa; margin-bottom:15px;">Load a pre-built template to get started quickly.</p>
@@ -378,6 +406,51 @@ const PLAYS_BY_AGE = {
         'Double Steal'
     ]
 };
+
+// Custom terms stored in localStorage
+let customTerms = JSON.parse(localStorage.getItem('customTerms') || '[]');
+
+function getPlaysForAge(ageGroup) {
+    return [...PLAYS_BY_AGE[ageGroup], ...customTerms];
+}
+
+function addCustomTerm() {
+    const input = document.getElementById('customTermInput');
+    const term = input.value.trim();
+    if (!term) return;
+    if (customTerms.includes(term)) {
+        alert('That play already exists!');
+        return;
+    }
+    // Check if it's already a built-in play
+    for (const age of Object.values(PLAYS_BY_AGE)) {
+        if (age.includes(term)) {
+            alert('That play is already built-in!');
+            return;
+        }
+    }
+    customTerms.push(term);
+    localStorage.setItem('customTerms', JSON.stringify(customTerms));
+    input.value = '';
+    renderCustomTerms();
+}
+
+function removeCustomTerm(term) {
+    customTerms = customTerms.filter(t => t !== term);
+    localStorage.setItem('customTerms', JSON.stringify(customTerms));
+    renderCustomTerms();
+}
+
+function renderCustomTerms() {
+    const container = document.getElementById('customTermsList');
+    if (customTerms.length === 0) {
+        container.innerHTML = '<span style="color:#666; font-size:0.85em;">No custom plays added yet.</span>';
+        return;
+    }
+    container.innerHTML = customTerms.map(t =>
+        `<span class="custom-tag">${t} <span class="remove-tag" onclick="removeCustomTerm('${t.replace(/'/g, "\\'")}')">&times;</span></span>`
+    ).join('');
+}
 
 const DEFAULT_COLORS = [
     { name: 'Pink', color: '#ff69b4' },
@@ -481,7 +554,7 @@ function generateWristband() {
     const numCols = parseInt(document.getElementById('numColumns').value);
     const numRows = parseInt(document.getElementById('numRows').value);
     const title = document.getElementById('wristbandTitle').value || 'Offense';
-    const plays = PLAYS_BY_AGE[ageGroup];
+    const plays = getPlaysForAge(ageGroup);
     const rowRanges = getRowRanges();
 
     // Gather column configs
@@ -761,7 +834,13 @@ function loadTemplate(key) {
 // Initialize
 buildColumnConfig();
 buildRowConfig();
+renderCustomTerms();
 renderSavedList();
+
+// Allow Enter key to add custom term
+document.getElementById('customTermInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addCustomTerm();
+});
 </script>
 
 </body>
