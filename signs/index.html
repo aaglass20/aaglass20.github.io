@@ -205,7 +205,7 @@
             flex-wrap: wrap;
         }
 
-        .hidden { display: none; }
+        .hidden { display: none !important; }
 
         /* Print styles */
         @media print {
@@ -252,6 +252,32 @@
             font-size: 1.1em;
         }
         .custom-tag .remove-tag:hover { color: #ff6b81; }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-overlay .spinner {
+            color: #fff;
+            font-size: 1.2em;
+        }
+        .sync-status {
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .sync-ok { background: #28a745; color: #fff; }
+        .sync-err { background: #e94560; color: #fff; }
+        .sync-pending { background: #ffc107; color: #000; }
+
         .saved-item span { font-weight: bold; }
         .saved-item .saved-meta { color: #aaa; font-size: 0.85em; }
     </style>
@@ -259,9 +285,10 @@
 <body>
 
 <div class="header">
-    <h1>Softball Wristband Creator</h1>
+    <h1>Softball Wristband Creator <span class="sync-status sync-pending" id="syncStatus">connecting...</span></h1>
     <p>Create custom play wristbands for U10, U12, and U14</p>
 </div>
+<div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner">Saving to Google Sheets...</div></div>
 
 <!-- Step 1: Setup -->
 <div class="setup-panel" id="setupPanel">
@@ -353,7 +380,51 @@
 <div class="saved-list" id="savedList"></div>
 
 <script>
-// Play options by age group — more complex as age increases
+// ===== GOOGLE SHEETS CONFIG =====
+// After deploying Code.gs, paste your web app URL here:
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfv7epK2Kr70Hm3a5CeogzUJeXrEZugpAJ4JrkKRWU_dG5ZKzB9TKRjxPRjhhFCAtx1Q/exec';
+const useGoogleSheets = SCRIPT_URL !== 'PASTE_YOUR_SCRIPT_URL_HERE';
+
+// ===== Google Sheets API helpers =====
+function showLoading(msg) {
+    const el = document.getElementById('loadingOverlay');
+    el.querySelector('.spinner').textContent = msg || 'Saving to Google Sheets...';
+    el.classList.remove('hidden');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+function setSyncStatus(status, text) {
+    const el = document.getElementById('syncStatus');
+    el.className = 'sync-status sync-' + status;
+    el.textContent = text;
+}
+
+async function sheetGet(action) {
+    const resp = await fetch(SCRIPT_URL + '?action=' + action, {
+        redirect: 'follow'
+    });
+    if (!resp.ok) throw new Error('GET failed: ' + resp.status);
+    return resp.json();
+}
+
+async function sheetPost(data) {
+    // Google Apps Script redirects POST to GET on the final URL,
+    // so we must use no-cors or handle via the redirect workaround.
+    // Using fetch in no-cors mode won't give us the response body,
+    // so instead we POST as text/plain to avoid preflight, which
+    // lets the browser follow the redirect automatically.
+    const resp = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+        redirect: 'follow'
+    });
+    if (!resp.ok) throw new Error('POST failed: ' + resp.status);
+    return resp.json();
+}
+
+// ===== Play options by age group =====
 const PLAYS_BY_AGE = {
     U10: [
         '(blank)',
@@ -407,14 +478,14 @@ const PLAYS_BY_AGE = {
     ]
 };
 
-// Custom terms stored in localStorage
+// ===== Custom terms =====
 let customTerms = JSON.parse(localStorage.getItem('customTerms') || '[]');
 
 function getPlaysForAge(ageGroup) {
     return [...PLAYS_BY_AGE[ageGroup], ...customTerms];
 }
 
-function addCustomTerm() {
+async function addCustomTerm() {
     const input = document.getElementById('customTermInput');
     const term = input.value.trim();
     if (!term) return;
@@ -422,7 +493,6 @@ function addCustomTerm() {
         alert('That play already exists!');
         return;
     }
-    // Check if it's already a built-in play
     for (const age of Object.values(PLAYS_BY_AGE)) {
         if (age.includes(term)) {
             alert('That play is already built-in!');
@@ -433,12 +503,20 @@ function addCustomTerm() {
     localStorage.setItem('customTerms', JSON.stringify(customTerms));
     input.value = '';
     renderCustomTerms();
+
+    if (useGoogleSheets) {
+        await sheetPost({ action: 'saveCustomTerm', term });
+    }
 }
 
-function removeCustomTerm(term) {
+async function removeCustomTerm(term) {
     customTerms = customTerms.filter(t => t !== term);
     localStorage.setItem('customTerms', JSON.stringify(customTerms));
     renderCustomTerms();
+
+    if (useGoogleSheets) {
+        await sheetPost({ action: 'deleteCustomTerm', term });
+    }
 }
 
 function renderCustomTerms() {
@@ -452,6 +530,7 @@ function renderCustomTerms() {
     ).join('');
 }
 
+// ===== Column / Row config =====
 const DEFAULT_COLORS = [
     { name: 'Pink', color: '#ff69b4' },
     { name: 'Yellow', color: '#ffd700' },
@@ -461,7 +540,7 @@ const DEFAULT_COLORS = [
     { name: 'Purple', color: '#9c27b0' }
 ];
 
-let savedWristbands = JSON.parse(localStorage.getItem('savedWristbands') || '[]');
+let savedWristbands = [];
 
 function buildColumnConfig() {
     const num = parseInt(document.getElementById('numColumns').value);
@@ -491,8 +570,6 @@ function buildRowConfig() {
         const item = document.createElement('div');
         item.className = 'col-config-item';
         item.style.minWidth = '140px';
-
-        // Default: rows of 10 (1-10, 11-20, etc.)
         const defaultEnd = (i + 1) * 10;
 
         item.innerHTML = `
@@ -519,7 +596,6 @@ function updateRowStarts() {
         if (startEl) startEl.textContent = nextStart;
         if (endEl) {
             endEl.min = nextStart;
-            // If end value is less than start, auto-fix
             if (parseInt(endEl.value) < nextStart) {
                 endEl.value = nextStart;
             }
@@ -541,6 +617,7 @@ function getRowRanges() {
     return ranges;
 }
 
+// ===== Wristband generation =====
 function getTextColor(bgHex) {
     const r = parseInt(bgHex.substr(1,2), 16);
     const g = parseInt(bgHex.substr(3,2), 16);
@@ -557,7 +634,6 @@ function generateWristband() {
     const plays = getPlaysForAge(ageGroup);
     const rowRanges = getRowRanges();
 
-    // Gather column configs
     const columns = [];
     for (let i = 0; i < numCols; i++) {
         columns.push({
@@ -566,11 +642,9 @@ function generateWristband() {
         });
     }
 
-    // Build table HTML — Play # always on far left
     let html = `<div class="wristband-title">${title}</div>`;
     html += '<table class="wristband-table">';
 
-    // Header row
     html += '<tr>';
     html += `<th style="background:#222; color:#fff;">Play #</th>`;
     for (let c = 0; c < numCols; c++) {
@@ -580,7 +654,6 @@ function generateWristband() {
     }
     html += '</tr>';
 
-    // Data rows
     for (let r = 0; r < numRows; r++) {
         html += '<tr>';
         html += `<td class="play-num">${rowRanges[r]}</td>`;
@@ -610,11 +683,11 @@ function backToSetup() {
     document.getElementById('wristbandArea').classList.add('hidden');
 }
 
-function saveWristband() {
+// ===== Save / Load / Delete wristbands =====
+async function saveWristband() {
     const title = document.getElementById('wristbandTitle').value || 'Offense';
     const ageGroup = document.getElementById('ageGroup').value;
 
-    // Capture current selections
     const selects = document.querySelectorAll('#wristbandCard select');
     const selections = {};
     selects.forEach(sel => {
@@ -622,7 +695,6 @@ function saveWristband() {
         selections[key] = sel.value;
     });
 
-    // Capture column configs
     const numCols = parseInt(document.getElementById('numColumns').value);
     const columns = [];
     for (let i = 0; i < numCols; i++) {
@@ -652,13 +724,22 @@ function saveWristband() {
     savedWristbands.push(wristband);
     localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
     renderSavedList();
+
+    if (useGoogleSheets) {
+        showLoading('Saving wristband to Google Sheets...');
+        try {
+            await sheetPost({ action: 'saveWristband', wristband });
+            setSyncStatus('ok', 'synced');
+        } catch (err) {
+            setSyncStatus('err', 'sync error');
+            console.error('Sheet save error:', err);
+        }
+        hideLoading();
+    }
     alert('Wristband saved!');
 }
 
-function loadWristband(id) {
-    const wb = savedWristbands.find(w => w.id === id);
-    if (!wb) return;
-
+function applyWristbandToUI(wb) {
     document.getElementById('ageGroup').value = wb.ageGroup;
     document.getElementById('numColumns').value = wb.numCols;
     document.getElementById('numRows').value = wb.numRows || 5;
@@ -667,13 +748,11 @@ function loadWristband(id) {
     buildColumnConfig();
     buildRowConfig();
 
-    // Restore column settings
     wb.columns.forEach((col, i) => {
         document.getElementById(`colName${i}`).value = col.name;
         document.getElementById(`colColor${i}`).value = col.color;
     });
 
-    // Restore row end values
     if (wb.rowEnds) {
         wb.rowEnds.forEach((endVal, i) => {
             const el = document.getElementById(`rowEnd${i}`);
@@ -684,7 +763,6 @@ function loadWristband(id) {
 
     generateWristband();
 
-    // Restore selections
     const selects = document.querySelectorAll('#wristbandCard select');
     selects.forEach(sel => {
         const key = `${sel.dataset.row}-${sel.dataset.col}`;
@@ -694,11 +772,21 @@ function loadWristband(id) {
     });
 }
 
-function deleteWristband(id) {
+function loadWristband(id) {
+    const wb = savedWristbands.find(w => String(w.id) === String(id));
+    if (!wb) return;
+    applyWristbandToUI(wb);
+}
+
+async function deleteWristband(id) {
     if (!confirm('Delete this wristband?')) return;
-    savedWristbands = savedWristbands.filter(w => w.id !== id);
+    savedWristbands = savedWristbands.filter(w => String(w.id) !== String(id));
     localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
     renderSavedList();
+
+    if (useGoogleSheets) {
+        await sheetPost({ action: 'deleteWristband', id });
+    }
 }
 
 function renderSavedList() {
@@ -716,8 +804,8 @@ function renderSavedList() {
                     <div class="saved-meta">${wb.ageGroup} &bull; ${wb.numCols} columns &bull; ${wb.numRows || '?'} rows &bull; ${wb.createdAt}</div>
                 </div>
                 <div style="display:flex; gap:8px;">
-                    <button class="btn btn-primary" onclick="loadWristband(${wb.id})" style="padding:8px 16px; font-size:0.85em;">Load</button>
-                    <button class="btn btn-secondary" onclick="deleteWristband(${wb.id})" style="padding:8px 16px; font-size:0.85em;">Delete</button>
+                    <button class="btn btn-primary" onclick="loadWristband('${wb.id}')" style="padding:8px 16px; font-size:0.85em;">Load</button>
+                    <button class="btn btn-secondary" onclick="deleteWristband('${wb.id}')" style="padding:8px 16px; font-size:0.85em;">Delete</button>
                 </div>
             </div>
         `;
@@ -797,47 +885,53 @@ const TEMPLATES = {
 function loadTemplate(key) {
     const t = TEMPLATES[key];
     if (!t) return;
-
-    document.getElementById('ageGroup').value = t.ageGroup;
-    document.getElementById('numColumns').value = t.numCols;
-    document.getElementById('numRows').value = t.numRows;
-    document.getElementById('wristbandTitle').value = t.title;
-
-    buildColumnConfig();
-    buildRowConfig();
-
-    // Set column names and colors
-    t.columns.forEach((col, i) => {
-        document.getElementById(`colName${i}`).value = col.name;
-        document.getElementById(`colColor${i}`).value = col.color;
-    });
-
-    // Set row end values
-    t.rowEnds.forEach((endVal, i) => {
-        const el = document.getElementById(`rowEnd${i}`);
-        if (el) el.value = endVal;
-    });
-    updateRowStarts();
-
-    // Generate and fill in selections
-    generateWristband();
-
-    const selects = document.querySelectorAll('#wristbandCard select');
-    selects.forEach(sel => {
-        const key = `${sel.dataset.row}-${sel.dataset.col}`;
-        if (t.selections[key]) {
-            sel.value = t.selections[key];
-        }
-    });
+    applyWristbandToUI(t);
 }
 
-// Initialize
-buildColumnConfig();
-buildRowConfig();
-renderCustomTerms();
-renderSavedList();
+// ===== Initialize =====
+async function init() {
+    buildColumnConfig();
+    buildRowConfig();
+    renderCustomTerms();
 
-// Allow Enter key to add custom term
+    // Load from localStorage first (instant)
+    savedWristbands = JSON.parse(localStorage.getItem('savedWristbands') || '[]');
+    renderSavedList();
+
+    // Then sync from Google Sheets if configured
+    if (useGoogleSheets) {
+        setSyncStatus('pending', 'syncing...');
+        try {
+            const [sheetWristbands, sheetTerms] = await Promise.all([
+                sheetGet('getWristbands'),
+                sheetGet('getCustomTerms')
+            ]);
+
+            // Merge: sheet data is the source of truth
+            if (Array.isArray(sheetWristbands) && sheetWristbands.length > 0) {
+                savedWristbands = sheetWristbands;
+                localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
+                renderSavedList();
+            }
+
+            if (Array.isArray(sheetTerms) && sheetTerms.length > 0) {
+                customTerms = sheetTerms;
+                localStorage.setItem('customTerms', JSON.stringify(customTerms));
+                renderCustomTerms();
+            }
+
+            setSyncStatus('ok', 'synced');
+        } catch (err) {
+            console.error('Google Sheets sync error:', err);
+            setSyncStatus('err', 'offline');
+        }
+    } else {
+        setSyncStatus('pending', 'local only');
+    }
+}
+
+init();
+
 document.getElementById('customTermInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') addCustomTerm();
 });
