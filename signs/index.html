@@ -269,6 +269,27 @@
                 background: transparent;
                 font-size: inherit;
             }
+            /* Black & White mode */
+            body.print-bw .print-wristband .wristband-card {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            body.print-bw .print-wristband .wristband-title {
+                background: #fff !important;
+                color: #000 !important;
+                border-bottom: 2px solid #000;
+            }
+            body.print-bw .print-wristband .wristband-table th {
+                background: #ddd !important;
+                color: #000 !important;
+            }
+            body.print-bw .print-wristband .wristband-table td {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            body.print-bw .print-wristband .wristband-table td select {
+                color: #000 !important;
+            }
         }
 
         /* Saved wristbands list */
@@ -432,6 +453,13 @@
             <input type="number" id="printHeight" value="2.2" step="0.1" min="1" max="20" style="width:65px; padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;" onchange="updatePrintSize()">
             <span style="color:#aaa;">in</span>
         </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Print:</label>
+            <select id="printColorMode" style="padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;">
+                <option value="color">Color</option>
+                <option value="bw">Black &amp; White</option>
+            </select>
+        </div>
         <button class="btn btn-print" onclick="printWristband()">Print Wristband</button>
     </div>
     <div class="wristband-card" id="wristbandCard"></div>
@@ -481,6 +509,13 @@ function printWristband() {
         wrapper.className = 'print-wristband';
         wrapper.appendChild(clone);
         container.appendChild(wrapper);
+    }
+
+    const colorMode = document.getElementById('printColorMode').value;
+    if (colorMode === 'bw') {
+        document.body.classList.add('print-bw');
+    } else {
+        document.body.classList.remove('print-bw');
     }
 
     window.print();
