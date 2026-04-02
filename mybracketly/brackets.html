@@ -1456,7 +1456,7 @@ function propagateByesDouble(matches) {
             }
             if (match.loserNextMatchId && (match.bracket === 'winners' || match.bracket === 'consolation')) {
                 const loser = match.slot1.name === match.winner ? match.slot2 : match.slot1;
-                if (loser && loser.name && loser.name !== 'BYE') {
+                if (loser && loser.name) {
                     const lm = matches.find(m => m.id === match.loserNextMatchId);
                     if (lm) {
                         if (match.loserNextSlot) {
@@ -1472,6 +1472,15 @@ function propagateByesDouble(matches) {
                 if (nm && !nm.winner) {
                     if (nm.slot1.name === 'BYE' && nm.slot2.name && nm.slot2.name !== 'BYE') { nm.winner = nm.slot2.name; changed = true; }
                     else if (nm.slot2.name === 'BYE' && nm.slot1.name && nm.slot1.name !== 'BYE') { nm.winner = nm.slot1.name; changed = true; }
+                    else if (nm.slot1.name === 'BYE' && nm.slot2.name === 'BYE') { nm.winner = 'BYE'; changed = true; }
+                }
+            }
+            if (match.loserNextMatchId) {
+                const lm = matches.find(m => m.id === match.loserNextMatchId);
+                if (lm && !lm.winner) {
+                    if (lm.slot1.name === 'BYE' && lm.slot2.name && lm.slot2.name !== 'BYE') { lm.winner = lm.slot2.name; changed = true; }
+                    else if (lm.slot2.name === 'BYE' && lm.slot1.name && lm.slot1.name !== 'BYE') { lm.winner = lm.slot1.name; changed = true; }
+                    else if (lm.slot1.name === 'BYE' && lm.slot2.name === 'BYE') { lm.winner = 'BYE'; changed = true; }
                 }
             }
         }
@@ -2028,12 +2037,18 @@ function advanceWinner(match) {
     // Consolation bracket: losers from winners go to losers bracket
     if (match.loserNextMatchId) {
         const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
-        if (lm && loser.name && loser.name !== 'BYE') {
+        if (lm && loser.name) {
             if (match.loserNextSlot) {
                 const slot = match.loserNextSlot === 1 ? 'slot1' : 'slot2';
                 lm[slot].name = loser.name; lm[slot].seed = loser.seed;
             } else if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; }
             else if (!lm.slot2.name) { lm.slot2.name = loser.name; lm.slot2.seed = loser.seed; }
+            // Auto-resolve if BYE is involved
+            if (!lm.winner && lm.slot1.name && lm.slot2.name) {
+                if (lm.slot1.name === 'BYE' && lm.slot2.name !== 'BYE') { lm.winner = lm.slot2.name; advanceWinner(lm); }
+                else if (lm.slot2.name === 'BYE' && lm.slot1.name !== 'BYE') { lm.winner = lm.slot1.name; advanceWinner(lm); }
+                else if (lm.slot1.name === 'BYE' && lm.slot2.name === 'BYE') { lm.winner = 'BYE'; advanceWinner(lm); }
+            }
         }
     }
 
