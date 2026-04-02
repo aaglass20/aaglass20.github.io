@@ -72,6 +72,22 @@
                 <div id="globalSheetsStatus" style="margin-top:0.5rem; font-size:0.85rem;"></div>
             </div>
         </details>
+
+        <details class="landing-config mt-3">
+            <summary>
+                <i class="fas fa-flask" style="color:var(--warning);"></i> Feature Flags
+                <i class="fas fa-chevron-right chevron" style="margin-left:auto;font-size:0.8rem;"></i>
+            </summary>
+            <div style="margin-top:1rem;">
+                <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
+                    <input type="checkbox" id="flagTestNames" onchange="setFeatureFlag('testNames', this.checked)" style="width:18px;height:18px;accent-color:var(--warning);">
+                    <div>
+                        <strong>Generate Test Names</strong>
+                        <small style="display:block;color:var(--text-light);font-size:0.8rem;">Show a button to auto-fill participant slots with random test names during tournament setup.</small>
+                    </div>
+                </label>
+            </div>
+        </details>
     </div>
 
     <!-- ==================== SETUP WIZARD ==================== -->
@@ -160,6 +176,39 @@
 // ---- Configuration ----
 let SCRIPT_URL = '';
 let SHEETS_CONFIGURED = false;
+
+// ---- Feature Flags ----
+const LS_FEATURE_FLAGS_KEY = 'mybracketly_feature_flags';
+const DEFAULT_FEATURE_FLAGS = { testNames: false };
+function getFeatureFlags() {
+    try { return Object.assign({}, DEFAULT_FEATURE_FLAGS, JSON.parse(localStorage.getItem(LS_FEATURE_FLAGS_KEY))); }
+    catch { return { ...DEFAULT_FEATURE_FLAGS }; }
+}
+function setFeatureFlag(flag, value) {
+    const flags = getFeatureFlags();
+    flags[flag] = value;
+    localStorage.setItem(LS_FEATURE_FLAGS_KEY, JSON.stringify(flags));
+}
+
+// ---- Random Test Names ----
+const TEST_FIRST_NAMES = ['Alex','Jordan','Taylor','Morgan','Casey','Riley','Quinn','Avery','Charlie','Dakota','Drew','Emerson','Finley','Harper','Jamie','Kendall','Logan','Parker','Reese','Sage','Skyler','Blake','Cameron','Devon','Ellis','Frankie','Gray','Hayden','Indigo','Jules'];
+const TEST_LAST_NAMES = ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Martinez','Wilson','Anderson','Taylor','Thomas','Moore','Jackson','Martin','Lee','Thompson','White','Harris','Clark','Lewis','Walker','Hall','Young','King','Wright','Hill','Scott','Green'];
+function generateTestNames(count) {
+    const names = new Set();
+    while (names.size < count) {
+        const first = TEST_FIRST_NAMES[Math.floor(Math.random() * TEST_FIRST_NAMES.length)];
+        const last = TEST_LAST_NAMES[Math.floor(Math.random() * TEST_LAST_NAMES.length)];
+        names.add(`${first} ${last}`);
+    }
+    return [...names];
+}
+function fillTestNames() {
+    const count = newTournament.participantCount;
+    participantNames = generateTestNames(count);
+    participantGroups = {};
+    renderParticipantList();
+    showStatus(`Generated ${count} random test names`, 'success');
+}
 
 // ---- Multi-Tournament State ----
 let tournamentsIndex = []; // [{id, name, type, status, participantCount, createdAt, updatedAt}]
@@ -287,6 +336,10 @@ function showLanding() {
     const urlInput = document.getElementById('globalSheetsUrl');
     if (urlInput) urlInput.value = SCRIPT_URL || '';
     updateGlobalSheetsStatus();
+
+    // Initialize feature flag checkboxes
+    const flagTestNames = document.getElementById('flagTestNames');
+    if (flagTestNames) flagTestNames.checked = getFeatureFlags().testNames;
 
     renderLanding();
 }
@@ -615,6 +668,7 @@ function buildParticipantNamesHTML(backStep) {
             <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
                 <button class="btn btn-outline btn-sm" onclick="randomizeSeeds()"><i class="fas fa-shuffle"></i> Randomize Order</button>
                 <button class="btn btn-outline btn-sm" onclick="clearParticipants()"><i class="fas fa-trash"></i> Clear All</button>
+                ${getFeatureFlags().testNames ? '<button class="btn btn-outline btn-sm" onclick="fillTestNames()" style="border-color:var(--warning);color:var(--warning);"><i class="fas fa-robot"></i> Generate Test Names</button>' : ''}
             </div>
         </div>
         <div class="mt-1" id="participantProgress" style="font-size:0.85rem;color:var(--text-light);">0 / ${count} participants added</div>
