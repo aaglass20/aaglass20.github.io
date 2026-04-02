@@ -1097,8 +1097,8 @@ function generateSingleWithConsolation(participants) {
     const semis = matches.filter(m => m.round === numRounds - 1 && m.bracket === 'winners');
     if (semis.length >= 2) {
         const consolation = { id: matchId++, round: numRounds, roundName: '3rd Place Match', matchNum: 1, bracket: 'consolation', slot1: {name:null,seed:null,score:null}, slot2: {name:null,seed:null,score:null}, winner: null, nextMatchId: null };
-        semis[0].loserNextMatchId = consolation.id;
-        semis[1].loserNextMatchId = consolation.id;
+        semis[0].loserNextMatchId = consolation.id; semis[0].loserNextSlot = 1;
+        semis[1].loserNextMatchId = consolation.id; semis[1].loserNextSlot = 2;
         matches.push(consolation);
     } else if (numRounds <= 1) {
         // Not enough rounds for consolation — just a regular single elim
@@ -1177,8 +1177,8 @@ function generateConsolationBracket(participants) {
                 slot2: { name: null, seed: null, score: null },
                 winner: null, nextMatchId: null, nextSlot: null, loserNextMatchId: null
             };
-            wr0[i].loserNextMatchId = m.id;
-            wr0[i + 1].loserNextMatchId = m.id;
+            wr0[i].loserNextMatchId = m.id; wr0[i].loserNextSlot = 1;
+            wr0[i + 1].loserNextMatchId = m.id; wr0[i + 1].loserNextSlot = 2;
             cr1.push(m);
             matches.push(m);
         }
@@ -1208,7 +1208,7 @@ function generateConsolationBracket(participants) {
             if (prevCM[j]) { prevCM[j].nextMatchId = m.id; prevCM[j].nextSlot = 1; }
             // WR losers drop in to slot 2 (with cross-bracket mapping)
             const targetIdx = crossBracket ? (numDropMatches - 1 - j) : j;
-            if (feedWR[targetIdx]) { feedWR[targetIdx].loserNextMatchId = m.id; }
+            if (feedWR[targetIdx]) { feedWR[targetIdx].loserNextMatchId = m.id; feedWR[targetIdx].loserNextSlot = 2; }
             dropIn.push(m);
             matches.push(m);
         }
@@ -1274,8 +1274,8 @@ function generateConsolationBracket(participants) {
                 slot2: { name: null, seed: null, score: null },
                 winner: null, nextMatchId: null, nextSlot: null, loserNextMatchId: null
             };
-            consolationSFs[0].loserNextMatchId = fifthPlace.id;
-            consolationSFs[1].loserNextMatchId = fifthPlace.id;
+            consolationSFs[0].loserNextMatchId = fifthPlace.id; consolationSFs[0].loserNextSlot = 1;
+            consolationSFs[1].loserNextMatchId = fifthPlace.id; consolationSFs[1].loserNextSlot = 2;
             matches.push(fifthPlace);
         }
     }
@@ -1310,8 +1310,8 @@ function generateConsolationBracket(participants) {
                     slot2: { name: null, seed: null, score: null },
                     winner: null, nextMatchId: null, nextSlot: null, loserNextMatchId: null
                 };
-                prevRoundMatches[0].loserNextMatchId = seventhPlace.id;
-                prevRoundMatches[1].loserNextMatchId = seventhPlace.id;
+                prevRoundMatches[0].loserNextMatchId = seventhPlace.id; prevRoundMatches[0].loserNextSlot = 1;
+                prevRoundMatches[1].loserNextMatchId = seventhPlace.id; prevRoundMatches[1].loserNextSlot = 2;
                 matches.push(seventhPlace);
             }
         }
@@ -1386,8 +1386,8 @@ function generateDoubleElimination(participants) {
         for (let i = 0; i < wr0.length; i += 2) {
             losersRoundNum++;
             const m = { id: matchId++, round: losersRoundNum, roundName: `Losers R${losersRoundNum}`, matchNum: Math.floor(i/2)+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
-            wr0[i].loserNextMatchId = m.id;
-            wr0[i+1].loserNextMatchId = m.id;
+            wr0[i].loserNextMatchId = m.id; wr0[i].loserNextSlot = 1;
+            wr0[i+1].loserNextMatchId = m.id; wr0[i+1].loserNextSlot = 2;
             rm.push(m); matches.push(m);
         }
         prevLM = rm;
@@ -1403,7 +1403,7 @@ function generateDoubleElimination(participants) {
         for (let i = 0; i < Math.max(prevLM.length, feedWR.length); i++) {
             const m = { id: matchId++, round: losersRoundNum, roundName: `Losers R${losersRoundNum}`, matchNum: i+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
             if (prevLM[i]) { prevLM[i].nextMatchId = m.id; prevLM[i].nextSlot = 1; }
-            if (feedWR[i]) { feedWR[i].loserNextMatchId = m.id; }
+            if (feedWR[i]) { feedWR[i].loserNextMatchId = m.id; feedWR[i].loserNextSlot = 2; }
             dropRound.push(m); matches.push(m);
         }
         prevLM = dropRound;
@@ -1454,12 +1454,15 @@ function propagateByesDouble(matches) {
                     if (nm[slot].name !== match.winner) { nm[slot].name = match.winner; nm[slot].seed = p ? p.seed : null; changed = true; }
                 }
             }
-            if (match.loserNextMatchId && match.bracket === 'winners') {
+            if (match.loserNextMatchId && (match.bracket === 'winners' || match.bracket === 'consolation')) {
                 const loser = match.slot1.name === match.winner ? match.slot2 : match.slot1;
                 if (loser && loser.name && loser.name !== 'BYE') {
                     const lm = matches.find(m => m.id === match.loserNextMatchId);
                     if (lm) {
-                        if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; changed = true; }
+                        if (match.loserNextSlot) {
+                            const slot = match.loserNextSlot === 1 ? 'slot1' : 'slot2';
+                            if (lm[slot].name !== loser.name) { lm[slot].name = loser.name; lm[slot].seed = loser.seed; changed = true; }
+                        } else if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; changed = true; }
                         else if (!lm.slot2.name) { lm.slot2.name = loser.name; lm.slot2.seed = loser.seed; changed = true; }
                     }
                 }
@@ -2022,11 +2025,14 @@ function advanceWinner(match) {
         }
     }
 
-    // Consolation bracket: losers from semis go to 3rd place match
+    // Consolation bracket: losers from winners go to losers bracket
     if (match.loserNextMatchId) {
         const lm = tournament.matches.find(m => m.id === match.loserNextMatchId);
         if (lm && loser.name && loser.name !== 'BYE') {
-            if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; }
+            if (match.loserNextSlot) {
+                const slot = match.loserNextSlot === 1 ? 'slot1' : 'slot2';
+                lm[slot].name = loser.name; lm[slot].seed = loser.seed;
+            } else if (!lm.slot1.name) { lm.slot1.name = loser.name; lm.slot1.seed = loser.seed; }
             else if (!lm.slot2.name) { lm.slot2.name = loser.name; lm.slot2.seed = loser.seed; }
         }
     }
