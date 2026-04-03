@@ -79,6 +79,10 @@
     .landing-header { flex-direction: column; align-items: stretch; }
 }
 
+/* Cornhole scoreboard modal */
+.modal-overlay.cornhole-mode .modal { max-width: 580px; }
+.modal-overlay.cornhole-mode .modal button:disabled { opacity: 0.35; cursor: not-allowed; }
+
 @media print {
     .tab-content:not(#tab-bracket) { display: none !important; }
     .bracket-container { overflow: visible; }
