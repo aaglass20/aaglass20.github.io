@@ -129,6 +129,7 @@
                     <div class="type-card" onclick="selectType('roundrobin')" data-type="roundrobin"><i class="fas fa-arrows-spin"></i><h3>Round Robin</h3><p>Everyone plays everyone. Most wins takes it.</p></div>
                     <div class="type-card" onclick="selectType('rr_single')" data-type="rr_single"><i class="fas fa-filter"></i><h3>Round Robin &rarr; Single Elim</h3><p>Round robin group stage, then top players advance to single elimination playoff.</p></div>
                     <div class="type-card" onclick="selectType('rr_double')" data-type="rr_double"><i class="fas fa-layer-group"></i><h3>Round Robin &rarr; Double Elim</h3><p>Round robin group stage, then top players advance to double elimination playoff.</p></div>
+                    <div class="type-card" onclick="selectType('rr_consolation')" data-type="rr_consolation"><i class="fas fa-ranking-star"></i><h3>Round Robin &rarr; Consolation</h3><p>Round robin group stage, then top players advance to a consolation bracket playoff.</p></div>
                 </div>
                 <div class="flex-between mt-2">
                     <button class="btn btn-outline" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
@@ -552,7 +553,7 @@ function selectType(type) {
 }
 
 function buildStep3() {
-    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
+    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double' || selectedType === 'rr_consolation';
     const container = document.getElementById('step3Content');
 
     const isRoundRobin = selectedType === 'roundrobin';
@@ -581,9 +582,32 @@ function buildStep3() {
             html += '<small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Top N from each group advance to the elimination bracket. Total advancing: <strong id="totalAdvancing">' + (defaultAdvance * gc) + '</strong>. Powers of 2 work best.</small></div>';
         }
 
+        if (selectedType === 'rr_consolation') {
+            html += `<div class="form-group" style="margin-top:1rem;">
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                    <input type="checkbox" id="crossBracketToggle" style="width:18px;height:18px;accent-color:var(--primary);">
+                    <span>Enable cross-bracketing</span>
+                </label>
+                <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">
+                    Wrestling-style: losers cross to the opposite side of the consolation bracket to prevent early rematches.
+                </small>
+            </div>
+            <div class="form-group" style="margin-top:1rem;">
+                <label for="placementDepth">Placement Depth</label>
+                <select id="placementDepth" class="form-select">
+                    <option value="4">Through 4th place (3rd/4th match)</option>
+                    <option value="6" selected>Through 6th place (3rd-6th matches)</option>
+                    <option value="8">Through 8th place (3rd-8th matches)</option>
+                </select>
+                <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">
+                    Higher placement depth requires more participants (8+ for 6th, 16+ for 8th).
+                </small>
+            </div>`;
+        }
+
         html += '<div class="flex-between mt-2">';
         html += '<button class="btn btn-outline" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>';
-        html += '<button class="btn btn-primary btn-lg" onclick="saveGroupSettings(); goToStep(4);">Next <i class="fas fa-arrow-right"></i></button>';
+        html += '<button class="btn btn-primary btn-lg" onclick="saveGroupSettings(); ' + (selectedType === 'rr_consolation' ? 'saveConsolationSettings(); ' : '') + 'goToStep(4);">Next <i class="fas fa-arrow-right"></i></button>';
         html += '</div>';
         container.innerHTML = html;
     } else if (selectedType === 'consolation') {
@@ -644,7 +668,7 @@ function saveConsolationSettings() {
 }
 
 function buildStep4() {
-    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double';
+    const isHybrid = selectedType === 'rr_single' || selectedType === 'rr_double' || selectedType === 'rr_consolation';
     const isConsolation = selectedType === 'consolation';
     const isRR = selectedType === 'roundrobin';
     if (!isHybrid && !isConsolation && !isRR) return;
@@ -716,7 +740,7 @@ function renderParticipantList() {
     const startBtn = document.getElementById('startTournamentBtn');
     if (!list) return;
     const groupCount = newTournament.groupCount || 1;
-    const showGroups = groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double');
+    const showGroups = groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double' || selectedType === 'rr_consolation');
     const groupLabels = 'ABCDEFGH'.split('');
 
     list.innerHTML = participantNames.map((name, i) => {
@@ -770,7 +794,7 @@ function createAndStartTournament() {
     const groupLabels = 'ABCDEFGH'.split('');
     let groups = [];
 
-    if (groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double')) {
+    if (groupCount > 1 && (selectedType === 'roundrobin' || selectedType === 'rr_single' || selectedType === 'rr_double' || selectedType === 'rr_consolation')) {
         for (let g = 0; g < groupCount; g++) {
             const groupPlayers = participantNames
                 .filter(name => (participantGroups[name] || 0) === g)
@@ -912,7 +936,7 @@ function autoDetectCompleted() {
                 isComplete = true;
             }
         }
-    } else if ((type === 'rr_single' || type === 'rr_double') && tournament.phase === 'elimination') {
+    } else if ((type === 'rr_single' || type === 'rr_double' || type === 'rr_consolation') && tournament.phase === 'elimination') {
         const gf = tournament.matches.find(m => m.bracket === 'grand_final');
         const gfReset = tournament.matches.find(m => m.bracket === 'grand_final_reset');
         const finals = tournament.matches.filter(m => m.roundName === 'Final');
@@ -1015,7 +1039,7 @@ function generateTournament() {
     else if (type === 'single_consolation') { tournament.matches = generateSingleWithConsolation(participants); }
     else if (type === 'consolation') { tournament.matches = generateConsolationBracket(participants); }
     else if (type === 'double') { tournament.matches = generateDoubleElimination(participants); }
-    else if (type === 'roundrobin' || type === 'rr_single' || type === 'rr_double') {
+    else if (type === 'roundrobin' || type === 'rr_single' || type === 'rr_double' || type === 'rr_consolation') {
         tournament.rrMatches = [];
         const groups = tournament.groups || [{ name: 'Group A', participants: participants }];
         groups.forEach(function(group) {
@@ -1024,7 +1048,7 @@ function generateTournament() {
             tournament.rrMatches = tournament.rrMatches.concat(groupMatches);
         });
         tournament.matches = [];
-        if (type === 'rr_single' || type === 'rr_double') tournament.phase = 'rr';
+        if (type === 'rr_single' || type === 'rr_double' || type === 'rr_consolation') tournament.phase = 'rr';
     }
 }
 
@@ -1527,7 +1551,7 @@ function getRoundName(round, totalRounds) {
 }
 function escapeHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function getFormatLabel(type) {
-    return { single:'Single Elimination', single_consolation:'Single Elim + 3rd Place', consolation:'Consolation Bracket', double:'Double Elimination', roundrobin:'Round Robin', rr_single:'Round Robin \u2192 Single Elim', rr_double:'Round Robin \u2192 Double Elim' }[type] || type;
+    return { single:'Single Elimination', single_consolation:'Single Elim + 3rd Place', consolation:'Consolation Bracket', double:'Double Elimination', roundrobin:'Round Robin', rr_single:'Round Robin \u2192 Single Elim', rr_double:'Round Robin \u2192 Double Elim', rr_consolation:'Round Robin \u2192 Consolation' }[type] || type;
 }
 
 // ---- Tab Switching ----
@@ -1544,9 +1568,9 @@ function switchTab(tabId) {
 function renderBracket() {
     const view = document.getElementById('bracketView');
     const type = tournament.type;
-    const isHybrid = type === 'rr_single' || type === 'rr_double';
+    const isHybrid = type === 'rr_single' || type === 'rr_double' || type === 'rr_consolation';
     if (type === 'roundrobin' || (isHybrid && tournament.phase === 'rr')) renderRoundRobinView(view);
-    else if (type === 'consolation') renderConsolationBracket(view);
+    else if (type === 'consolation' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_consolation')) renderConsolationBracket(view);
     else if (type === 'single' || type === 'single_consolation' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_single')) renderSingleElimBracket(view);
     else if (type === 'double' || (isHybrid && tournament.phase === 'elimination' && type === 'rr_double')) renderDoubleElimBracket(view);
 }
@@ -1779,7 +1803,7 @@ function renderDoubleElimBracket(container) {
 
 function renderRoundRobinView(container) {
     const rrMatches = tournament.rrMatches;
-    const isHybrid = tournament.type === 'rr_single' || tournament.type === 'rr_double';
+    const isHybrid = tournament.type === 'rr_single' || tournament.type === 'rr_double' || tournament.type === 'rr_consolation';
     const groups = tournament.groups || [{ name: 'Group A', participants: tournament.participants }];
     const hasMultipleGroups = groups.length > 1;
     let html = '<div class="section-header"><i class="fas fa-arrows-spin"></i><h2>Round Robin</h2></div>';
@@ -1788,7 +1812,8 @@ function renderRoundRobinView(container) {
         const allDone = rrMatches.every(m => m.completed);
         const advPerGroup = tournament.rrAdvanceCount;
         const totalAdv = advPerGroup * groups.length;
-        html += `<p class="section-subtext">Top ${advPerGroup} from each group${hasMultipleGroups ? ' (' + totalAdv + ' total)' : ''} will advance to the ${tournament.type === 'rr_single' ? 'single' : 'double'} elimination playoff.</p>`;
+        const elimLabel = tournament.type === 'rr_single' ? 'single' : tournament.type === 'rr_double' ? 'double' : 'consolation';
+        html += `<p class="section-subtext">Top ${advPerGroup} from each group${hasMultipleGroups ? ' (' + totalAdv + ' total)' : ''} will advance to the ${elimLabel} elimination playoff.</p>`;
         if (allDone && tournament.phase === 'rr') {
             html += `<div class="text-center mb-2"><button class="btn btn-success btn-lg" onclick="advanceToElimination()"><i class="fas fa-arrow-right"></i> Advance to Playoffs</button></div>`;
         }
@@ -1903,6 +1928,7 @@ function renderMatchSlot(slot, winner) {
 function openScoreModal(matchId, type) {
     const modal = document.getElementById('scoreModal'), title = document.getElementById('scoreModalTitle');
     const body = document.getElementById('scoreModalBody'), footer = document.getElementById('scoreModalFooter');
+
     if (type === 'rr') {
         const match = tournament.rrMatches.find(m => m.id === matchId);
         if (!match) return;
@@ -2078,6 +2104,7 @@ function advanceToElimination() {
     const ap = allAdvancers.map((s,i) => ({name:s.name, seed:i+1}));
 
     if (tournament.type === 'rr_single') tournament.matches = generateSingleElimination(ap);
+    else if (tournament.type === 'rr_consolation') tournament.matches = generateConsolationBracket(ap);
     else tournament.matches = generateDoubleElimination(ap);
     tournament.phase = 'elimination';
     saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
@@ -2088,11 +2115,11 @@ function advanceToElimination() {
 function renderStandings() {
     const view = document.getElementById('standingsView');
     const type = tournament.type;
-    const isRR = type==='roundrobin'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='rr');
+    const isRR = type==='roundrobin'||((type==='rr_single'||type==='rr_double'||type==='rr_consolation')&&tournament.phase==='rr');
     let html = '<div class="section-header"><i class="fas fa-list-ol"></i><h2>Standings</h2></div>';
 
-    if (isRR||type==='rr_single'||type==='rr_double') {
-        const isHybrid = type==='rr_single'||type==='rr_double';
+    if (isRR||type==='rr_single'||type==='rr_double'||type==='rr_consolation') {
+        const isHybrid = type==='rr_single'||type==='rr_double'||type==='rr_consolation';
         const groups = tournament.groups || [{ name: 'Group A', participants: tournament.participants }];
         const advPerGroup = isHybrid ? tournament.rrAdvanceCount : 0;
 
@@ -2115,7 +2142,7 @@ function renderStandings() {
         });
     }
 
-    if (type==='single'||type==='single_consolation'||type==='consolation'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination')) {
+    if (type==='single'||type==='single_consolation'||type==='consolation'||type==='double'||((type==='rr_single'||type==='rr_double'||type==='rr_consolation')&&tournament.phase==='elimination')) {
         const em = tournament.matches;
         const playable = em.filter(m=>m.slot1?.name && m.slot2?.name && m.slot1.name!=='BYE' && m.slot2.name!=='BYE' && !m.isReset);
         const completed = playable.filter(m=>m.winner).length;
@@ -2165,8 +2192,8 @@ function renderMatches() {
     const view = document.getElementById('matchesView');
     let html = '<div class="section-header"><i class="fas fa-gamepad"></i><h2>All Matches</h2></div>';
     const type = tournament.type;
-    const hasRR = type==='roundrobin'||type==='rr_single'||type==='rr_double';
-    const hasElim = type==='single'||type==='single_consolation'||type==='consolation'||type==='double'||((type==='rr_single'||type==='rr_double')&&tournament.phase==='elimination');
+    const hasRR = type==='roundrobin'||type==='rr_single'||type==='rr_double'||type==='rr_consolation';
+    const hasElim = type==='single'||type==='single_consolation'||type==='consolation'||type==='double'||((type==='rr_single'||type==='rr_double'||type==='rr_consolation')&&tournament.phase==='elimination');
 
     if (hasRR) {
         html += '<div class="card"><div class="card-header"><span class="card-title">Round Robin Matches</span></div>';
@@ -2215,8 +2242,8 @@ function renderSettings() {
         <strong>Format:</strong><span>${getFormatLabel(tournament.type)}</span>
         <strong>Participants:</strong><span>${tournament.participants.length}</span>
         <strong>Status:</strong><span class="badge badge-${status==='completed'?'success':status==='archived'?'info':'warning'}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
-        ${tournament.type==='rr_single'||tournament.type==='rr_double'?`<strong>Advance per Group:</strong><span>${tournament.rrAdvanceCount}</span><strong>Groups:</strong><span>${(tournament.groups||[]).length}</span>`:''}
-        ${tournament.type==='consolation'?`<strong>Cross-Bracket:</strong><span>${tournament.crossBracket?'Enabled':'Disabled'}</span><strong>Placement Depth:</strong><span>Through ${tournament.placementDepth||4}th</span>`:''}
+        ${tournament.type==='rr_single'||tournament.type==='rr_double'||tournament.type==='rr_consolation'?`<strong>Advance per Group:</strong><span>${tournament.rrAdvanceCount}</span><strong>Groups:</strong><span>${(tournament.groups||[]).length}</span>`:''}
+        ${tournament.type==='consolation'||tournament.type==='rr_consolation'?`<strong>Cross-Bracket:</strong><span>${tournament.crossBracket?'Enabled':'Disabled'}</span><strong>Placement Depth:</strong><span>Through ${tournament.placementDepth||4}th</span>`:''}
     </div></div></div>`;
 
     // Share link

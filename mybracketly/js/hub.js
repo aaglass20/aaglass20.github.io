@@ -198,7 +198,8 @@ const H2H_MODES = {
     accumulation: { label: 'Score Accumulation', icon: 'fa-chart-line', desc: 'Points-based over multiple matches' },
     lives: { label: 'Elimination (Lives)', icon: 'fa-heart', desc: 'Lose a life each loss, last alive wins' },
     gauntlet: { label: 'Gauntlet Mode', icon: 'fa-bolt', desc: 'One player faces everyone in a row' },
-    pushluck: { label: 'Push Your Luck', icon: 'fa-dice', desc: 'Roll, bank, or bust — race to a target score' }
+    pushluck: { label: 'Push Your Luck', icon: 'fa-dice', desc: 'Roll, bank, or bust — race to a target score' },
+    cornhole: { label: 'Cornhole', icon: 'fa-bullseye', desc: 'Round-by-round bag toss scoring to a target' }
 };
 
 let selectedH2HMode = null;

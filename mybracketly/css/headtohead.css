@@ -1283,3 +1283,243 @@
 .bust-animation {
     animation: bustShake 0.5s ease;
 }
+
+/* ============================================
+   9. CORNHOLE
+   ============================================ */
+
+.ch-scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.ch-team {
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+.ch-team1 { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.ch-team2 { background: linear-gradient(135deg, var(--error), #8B0000); }
+
+.ch-team-name {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    font-weight: 600;
+}
+
+.ch-team-score {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 0.25rem;
+}
+
+.ch-center {
+    text-align: center;
+}
+
+.ch-target {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--secondary);
+}
+
+.ch-round-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.ch-color1 { color: var(--primary); }
+.ch-color2 { color: var(--error); }
+
+/* Throw area */
+.ch-throw-area {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.ch-throw-team {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+}
+
+.ch-throw-header {
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.ch-bag-counts {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 0.6rem;
+}
+
+.ch-bag-stat {
+    text-align: center;
+}
+
+.ch-bag-val {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--secondary);
+}
+
+.ch-bag-remaining {
+    color: var(--text-light);
+}
+
+.ch-bag-label {
+    font-size: 0.65rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.ch-throw-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ch-btn-in {
+    background: linear-gradient(135deg, var(--success), #1B5E20) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    border: none !important;
+    padding: 0.6rem !important;
+    font-size: 0.9rem !important;
+}
+
+.ch-btn-on {
+    background: linear-gradient(135deg, var(--info), #0D47A1) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    border: none !important;
+    padding: 0.6rem !important;
+    font-size: 0.9rem !important;
+}
+
+.ch-btn-miss {
+    background: linear-gradient(135deg, #9E9E9E, #616161) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    border: none !important;
+    padding: 0.6rem !important;
+    font-size: 0.9rem !important;
+}
+
+.ch-btn-in:disabled, .ch-btn-on:disabled, .ch-btn-miss:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+}
+
+.ch-vs {
+    font-weight: 900;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+}
+
+/* Score round preview */
+.ch-score-round {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+    margin-bottom: 1rem;
+}
+
+.ch-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.ch-preview-team {
+    font-weight: 600;
+}
+
+.ch-preview-diff {
+    font-weight: 900;
+    font-size: 1rem;
+    color: var(--secondary);
+}
+
+.ch-preview-awarded {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.4rem 0;
+    border-top: 1px dashed var(--border-light);
+    margin-top: 0.25rem;
+}
+
+/* Round history table */
+.ch-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.ch-history-table th {
+    background: var(--secondary);
+    color: var(--text-on-dark);
+    padding: 0.5rem 0.4rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.ch-history-table td {
+    padding: 0.4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.ch-history-table tbody tr:nth-child(even) {
+    background: var(--bg-stripe);
+}
+
+.ch-bust-row {
+    background: #FFF8E1 !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .ch-team-score { font-size: 2.2rem; }
+    .ch-target { font-size: 1.4rem; }
+    .ch-throw-area { grid-template-columns: 1fr; gap: 0.5rem; }
+    .ch-vs { padding: 0.25rem 0; font-size: 0.9rem; }
+    .ch-bag-val { font-size: 1.2rem; }
+    .ch-btn-in, .ch-btn-on, .ch-btn-miss { padding: 0.5rem !important; font-size: 0.8rem !important; }
+}
