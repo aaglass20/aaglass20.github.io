@@ -645,8 +645,7 @@ function buildInitialState(mode, players, config) {
             s.score1 = 0;
             s.score2 = 0;
             s.rounds = [];              // {in1, on1, in2, on2}
-            s.currentRound = { in1: 0, on1: 0, in2: 0, on2: 0 };
-            s.currentThrower = 1;       // which team is throwing (1 or 2)
+            s.currentRound = { bags1: [], bags2: [] };
             break;
     }
     return s;
@@ -1907,6 +1906,27 @@ function resetPushLuck() {
 // ================================================
 // 9. CORNHOLE
 // ================================================
+function chBagSymbol(val) {
+    if (val === 3) return '<span class="ch-bag ch-bag-in">3</span>';
+    if (val === 1) return '<span class="ch-bag ch-bag-on">1</span>';
+    return '<span class="ch-bag ch-bag-miss">0</span>';
+}
+
+function chBagSymbolClickable(val, team, idx, prefix) {
+    var cls = val === 3 ? 'ch-bag-in' : val === 1 ? 'ch-bag-on' : 'ch-bag-miss';
+    return '<span class="ch-bag ' + cls + '" onclick="' + prefix + 'CycleBag(' + team + ',' + idx + ')" title="Click to change">' + val + '</span>';
+}
+
+function chCountBags(bags) {
+    var ins = 0, ons = 0, misses = 0;
+    for (var i = 0; i < bags.length; i++) {
+        if (bags[i] === 3) ins++;
+        else if (bags[i] === 1) ons++;
+        else misses++;
+    }
+    return { ins: ins, ons: ons, misses: misses, pts: ins * 3 + ons };
+}
+
 function renderCornhole() {
     var p1 = state.players[0], p2 = state.players[1];
     var target = state.config.targetScore || 21;
@@ -1914,6 +1934,9 @@ function renderCornhole() {
     var bustPenalty = state.config.bustPenalty != null ? state.config.bustPenalty : 15;
     var maxBags = state.config.bagsPerRound || 4;
     var cr = state.currentRound;
+    // Migrate old format
+    if (!cr.bags1) cr.bags1 = [];
+    if (!cr.bags2) cr.bags2 = [];
 
     var html = '';
     html += '<div class="mode-header"><i class="fas fa-bullseye"></i>';
@@ -1945,70 +1968,58 @@ function renderCornhole() {
         html += '<button class="btn btn-outline mt-2" onclick="cornholeNewGame()"><i class="fas fa-redo"></i> New Game</button>';
         html += '</div>';
     } else {
-        // Current round scoring area
-        var bags1Used = cr.in1 + cr.on1 + (cr.miss1 || 0);
-        var bags2Used = cr.in2 + cr.on2 + (cr.miss2 || 0);
-        var bags1Left = maxBags - bags1Used;
-        var bags2Left = maxBags - bags2Used;
-        var team1Done = bags1Left <= 0;
-        var team2Done = bags2Left <= 0;
+        var t1Done = cr.bags1.length >= maxBags, t2Done = cr.bags2.length >= maxBags;
+        var c1 = chCountBags(cr.bags1), c2 = chCountBags(cr.bags2);
 
-        // Team 1 scoring
         html += '<div class="ch-throw-area">';
+
+        // Team 1
         html += '<div class="ch-throw-team">';
         html += '<div class="ch-throw-header ch-color1">' + escapeHtml(p1) + '</div>';
-        html += '<div class="ch-bag-counts">';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val">' + cr.in1 + '</span><span class="ch-bag-label">In (3pts)</span></div>';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val">' + cr.on1 + '</span><span class="ch-bag-label">On (1pt)</span></div>';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val ch-bag-remaining">' + bags1Left + '</span><span class="ch-bag-label">Left</span></div>';
+        html += '<div class="ch-bag-tray">';
+        for (var i = 0; i < cr.bags1.length; i++) html += chBagSymbolClickable(cr.bags1[i], 1, i, 'cornhole');
+        for (var j = cr.bags1.length; j < maxBags; j++) html += '<span class="ch-bag ch-bag-empty"></span>';
         html += '</div>';
+        html += '<div class="ch-bag-summary">' + c1.pts + ' pts (' + c1.ins + ' in, ' + c1.ons + ' on)</div>';
         html += '<div class="ch-throw-btns">';
-        html += '<button class="btn ch-btn-in" onclick="cornholeBag(1,\'in\')"' + (team1Done ? ' disabled' : '') + '><i class="fas fa-circle"></i> In (+3)</button>';
-        html += '<button class="btn ch-btn-on" onclick="cornholeBag(1,\'on\')"' + (team1Done ? ' disabled' : '') + '><i class="fas fa-circle-dot"></i> On (+1)</button>';
-        html += '<button class="btn ch-btn-miss" onclick="cornholeBag(1,\'miss\')"' + (team1Done ? ' disabled' : '') + '><i class="fas fa-xmark"></i> Miss</button>';
+        html += '<button class="btn ch-btn-in" onclick="cornholeBag(1,3)"' + (t1Done ? ' disabled' : '') + '><i class="fas fa-circle"></i> In (+3)</button>';
+        html += '<button class="btn ch-btn-on" onclick="cornholeBag(1,1)"' + (t1Done ? ' disabled' : '') + '><i class="fas fa-circle-dot"></i> On (+1)</button>';
+        html += '<button class="btn ch-btn-miss" onclick="cornholeBag(1,0)"' + (t1Done ? ' disabled' : '') + '><i class="fas fa-xmark"></i> Miss</button>';
         html += '</div>';
-        if (bags1Used > 0) {
-            html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="cornholeUndoBag(1)"><i class="fas fa-undo"></i> Undo</button>';
-        }
+        if (cr.bags1.length > 0) html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="cornholeUndoBag(1)"><i class="fas fa-undo"></i> Undo Last</button>';
         html += '</div>';
 
-        // VS divider
         html += '<div class="ch-vs">VS</div>';
 
-        // Team 2 scoring
+        // Team 2
         html += '<div class="ch-throw-team">';
         html += '<div class="ch-throw-header ch-color2">' + escapeHtml(p2) + '</div>';
-        html += '<div class="ch-bag-counts">';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val">' + cr.in2 + '</span><span class="ch-bag-label">In (3pts)</span></div>';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val">' + cr.on2 + '</span><span class="ch-bag-label">On (1pt)</span></div>';
-        html += '<div class="ch-bag-stat"><span class="ch-bag-val ch-bag-remaining">' + bags2Left + '</span><span class="ch-bag-label">Left</span></div>';
+        html += '<div class="ch-bag-tray">';
+        for (var k = 0; k < cr.bags2.length; k++) html += chBagSymbolClickable(cr.bags2[k], 2, k, 'cornhole');
+        for (var l = cr.bags2.length; l < maxBags; l++) html += '<span class="ch-bag ch-bag-empty"></span>';
         html += '</div>';
+        html += '<div class="ch-bag-summary">' + c2.pts + ' pts (' + c2.ins + ' in, ' + c2.ons + ' on)</div>';
         html += '<div class="ch-throw-btns">';
-        html += '<button class="btn ch-btn-in" onclick="cornholeBag(2,\'in\')"' + (team2Done ? ' disabled' : '') + '><i class="fas fa-circle"></i> In (+3)</button>';
-        html += '<button class="btn ch-btn-on" onclick="cornholeBag(2,\'on\')"' + (team2Done ? ' disabled' : '') + '><i class="fas fa-circle-dot"></i> On (+1)</button>';
-        html += '<button class="btn ch-btn-miss" onclick="cornholeBag(2,\'miss\')"' + (team2Done ? ' disabled' : '') + '><i class="fas fa-xmark"></i> Miss</button>';
+        html += '<button class="btn ch-btn-in" onclick="cornholeBag(2,3)"' + (t2Done ? ' disabled' : '') + '><i class="fas fa-circle"></i> In (+3)</button>';
+        html += '<button class="btn ch-btn-on" onclick="cornholeBag(2,1)"' + (t2Done ? ' disabled' : '') + '><i class="fas fa-circle-dot"></i> On (+1)</button>';
+        html += '<button class="btn ch-btn-miss" onclick="cornholeBag(2,0)"' + (t2Done ? ' disabled' : '') + '><i class="fas fa-xmark"></i> Miss</button>';
         html += '</div>';
-        if (bags2Used > 0) {
-            html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="cornholeUndoBag(2)"><i class="fas fa-undo"></i> Undo</button>';
-        }
-        html += '</div>';
+        if (cr.bags2.length > 0) html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="cornholeUndoBag(2)"><i class="fas fa-undo"></i> Undo Last</button>';
         html += '</div>';
 
-        // Score round button
-        var rawPts1 = cr.in1 * 3 + cr.on1, rawPts2 = cr.in2 * 3 + cr.on2;
-        var diff = rawPts1 - rawPts2;
-        var preview1 = diff > 0 ? '+' + diff : '0';
-        var preview2 = diff < 0 ? '+' + (-diff) : '0';
+        html += '</div>';
 
+        // Preview & score round
+        var diff = c1.pts - c2.pts;
         html += '<div class="ch-score-round">';
         html += '<div class="ch-preview">';
-        html += '<span class="ch-preview-team ch-color1">' + escapeHtml(p1) + ': ' + rawPts1 + ' raw</span>';
-        html += '<span class="ch-preview-diff">Diff: ' + (diff > 0 ? '+' + diff : diff < 0 ? diff : '0') + '</span>';
-        html += '<span class="ch-preview-team ch-color2">' + escapeHtml(p2) + ': ' + rawPts2 + ' raw</span>';
+        html += '<span class="ch-preview-team ch-color1">' + escapeHtml(p1) + ': ' + c1.pts + ' raw</span>';
+        html += '<span class="ch-preview-diff">Diff: ' + (diff > 0 ? '+' + diff : diff < 0 ? '' + diff : '0') + '</span>';
+        html += '<span class="ch-preview-team ch-color2">' + escapeHtml(p2) + ': ' + c2.pts + ' raw</span>';
         html += '</div>';
         html += '<div class="ch-preview-awarded">';
-        html += '<span class="ch-color1">' + preview1 + ' awarded</span>';
-        html += '<span class="ch-color2">' + preview2 + ' awarded</span>';
+        html += '<span class="ch-color1">' + (diff > 0 ? '+' + diff : '0') + ' awarded</span>';
+        html += '<span class="ch-color2">' + (diff < 0 ? '+' + (-diff) : '0') + ' awarded</span>';
         html += '</div>';
         html += '<button class="btn btn-success btn-lg" style="width:100%;margin-top:0.75rem;" onclick="cornholeScoreRound()"><i class="fas fa-check"></i> Score Round</button>';
         html += '</div>';
@@ -2020,16 +2031,10 @@ function renderCornhole() {
         html += '<div class="section-header"><i class="fas fa-history"></i><h2>Round History</h2></div>';
         html += '<div style="overflow-x:auto;"><table class="ch-history-table">';
         html += '<thead><tr>';
-        html += '<th>Rnd</th>';
-        html += '<th class="ch-color1"><i class="fas fa-circle" style="font-size:0.6rem;"></i> In</th>';
-        html += '<th class="ch-color1"><i class="fas fa-circle-dot" style="font-size:0.6rem;"></i> On</th>';
-        html += '<th class="ch-color1">Pts</th>';
+        html += '<th>Rnd</th><th class="ch-color1">Bags</th><th class="ch-color1">Pts</th>';
         html += '<th>Diff</th>';
-        html += '<th class="ch-color2">Pts</th>';
-        html += '<th class="ch-color2"><i class="fas fa-circle" style="font-size:0.6rem;"></i> In</th>';
-        html += '<th class="ch-color2"><i class="fas fa-circle-dot" style="font-size:0.6rem;"></i> On</th>';
-        html += '<th class="ch-color1">Total</th>';
-        html += '<th class="ch-color2">Total</th>';
+        html += '<th class="ch-color2">Pts</th><th class="ch-color2">Bags</th>';
+        html += '<th class="ch-color1">Tot</th><th class="ch-color2">Tot</th>';
         html += '</tr></thead><tbody>';
 
         var run1 = 0, run2 = 0;
@@ -2043,15 +2048,22 @@ function renderCornhole() {
             if (exact && pre2 > target) { pre2 = bustPenalty; bust = 'bust2'; }
             run1 = pre1; run2 = pre2;
 
+            // Render bag symbols for history
+            var b1html = '', b2html = '';
+            if (r.bags1) { for (var bi = 0; bi < r.bags1.length; bi++) b1html += chBagSymbol(r.bags1[bi]); }
+            else { for (var x = 0; x < r.in1; x++) b1html += chBagSymbol(3); for (var y = 0; y < r.on1; y++) b1html += chBagSymbol(1); }
+            if (r.bags2) { for (var bj = 0; bj < r.bags2.length; bj++) b2html += chBagSymbol(r.bags2[bj]); }
+            else { for (var xx = 0; xx < r.in2; xx++) b2html += chBagSymbol(3); for (var yy = 0; yy < r.on2; yy++) b2html += chBagSymbol(1); }
+
             var rowCls = bust ? ' class="ch-bust-row"' : '';
             html += '<tr' + rowCls + '>';
             html += '<td style="font-weight:700;">' + (i+1) + '</td>';
-            html += '<td>' + r.in1 + '</td><td>' + r.on1 + '</td>';
+            html += '<td style="white-space:nowrap;">' + b1html + '</td>';
             html += '<td style="font-weight:700;">' + (a1 || '-') + '</td>';
             var diffColor = d > 0 ? 'var(--primary)' : d < 0 ? 'var(--error)' : 'var(--text-light)';
             html += '<td style="font-weight:900;color:' + diffColor + ';">' + (d > 0 ? '+'+d : d) + '</td>';
             html += '<td style="font-weight:700;">' + (a2 || '-') + '</td>';
-            html += '<td>' + r.in2 + '</td><td>' + r.on2 + '</td>';
+            html += '<td style="white-space:nowrap;">' + b2html + '</td>';
             html += '<td style="font-weight:700;">' + run1 + (bust === 'bust1' ? ' <i class="fas fa-explosion" style="color:var(--warning);font-size:0.7rem;"></i>' : '') + '</td>';
             html += '<td style="font-weight:700;">' + run2 + (bust === 'bust2' ? ' <i class="fas fa-explosion" style="color:var(--warning);font-size:0.7rem;"></i>' : '') + '</td>';
             html += '</tr>';
@@ -2063,45 +2075,48 @@ function renderCornhole() {
     return html;
 }
 
-function cornholeBag(team, type) {
+function cornholeBag(team, val) {
     if (state.completed) return;
     var cr = state.currentRound;
+    if (!cr.bags1) cr.bags1 = [];
+    if (!cr.bags2) cr.bags2 = [];
     var maxBags = state.config.bagsPerRound || 4;
-    if (!cr.miss1) cr.miss1 = 0;
-    if (!cr.miss2) cr.miss2 = 0;
-    var inKey = 'in' + team, onKey = 'on' + team, missKey = 'miss' + team;
-    var used = cr[inKey] + cr[onKey] + cr[missKey];
-    if (used >= maxBags) { showStatus('All bags thrown!', 'error'); return; }
-
-    if (type === 'in') cr[inKey]++;
-    else if (type === 'on') cr[onKey]++;
-    else if (type === 'miss') cr[missKey]++;
-
+    var bags = team === 1 ? cr.bags1 : cr.bags2;
+    if (bags.length >= maxBags) { showStatus('All bags thrown!', 'error'); return; }
+    bags.push(val);
     saveState();
     renderPlay();
 }
 
 function cornholeUndoBag(team) {
     var cr = state.currentRound;
-    // Undo last bag for this team — remove in order: miss, on, in (reverse of likely throw order)
-    var missKey = 'miss' + team, onKey = 'on' + team, inKey = 'in' + team;
-    if (!cr[missKey]) cr[missKey] = 0;
-    if (cr[missKey] > 0) cr[missKey]--;
-    else if (cr[onKey] > 0) cr[onKey]--;
-    else if (cr[inKey] > 0) cr[inKey]--;
+    var bags = team === 1 ? cr.bags1 : cr.bags2;
+    if (bags.length > 0) bags.pop();
+    saveState();
+    renderPlay();
+}
+
+function cornholeCycleBag(team, idx) {
+    var cr = state.currentRound;
+    var bags = team === 1 ? cr.bags1 : cr.bags2;
+    if (idx >= bags.length) return;
+    // Cycle: 3 → 1 → 0 → 3
+    var cur = bags[idx];
+    bags[idx] = cur === 3 ? 1 : cur === 1 ? 0 : 3;
     saveState();
     renderPlay();
 }
 
 function cornholeScoreRound() {
     var cr = state.currentRound;
+    if (!cr.bags1) cr.bags1 = [];
+    if (!cr.bags2) cr.bags2 = [];
     var target = state.config.targetScore || 21;
     var exact = state.config.exactScore !== false;
     var bustPenalty = state.config.bustPenalty != null ? state.config.bustPenalty : 15;
 
-    var raw1 = cr.in1 * 3 + cr.on1;
-    var raw2 = cr.in2 * 3 + cr.on2;
-    var diff = raw1 - raw2;
+    var c1 = chCountBags(cr.bags1), c2 = chCountBags(cr.bags2);
+    var diff = c1.pts - c2.pts;
     var awarded1 = diff > 0 ? diff : 0;
     var awarded2 = diff < 0 ? -diff : 0;
 
@@ -2114,23 +2129,19 @@ function cornholeScoreRound() {
 
     state.score1 = newScore1;
     state.score2 = newScore2;
-    state.rounds.push({ in1: cr.in1, on1: cr.on1, in2: cr.in2, on2: cr.on2 });
+    state.rounds.push({ in1: c1.ins, on1: c1.ons, in2: c2.ins, on2: c2.ons, bags1: cr.bags1.slice(), bags2: cr.bags2.slice() });
 
-    // Record match
     state.matches.push({
         round: state.rounds.length,
-        in1: cr.in1, on1: cr.on1, in2: cr.in2, on2: cr.on2,
+        in1: c1.ins, on1: c1.ons, in2: c2.ins, on2: c2.ons,
         awarded1: awarded1, awarded2: awarded2,
         score1: state.score1, score2: state.score2,
         busted: busted,
         timestamp: new Date().toISOString()
     });
 
-    if (busted) {
-        showStatus(busted + ' BUSTED! Score reset to ' + bustPenalty, 'error');
-    }
+    if (busted) showStatus(busted + ' BUSTED! Score reset to ' + bustPenalty, 'error');
 
-    // Check winner
     var winner = null;
     if (exact) {
         if (state.score1 === target) winner = state.players[0];
@@ -2146,9 +2157,7 @@ function cornholeScoreRound() {
         showStatus(winner + ' wins!', 'success');
     }
 
-    // Reset current round
-    state.currentRound = { in1: 0, on1: 0, in2: 0, on2: 0 };
-
+    state.currentRound = { bags1: [], bags2: [] };
     saveState();
     renderPlay();
 }
@@ -2158,7 +2167,7 @@ function cornholeNewGame() {
     state.score1 = 0;
     state.score2 = 0;
     state.rounds = [];
-    state.currentRound = { in1: 0, on1: 0, in2: 0, on2: 0 };
+    state.currentRound = { bags1: [], bags2: [] };
     state.completed = false;
     state.winner = null;
     saveState();

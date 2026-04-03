@@ -2013,7 +2013,21 @@ function openScoreModal(matchId, type) {
 function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active', 'cornhole-mode'); }
 
 // ---- Cornhole Scoring in Brackets ----
-let chState = null; // cornhole modal state
+let chState = null;
+
+function chBagSym(val) {
+    return val === 3 ? '<span class="ch-bag-sym ch-bag-in">3</span>' : val === 1 ? '<span class="ch-bag-sym ch-bag-on">1</span>' : '<span class="ch-bag-sym ch-bag-miss">0</span>';
+}
+
+function chBagClick(val, team, idx) {
+    const cls = val === 3 ? 'ch-bag-in' : val === 1 ? 'ch-bag-on' : 'ch-bag-miss';
+    return `<span class="ch-bag-sym ${cls}" onclick="chCycleBag(${team},${idx})" title="Click to change">${val}</span>`;
+}
+
+function chCount(bags) {
+    let ins=0,ons=0; for (const v of bags) { if (v===3) ins++; else if (v===1) ons++; }
+    return { ins, ons, pts: ins*3+ons };
+}
 
 function openCornholeModal(matchId, type) {
     const modal = document.getElementById('scoreModal'), title = document.getElementById('scoreModalTitle');
@@ -2038,7 +2052,7 @@ function openCornholeModal(matchId, type) {
         score1: saved ? saved.score1 : 0,
         score2: saved ? saved.score2 : 0,
         rounds: saved ? JSON.parse(JSON.stringify(saved.rounds)) : [],
-        cr: { in1:0, on1:0, in2:0, on2:0, miss1:0, miss2:0 },
+        cr: { bags1: [], bags2: [] },
         target: tournament.targetScore || 21,
         maxBags: tournament.bagsPerRound || 4,
         exact: tournament.exactScore !== false,
@@ -2055,9 +2069,7 @@ function openCornholeModal(matchId, type) {
 }
 
 function renderChBody(body) {
-    const s = chState;
-    const cr = s.cr;
-    const maxBags = s.maxBags;
+    const s = chState, cr = s.cr, maxBags = s.maxBags;
     let html = '';
 
     // Scoreboard header
@@ -2079,7 +2091,6 @@ function renderChBody(body) {
         </div>
     </div>`;
 
-    // Winner banner
     if (s.winner) {
         html += `<div style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border:2px solid var(--success);border-radius:var(--radius-sm);padding:0.75rem;margin-bottom:0.75rem;text-align:center;">
             <i class="fas fa-trophy" style="color:var(--accent);"></i>
@@ -2088,61 +2099,56 @@ function renderChBody(body) {
         </div>`;
     }
 
-    // Throw area (only if not done)
     if (!s.winner) {
-        const b1Used = cr.in1 + cr.on1 + cr.miss1, b2Used = cr.in2 + cr.on2 + cr.miss2;
-        const b1Left = maxBags - b1Used, b2Left = maxBags - b2Used;
-        const t1Done = b1Left <= 0, t2Done = b2Left <= 0;
+        const t1Done = cr.bags1.length >= maxBags, t2Done = cr.bags2.length >= maxBags;
+        const c1 = chCount(cr.bags1), c2 = chCount(cr.bags2);
 
         html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">`;
 
         // Team 1
         html += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.6rem;border:2px solid var(--primary-light);">
             <div style="font-weight:800;font-size:0.8rem;color:var(--primary);text-align:center;margin-bottom:0.4rem;border-bottom:1px solid var(--border-light);padding-bottom:0.3rem;">${escapeHtml(s.name1)}</div>
-            <div style="display:flex;justify-content:space-around;margin-bottom:0.5rem;">
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--secondary);">${cr.in1}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">In</div></div>
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--secondary);">${cr.on1}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">On</div></div>
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--text-light);">${b1Left}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Left</div></div>
-            </div>
+            <div class="ch-bag-tray">`;
+        for (let i = 0; i < cr.bags1.length; i++) html += chBagClick(cr.bags1[i], 1, i);
+        for (let j = cr.bags1.length; j < maxBags; j++) html += '<span class="ch-bag-sym ch-bag-empty"></span>';
+        html += `</div>
+            <div style="text-align:center;font-size:0.7rem;color:var(--text-light);font-weight:600;margin-bottom:0.4rem;">${c1.pts} pts (${c1.ins} in, ${c1.ons} on)</div>
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
-                <button class="btn" style="background:linear-gradient(135deg,var(--success),#1B5E20);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,'in')"${t1Done?' disabled':''}><i class="fas fa-circle"></i> In (+3)</button>
-                <button class="btn" style="background:linear-gradient(135deg,var(--info),#0D47A1);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,'on')"${t1Done?' disabled':''}><i class="fas fa-circle-dot"></i> On (+1)</button>
-                <button class="btn" style="background:linear-gradient(135deg,#9E9E9E,#616161);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,'miss')"${t1Done?' disabled':''}><i class="fas fa-xmark"></i> Miss</button>
+                <button class="btn" style="background:linear-gradient(135deg,var(--success),#1B5E20);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,3)"${t1Done?' disabled':''}><i class="fas fa-circle"></i> In (+3)</button>
+                <button class="btn" style="background:linear-gradient(135deg,var(--info),#0D47A1);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,1)"${t1Done?' disabled':''}><i class="fas fa-circle-dot"></i> On (+1)</button>
+                <button class="btn" style="background:linear-gradient(135deg,#9E9E9E,#616161);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(1,0)"${t1Done?' disabled':''}><i class="fas fa-xmark"></i> Miss</button>
             </div>
-            ${b1Used > 0 ? '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.7rem;" onclick="chUndo(1)"><i class="fas fa-undo"></i> Undo</button>' : ''}
+            ${cr.bags1.length > 0 ? '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.7rem;" onclick="chUndo(1)"><i class="fas fa-undo"></i> Undo Last</button>' : ''}
         </div>`;
 
         // Team 2
         html += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.6rem;border:2px solid #EF9A9A;">
             <div style="font-weight:800;font-size:0.8rem;color:var(--error);text-align:center;margin-bottom:0.4rem;border-bottom:1px solid var(--border-light);padding-bottom:0.3rem;">${escapeHtml(s.name2)}</div>
-            <div style="display:flex;justify-content:space-around;margin-bottom:0.5rem;">
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--secondary);">${cr.in2}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">In</div></div>
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--secondary);">${cr.on2}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">On</div></div>
-                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:900;color:var(--text-light);">${b2Left}</div><div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Left</div></div>
-            </div>
+            <div class="ch-bag-tray">`;
+        for (let i = 0; i < cr.bags2.length; i++) html += chBagClick(cr.bags2[i], 2, i);
+        for (let j = cr.bags2.length; j < maxBags; j++) html += '<span class="ch-bag-sym ch-bag-empty"></span>';
+        html += `</div>
+            <div style="text-align:center;font-size:0.7rem;color:var(--text-light);font-weight:600;margin-bottom:0.4rem;">${c2.pts} pts (${c2.ins} in, ${c2.ons} on)</div>
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
-                <button class="btn" style="background:linear-gradient(135deg,var(--success),#1B5E20);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,'in')"${t2Done?' disabled':''}><i class="fas fa-circle"></i> In (+3)</button>
-                <button class="btn" style="background:linear-gradient(135deg,var(--info),#0D47A1);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,'on')"${t2Done?' disabled':''}><i class="fas fa-circle-dot"></i> On (+1)</button>
-                <button class="btn" style="background:linear-gradient(135deg,#9E9E9E,#616161);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,'miss')"${t2Done?' disabled':''}><i class="fas fa-xmark"></i> Miss</button>
+                <button class="btn" style="background:linear-gradient(135deg,var(--success),#1B5E20);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,3)"${t2Done?' disabled':''}><i class="fas fa-circle"></i> In (+3)</button>
+                <button class="btn" style="background:linear-gradient(135deg,var(--info),#0D47A1);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,1)"${t2Done?' disabled':''}><i class="fas fa-circle-dot"></i> On (+1)</button>
+                <button class="btn" style="background:linear-gradient(135deg,#9E9E9E,#616161);color:white;font-weight:700;padding:0.5rem;font-size:0.85rem;border:none;width:100%;" onclick="chBag(2,0)"${t2Done?' disabled':''}><i class="fas fa-xmark"></i> Miss</button>
             </div>
-            ${b2Used > 0 ? '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.7rem;" onclick="chUndo(2)"><i class="fas fa-undo"></i> Undo</button>' : ''}
+            ${cr.bags2.length > 0 ? '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.7rem;" onclick="chUndo(2)"><i class="fas fa-undo"></i> Undo Last</button>' : ''}
         </div>`;
-
         html += '</div>';
 
-        // Preview & score round
-        const rawPts1 = cr.in1 * 3 + cr.on1, rawPts2 = cr.in2 * 3 + cr.on2;
-        const diff = rawPts1 - rawPts2;
-        const p1 = diff > 0 ? '+' + diff : '0', p2 = diff < 0 ? '+' + (-diff) : '0';
+        // Preview
+        const diff = c1.pts - c2.pts;
         html += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.6rem;border:1px solid var(--border-light);margin-bottom:0.75rem;">
             <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.3rem;">
-                <span style="color:var(--primary);font-weight:600;">${escapeHtml(s.name1)}: ${rawPts1} raw</span>
-                <span style="font-weight:900;color:var(--secondary);">Diff: ${diff > 0 ? '+'+diff : diff < 0 ? diff : '0'}</span>
-                <span style="color:var(--error);font-weight:600;">${escapeHtml(s.name2)}: ${rawPts2} raw</span>
+                <span style="color:var(--primary);font-weight:600;">${escapeHtml(s.name1)}: ${c1.pts} raw</span>
+                <span style="font-weight:900;color:var(--secondary);">Diff: ${diff > 0 ? '+'+diff : diff < 0 ? ''+diff : '0'}</span>
+                <span style="color:var(--error);font-weight:600;">${escapeHtml(s.name2)}: ${c2.pts} raw</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:0.75rem;font-weight:700;padding-top:0.3rem;border-top:1px dashed var(--border-light);">
-                <span style="color:var(--primary);">${p1} awarded</span>
-                <span style="color:var(--error);">${p2} awarded</span>
+                <span style="color:var(--primary);">${diff > 0 ? '+'+diff : '0'} awarded</span>
+                <span style="color:var(--error);">${diff < 0 ? '+'+(-diff) : '0'} awarded</span>
             </div>
             <button class="btn btn-success" style="width:100%;margin-top:0.5rem;font-weight:700;" onclick="chScoreRound()"><i class="fas fa-check"></i> Score Round</button>
         </div>`;
@@ -2154,9 +2160,9 @@ function renderChBody(body) {
         html += `<table style="width:100%;border-collapse:collapse;font-size:0.75rem;">
             <thead><tr style="background:var(--secondary);color:white;">
                 <th style="padding:0.3rem;">Rnd</th>
-                <th style="padding:0.3rem;color:#FF9E40;">In</th><th style="padding:0.3rem;color:#FF9E40;">On</th><th style="padding:0.3rem;color:#FF9E40;">Pts</th>
+                <th style="padding:0.3rem;color:#FF9E40;">Bags</th><th style="padding:0.3rem;color:#FF9E40;">Pts</th>
                 <th style="padding:0.3rem;">Diff</th>
-                <th style="padding:0.3rem;color:#EF9A9A;">Pts</th><th style="padding:0.3rem;color:#EF9A9A;">In</th><th style="padding:0.3rem;color:#EF9A9A;">On</th>
+                <th style="padding:0.3rem;color:#EF9A9A;">Pts</th><th style="padding:0.3rem;color:#EF9A9A;">Bags</th>
                 <th style="padding:0.3rem;color:#FF9E40;">Tot</th><th style="padding:0.3rem;color:#EF9A9A;">Tot</th>
             </tr></thead><tbody>`;
         let r1 = 0, r2 = 0;
@@ -2167,13 +2173,18 @@ function renderChBody(body) {
             if (s.exact && p1 > s.target) { p1 = s.bustPenalty; bust = '1'; }
             if (s.exact && p2 > s.target) { p2 = s.bustPenalty; bust = '2'; }
             r1 = p1; r2 = p2;
+            let b1h = '', b2h = '';
+            if (rd.bags1) { for (const v of rd.bags1) b1h += chBagSym(v); }
+            else { for (let x=0;x<rd.in1;x++) b1h+=chBagSym(3); for (let y=0;y<rd.on1;y++) b1h+=chBagSym(1); }
+            if (rd.bags2) { for (const v of rd.bags2) b2h += chBagSym(v); }
+            else { for (let x=0;x<rd.in2;x++) b2h+=chBagSym(3); for (let y=0;y<rd.on2;y++) b2h+=chBagSym(1); }
             html += `<tr style="border-bottom:1px solid var(--border-light);text-align:center;${bust?'background:#FFF8E1;':''}">
                 <td style="padding:0.25rem;font-weight:700;color:var(--text-light);">${i+1}</td>
-                <td style="padding:0.25rem;">${rd.in1}</td><td style="padding:0.25rem;">${rd.on1}</td>
+                <td style="padding:0.25rem;white-space:nowrap;">${b1h}</td>
                 <td style="padding:0.25rem;font-weight:700;color:var(--primary);">${a1||'-'}</td>
                 <td style="padding:0.25rem;font-weight:900;color:${d>0?'var(--primary)':d<0?'var(--error)':'var(--text-light)'};">${d>0?'+'+d:d}</td>
                 <td style="padding:0.25rem;font-weight:700;color:var(--error);">${a2||'-'}</td>
-                <td style="padding:0.25rem;">${rd.in2}</td><td style="padding:0.25rem;">${rd.on2}</td>
+                <td style="padding:0.25rem;white-space:nowrap;">${b2h}</td>
                 <td style="padding:0.25rem;font-weight:700;">${r1}${bust==='1'?' <i class="fas fa-explosion" style="color:var(--warning);font-size:0.6rem;"></i>':''}</td>
                 <td style="padding:0.25rem;font-weight:700;">${r2}${bust==='2'?' <i class="fas fa-explosion" style="color:var(--warning);font-size:0.6rem;"></i>':''}</td>
             </tr>`;
@@ -2184,30 +2195,30 @@ function renderChBody(body) {
     body.innerHTML = html;
 }
 
-function chBag(team, type) {
-    const cr = chState.cr;
-    const inK = 'in'+team, onK = 'on'+team, missK = 'miss'+team;
-    const used = cr[inK] + cr[onK] + cr[missK];
-    if (used >= chState.maxBags) return;
-    if (type === 'in') cr[inK]++;
-    else if (type === 'on') cr[onK]++;
-    else cr[missK]++;
+function chBag(team, val) {
+    const bags = team === 1 ? chState.cr.bags1 : chState.cr.bags2;
+    if (bags.length >= chState.maxBags) return;
+    bags.push(val);
     renderChBody(document.getElementById('scoreModalBody'));
 }
 
 function chUndo(team) {
-    const cr = chState.cr;
-    const missK = 'miss'+team, onK = 'on'+team, inK = 'in'+team;
-    if (cr[missK] > 0) cr[missK]--;
-    else if (cr[onK] > 0) cr[onK]--;
-    else if (cr[inK] > 0) cr[inK]--;
+    const bags = team === 1 ? chState.cr.bags1 : chState.cr.bags2;
+    if (bags.length > 0) bags.pop();
+    renderChBody(document.getElementById('scoreModalBody'));
+}
+
+function chCycleBag(team, idx) {
+    const bags = team === 1 ? chState.cr.bags1 : chState.cr.bags2;
+    if (idx >= bags.length) return;
+    bags[idx] = bags[idx] === 3 ? 1 : bags[idx] === 1 ? 0 : 3;
     renderChBody(document.getElementById('scoreModalBody'));
 }
 
 function chScoreRound() {
     const s = chState, cr = s.cr;
-    const raw1 = cr.in1*3 + cr.on1, raw2 = cr.in2*3 + cr.on2;
-    const diff = raw1 - raw2;
+    const c1 = chCount(cr.bags1), c2 = chCount(cr.bags2);
+    const diff = c1.pts - c2.pts;
     const a1 = diff > 0 ? diff : 0, a2 = diff < 0 ? -diff : 0;
 
     let ns1 = s.score1 + a1, ns2 = s.score2 + a2;
@@ -2215,11 +2226,10 @@ function chScoreRound() {
     if (s.exact && ns1 > s.target) { ns1 = s.bustPenalty; busted = s.name1; }
     if (s.exact && ns2 > s.target) { ns2 = s.bustPenalty; busted = s.name2; }
     s.score1 = ns1; s.score2 = ns2;
-    s.rounds.push({ in1:cr.in1, on1:cr.on1, in2:cr.in2, on2:cr.on2 });
+    s.rounds.push({ in1:c1.ins, on1:c1.ons, in2:c2.ins, on2:c2.ons, bags1:cr.bags1.slice(), bags2:cr.bags2.slice() });
 
     if (busted) showStatus(busted + ' BUSTED! Score reset to ' + s.bustPenalty, 'error');
 
-    // Check winner
     let winner = null;
     if (s.exact) {
         if (s.score1 === s.target) winner = s.name1;
@@ -2229,14 +2239,12 @@ function chScoreRound() {
         else if (s.score2 >= s.target) winner = s.name2;
     }
     if (winner) {
-        s.winner = winner;
-        s.completed = true;
+        s.winner = winner; s.completed = true;
         chSaveMatch();
         showStatus(winner + ' wins!', 'success');
     }
 
-    // Reset current round
-    s.cr = { in1:0, on1:0, in2:0, on2:0, miss1:0, miss2:0 };
+    s.cr = { bags1: [], bags2: [] };
     renderChBody(document.getElementById('scoreModalBody'));
 }
 
@@ -2265,9 +2273,7 @@ function clearRRChScore(matchId) {
 }
 
 function clearElimChScore(matchId) {
-    // Delegate to the existing clearElimScore which handles all cascading logic
     clearElimScore(matchId);
-    // Also clear chData
     const match = tournament.matches.find(m => m.id === matchId);
     if (match) match.chData = null;
     saveTournament();

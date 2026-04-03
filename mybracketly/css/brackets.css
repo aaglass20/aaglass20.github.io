@@ -83,6 +83,19 @@
 .modal-overlay.cornhole-mode .modal { max-width: 580px; }
 .modal-overlay.cornhole-mode .modal button:disabled { opacity: 0.35; cursor: not-allowed; }
 
+/* Bag symbols (brackets) */
+.ch-bag-tray { display: flex; gap: 0.35rem; justify-content: center; margin-bottom: 0.4rem; min-height: 32px; align-items: center; flex-wrap: wrap; }
+.ch-bag-sym { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; font-weight: 900; font-size: 0.8rem; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; user-select: none; }
+.ch-bag-sym:hover:not(.ch-bag-empty) { transform: scale(1.15); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.ch-bag-sym.ch-bag-in { background: linear-gradient(135deg, var(--success), #1B5E20); color: white; border: 2px solid #1B5E20; }
+.ch-bag-sym.ch-bag-on { background: linear-gradient(135deg, var(--info), #0D47A1); color: white; border: 2px solid #0D47A1; }
+.ch-bag-sym.ch-bag-miss { background: linear-gradient(135deg, #BDBDBD, #757575); color: white; border: 2px solid #757575; }
+.ch-bag-sym.ch-bag-empty { background: var(--border-light); border: 2px dashed var(--border-medium); cursor: default; }
+
+/* Small bag symbols in history rows */
+table .ch-bag-sym { width: 20px; height: 20px; font-size: 0.6rem; cursor: default; margin: 0 1px; }
+table .ch-bag-sym:hover { transform: none; box-shadow: none; }
+
 @media print {
     .tab-content:not(#tab-bracket) { display: none !important; }
     .bracket-container { overflow: visible; }
