@@ -1383,8 +1383,8 @@ function generateDoubleElimination(participants) {
     if (winnerRounds[0].length >= 2) {
         const rm = [];
         const wr0 = winnerRounds[0];
+        losersRoundNum++;
         for (let i = 0; i < wr0.length; i += 2) {
-            losersRoundNum++;
             const m = { id: matchId++, round: losersRoundNum, roundName: `Losers R${losersRoundNum}`, matchNum: Math.floor(i/2)+1, bracket: 'losers', slot1:{name:null,seed:null,score:null}, slot2:{name:null,seed:null,score:null}, winner:null, nextMatchId:null };
             wr0[i].loserNextMatchId = m.id; wr0[i].loserNextSlot = 1;
             wr0[i+1].loserNextMatchId = m.id; wr0[i+1].loserNextSlot = 2;
