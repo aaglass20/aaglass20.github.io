@@ -2003,14 +2003,66 @@ function openScoreModal(matchId, type) {
         if (!match) return;
         if (match.slot1?.name==='BYE'||match.slot2?.name==='BYE') return;
         if (!match.slot1?.name||!match.slot2?.name) { showStatus('Both participants must be determined first','error'); return; }
+        const n1 = escapeHtml(match.slot1.name), n2 = escapeHtml(match.slot2.name);
+        const s1 = match.slot1.score !== null ? match.slot1.score : 0;
+        const s2 = match.slot2.score !== null ? match.slot2.score : 0;
         title.textContent = `${match.slot1.name} vs ${match.slot2.name}`;
-        body.innerHTML = `<div class="form-group"><label>${escapeHtml(match.slot1.name)} Score</label><input type="number" id="modalScore1" class="form-input" value="${match.slot1.score!==null?match.slot1.score:''}" min="0"></div><div class="form-group"><label>${escapeHtml(match.slot2.name)} Score</label><input type="number" id="modalScore2" class="form-input" value="${match.slot2.score!==null?match.slot2.score:''}" min="0"></div><p style="font-size:0.8rem;color:var(--text-light);margin-top:0.5rem;">Or just pick the winner:</p><div style="display:flex;gap:0.5rem;margin-top:0.5rem;"><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},1)">${escapeHtml(match.slot1.name)}</button><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},2)">${escapeHtml(match.slot2.name)}</button></div>`;
+
+        let bhtml = '';
+        // Button scoreboard
+        bhtml += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;">`;
+
+        // Team 1
+        bhtml += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.6rem;border:2px solid var(--primary-light);text-align:center;">
+            <div style="font-weight:800;font-size:0.8rem;color:var(--primary);margin-bottom:0.3rem;border-bottom:1px solid var(--border-light);padding-bottom:0.3rem;">${n1}</div>
+            <div id="btnScore1" style="font-size:2.2rem;font-weight:900;color:var(--secondary);margin:0.3rem 0;">${s1}</div>
+            <div style="display:flex;gap:0.3rem;justify-content:center;margin-bottom:0.3rem;">
+                <button class="btn btn-sm" style="background:var(--success);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(1,1)">+1</button>
+                <button class="btn btn-sm" style="background:var(--info);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(1,5)">+5</button>
+                <button class="btn btn-sm" style="background:var(--primary);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(1,10)">+10</button>
+            </div>
+            <button class="btn btn-outline btn-sm" style="font-size:0.7rem;padding:0.2rem 0.5rem;" onclick="btnScoreAdd(1,-1)"><i class="fas fa-minus"></i> 1</button>
+        </div>`;
+
+        // Team 2
+        bhtml += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.6rem;border:2px solid #EF9A9A;text-align:center;">
+            <div style="font-weight:800;font-size:0.8rem;color:var(--error);margin-bottom:0.3rem;border-bottom:1px solid var(--border-light);padding-bottom:0.3rem;">${n2}</div>
+            <div id="btnScore2" style="font-size:2.2rem;font-weight:900;color:var(--secondary);margin:0.3rem 0;">${s2}</div>
+            <div style="display:flex;gap:0.3rem;justify-content:center;margin-bottom:0.3rem;">
+                <button class="btn btn-sm" style="background:var(--success);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(2,1)">+1</button>
+                <button class="btn btn-sm" style="background:var(--info);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(2,5)">+5</button>
+                <button class="btn btn-sm" style="background:var(--primary);color:white;font-weight:700;border:none;min-width:44px;" onclick="btnScoreAdd(2,10)">+10</button>
+            </div>
+            <button class="btn btn-outline btn-sm" style="font-size:0.7rem;padding:0.2rem 0.5rem;" onclick="btnScoreAdd(2,-1)"><i class="fas fa-minus"></i> 1</button>
+        </div>`;
+
+        bhtml += `</div>`;
+
+        // Quick win buttons
+        bhtml += `<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.4rem;">Or just pick the winner:</p>`;
+        bhtml += `<div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},1)">${n1}</button><button class="btn btn-outline btn-sm" style="flex:1;" onclick="quickWin(${matchId},2)">${n2}</button></div>`;
+
+        // Manual override
+        bhtml += `<details style="margin-top:0.25rem;"><summary style="cursor:pointer;font-size:0.8rem;color:var(--text-light);font-weight:600;"><i class="fas fa-keyboard" style="margin-right:0.4rem;"></i>Manual Score Override</summary>`;
+        bhtml += `<div style="margin-top:0.5rem;"><div class="form-group"><label>${n1} Score</label><input type="number" id="modalScore1" class="form-input" value="${s1}" min="0"></div>`;
+        bhtml += `<div class="form-group"><label>${n2} Score</label><input type="number" id="modalScore2" class="form-input" value="${s2}" min="0"></div></div></details>`;
+
+        body.innerHTML = bhtml;
         footer.innerHTML = `${match.winner?'<button class="btn btn-danger btn-sm" onclick="clearElimScore('+matchId+')"><i class="fas fa-undo"></i> Clear</button>':''}<button class="btn btn-outline" onclick="closeScoreModal()">Cancel</button><button class="btn btn-primary" onclick="saveElimScore(${matchId})"><i class="fas fa-save"></i> Save</button>`;
     }
     modal.classList.add('active');
 }
 
 function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active', 'cornhole-mode'); }
+
+function btnScoreAdd(team, amount) {
+    const el = document.getElementById('btnScore' + team);
+    const inputEl = document.getElementById('modalScore' + team);
+    let val = parseInt(el.textContent) || 0;
+    val = Math.max(0, val + amount);
+    el.textContent = val;
+    if (inputEl) inputEl.value = val;
+}
 
 // ---- Cornhole Scoring in Brackets ----
 let chState = null;
