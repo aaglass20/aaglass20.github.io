@@ -89,7 +89,17 @@ var MODES = {
     lives:        { label: 'Elimination (Lives)',   icon: 'fa-heart',           minPlayers: 3, maxPlayers: 30, desc: 'Lose lives until eliminated' },
     gauntlet:     { label: 'Gauntlet',              icon: 'fa-bolt',            minPlayers: 3, maxPlayers: 50, desc: 'One player faces everyone' },
     pushluck:     { label: 'Push Your Luck',        icon: 'fa-dice',            minPlayers: 2, maxPlayers: 20, desc: 'Roll, bank, or bust — race to a target score' },
-    cornhole:     { label: 'Cornhole',              icon: 'fa-bullseye',        minPlayers: 2, maxPlayers: 2,  desc: 'Round-by-round bag toss scoring to a target' }
+    cornhole:     { label: 'Cornhole',              icon: 'fa-bullseye',        minPlayers: 2, maxPlayers: 2,  desc: 'Round-by-round bag toss scoring to a target' },
+    teamsport:    { label: 'Team Sport',            icon: 'fa-basketball',      minPlayers: 2, maxPlayers: 2,  desc: 'Period-based scoring for basketball, football, soccer & more' }
+};
+
+var TS_PRESETS = {
+    basketball: { label:'Basketball', icon:'fa-basketball', pts:[1,2,3], periodName:'Quarter', periodCount:4, overtime:true },
+    football:   { label:'Football',   icon:'fa-football',   pts:[1,2,3,6], periodName:'Quarter', periodCount:4, overtime:true },
+    soccer:     { label:'Soccer',     icon:'fa-futbol',     pts:[1], periodName:'Half', periodCount:2, overtime:true },
+    hockey:     { label:'Hockey',     icon:'fa-hockey-puck',pts:[1], periodName:'Period', periodCount:3, overtime:true },
+    baseball:   { label:'Baseball',   icon:'fa-baseball',   pts:[1], periodName:'Inning', periodCount:9, overtime:false },
+    custom:     { label:'Custom',     icon:'fa-sliders',    pts:[1,2,3], periodName:'Period', periodCount:2, overtime:false }
 };
 
 // ---- State ----
@@ -441,8 +451,71 @@ function renderModeConfig(ss) {
             html += '<input type="number" class="form-input" style="max-width:120px;" value="' + chBust + '" min="0" max="999" onchange="setupSetConfig(\'bustPenalty\',parseInt(this.value))">';
             html += '<small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Score resets to this value when going over.</small></div>';
             break;
+        case 'teamsport':
+            var preset = ss.config.sportPreset || 'basketball';
+            var p = TS_PRESETS[preset] || TS_PRESETS.basketball;
+            html += '<p class="section-subtext">Pick a sport or customize the scoring rules.</p>';
+            html += '<div class="form-group"><label>Sport</label><div class="radio-group mb-2">';
+            Object.keys(TS_PRESETS).forEach(function(key) {
+                var pr = TS_PRESETS[key];
+                var sel = preset === key ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="tsSelectPreset(\'' + key + '\')"><i class="fas ' + pr.icon + '" style="margin-right:0.4rem;"></i>' + pr.label + '</div>';
+            });
+            html += '</div></div>';
+            var pts = ss.config.pointValues || p.pts;
+            html += '<div class="form-group"><label>Point Values</label>';
+            html += '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">';
+            [1,2,3,6].forEach(function(v) {
+                var active = pts.indexOf(v) >= 0;
+                html += '<label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="checkbox"' + (active?' checked':'') + ' onchange="tsTogglePoint(' + v + ',this.checked)" style="accent-color:var(--primary);"> +' + v + '</label>';
+            });
+            html += '</div>';
+            html += '<input type="text" class="form-input" style="max-width:200px;margin-top:0.3rem;" value="' + pts.join(',') + '" onchange="setupSetConfig(\'pointValues\',this.value.split(\',\').map(Number).filter(function(n){return n>0;}))" placeholder="e.g. 1,2,3">';
+            html += '<small style="color:var(--text-light);display:block;margin-top:0.2rem;">Comma-separated custom values</small></div>';
+            var pName = ss.config.periodName || p.periodName;
+            html += '<div class="form-group"><label>Period Type</label><div class="radio-group mb-2">';
+            ['Quarter','Half','Period','Inning'].forEach(function(n) {
+                var sel = pName === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'periodName\',\'' + n + '\')">' + n + '</div>';
+            });
+            html += '</div></div>';
+            var pCount = ss.config.periodCount || p.periodCount;
+            html += '<div class="form-group"><label>Number of Periods</label><div class="radio-group mb-2">';
+            [1,2,3,4,5,6,7,8,9].forEach(function(n) {
+                var sel = pCount === n ? ' selected' : '';
+                html += '<div class="radio-option' + sel + '" onclick="setupSetConfig(\'periodCount\',' + n + ')">' + n + '</div>';
+            });
+            html += '</div></div>';
+            var ot = ss.config.overtime != null ? ss.config.overtime : p.overtime;
+            html += '<div class="form-group"><label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">';
+            html += '<input type="checkbox"' + (ot ? ' checked' : '') + ' onchange="setupSetConfig(\'overtime\',this.checked)" style="width:18px;height:18px;accent-color:var(--primary);">';
+            html += '<span>Allow Overtime</span></label>';
+            html += '<small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">If tied after regulation, overtime periods can be added.</small></div>';
+            break;
     }
     return html;
+}
+
+function tsSelectPreset(key) {
+    var ss = window._setupState;
+    var p = TS_PRESETS[key];
+    ss.config.sportPreset = key;
+    ss.config.pointValues = p.pts.slice();
+    ss.config.periodName = p.periodName;
+    ss.config.periodCount = p.periodCount;
+    ss.config.overtime = p.overtime;
+    renderSetup(ss);
+}
+
+function tsTogglePoint(val, checked) {
+    var ss = window._setupState;
+    var pts = ss.config.pointValues || [1,2,3];
+    if (checked && pts.indexOf(val) < 0) pts.push(val);
+    else if (!checked) pts = pts.filter(function(v) { return v !== val; });
+    pts.sort(function(a,b){return a-b;});
+    ss.config.pointValues = pts;
+    ss.config.sportPreset = 'custom';
+    renderSetup(ss);
 }
 
 // Setup step handlers (global for onclick)
@@ -537,6 +610,14 @@ function setupGoToConfig() {
     if (ss.mode === 'cornhole' && ss.config.exactScore == null) ss.config.exactScore = true;
     if (ss.mode === 'cornhole' && ss.config.bustPenalty == null) ss.config.bustPenalty = 15;
     if (ss.mode === 'cornhole' && !ss.config.bagsPerRound) ss.config.bagsPerRound = 4;
+    if (ss.mode === 'teamsport') {
+        var pr = TS_PRESETS[ss.config.sportPreset || 'basketball'];
+        if (!ss.config.sportPreset) ss.config.sportPreset = 'basketball';
+        if (!ss.config.pointValues) ss.config.pointValues = pr.pts.slice();
+        if (!ss.config.periodName) ss.config.periodName = pr.periodName;
+        if (!ss.config.periodCount) ss.config.periodCount = pr.periodCount;
+        if (ss.config.overtime == null) ss.config.overtime = pr.overtime;
+    }
 
     ss.step = 3;
     renderSetup(ss);
@@ -644,8 +725,17 @@ function buildInitialState(mode, players, config) {
         case 'cornhole':
             s.score1 = 0;
             s.score2 = 0;
-            s.rounds = [];              // {in1, on1, in2, on2}
+            s.rounds = [];
             s.currentRound = { bags1: [], bags2: [] };
+            break;
+        case 'teamsport':
+            s.score1 = 0;
+            s.score2 = 0;
+            s.currentPeriod = 1;
+            s.isOvertime = false;
+            s.overtimeCount = 0;
+            s.periods = [];
+            s.currentEvents = { events1: [], events2: [] };
             break;
     }
     return s;
@@ -672,6 +762,7 @@ function renderPlay() {
         case 'gauntlet': el.innerHTML = renderGauntlet(); break;
         case 'pushluck': el.innerHTML = renderPushLuck(); break;
         case 'cornhole': el.innerHTML = renderCornhole(); break;
+        case 'teamsport': el.innerHTML = renderTeamSport(); break;
         default: el.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Unknown mode</h3></div>';
     }
 }
@@ -2176,6 +2267,240 @@ function cornholeNewGame() {
 }
 
 // ================================================
+// 10. TEAM SPORT
+// ================================================
+function tsGetPeriodLabel(num, name, isOT, otNum) {
+    if (isOT) return 'OT' + otNum;
+    var short = { Quarter:'Q', Half:'H', Period:'P', Inning:'Inn' };
+    return (short[name] || name.charAt(0)) + num;
+}
+
+function tsPeriodScore(events) {
+    var t = 0; for (var i = 0; i < events.length; i++) t += events[i]; return t;
+}
+
+function renderTeamSport() {
+    var p1 = state.players[0], p2 = state.players[1];
+    var cfg = state.config;
+    var pts = cfg.pointValues || [1,2,3];
+    var pName = cfg.periodName || 'Quarter';
+    var pCount = cfg.periodCount || 4;
+    var ce = state.currentEvents;
+    var presetInfo = TS_PRESETS[cfg.sportPreset] || {};
+    var sportIcon = presetInfo.icon || 'fa-basketball';
+
+    var periodLabel = state.isOvertime
+        ? 'OT' + state.overtimeCount
+        : tsGetPeriodLabel(state.currentPeriod, pName, false, 0);
+
+    var html = '';
+    html += '<div class="mode-header"><i class="fas ' + sportIcon + '"></i>';
+    html += '<h2>' + (presetInfo.label || 'Team Sport') + '</h2>';
+    html += '<p>' + pCount + ' ' + pName + (pCount > 1 ? 's' : '') + (cfg.overtime ? ' + OT' : '') + '</p></div>';
+
+    // Scoreboard
+    html += '<div class="ts-scoreboard">';
+    html += '<div class="ts-team ts-team1"><div class="ts-team-name">' + escapeHtml(p1) + '</div><div class="ts-team-score">' + state.score1 + '</div></div>';
+    html += '<div class="ts-center"><div class="ts-period-current">' + periodLabel + '</div>';
+    html += '<div class="ts-period-label">' + (state.isOvertime ? 'Overtime' : pName + ' ' + state.currentPeriod + '/' + pCount) + '</div></div>';
+    html += '<div class="ts-team ts-team2"><div class="ts-team-name">' + escapeHtml(p2) + '</div><div class="ts-team-score">' + state.score2 + '</div></div>';
+    html += '</div>';
+
+    // Period strip
+    if (state.periods.length > 0 || !state.completed) {
+        html += '<div class="ts-period-strip">';
+        state.periods.forEach(function(pd) {
+            html += '<div class="ts-period-chip"><div class="chip-label">' + pd.label + '</div><div class="chip-score">' + pd.score1 + '-' + pd.score2 + '</div></div>';
+        });
+        if (!state.completed) {
+            var cs1 = tsPeriodScore(ce.events1), cs2 = tsPeriodScore(ce.events2);
+            html += '<div class="ts-period-chip active"><div class="chip-label">' + periodLabel + '</div><div class="chip-score">' + cs1 + '-' + cs2 + '</div></div>';
+        }
+        html += '</div>';
+    }
+
+    // Winner?
+    if (state.completed) {
+        html += '<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:var(--radius-lg);border:2px solid var(--accent);margin-bottom:1rem;">';
+        html += '<i class="fas fa-trophy" style="font-size:3rem;color:var(--accent);display:block;margin-bottom:0.5rem;"></i>';
+        html += '<h2 style="font-size:1.8rem;color:var(--secondary);">' + escapeHtml(state.winner) + ' Wins!</h2>';
+        html += '<p style="color:var(--text-medium);">' + state.score1 + ' - ' + state.score2 + '</p>';
+        html += '<button class="btn btn-outline mt-2" onclick="tsNewGame()"><i class="fas fa-redo"></i> New Game</button>';
+        html += '</div>';
+    } else {
+        // Scoring area
+        var cs1 = tsPeriodScore(ce.events1), cs2 = tsPeriodScore(ce.events2);
+
+        html += '<div class="ts-throw-area">';
+
+        // Team 1
+        html += '<div class="ts-throw-team">';
+        html += '<div class="ts-throw-header" style="color:var(--primary);">' + escapeHtml(p1) + '</div>';
+        html += '<div class="ts-period-score">' + cs1 + '</div>';
+        html += '<div class="ts-point-btns">';
+        pts.forEach(function(v) {
+            var cls = 'ts-point-btn ts-btn-' + ([1,2,3,6].indexOf(v) >= 0 ? v : 'default');
+            html += '<button class="btn ' + cls + '" onclick="tsScore(1,' + v + ')">+' + v + '</button>';
+        });
+        html += '</div>';
+        if (ce.events1.length > 0) html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="tsUndo(1)"><i class="fas fa-undo"></i> Undo</button>';
+        html += '</div>';
+
+        html += '<div class="ts-vs">VS</div>';
+
+        // Team 2
+        html += '<div class="ts-throw-team">';
+        html += '<div class="ts-throw-header" style="color:var(--error);">' + escapeHtml(p2) + '</div>';
+        html += '<div class="ts-period-score">' + cs2 + '</div>';
+        html += '<div class="ts-point-btns">';
+        pts.forEach(function(v) {
+            var cls = 'ts-point-btn ts-btn-' + ([1,2,3,6].indexOf(v) >= 0 ? v : 'default');
+            html += '<button class="btn ' + cls + '" onclick="tsScore(2,' + v + ')">+' + v + '</button>';
+        });
+        html += '</div>';
+        if (ce.events2.length > 0) html += '<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.4rem;font-size:0.75rem;" onclick="tsUndo(2)"><i class="fas fa-undo"></i> Undo</button>';
+        html += '</div>';
+
+        html += '</div>';
+
+        // Period controls
+        var isLastPeriod = !state.isOvertime && state.currentPeriod >= pCount;
+        html += '<div style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;flex-wrap:wrap;">';
+        html += '<button class="btn btn-primary" onclick="tsEndPeriod()"><i class="fas fa-forward-step"></i> End ' + periodLabel + '</button>';
+        if (isLastPeriod || state.isOvertime) {
+            html += '<button class="btn btn-success" onclick="tsEndGame()"><i class="fas fa-flag-checkered"></i> End Game</button>';
+        }
+        html += '</div>';
+    }
+
+    // Period history table
+    if (state.periods.length > 0) {
+        html += '<div class="card" style="margin-top:1rem;"><div class="section-header"><i class="fas fa-table"></i><h2>Period Breakdown</h2></div>';
+        html += '<div style="overflow-x:auto;"><table class="ch-history-table"><thead><tr><th>Period</th>';
+        state.periods.forEach(function(pd) { html += '<th>' + pd.label + '</th>'; });
+        if (!state.completed) html += '<th>' + periodLabel + '</th>';
+        html += '<th style="font-weight:900;">Total</th></tr></thead><tbody>';
+        // Team 1 row
+        html += '<tr><td style="font-weight:700;color:var(--primary);">' + escapeHtml(p1) + '</td>';
+        state.periods.forEach(function(pd) { html += '<td>' + pd.score1 + '</td>'; });
+        if (!state.completed) html += '<td style="font-weight:700;">' + tsPeriodScore(ce.events1) + '</td>';
+        html += '<td style="font-weight:900;">' + state.score1 + '</td></tr>';
+        // Team 2 row
+        html += '<tr><td style="font-weight:700;color:var(--error);">' + escapeHtml(p2) + '</td>';
+        state.periods.forEach(function(pd) { html += '<td>' + pd.score2 + '</td>'; });
+        if (!state.completed) html += '<td style="font-weight:700;">' + tsPeriodScore(ce.events2) + '</td>';
+        html += '<td style="font-weight:900;">' + state.score2 + '</td></tr>';
+        html += '</tbody></table></div></div>';
+    }
+
+    return html;
+}
+
+function tsScore(team, pts) {
+    if (state.completed) return;
+    var events = team === 1 ? state.currentEvents.events1 : state.currentEvents.events2;
+    events.push(pts);
+    if (team === 1) state.score1 += pts; else state.score2 += pts;
+    saveState(); renderPlay();
+}
+
+function tsUndo(team) {
+    var events = team === 1 ? state.currentEvents.events1 : state.currentEvents.events2;
+    if (events.length === 0) return;
+    var val = events.pop();
+    if (team === 1) state.score1 -= val; else state.score2 -= val;
+    saveState(); renderPlay();
+}
+
+function tsEndPeriod() {
+    var ce = state.currentEvents;
+    var s1 = tsPeriodScore(ce.events1), s2 = tsPeriodScore(ce.events2);
+    var label = state.isOvertime
+        ? 'OT' + state.overtimeCount
+        : tsGetPeriodLabel(state.currentPeriod, state.config.periodName, false, 0);
+
+    state.periods.push({ label: label, score1: s1, score2: s2, events1: ce.events1.slice(), events2: ce.events2.slice() });
+    state.matches.push({ type: 'period', label: label, score1: s1, score2: s2, total1: state.score1, total2: state.score2, timestamp: new Date().toISOString() });
+
+    state.currentEvents = { events1: [], events2: [] };
+
+    if (state.isOvertime) {
+        // OT ended — if still tied and overtime allowed, start another
+        if (state.score1 === state.score2 && state.config.overtime) {
+            state.overtimeCount++;
+            showStatus('Still tied! OT' + state.overtimeCount + ' starting', 'warning');
+        } else {
+            // OT broke the tie or overtime not allowed
+            tsFinalize();
+        }
+    } else if (state.currentPeriod >= state.config.periodCount) {
+        // End of regulation
+        if (state.score1 === state.score2 && state.config.overtime) {
+            state.isOvertime = true;
+            state.overtimeCount = 1;
+            showStatus('Tied at end of regulation! Overtime starting.', 'warning');
+        } else if (state.score1 !== state.score2) {
+            tsFinalize();
+        }
+        // If tied and no OT, game stays open — user can End Game manually
+    } else {
+        state.currentPeriod++;
+    }
+
+    saveState(); renderPlay();
+}
+
+function tsEndGame() {
+    if (state.score1 === state.score2) {
+        if (state.config.overtime && !state.isOvertime) {
+            state.isOvertime = true;
+            state.overtimeCount = 1;
+            // End current period first
+            var ce = state.currentEvents;
+            var s1 = tsPeriodScore(ce.events1), s2 = tsPeriodScore(ce.events2);
+            var label = tsGetPeriodLabel(state.currentPeriod, state.config.periodName, false, 0);
+            state.periods.push({ label: label, score1: s1, score2: s2, events1: ce.events1.slice(), events2: ce.events2.slice() });
+            state.currentEvents = { events1: [], events2: [] };
+            saveState(); renderPlay();
+            showStatus('Tied! Overtime starting.', 'warning');
+            return;
+        }
+        if (!confirm('Scores are tied. End as a draw?')) return;
+    }
+    // Save current period if it has events
+    var ce = state.currentEvents;
+    if (ce.events1.length > 0 || ce.events2.length > 0) {
+        var s1 = tsPeriodScore(ce.events1), s2 = tsPeriodScore(ce.events2);
+        var label = state.isOvertime
+            ? 'OT' + state.overtimeCount
+            : tsGetPeriodLabel(state.currentPeriod, state.config.periodName, false, 0);
+        state.periods.push({ label: label, score1: s1, score2: s2, events1: ce.events1.slice(), events2: ce.events2.slice() });
+        state.currentEvents = { events1: [], events2: [] };
+    }
+    tsFinalize();
+    saveState(); renderPlay();
+}
+
+function tsFinalize() {
+    state.completed = true;
+    if (state.score1 > state.score2) state.winner = state.players[0];
+    else if (state.score2 > state.score1) state.winner = state.players[1];
+    else state.winner = 'Draw';
+    state.matches.push({ type: 'final', winner: state.winner, score1: state.score1, score2: state.score2, timestamp: new Date().toISOString() });
+    if (state.winner !== 'Draw') showStatus(state.winner + ' wins!', 'success');
+}
+
+function tsNewGame() {
+    if (!confirm('Start a new game? Current scores will be saved to history.')) return;
+    state.score1 = 0; state.score2 = 0;
+    state.currentPeriod = 1; state.isOvertime = false; state.overtimeCount = 0;
+    state.periods = []; state.currentEvents = { events1: [], events2: [] };
+    state.completed = false; state.winner = null;
+    saveState(); renderPlay();
+    showStatus('New game started!', 'success');
+}
+
+// ================================================
 // HISTORY TAB
 // ================================================
 function renderHistory() {
@@ -2217,6 +2542,9 @@ function renderHistory() {
             break;
         case 'cornhole':
             html += '<th>Rnd</th><th>' + escapeHtml(state.players[0]) + '</th><th>' + escapeHtml(state.players[1]) + '</th><th>Diff</th><th>Score</th><th>Time</th>';
+            break;
+        case 'teamsport':
+            html += '<th>Event</th><th>' + escapeHtml(state.players[0]) + '</th><th>' + escapeHtml(state.players[1]) + '</th><th>Running</th><th>Time</th>';
             break;
     }
 
@@ -2287,6 +2615,14 @@ function renderHistory() {
                 html += '<td style="font-weight:600;">' + m.score1 + '-' + m.score2 + '</td>';
                 html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
                 break;
+            case 'teamsport':
+                var evtLabel = m.type === 'final' ? '<strong style="color:var(--accent-dark);">Final</strong>' : m.label;
+                html += '<td>' + evtLabel + '</td>';
+                html += '<td>' + (m.score1 !== undefined ? m.score1 : '-') + '</td>';
+                html += '<td>' + (m.score2 !== undefined ? m.score2 : '-') + '</td>';
+                html += '<td style="font-weight:600;">' + (m.total1 !== undefined ? m.total1 + '-' + m.total2 : m.score1 + '-' + m.score2) + '</td>';
+                html += '<td style="color:var(--text-light);font-size:0.8rem;">' + formatTimestamp(m.timestamp) + '</td>';
+                break;
         }
 
         html += '</tr>';
@@ -2355,6 +2691,15 @@ function renderSettings() {
             html += '<div><strong>Bags Per Round:</strong> ' + (state.config.bagsPerRound || 4) + '</div>';
             html += '<div><strong>Score:</strong> ' + state.score1 + ' - ' + state.score2 + '</div>';
             html += '<div><strong>Rounds Played:</strong> ' + state.rounds.length + '</div>';
+            break;
+        case 'teamsport':
+            var tsPreset = TS_PRESETS[state.config.sportPreset] || {};
+            html += '<div><strong>Sport:</strong> ' + (tsPreset.label || state.config.sportPreset || 'Custom') + '</div>';
+            html += '<div><strong>Point Values:</strong> ' + (state.config.pointValues || []).join(', ') + '</div>';
+            html += '<div><strong>Periods:</strong> ' + state.config.periodCount + ' ' + state.config.periodName + (state.config.periodCount > 1 ? 's' : '') + '</div>';
+            html += '<div><strong>Overtime:</strong> ' + (state.config.overtime ? 'Enabled' : 'Disabled') + '</div>';
+            html += '<div><strong>Score:</strong> ' + state.score1 + ' - ' + state.score2 + '</div>';
+            html += '<div><strong>Period:</strong> ' + (state.isOvertime ? 'OT' + state.overtimeCount : state.currentPeriod + '/' + state.config.periodCount) + '</div>';
             break;
     }
 

@@ -116,6 +116,7 @@
                     <div class="radio-group">
                         <div class="radio-option selected" onclick="selectScoringMode('simple')"><input type="radio" name="scoringMode" checked> <div><strong>Simple</strong><small style="display:block;color:var(--text-light);font-size:0.8rem;">Enter final scores directly</small></div></div>
                         <div class="radio-option" onclick="selectScoringMode('cornhole')"><input type="radio" name="scoringMode"> <div><strong>Cornhole</strong><small style="display:block;color:var(--text-light);font-size:0.8rem;">Button scoring with bags in (3) &amp; bags on (1), cancellation scoring</small></div></div>
+                        <div class="radio-option" onclick="selectScoringMode('teamsport')"><input type="radio" name="scoringMode"> <div><strong>Team Sport</strong><small style="display:block;color:var(--text-light);font-size:0.8rem;">Period-based scoring for basketball, football, soccer &amp; more</small></div></div>
                     </div>
                 </div>
                 <div id="cornholeSettings" style="display:none;">
@@ -143,6 +144,45 @@
                     <div class="form-group" id="bustPenaltyGroup">
                         <label for="bustPenalty">Bust Penalty Score</label>
                         <input type="number" id="bustPenalty" class="form-input" value="15" min="0" max="999">
+                    </div>
+                </div>
+                <div id="teamsportSettings" style="display:none;">
+                    <div class="form-group">
+                        <label>Sport Preset</label>
+                        <div class="radio-group" id="tsPresetGroup">
+                            <div class="radio-option selected" onclick="tsPickPreset('basketball')"><i class="fas fa-basketball"></i> Basketball</div>
+                            <div class="radio-option" onclick="tsPickPreset('football')"><i class="fas fa-football"></i> Football</div>
+                            <div class="radio-option" onclick="tsPickPreset('soccer')"><i class="fas fa-futbol"></i> Soccer</div>
+                            <div class="radio-option" onclick="tsPickPreset('hockey')"><i class="fas fa-hockey-puck"></i> Hockey</div>
+                            <div class="radio-option" onclick="tsPickPreset('baseball')"><i class="fas fa-baseball"></i> Baseball</div>
+                            <div class="radio-option" onclick="tsPickPreset('custom')"><i class="fas fa-sliders"></i> Custom</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Point Values</label>
+                        <input type="text" id="tsPointValues" class="form-input" value="1,2,3" placeholder="e.g. 1,2,3">
+                        <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">Comma-separated point values for scoring buttons</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Period Type</label>
+                        <div class="radio-group" id="tsPeriodNameGroup">
+                            <div class="radio-option selected" onclick="tsPeriodNamePick('Quarter')">Quarter</div>
+                            <div class="radio-option" onclick="tsPeriodNamePick('Half')">Half</div>
+                            <div class="radio-option" onclick="tsPeriodNamePick('Period')">Period</div>
+                            <div class="radio-option" onclick="tsPeriodNamePick('Inning')">Inning</div>
+                        </div>
+                        <input type="hidden" id="tsPeriodName" value="Quarter">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Periods</label>
+                        <input type="number" id="tsPeriodCount" class="form-input" value="4" min="1" max="9" style="max-width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                            <input type="checkbox" id="tsOvertimeToggle" checked style="width:18px;height:18px;accent-color:var(--primary);">
+                            <span>Allow Overtime</span>
+                        </label>
+                        <small style="color:var(--text-light);font-size:0.8rem;margin-top:0.3rem;display:block;">If tied after regulation, overtime periods can be added.</small>
                     </div>
                 </div>
                 <div class="flex-between mt-2">
@@ -560,12 +600,19 @@ function goToStep(step) {
             newTournament.name = name;
             newTournament.participantCount = count;
             const isCornhole = document.getElementById('cornholeSettings').style.display !== 'none';
-            newTournament.scoringMode = isCornhole ? 'cornhole' : 'simple';
+            const isTeamSport = document.getElementById('teamsportSettings').style.display !== 'none';
+            newTournament.scoringMode = isCornhole ? 'cornhole' : isTeamSport ? 'teamsport' : 'simple';
             if (isCornhole) {
                 newTournament.targetScore = parseInt(document.getElementById('targetScore').value) || 21;
                 newTournament.bagsPerRound = parseInt(document.getElementById('bagsPerRound').value) || 4;
                 newTournament.exactScore = document.getElementById('exactScoreToggle').checked;
                 newTournament.bustPenalty = parseInt(document.getElementById('bustPenalty').value) || 15;
+            }
+            if (isTeamSport) {
+                newTournament.tsPointValues = document.getElementById('tsPointValues').value.split(',').map(Number).filter(n => n > 0);
+                newTournament.tsPeriodName = document.getElementById('tsPeriodName').value || 'Quarter';
+                newTournament.tsPeriodCount = parseInt(document.getElementById('tsPeriodCount').value) || 4;
+                newTournament.tsOvertime = document.getElementById('tsOvertimeToggle').checked;
             }
         }
         if (currentStep === 2 && !selectedType) {
@@ -598,11 +645,41 @@ function selectScoringMode(mode) {
     document.querySelectorAll('.radio-option').forEach(o => {
         const input = o.querySelector('input[name="scoringMode"]');
         if (!input) return;
-        const isThis = o.querySelector('strong').textContent.toLowerCase() === mode;
-        o.classList.toggle('selected', isThis);
-        input.checked = isThis;
+        const label = o.querySelector('strong')?.textContent?.toLowerCase()?.replace(/\s/g,'');
+        o.classList.toggle('selected', label === mode);
+        input.checked = label === mode;
     });
     document.getElementById('cornholeSettings').style.display = mode === 'cornhole' ? 'block' : 'none';
+    document.getElementById('teamsportSettings').style.display = mode === 'teamsport' ? 'block' : 'none';
+}
+
+const TS_PRESETS_B = {
+    basketball:{pts:'1,2,3',pName:'Quarter',pCount:4,ot:true},
+    football:{pts:'1,2,3,6',pName:'Quarter',pCount:4,ot:true},
+    soccer:{pts:'1',pName:'Half',pCount:2,ot:true},
+    hockey:{pts:'1',pName:'Period',pCount:3,ot:true},
+    baseball:{pts:'1',pName:'Inning',pCount:9,ot:false},
+    custom:{pts:'1,2,3',pName:'Period',pCount:2,ot:false}
+};
+
+function tsPickPreset(key) {
+    const p = TS_PRESETS_B[key];
+    document.querySelectorAll('#tsPresetGroup .radio-option').forEach(o => o.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('tsPointValues').value = p.pts;
+    document.getElementById('tsPeriodCount').value = p.pCount;
+    document.getElementById('tsPeriodName').value = p.pName;
+    document.getElementById('tsOvertimeToggle').checked = p.ot;
+    document.querySelectorAll('#tsPeriodNameGroup .radio-option').forEach(o => {
+        o.classList.toggle('selected', o.textContent.trim() === p.pName);
+    });
+}
+
+function tsPeriodNamePick(name) {
+    document.getElementById('tsPeriodName').value = name;
+    document.querySelectorAll('#tsPeriodNameGroup .radio-option').forEach(o => {
+        o.classList.toggle('selected', o.textContent.trim() === name);
+    });
 }
 
 function buildStep3() {
@@ -873,7 +950,11 @@ function createAndStartTournament() {
         targetScore: newTournament.targetScore || 21,
         bagsPerRound: newTournament.bagsPerRound || 4,
         exactScore: newTournament.exactScore !== undefined ? newTournament.exactScore : true,
-        bustPenalty: newTournament.bustPenalty !== undefined ? newTournament.bustPenalty : 15
+        bustPenalty: newTournament.bustPenalty !== undefined ? newTournament.bustPenalty : 15,
+        tsPointValues: newTournament.tsPointValues || null,
+        tsPeriodName: newTournament.tsPeriodName || null,
+        tsPeriodCount: newTournament.tsPeriodCount || null,
+        tsOvertime: newTournament.tsOvertime || false
     };
 
     generateTournament();
@@ -1991,6 +2072,10 @@ function openScoreModal(matchId, type) {
         openCornholeModal(matchId, type);
         return;
     }
+    if (tournament.scoringMode === 'teamsport') {
+        openTeamSportModal(matchId, type);
+        return;
+    }
 
     if (type === 'rr') {
         const match = tournament.rrMatches.find(m => m.id === matchId);
@@ -2053,7 +2138,7 @@ function openScoreModal(matchId, type) {
     modal.classList.add('active');
 }
 
-function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active', 'cornhole-mode'); }
+function closeScoreModal() { document.getElementById('scoreModal').classList.remove('active', 'cornhole-mode', 'teamsport-mode'); }
 
 function btnScoreAdd(team, amount) {
     const el = document.getElementById('btnScore' + team);
@@ -2328,6 +2413,245 @@ function clearElimChScore(matchId) {
     clearElimScore(matchId);
     const match = tournament.matches.find(m => m.id === matchId);
     if (match) match.chData = null;
+    saveTournament();
+}
+
+// ---- Team Sport Scoring in Brackets ----
+let tsState = null;
+
+function tsPeriodLabel(num, name, isOT, otNum) {
+    if (isOT) return 'OT' + otNum;
+    const short = {Quarter:'Q',Half:'H',Period:'P',Inning:'Inn'};
+    return (short[name]||name.charAt(0)) + num;
+}
+
+function tsEvtSum(events) { return events.reduce((a,b)=>a+b, 0); }
+
+function openTeamSportModal(matchId, type) {
+    const modal = document.getElementById('scoreModal'), title = document.getElementById('scoreModalTitle');
+    const body = document.getElementById('scoreModalBody'), footer = document.getElementById('scoreModalFooter');
+    let name1, name2, match;
+    if (type === 'rr') {
+        match = tournament.rrMatches.find(m => m.id === matchId);
+        if (!match) return;
+        name1 = match.p1; name2 = match.p2;
+    } else {
+        match = tournament.matches.find(m => m.id === matchId);
+        if (!match) return;
+        if (match.slot1?.name==='BYE'||match.slot2?.name==='BYE') return;
+        if (!match.slot1?.name||!match.slot2?.name) { showStatus('Both participants must be determined first','error'); return; }
+        name1 = match.slot1.name; name2 = match.slot2.name;
+    }
+    const isCompleted = type === 'rr' ? match.completed : !!match.winner;
+    const saved = match.tsData || null;
+
+    tsState = {
+        matchId, type, name1, name2,
+        score1: saved ? saved.score1 : 0,
+        score2: saved ? saved.score2 : 0,
+        currentPeriod: saved ? (saved.completed ? saved.periods.length : saved.currentPeriod || 1) : 1,
+        isOvertime: saved ? (saved.isOvertime || false) : false,
+        overtimeCount: saved ? (saved.overtimeCount || 0) : 0,
+        periods: saved ? JSON.parse(JSON.stringify(saved.periods || [])) : [],
+        ce: saved && !saved.completed ? { events1: [], events2: [] } : { events1: [], events2: [] },
+        pts: tournament.tsPointValues || [1,2,3],
+        periodName: tournament.tsPeriodName || 'Quarter',
+        periodCount: tournament.tsPeriodCount || 4,
+        overtime: tournament.tsOvertime || false,
+        completed: isCompleted,
+        winner: saved ? saved.winner : null
+    };
+
+    title.innerHTML = '<i class="fas fa-basketball" style="color:var(--primary);margin-right:0.5rem;"></i> Team Sport';
+    renderTsBody(body);
+    const clearBtn = isCompleted ? `<button class="btn btn-danger btn-sm" onclick="${type==='rr'?'clearRRTsScore':'clearElimTsScore'}(${matchId})"><i class="fas fa-undo"></i> Clear All</button>` : '';
+    footer.innerHTML = `${clearBtn}<button class="btn btn-outline" onclick="closeScoreModal()">Close</button>`;
+    modal.classList.add('active', 'teamsport-mode');
+}
+
+function renderTsBody(body) {
+    const s = tsState;
+    const plabel = s.isOvertime ? 'OT'+s.overtimeCount : tsPeriodLabel(s.currentPeriod, s.periodName, false, 0);
+    let html = '';
+
+    // Scoreboard
+    html += `<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
+        <div style="text-align:center;padding:0.6rem;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border-radius:var(--radius-sm);">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;opacity:0.8;">${escapeHtml(s.name1)}</div>
+            <div style="font-size:2rem;font-weight:900;">${s.score1}</div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-weight:900;font-size:1.2rem;color:var(--secondary);">${plabel}</div>
+            <div style="font-size:0.6rem;color:var(--text-light);">${s.isOvertime?'Overtime':s.periodName+' '+s.currentPeriod+'/'+s.periodCount}</div>
+        </div>
+        <div style="text-align:center;padding:0.6rem;background:linear-gradient(135deg,var(--error),#8B0000);color:white;border-radius:var(--radius-sm);">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;opacity:0.8;">${escapeHtml(s.name2)}</div>
+            <div style="font-size:2rem;font-weight:900;">${s.score2}</div>
+        </div>
+    </div>`;
+
+    // Period strip
+    if (s.periods.length > 0) {
+        html += '<div style="display:flex;gap:0.2rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.5rem;">';
+        s.periods.forEach(pd => {
+            html += `<div style="text-align:center;padding:0.15rem 0.4rem;border-radius:var(--radius-sm);font-size:0.65rem;border:1px solid var(--border-light);background:var(--bg-card);">
+                <div style="color:var(--text-light);font-size:0.55rem;text-transform:uppercase;">${pd.label}</div>
+                <div style="font-weight:900;font-size:0.75rem;color:var(--secondary);">${pd.score1}-${pd.score2}</div>
+            </div>`;
+        });
+        if (!s.completed) {
+            html += `<div style="text-align:center;padding:0.15rem 0.4rem;border-radius:var(--radius-sm);font-size:0.65rem;border:1px solid var(--primary);background:#FFF3E0;">
+                <div style="color:var(--primary);font-size:0.55rem;text-transform:uppercase;">${plabel}</div>
+                <div style="font-weight:900;font-size:0.75rem;color:var(--secondary);">${tsEvtSum(s.ce.events1)}-${tsEvtSum(s.ce.events2)}</div>
+            </div>`;
+        }
+        html += '</div>';
+    }
+
+    // Winner
+    if (s.winner) {
+        html += `<div style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border:2px solid var(--success);border-radius:var(--radius-sm);padding:0.75rem;margin-bottom:0.5rem;text-align:center;">
+            <i class="fas fa-trophy" style="color:var(--accent);"></i>
+            <strong style="color:var(--success);font-size:1.1rem;margin-left:0.4rem;">${escapeHtml(s.winner)} wins!</strong>
+            <div style="font-size:0.85rem;color:var(--text-medium);margin-top:0.2rem;">${s.score1} - ${s.score2}</div>
+        </div>`;
+    }
+
+    // Scoring area
+    if (!s.winner) {
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;">';
+
+        // Team 1
+        html += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.5rem;border:2px solid var(--primary-light);text-align:center;">
+            <div style="font-weight:800;font-size:0.75rem;color:var(--primary);margin-bottom:0.2rem;">${escapeHtml(s.name1)}</div>
+            <div style="font-size:1.5rem;font-weight:900;color:var(--secondary);margin:0.2rem 0;">${tsEvtSum(s.ce.events1)}</div>
+            <div style="display:flex;gap:0.3rem;justify-content:center;flex-wrap:wrap;">`;
+        s.pts.forEach(v => {
+            const cls = [1,2,3,6].includes(v) ? 'ts-btn-'+v : 'ts-btn-default';
+            html += `<button class="ts-modal-btn ${cls}" onclick="tsMScore(1,${v})">+${v}</button>`;
+        });
+        html += `</div>`;
+        if (s.ce.events1.length > 0) html += `<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.65rem;" onclick="tsMUndo(1)"><i class="fas fa-undo"></i> Undo</button>`;
+        html += '</div>';
+
+        // Team 2
+        html += `<div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:0.5rem;border:2px solid #EF9A9A;text-align:center;">
+            <div style="font-weight:800;font-size:0.75rem;color:var(--error);margin-bottom:0.2rem;">${escapeHtml(s.name2)}</div>
+            <div style="font-size:1.5rem;font-weight:900;color:var(--secondary);margin:0.2rem 0;">${tsEvtSum(s.ce.events2)}</div>
+            <div style="display:flex;gap:0.3rem;justify-content:center;flex-wrap:wrap;">`;
+        s.pts.forEach(v => {
+            const cls = [1,2,3,6].includes(v) ? 'ts-btn-'+v : 'ts-btn-default';
+            html += `<button class="ts-modal-btn ${cls}" onclick="tsMScore(2,${v})">+${v}</button>`;
+        });
+        html += `</div>`;
+        if (s.ce.events2.length > 0) html += `<button class="btn btn-outline btn-sm" style="width:100%;margin-top:0.3rem;font-size:0.65rem;" onclick="tsMUndo(2)"><i class="fas fa-undo"></i> Undo</button>`;
+        html += '</div></div>';
+
+        // Period controls
+        const isLast = !s.isOvertime && s.currentPeriod >= s.periodCount;
+        html += '<div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">';
+        html += `<button class="btn btn-primary btn-sm" onclick="tsMEndPeriod()"><i class="fas fa-forward-step"></i> End ${plabel}</button>`;
+        if (isLast || s.isOvertime) html += `<button class="btn btn-success btn-sm" onclick="tsMEndGame()"><i class="fas fa-flag-checkered"></i> End Game</button>`;
+        html += '</div>';
+    }
+
+    body.innerHTML = html;
+}
+
+function tsMScore(team, pts) {
+    const events = team === 1 ? tsState.ce.events1 : tsState.ce.events2;
+    events.push(pts);
+    if (team === 1) tsState.score1 += pts; else tsState.score2 += pts;
+    renderTsBody(document.getElementById('scoreModalBody'));
+}
+
+function tsMUndo(team) {
+    const events = team === 1 ? tsState.ce.events1 : tsState.ce.events2;
+    if (!events.length) return;
+    const val = events.pop();
+    if (team === 1) tsState.score1 -= val; else tsState.score2 -= val;
+    renderTsBody(document.getElementById('scoreModalBody'));
+}
+
+function tsMEndPeriod() {
+    const s = tsState, ce = s.ce;
+    const s1 = tsEvtSum(ce.events1), s2 = tsEvtSum(ce.events2);
+    const label = s.isOvertime ? 'OT'+s.overtimeCount : tsPeriodLabel(s.currentPeriod, s.periodName, false, 0);
+    s.periods.push({ label, score1: s1, score2: s2 });
+    s.ce = { events1: [], events2: [] };
+
+    if (s.isOvertime) {
+        if (s.score1 === s.score2 && s.overtime) { s.overtimeCount++; showStatus('Still tied! OT'+s.overtimeCount, 'error'); }
+        else { tsMFinalize(); }
+    } else if (s.currentPeriod >= s.periodCount) {
+        if (s.score1 === s.score2 && s.overtime) {
+            s.isOvertime = true; s.overtimeCount = 1;
+            showStatus('Tied! Overtime starting.', 'warning');
+        } else if (s.score1 !== s.score2) { tsMFinalize(); }
+    } else { s.currentPeriod++; }
+
+    renderTsBody(document.getElementById('scoreModalBody'));
+}
+
+function tsMEndGame() {
+    const s = tsState, ce = s.ce;
+    if (s.score1 === s.score2 && s.overtime && !s.isOvertime) {
+        const s1 = tsEvtSum(ce.events1), s2 = tsEvtSum(ce.events2);
+        const label = tsPeriodLabel(s.currentPeriod, s.periodName, false, 0);
+        s.periods.push({ label, score1: s1, score2: s2 });
+        s.ce = { events1: [], events2: [] };
+        s.isOvertime = true; s.overtimeCount = 1;
+        renderTsBody(document.getElementById('scoreModalBody'));
+        showStatus('Tied! Overtime starting.', 'warning');
+        return;
+    }
+    if (s.score1 === s.score2 && !confirm('Scores are tied. End as a draw?')) return;
+    if (ce.events1.length || ce.events2.length) {
+        const s1 = tsEvtSum(ce.events1), s2 = tsEvtSum(ce.events2);
+        const label = s.isOvertime ? 'OT'+s.overtimeCount : tsPeriodLabel(s.currentPeriod, s.periodName, false, 0);
+        s.periods.push({ label, score1: s1, score2: s2 });
+        s.ce = { events1: [], events2: [] };
+    }
+    tsMFinalize();
+    renderTsBody(document.getElementById('scoreModalBody'));
+}
+
+function tsMFinalize() {
+    const s = tsState;
+    s.completed = true;
+    s.winner = s.score1 > s.score2 ? s.name1 : s.score2 > s.score1 ? s.name2 : 'Draw';
+    tsMSave();
+    if (s.winner !== 'Draw') showStatus(s.winner + ' wins!', 'success');
+}
+
+function tsMSave() {
+    const s = tsState;
+    const match = s.type === 'rr'
+        ? tournament.rrMatches.find(m => m.id === s.matchId)
+        : tournament.matches.find(m => m.id === s.matchId);
+
+    match.tsData = { score1:s.score1, score2:s.score2, periods:s.periods, winner:s.winner, completed:s.completed, currentPeriod:s.currentPeriod, isOvertime:s.isOvertime, overtimeCount:s.overtimeCount };
+
+    if (s.type === 'rr') {
+        match.p1Score = s.score1; match.p2Score = s.score2; match.completed = true;
+    } else {
+        match.slot1.score = s.score1; match.slot2.score = s.score2;
+        match.winner = s.winner === 'Draw' ? null : s.winner;
+        if (match.winner) advanceWinner(match);
+    }
+    saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+}
+
+function clearRRTsScore(matchId) {
+    const match = tournament.rrMatches.find(m => m.id === matchId);
+    match.p1Score = null; match.p2Score = null; match.completed = false; match.tsData = null;
+    closeScoreModal(); saveTournament(); renderBracket(); renderStandings(); renderMatches(); saveToSheets();
+}
+
+function clearElimTsScore(matchId) {
+    clearElimScore(matchId);
+    const match = tournament.matches.find(m => m.id === matchId);
+    if (match) match.tsData = null;
     saveTournament();
 }
 
@@ -2626,7 +2950,7 @@ function renderSettings() {
         <strong>Status:</strong><span class="badge badge-${status==='completed'?'success':status==='archived'?'info':'warning'}">${status.charAt(0).toUpperCase()+status.slice(1)}</span>
         ${tournament.type==='rr_single'||tournament.type==='rr_double'||tournament.type==='rr_consolation'?`<strong>Advance per Group:</strong><span>${tournament.rrAdvanceCount}</span><strong>Groups:</strong><span>${(tournament.groups||[]).length}</span>`:''}
         ${tournament.type==='consolation'||tournament.type==='rr_consolation'?`<strong>Cross-Bracket:</strong><span>${tournament.crossBracket?'Enabled':'Disabled'}</span><strong>Placement Depth:</strong><span>Through ${tournament.placementDepth||4}th</span>`:''}
-        <strong>Scoring:</strong><span>${tournament.scoringMode==='cornhole'?'Cornhole (target: '+tournament.targetScore+', bags: '+tournament.bagsPerRound+', '+(tournament.exactScore?'exact, bust: '+tournament.bustPenalty:'go over OK')+')':'Simple'}</span>
+        <strong>Scoring:</strong><span>${tournament.scoringMode==='cornhole'?'Cornhole (target: '+tournament.targetScore+', bags: '+tournament.bagsPerRound+', '+(tournament.exactScore?'exact, bust: '+tournament.bustPenalty:'go over OK')+')':tournament.scoringMode==='teamsport'?'Team Sport ('+tournament.tsPeriodCount+' '+(tournament.tsPeriodName||'Quarter')+'s, pts: '+(tournament.tsPointValues||[]).join(',')+')':'Simple'}</span>
     </div></div></div>`;
 
     // Share link

@@ -199,7 +199,8 @@ const H2H_MODES = {
     lives: { label: 'Elimination (Lives)', icon: 'fa-heart', desc: 'Lose a life each loss, last alive wins' },
     gauntlet: { label: 'Gauntlet Mode', icon: 'fa-bolt', desc: 'One player faces everyone in a row' },
     pushluck: { label: 'Push Your Luck', icon: 'fa-dice', desc: 'Roll, bank, or bust — race to a target score' },
-    cornhole: { label: 'Cornhole', icon: 'fa-bullseye', desc: 'Round-by-round bag toss scoring to a target' }
+    cornhole: { label: 'Cornhole', icon: 'fa-bullseye', desc: 'Round-by-round bag toss scoring to a target' },
+    teamsport: { label: 'Team Sport', icon: 'fa-basketball', desc: 'Period-based scoring for basketball, football, soccer & more' }
 };
 
 let selectedH2HMode = null;

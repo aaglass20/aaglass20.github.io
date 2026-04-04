@@ -1592,6 +1592,156 @@
     box-shadow: none;
 }
 
+/* ============================================
+   10. TEAM SPORT
+   ============================================ */
+
+.ts-scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.ts-team {
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+.ts-team1 { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.ts-team2 { background: linear-gradient(135deg, var(--error), #8B0000); }
+
+.ts-team-name { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; font-weight: 600; }
+.ts-team-score { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-top: 0.25rem; }
+.ts-center { text-align: center; }
+.ts-period-current { font-size: 1.4rem; font-weight: 900; color: var(--secondary); }
+.ts-period-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); font-weight: 600; }
+
+.ts-throw-area {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.ts-throw-team {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+}
+
+.ts-throw-header {
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.ts-period-score {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--secondary);
+    margin: 0.3rem 0;
+}
+
+.ts-point-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.ts-point-btn {
+    min-width: 56px;
+    padding: 0.55rem 0.8rem;
+    font-weight: 800;
+    font-size: 1rem;
+    border: none !important;
+    border-radius: var(--radius-sm);
+    color: white !important;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ts-point-btn:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.ts-point-btn:disabled { opacity: 0.35 !important; cursor: not-allowed !important; transform: none !important; }
+
+.ts-btn-1 { background: linear-gradient(135deg, var(--info), #0D47A1) !important; }
+.ts-btn-2 { background: linear-gradient(135deg, var(--success), #1B5E20) !important; }
+.ts-btn-3 { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; }
+.ts-btn-6 { background: linear-gradient(135deg, var(--error), #8B0000) !important; }
+.ts-btn-default { background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)) !important; }
+
+.ts-vs {
+    font-weight: 900;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+}
+
+.ts-period-strip {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.ts-period-chip {
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 44px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+}
+
+.ts-period-chip.active {
+    border-color: var(--primary);
+    background: #FFF3E0;
+}
+
+.ts-period-chip .chip-label {
+    color: var(--text-light);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ts-period-chip .chip-score {
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--secondary);
+}
+
+.ts-ot-badge {
+    display: inline-block;
+    background: var(--warning);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 0.3rem;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .ch-team-score { font-size: 2.2rem; }
@@ -1602,4 +1752,9 @@
     .ch-btn-in, .ch-btn-on, .ch-btn-miss { padding: 0.5rem !important; font-size: 0.8rem !important; }
     .ch-bag { width: 28px; height: 28px; font-size: 0.75rem; }
     .ch-bag-empty { width: 28px; height: 28px; }
+    .ts-team-score { font-size: 2.2rem; }
+    .ts-throw-area { grid-template-columns: 1fr; gap: 0.5rem; }
+    .ts-vs { padding: 0.25rem 0; font-size: 0.9rem; }
+    .ts-point-btn { min-width: 48px; padding: 0.45rem 0.6rem; font-size: 0.85rem; }
+    .ts-period-current { font-size: 1.1rem; }
 }

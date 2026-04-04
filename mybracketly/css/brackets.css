@@ -96,6 +96,17 @@
 table .ch-bag-sym { width: 20px; height: 20px; font-size: 0.6rem; cursor: default; margin: 0 1px; }
 table .ch-bag-sym:hover { transform: none; box-shadow: none; }
 
+/* Team Sport modal */
+.modal-overlay.teamsport-mode .modal { max-width: 600px; }
+.modal-overlay.teamsport-mode .modal button:disabled { opacity: 0.35; cursor: not-allowed; }
+.ts-modal-btn { display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:38px;border-radius:var(--radius-sm);font-weight:800;font-size:0.85rem;color:white;border:none;cursor:pointer;transition:transform 0.15s ease; }
+.ts-modal-btn:hover { transform:scale(1.08); }
+.ts-modal-btn.ts-btn-1 { background:linear-gradient(135deg,var(--info),#0D47A1); }
+.ts-modal-btn.ts-btn-2 { background:linear-gradient(135deg,var(--success),#1B5E20); }
+.ts-modal-btn.ts-btn-3 { background:linear-gradient(135deg,var(--primary),var(--primary-dark)); }
+.ts-modal-btn.ts-btn-6 { background:linear-gradient(135deg,var(--error),#8B0000); }
+.ts-modal-btn.ts-btn-default { background:linear-gradient(135deg,var(--secondary),var(--secondary-dark)); }
+
 @media print {
     .tab-content:not(#tab-bracket) { display: none !important; }
     .bracket-container { overflow: visible; }
