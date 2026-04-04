@@ -96,6 +96,31 @@
 table .ch-bag-sym { width: 20px; height: 20px; font-size: 0.6rem; cursor: default; margin: 0 1px; }
 table .ch-bag-sym:hover { transform: none; box-shadow: none; }
 
+/* Team Sport setup cards */
+.ts-preset-card {
+    cursor: pointer; text-align: center; padding: 0.75rem 0.5rem; border-radius: var(--radius-md);
+    border: 2px solid var(--border-light); background: var(--bg-card); box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease; color: var(--text-light);
+}
+.ts-preset-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.ts-preset-card.selected {
+    border-color: var(--primary); background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    box-shadow: var(--shadow-md); color: var(--primary-dark);
+}
+.ts-preset-card.selected i { color: var(--primary); }
+
+.ts-period-pick {
+    cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
+    border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem;
+    border: 2px solid var(--border-light); background: var(--bg-card); color: var(--text-medium);
+    transition: all 0.2s ease;
+}
+.ts-period-pick:hover { border-color: var(--primary-light); }
+.ts-period-pick.selected {
+    border-color: var(--primary); background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    color: var(--primary-dark);
+}
+
 /* Team Sport modal */
 .modal-overlay.teamsport-mode .modal { max-width: 600px; }
 .modal-overlay.teamsport-mode .modal button:disabled { opacity: 0.35; cursor: not-allowed; }

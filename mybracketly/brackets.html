@@ -149,13 +149,13 @@
                 <div id="teamsportSettings" style="display:none;">
                     <div class="form-group">
                         <label>Sport Preset</label>
-                        <div class="radio-group" id="tsPresetGroup">
-                            <div class="radio-option selected" onclick="tsPickPreset('basketball')"><i class="fas fa-basketball"></i> Basketball</div>
-                            <div class="radio-option" onclick="tsPickPreset('football')"><i class="fas fa-football"></i> Football</div>
-                            <div class="radio-option" onclick="tsPickPreset('soccer')"><i class="fas fa-futbol"></i> Soccer</div>
-                            <div class="radio-option" onclick="tsPickPreset('hockey')"><i class="fas fa-hockey-puck"></i> Hockey</div>
-                            <div class="radio-option" onclick="tsPickPreset('baseball')"><i class="fas fa-baseball"></i> Baseball</div>
-                            <div class="radio-option" onclick="tsPickPreset('custom')"><i class="fas fa-sliders"></i> Custom</div>
+                        <div id="tsPresetGroup" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.5rem;margin-top:0.5rem;">
+                            <div class="ts-preset-card selected" onclick="tsPickPreset('basketball')" data-preset="basketball"><i class="fas fa-basketball" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Basketball</div></div>
+                            <div class="ts-preset-card" onclick="tsPickPreset('football')" data-preset="football"><i class="fas fa-football" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Football</div></div>
+                            <div class="ts-preset-card" onclick="tsPickPreset('soccer')" data-preset="soccer"><i class="fas fa-futbol" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Soccer</div></div>
+                            <div class="ts-preset-card" onclick="tsPickPreset('hockey')" data-preset="hockey"><i class="fas fa-hockey-puck" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Hockey</div></div>
+                            <div class="ts-preset-card" onclick="tsPickPreset('baseball')" data-preset="baseball"><i class="fas fa-baseball" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Baseball</div></div>
+                            <div class="ts-preset-card" onclick="tsPickPreset('custom')" data-preset="custom"><i class="fas fa-sliders" style="font-size:1.4rem;display:block;margin-bottom:0.2rem;"></i><div style="font-weight:700;font-size:0.8rem;">Custom</div></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -165,11 +165,11 @@
                     </div>
                     <div class="form-group">
                         <label>Period Type</label>
-                        <div class="radio-group" id="tsPeriodNameGroup">
-                            <div class="radio-option selected" onclick="tsPeriodNamePick('Quarter')">Quarter</div>
-                            <div class="radio-option" onclick="tsPeriodNamePick('Half')">Half</div>
-                            <div class="radio-option" onclick="tsPeriodNamePick('Period')">Period</div>
-                            <div class="radio-option" onclick="tsPeriodNamePick('Inning')">Inning</div>
+                        <div id="tsPeriodNameGroup" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.3rem;">
+                            <div class="ts-period-pick selected" onclick="tsPeriodNamePick('Quarter')" data-val="Quarter"><i class="fas fa-clock"></i> Quarter</div>
+                            <div class="ts-period-pick" onclick="tsPeriodNamePick('Half')" data-val="Half"><i class="fas fa-circle-half-stroke"></i> Half</div>
+                            <div class="ts-period-pick" onclick="tsPeriodNamePick('Period')" data-val="Period"><i class="fas fa-stopwatch"></i> Period</div>
+                            <div class="ts-period-pick" onclick="tsPeriodNamePick('Inning')" data-val="Inning"><i class="fas fa-baseball"></i> Inning</div>
                         </div>
                         <input type="hidden" id="tsPeriodName" value="Quarter">
                     </div>
@@ -664,21 +664,20 @@ const TS_PRESETS_B = {
 
 function tsPickPreset(key) {
     const p = TS_PRESETS_B[key];
-    document.querySelectorAll('#tsPresetGroup .radio-option').forEach(o => o.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
+    document.querySelectorAll('#tsPresetGroup .ts-preset-card').forEach(o => o.classList.toggle('selected', o.dataset.preset === key));
     document.getElementById('tsPointValues').value = p.pts;
     document.getElementById('tsPeriodCount').value = p.pCount;
     document.getElementById('tsPeriodName').value = p.pName;
     document.getElementById('tsOvertimeToggle').checked = p.ot;
-    document.querySelectorAll('#tsPeriodNameGroup .radio-option').forEach(o => {
-        o.classList.toggle('selected', o.textContent.trim() === p.pName);
+    document.querySelectorAll('#tsPeriodNameGroup .ts-period-pick').forEach(o => {
+        o.classList.toggle('selected', o.dataset.val === p.pName);
     });
 }
 
 function tsPeriodNamePick(name) {
     document.getElementById('tsPeriodName').value = name;
-    document.querySelectorAll('#tsPeriodNameGroup .radio-option').forEach(o => {
-        o.classList.toggle('selected', o.textContent.trim() === name);
+    document.querySelectorAll('#tsPeriodNameGroup .ts-period-pick').forEach(o => {
+        o.classList.toggle('selected', o.dataset.val === name);
     });
 }
 
