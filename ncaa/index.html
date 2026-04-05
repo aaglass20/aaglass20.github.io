@@ -3373,6 +3373,15 @@
         // =============================================
 
         let payoutGroups = {}; // { "username_key": "payout_recipient_key" }
+        let paidPayouts = {}; // { "recipient_key": true } — tracks which recipients have been paid their payouts
+
+        // Load paid payouts from localStorage
+        (function() {
+            var savedPP = localStorage.getItem('ncaa_paid_payouts');
+            if (savedPP) {
+                try { paidPayouts = JSON.parse(savedPP); } catch(e) {}
+            }
+        })();
 
         function savePayoutGroups() {
             if (SHEETS_CONFIGURED) {
@@ -3390,6 +3399,35 @@
                     console.error('Error saving payout groups to Google Sheets:', error);
                 }
             }
+        }
+
+        function savePaidPayouts() {
+            localStorage.setItem('ncaa_paid_payouts', JSON.stringify(paidPayouts));
+            if (SHEETS_CONFIGURED) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'savePaidPayouts',
+                            paidPayouts: paidPayouts
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving paid payouts to Google Sheets:', error);
+                }
+            }
+        }
+
+        function togglePayoutPaid(recipientKey) {
+            if (paidPayouts[recipientKey]) {
+                delete paidPayouts[recipientKey];
+            } else {
+                paidPayouts[recipientKey] = true;
+            }
+            savePaidPayouts();
+            renderPayoutGroups();
         }
 
         function setPayoutGroup(userKey, recipientKey) {
@@ -3536,6 +3574,8 @@
             shtml += '<th style="text-align:center;">Normal $</th>';
             shtml += '<th style="text-align:center;">Inverse $</th>';
             shtml += '<th style="text-align:center;">Total Owed</th>';
+            shtml += '<th style="text-align:center;">Status</th>';
+            shtml += '<th style="text-align:center;">Action</th>';
             shtml += '</tr></thead>';
             shtml += '<tbody>';
 
@@ -3545,12 +3585,28 @@
                 overallInverse += g.inverseTotal;
                 overallTotal += g.grandTotal;
 
+                var isPayoutPaid = paidPayouts[key] === true;
+
                 shtml += '<tr>';
                 shtml += '<td style="font-weight:600;">' + escapeHtml(g.name) + '</td>';
                 shtml += '<td>' + g.members.map(function(m) { return escapeHtml(m); }).join(', ') + '</td>';
                 shtml += '<td style="text-align:center;">$' + g.normalTotal + '</td>';
                 shtml += '<td style="text-align:center;">$' + g.inverseTotal + '</td>';
                 shtml += '<td style="text-align:center;font-weight:600;color:var(--success);">$' + g.grandTotal + '</td>';
+                shtml += '<td style="text-align:center;">';
+                if (isPayoutPaid) {
+                    shtml += '<span class="paid-yes"><i class="fas fa-check-circle"></i> Paid</span>';
+                } else {
+                    shtml += '<span class="paid-no"><i class="fas fa-times-circle"></i> Not Paid</span>';
+                }
+                shtml += '</td>';
+                shtml += '<td style="text-align:center;">';
+                if (isPayoutPaid) {
+                    shtml += '<button class="paid-toggle-btn mark-unpaid" onclick="togglePayoutPaid(\'' + key.replace(/'/g, "\\'") + '\')">Mark Not Paid</button>';
+                } else {
+                    shtml += '<button class="paid-toggle-btn mark-paid" onclick="togglePayoutPaid(\'' + key.replace(/'/g, "\\'") + '\')">Mark Paid</button>';
+                }
+                shtml += '</td>';
                 shtml += '</tr>';
             });
 
@@ -3561,6 +3617,8 @@
             shtml += '<td style="text-align:center;">$' + overallNormal + '</td>';
             shtml += '<td style="text-align:center;">$' + overallInverse + '</td>';
             shtml += '<td style="text-align:center;color:var(--success);">$' + overallTotal + '</td>';
+            shtml += '<td></td>';
+            shtml += '<td></td>';
             shtml += '</tr>';
 
             shtml += '</tbody></table>';
@@ -5674,6 +5732,12 @@
                 // Populate payout groups
                 if (data.payoutGroups && typeof data.payoutGroups === 'object') {
                     payoutGroups = data.payoutGroups;
+                }
+
+                // Populate paid payouts
+                if (data.paidPayouts && typeof data.paidPayouts === 'object') {
+                    paidPayouts = data.paidPayouts;
+                    localStorage.setItem('ncaa_paid_payouts', JSON.stringify(paidPayouts));
                 }
 
                 renderAll();

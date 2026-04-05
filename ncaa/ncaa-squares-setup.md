@@ -107,6 +107,19 @@ bob, john
 
 Users not listed default to paying out to themselves. Rows will be added/updated automatically when the admin assigns payout recipients on the Users tab.
 
+### Tab 7b: "PaidPayouts"
+
+Create a new tab named "PaidPayouts" with this layout:
+
+| A | B |
+|---|---|
+| RecipientKey | Paid |
+
+- Column A: Payout recipient key (lowercase, trimmed)
+- Column B: Boolean (TRUE if that recipient has been paid their winnings)
+
+Rows will be added/updated automatically when the admin clicks "Mark Paid" / "Mark Not Paid" on the Payout Summary by Recipient table in the Users tab. This lets the admin track Venmo payouts across devices.
+
 ### Tab 8: "Games"
 
 Create a new tab named "Games" with these headers and 67 data rows:
@@ -257,6 +270,20 @@ function doGet(e) {
       }
     }
 
+    // --- Paid Payouts ---
+    var paidPayouts = {};
+    var paidPayoutsSheet = ss.getSheetByName('PaidPayouts');
+    if (paidPayoutsSheet && paidPayoutsSheet.getLastRow() > 1) {
+      var ppData = paidPayoutsSheet.getDataRange().getValues();
+      for (var pp = 1; pp < ppData.length; pp++) {
+        var ppKey = ppData[pp][0];
+        var ppPaid = ppData[pp][1];
+        if (ppKey && ppPaid === true) {
+          paidPayouts[String(ppKey)] = true;
+        }
+      }
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       grid: grid,
@@ -267,7 +294,8 @@ function doGet(e) {
       lockedGameIds: lockedGameIds,
       paidUsers: paidUsers,
       userNotes: userNotes,
-      payoutGroups: payoutGroups
+      payoutGroups: payoutGroups,
+      paidPayouts: paidPayouts
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -485,6 +513,38 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (data.action === 'savePaidPayouts') {
+      var paidPayoutsSheet = ss.getSheetByName('PaidPayouts');
+      if (!paidPayoutsSheet) {
+        paidPayoutsSheet = ss.insertSheet('PaidPayouts');
+        paidPayoutsSheet.getRange('A1').setValue('RecipientKey');
+        paidPayoutsSheet.getRange('B1').setValue('Paid');
+      }
+
+      // Clear existing data (keep header)
+      var lastRow = paidPayoutsSheet.getLastRow();
+      if (lastRow > 1) {
+        paidPayoutsSheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+      }
+
+      // Write all paid payout recipients
+      var ppDataIn = data.paidPayouts || {};
+      var ppKeys = Object.keys(ppDataIn);
+      var row = 2;
+      for (var pp = 0; pp < ppKeys.length; pp++) {
+        if (ppDataIn[ppKeys[pp]] === true) {
+          paidPayoutsSheet.getRange(row, 1).setValue(ppKeys[pp]);
+          paidPayoutsSheet.getRange(row, 2).setValue(true);
+          row++;
+        }
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Paid payouts saved'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: 'Unknown action: ' + data.action
@@ -540,6 +600,7 @@ function doPost(e) {
 6. Enter a game score — check the Games tab
 7. Refresh the page — all data should persist
 8. On the Users tab, assign a payout recipient via the dropdown — check the PayoutGroups tab in the sheet
+9. On the Users tab in the Payout Summary by Recipient table, click "Mark Paid" for a recipient — check the PaidPayouts tab in the sheet; reload on another device to confirm the Paid status persists
 
 ---
 
