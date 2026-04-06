@@ -122,3 +122,31 @@
   outline: none;
   border-color: #e94560;
 }
+
+@media (max-width: 900px) {
+  .pos-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .pos-btn {
+    padding: 10px 8px;
+    font-size: 12px;
+    justify-content: center;
+  }
+
+  .name-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .name-row input {
+    font-size: 16px; /* prevent iOS zoom on focus */
+  }
+}
+
+@media (max-width: 420px) {
+  .pos-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

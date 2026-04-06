@@ -1,0 +1,69 @@
+.mobile-tabs {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-tabs {
+    display: block;
+    margin-top: 8px;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    background: #0f1a30;
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .tab-btn:hover {
+    color: #ccc;
+  }
+
+  .tab-btn.active {
+    background: #1a1a2e;
+    color: #e94560;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .tab-arrow {
+    font-size: 10px;
+  }
+
+  .tab-panel {
+    margin-top: 8px;
+    max-height: 50vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    background: #1a1a2e;
+    padding: 12px;
+  }
+
+  /* Hide the sidebar headings inside tabs since the tab already labels it */
+  .tab-panel .situation-picker > h3,
+  .tab-panel .position-panel > h3 {
+    display: none;
+  }
+
+  .tab-panel .hint {
+    display: none;
+  }
+}

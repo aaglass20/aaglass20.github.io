@@ -11,17 +11,18 @@ export const SECOND_BASE = { x: 350, y: 340 };
 export const THIRD_BASE = { x: 210, y: 440 };
 export const PITCHERS_MOUND = { x: 350, y: 470 };
 
-// Default fielder positions
+// Default fielder positions (10 players for softball)
 export const DEFAULT_POSITIONS = {
-  P:  { x: 350, y: 458, label: 'P',  name: 'Pitcher',        color: '#e74c3c' },
-  C:  { x: 350, y: 600, label: 'C',  name: 'Catcher',        color: '#e74c3c' },
-  '1B': { x: 500, y: 430, label: '1B', name: 'First Base',    color: '#3498db' },
-  '2B': { x: 420, y: 340, label: '2B', name: 'Second Base',   color: '#3498db' },
-  SS: { x: 280, y: 340, label: 'SS', name: 'Shortstop',       color: '#3498db' },
-  '3B': { x: 200, y: 430, label: '3B', name: 'Third Base',    color: '#3498db' },
-  LF: { x: 160, y: 240, label: 'LF', name: 'Left Field',     color: '#2ecc71' },
-  CF: { x: 350, y: 180, label: 'CF', name: 'Center Field',    color: '#2ecc71' },
-  RF: { x: 540, y: 240, label: 'RF', name: 'Right Field',     color: '#2ecc71' },
+  P:    { x: 350, y: 458, label: 'P',   name: 'Pitcher',            color: '#e74c3c' },
+  C:    { x: 350, y: 610, label: 'C',   name: 'Catcher',            color: '#e74c3c' },
+  '1B': { x: 500, y: 430, label: '1B',  name: 'First Base',         color: '#3498db' },
+  '2B': { x: 420, y: 340, label: '2B',  name: 'Second Base',        color: '#3498db' },
+  SS:   { x: 280, y: 340, label: 'SS',  name: 'Shortstop',          color: '#3498db' },
+  '3B': { x: 200, y: 430, label: '3B',  name: 'Third Base',         color: '#3498db' },
+  LF:   { x: 160, y: 280, label: 'LF',  name: 'Left Field',         color: '#2ecc71' },
+  LCF:  { x: 250, y: 220, label: 'LCF', name: 'Left Center Field',  color: '#2ecc71' },
+  RCF:  { x: 450, y: 220, label: 'RCF', name: 'Right Center Field', color: '#2ecc71' },
+  RF:   { x: 540, y: 280, label: 'RF',  name: 'Right Field',        color: '#2ecc71' },
 };
 
 export const POSITION_KEYS = Object.keys(DEFAULT_POSITIONS);

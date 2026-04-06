@@ -9,7 +9,7 @@ const RUNNER_LABELS = {
   runner3: 'Runner on 3rd',
 };
 
-function PositionPanel({ focusPosition, onFocusChange, playerNames, onNameChange, activeRunners }) {
+function PositionPanel({ focusPosition, onFocusChange, playerNames, onNameChange, activeRunners, hideNames }) {
   return (
     <div className="position-panel">
       <h3>Position Focus</h3>
@@ -55,22 +55,24 @@ function PositionPanel({ focusPosition, onFocusChange, playerNames, onNameChange
         ))}
       </div>
 
-      <div className="name-section">
-        <h3>Assign Player Names</h3>
-        <div className="name-grid">
-          {POSITION_KEYS.map((key) => (
-            <div key={key} className="name-row">
-              <label>{DEFAULT_POSITIONS[key].label}</label>
-              <input
-                type="text"
-                placeholder={DEFAULT_POSITIONS[key].name}
-                value={playerNames?.[key] || ''}
-                onChange={(e) => onNameChange(key, e.target.value)}
-              />
-            </div>
-          ))}
+      {!hideNames && (
+        <div className="name-section">
+          <h3>Assign Player Names</h3>
+          <div className="name-grid">
+            {POSITION_KEYS.map((key) => (
+              <div key={key} className="name-row">
+                <label>{DEFAULT_POSITIONS[key].label}</label>
+                <input
+                  type="text"
+                  placeholder={DEFAULT_POSITIONS[key].name}
+                  value={playerNames?.[key] || ''}
+                  onChange={(e) => onNameChange(key, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

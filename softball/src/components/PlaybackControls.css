@@ -84,3 +84,31 @@
   min-width: 100px;
   text-align: right;
 }
+
+/* Make slider thumb bigger on touch */
+@media (max-width: 900px) {
+  .playback-controls {
+    padding: 12px 14px;
+    margin-top: 8px;
+  }
+
+  .play-btn, .pause-btn, .reset-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+
+  .timeline-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .timeline-slider {
+    height: 8px;
+  }
+
+  .timeline-label {
+    min-width: 80px;
+    font-size: 12px;
+  }
+}
