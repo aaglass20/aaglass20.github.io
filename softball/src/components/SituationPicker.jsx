@@ -15,13 +15,15 @@ const RUNNER_OPTIONS = [
 ];
 
 function SituationPicker({ situations, activeSituation, onSelect }) {
-  const [hitToFilter, setHitToFilter] = useState('');
+  const [hitToFilter, setHitToFilter] = useState('highlighted');
   const [runnerFilter, setRunnerFilter] = useState('');
 
   // Filter situations
   const filtered = situations.filter((sit) => {
-    // Hit-to filter
-    if (hitToFilter && sit.hitTo !== hitToFilter) return false;
+    // Highlighted filter
+    if (hitToFilter === 'highlighted') {
+      if (!sit.highlighted) return false;
+    } else if (hitToFilter && sit.hitTo !== hitToFilter) return false;
 
     // Runner filter
     if (runnerFilter) {
@@ -65,6 +67,7 @@ function SituationPicker({ situations, activeSituation, onSelect }) {
         <div className="filter-row">
           <label>Hit To:</label>
           <select value={hitToFilter} onChange={(e) => setHitToFilter(e.target.value)}>
+            <option value="highlighted">Highlighted</option>
             <option value="">All Positions</option>
             {POSITION_KEYS.map((key) => (
               <option key={key} value={key}>{DEFAULT_POSITIONS[key].label} — {DEFAULT_POSITIONS[key].name}</option>
