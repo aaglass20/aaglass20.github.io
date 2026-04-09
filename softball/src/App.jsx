@@ -174,15 +174,15 @@ function App() {
             />
           )}
 
-          {/* Mobile tabs — only visible on small screens */}
+          {/* Mobile layout — only visible on small screens */}
           {!editMode && (
-            <MobileTabs>
-              {{
-                situations: situationPicker,
-                focus: focusPanel,
-                names: namePanel,
-              }}
-            </MobileTabs>
+            <MobileTabs
+              situations={SAMPLE_SITUATIONS}
+              activeSituation={situation}
+              onSelect={handleSelectSituation}
+              focusPanel={focusPanel}
+              namePanel={namePanel}
+            />
           )}
         </main>
       </div>
