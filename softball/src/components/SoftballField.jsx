@@ -34,6 +34,7 @@ function SoftballField({
   onDragEnd,
   showTrails,
   keyframes,
+  outs,
 }) {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(FIELD_SIZE);
@@ -429,6 +430,34 @@ function SoftballField({
             </Group>
           );
         })}
+        {/* Outs indicator */}
+        {outs != null && (
+          <Group x={600} y={20}>
+            <Rect x={0} y={0} width={80} height={36} fill="#0f1a30" cornerRadius={8} opacity={0.85} />
+            <Text
+              text="OUTS"
+              x={0}
+              y={4}
+              width={80}
+              align="center"
+              fontSize={9}
+              fill="#888"
+              fontStyle="bold"
+              letterSpacing={1}
+            />
+            {[0, 1, 2].map((i) => (
+              <Circle
+                key={i}
+                x={22 + i * 20}
+                y={25}
+                radius={7}
+                fill={i < outs ? '#e94560' : '#16213e'}
+                stroke={i < outs ? '#e94560' : '#0f3460'}
+                strokeWidth={2}
+              />
+            ))}
+          </Group>
+        )}
       </Layer>
     </Stage>
     </div>

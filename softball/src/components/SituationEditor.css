@@ -23,10 +23,10 @@
 
 .editor-header-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
-.close-btn, .export-btn {
+.close-btn, .export-btn, .new-btn {
   background: #16213e;
   border: 1px solid #0f3460;
   color: #ccc;
@@ -34,6 +34,11 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
+}
+
+.new-btn:hover {
+  border-color: #3498db;
+  color: #3498db;
 }
 
 .export-btn:hover {
@@ -61,7 +66,7 @@
   font-size: 13px;
 }
 
-.editor-meta input {
+.editor-meta input, .editor-meta select {
   flex: 1;
   background: #16213e;
   border: 1px solid #0f3460;
@@ -71,9 +76,94 @@
   font-size: 13px;
 }
 
-.editor-meta input:focus {
+.editor-meta input:focus, .editor-meta select:focus {
   outline: none;
   border-color: #e94560;
+}
+
+.meta-row {
+  display: flex;
+  gap: 12px;
+}
+
+.meta-row label {
+  flex: 1;
+}
+
+.runner-toggles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.runner-label {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.runner-toggle {
+  background: #16213e;
+  border: 2px solid #0f3460;
+  border-radius: 16px;
+  color: #888;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.runner-toggle.active {
+  border-color: #f39c12;
+  color: #f39c12;
+  background: rgba(243, 156, 18, 0.1);
+}
+
+/* Record bar */
+.record-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #0f3460;
+}
+
+.capture-btn {
+  background: #2ecc71;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.capture-btn:hover {
+  background: #27ae60;
+}
+
+.space-btn {
+  background: #16213e;
+  border: 1px solid #0f3460;
+  color: #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.space-btn:hover {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.frame-count {
+  color: #888;
+  font-size: 12px;
+  margin-left: auto;
 }
 
 .keyframe-nav {

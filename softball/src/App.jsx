@@ -150,6 +150,7 @@ function App() {
               onDragEnd={handleDragEnd}
               showTrails={showTrails}
               keyframes={situation.keyframes}
+              outs={situation.outs}
             />
           </div>
           {!editMode ? (
@@ -171,6 +172,10 @@ function App() {
               onClose={() => setEditMode(false)}
               activeKeyframe={editorKeyframe}
               onKeyframeChange={handleEditorKeyframeChange}
+              onNewSituation={(newSit) => {
+                setSituation(newSit);
+                setEditorKeyframe(0);
+              }}
             />
           )}
 
