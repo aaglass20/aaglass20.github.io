@@ -221,7 +221,7 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            body { margin: 0; padding: 0; }
+            body { margin: 0; padding: 0; background: #fff !important; }
             body > *:not(#printContainer) { display: none !important; }
             #printContainer {
                 display: flex;
@@ -269,7 +269,7 @@
                 background: transparent;
                 font-size: inherit;
             }
-            /* Black & White mode */
+            /* Black & White mode — no ink, white backgrounds only */
             body.print-bw .print-wristband .wristband-card {
                 background: #fff !important;
                 color: #000 !important;
@@ -280,12 +280,19 @@
                 border-bottom: 2px solid #000;
             }
             body.print-bw .print-wristband .wristband-table th {
-                background: #ddd !important;
+                background: #fff !important;
                 color: #000 !important;
+                text-shadow: none !important;
+                border: 2px solid #000;
             }
             body.print-bw .print-wristband .wristband-table td {
                 background: #fff !important;
                 color: #000 !important;
+            }
+            body.print-bw .print-wristband .wristband-table td.play-num {
+                background: #fff !important;
+                color: #000 !important;
+                border: 2px solid #000;
             }
             body.print-bw .print-wristband .wristband-table td select {
                 color: #000 !important;
