@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cp index.src.html index.html && vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "cp index.html index.src.html && vite build && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && echo 'Deployed! Run: npm run restore' ",
+    "deploy": "cp index.src.html index.html && vite build && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && echo 'Deployed!'",
     "restore": "cp index.src.html index.html"
   },
   "dependencies": {
