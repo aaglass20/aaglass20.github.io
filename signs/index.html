@@ -986,9 +986,28 @@ function backToSetup() {
 }
 
 // ===== Save / Load / Delete wristbands =====
+function getCurrentTextStyle() {
+    return {
+        family: document.getElementById('wbFontFamily').value,
+        scale: parseFloat(document.getElementById('wbFontScale').value) || 1,
+        weight: document.getElementById('wbFontWeight').value,
+        upper: document.getElementById('wbUppercase').checked,
+        wide: document.getElementById('wbWideSpacing').checked
+    };
+}
+
 async function saveWristband() {
     const title = document.getElementById('wristbandTitle').value || 'Offense';
     const ageGroup = document.getElementById('ageGroup').value;
+
+    const loadedId = window._loadedWristbandId;
+    const loadedName = window._loadedWristbandName;
+    const defaultName = loadedName || title;
+    const promptMsg = loadedId
+        ? 'Save as (keep the same name to UPDATE the loaded wristband, or enter a new name to create a new one):'
+        : 'Name this wristband (to identify it when reloading):';
+    const name = (prompt(promptMsg, defaultName) || '').trim() || title;
+    const isUpdate = !!(loadedId && loadedName && name === loadedName);
 
     const selects = document.querySelectorAll('#wristbandCard select');
     const selections = {};
@@ -1011,26 +1030,47 @@ async function saveWristband() {
     for (let i = 0; i < numRows; i++) {
         rowEnds.push(parseInt(document.getElementById(`rowEnd${i}`).value));
     }
-    const wristband = {
-        id: Date.now(),
-        title,
-        ageGroup,
-        numCols,
-        numRows,
-        rowEnds,
-        columns,
-        selections,
-        createdAt: new Date().toLocaleString()
-    };
+    const textStyle = getCurrentTextStyle();
 
-    savedWristbands.push(wristband);
+    let wristband;
+    if (isUpdate) {
+        const existing = savedWristbands.find(w => String(w.id) === String(loadedId));
+        if (existing) {
+            Object.assign(existing, {
+                name, title, ageGroup, numCols, numRows,
+                rowEnds, columns, selections, textStyle,
+                updatedAt: new Date().toLocaleString()
+            });
+            wristband = existing;
+        }
+    }
+    if (!wristband) {
+        wristband = {
+            id: Date.now(),
+            name,
+            title,
+            ageGroup,
+            numCols,
+            numRows,
+            rowEnds,
+            columns,
+            selections,
+            textStyle,
+            createdAt: new Date().toLocaleString()
+        };
+        savedWristbands.push(wristband);
+    }
+    window._loadedWristbandId = wristband.id;
+    window._loadedWristbandName = name;
+
     localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
     renderSavedList();
 
     if (useGoogleSheets) {
-        showLoading('Saving wristband to Google Sheets...');
+        showLoading(isUpdate ? 'Updating wristband...' : 'Saving wristband to Google Sheets...');
         try {
-            await sheetPost({ action: 'saveWristband', wristband });
+            const action = isUpdate ? 'updateWristband' : 'saveWristband';
+            await sheetPost({ action, wristband });
             setSyncStatus('ok', 'synced');
         } catch (err) {
             setSyncStatus('err', 'sync error');
@@ -1038,7 +1078,7 @@ async function saveWristband() {
         }
         hideLoading();
     }
-    alert('Wristband saved!');
+    alert(isUpdate ? 'Wristband updated!' : 'Wristband saved!');
 }
 
 function applyWristbandToUI(wb) {
@@ -1046,6 +1086,10 @@ function applyWristbandToUI(wb) {
     document.getElementById('numColumns').value = wb.numCols;
     document.getElementById('numRows').value = wb.numRows || 5;
     document.getElementById('wristbandTitle').value = wb.title;
+
+    if (wb.textStyle) {
+        applyTextStyleToControls(wb.textStyle);
+    }
 
     buildColumnConfig();
     buildRowConfig();
@@ -1077,13 +1121,45 @@ function applyWristbandToUI(wb) {
 function loadWristband(id) {
     const wb = savedWristbands.find(w => String(w.id) === String(id));
     if (!wb) return;
+    window._loadedWristbandId = wb.id;
+    window._loadedWristbandName = wb.name || wb.title;
     applyWristbandToUI(wb);
+}
+
+async function renameWristband(id) {
+    const wb = savedWristbands.find(w => String(w.id) === String(id));
+    if (!wb) return;
+    const current = wb.name || wb.title;
+    const next = (prompt('Rename wristband:', current) || '').trim();
+    if (!next || next === current) return;
+    wb.name = next;
+    if (String(window._loadedWristbandId) === String(wb.id)) {
+        window._loadedWristbandName = next;
+    }
+    localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
+    renderSavedList();
+
+    if (useGoogleSheets) {
+        showLoading('Renaming...');
+        try {
+            await sheetPost({ action: 'renameWristband', id: wb.id, name: next });
+            setSyncStatus('ok', 'synced');
+        } catch (err) {
+            setSyncStatus('err', 'sync error');
+            console.error('Rename error:', err);
+        }
+        hideLoading();
+    }
 }
 
 async function deleteWristband(id) {
     if (!confirm('Delete this wristband?')) return;
     savedWristbands = savedWristbands.filter(w => String(w.id) !== String(id));
     localStorage.setItem('savedWristbands', JSON.stringify(savedWristbands));
+    if (String(window._loadedWristbandId) === String(id)) {
+        window._loadedWristbandId = null;
+        window._loadedWristbandName = null;
+    }
     renderSavedList();
 
     if (useGoogleSheets) {
@@ -1099,13 +1175,16 @@ function renderSavedList() {
     }
     let html = '<h2 style="color:#e94560; margin-bottom:15px; padding:0 20px;">Saved Wristbands</h2>';
     savedWristbands.forEach(wb => {
+        const displayName = wb.name || wb.title;
+        const subtitle = (wb.name && wb.name !== wb.title) ? `${wb.title} &bull; ` : '';
         html += `
             <div class="saved-item">
                 <div>
-                    <span>${wb.title}</span>
-                    <div class="saved-meta">${wb.ageGroup} &bull; ${wb.numCols} columns &bull; ${wb.numRows || '?'} rows &bull; ${wb.createdAt}</div>
+                    <span>${displayName}</span>
+                    <div class="saved-meta">${subtitle}${wb.ageGroup} &bull; ${wb.numCols} columns &bull; ${wb.numRows || '?'} rows &bull; ${wb.createdAt}</div>
                 </div>
                 <div style="display:flex; gap:8px;">
+                    <button class="btn btn-secondary" onclick="renameWristband('${wb.id}')" style="padding:8px 12px; font-size:0.85em;">Rename</button>
                     <button class="btn btn-primary" onclick="loadWristband('${wb.id}')" style="padding:8px 16px; font-size:0.85em;">Load</button>
                     <button class="btn btn-secondary" onclick="deleteWristband('${wb.id}')" style="padding:8px 16px; font-size:0.85em;">Delete</button>
                 </div>
@@ -1187,6 +1266,8 @@ const TEMPLATES = {
 function loadTemplate(key) {
     const t = TEMPLATES[key];
     if (!t) return;
+    window._loadedWristbandId = null;
+    window._loadedWristbandName = null;
     applyWristbandToUI(t);
 }
 

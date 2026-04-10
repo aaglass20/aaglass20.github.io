@@ -20,11 +20,11 @@ function setup() {
   if (!wbSheet) {
     wbSheet = ss.insertSheet('SavedWristbands');
   }
-  wbSheet.getRange('A1:I1').setValues([[
+  wbSheet.getRange('A1:K1').setValues([[
     'ID', 'Title', 'AgeGroup', 'NumCols', 'NumRows',
-    'RowEnds', 'Columns', 'Selections', 'CreatedAt'
+    'RowEnds', 'Columns', 'Selections', 'CreatedAt', 'Name', 'TextStyle'
   ]]);
-  wbSheet.getRange('A1:I1').setFontWeight('bold');
+  wbSheet.getRange('A1:K1').setFontWeight('bold');
   wbSheet.setFrozenRows(1);
   wbSheet.setColumnWidth(1, 140);  // ID
   wbSheet.setColumnWidth(2, 120);  // Title
@@ -35,6 +35,8 @@ function setup() {
   wbSheet.setColumnWidth(7, 300);  // Columns
   wbSheet.setColumnWidth(8, 400);  // Selections
   wbSheet.setColumnWidth(9, 160);  // CreatedAt
+  wbSheet.setColumnWidth(10, 180); // Name
+  wbSheet.setColumnWidth(11, 300); // TextStyle
 
   // --- CustomTerms tab ---
   var ctSheet = ss.getSheetByName('CustomTerms');
@@ -124,6 +126,9 @@ function doPost(e) {
     case 'saveWristband':
       result = saveWristband(data.wristband);
       break;
+    case 'updateWristband':
+      result = updateWristband(data.wristband);
+      break;
     case 'deleteWristband':
       result = deleteWristband(data.id);
       break;
@@ -139,6 +144,9 @@ function doPost(e) {
     case 'saveSetting':
       result = saveSetting(data.key, data.value);
       break;
+    case 'renameWristband':
+      result = renameWristband(data.id, data.name);
+      break;
     default:
       result = { error: 'Unknown action: ' + action };
   }
@@ -153,9 +161,14 @@ function getWristbands() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SavedWristbands');
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
+  var lastCol = Math.max(sheet.getLastColumn(), 11);
 
-  var data = sheet.getRange(2, 1, lastRow - 1, 9).getValues();
+  var data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   return data.map(function(row) {
+    var textStyle = null;
+    if (row[10]) {
+      try { textStyle = JSON.parse(row[10]); } catch (e) { textStyle = null; }
+    }
     return {
       id: row[0],
       title: row[1],
@@ -165,14 +178,15 @@ function getWristbands() {
       rowEnds: JSON.parse(row[5] || '[]'),
       columns: JSON.parse(row[6] || '[]'),
       selections: JSON.parse(row[7] || '{}'),
-      createdAt: row[8]
+      createdAt: row[8],
+      name: row[9] || row[1],
+      textStyle: textStyle
     };
   });
 }
 
-function saveWristband(wb) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SavedWristbands');
-  sheet.appendRow([
+function wristbandRowValues(wb) {
+  return [
     wb.id,
     wb.title,
     wb.ageGroup,
@@ -181,9 +195,43 @@ function saveWristband(wb) {
     JSON.stringify(wb.rowEnds),
     JSON.stringify(wb.columns),
     JSON.stringify(wb.selections),
-    wb.createdAt
-  ]);
+    wb.createdAt,
+    wb.name || wb.title,
+    wb.textStyle ? JSON.stringify(wb.textStyle) : ''
+  ];
+}
+
+function saveWristband(wb) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SavedWristbands');
+  sheet.appendRow(wristbandRowValues(wb));
   return { success: true };
+}
+
+function updateWristband(wb) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SavedWristbands');
+  var lastRow = sheet.getLastRow();
+  var values = wristbandRowValues(wb);
+  for (var r = 2; r <= lastRow; r++) {
+    if (String(sheet.getRange(r, 1).getValue()) === String(wb.id)) {
+      sheet.getRange(r, 1, 1, values.length).setValues([values]);
+      return { success: true };
+    }
+  }
+  // Fallback: append if the row wasn't found
+  sheet.appendRow(values);
+  return { success: true, appended: true };
+}
+
+function renameWristband(id, name) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SavedWristbands');
+  var lastRow = sheet.getLastRow();
+  for (var r = 2; r <= lastRow; r++) {
+    if (String(sheet.getRange(r, 1).getValue()) === String(id)) {
+      sheet.getRange(r, 10).setValue(name);
+      return { success: true };
+    }
+  }
+  return { error: 'Not found' };
 }
 
 function deleteWristband(id) {
