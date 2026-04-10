@@ -8,6 +8,11 @@
         :root {
             --print-width: 5.5in;
             --print-height: 2.2in;
+            --wb-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --wb-font-weight: 600;
+            --wb-font-scale: 1;
+            --wb-text-transform: none;
+            --wb-letter-spacing: 0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -152,11 +157,14 @@
         }
         .wristband-title {
             text-align: center;
-            font-size: 1.5em;
+            font-size: calc(1.5em * var(--wb-font-scale));
             font-weight: bold;
             padding: 12px;
             background: #222;
             color: #fff;
+            font-family: var(--wb-font-family);
+            text-transform: var(--wb-text-transform);
+            letter-spacing: var(--wb-letter-spacing);
         }
         .wristband-table {
             width: 100%;
@@ -164,8 +172,11 @@
         }
         .wristband-table th {
             padding: 10px 8px;
-            font-weight: bold;
-            font-size: 0.95em;
+            font-family: var(--wb-font-family);
+            font-weight: var(--wb-font-weight);
+            text-transform: var(--wb-text-transform);
+            letter-spacing: var(--wb-letter-spacing);
+            font-size: calc(0.95em * var(--wb-font-scale));
             text-align: center;
             color: #fff;
             text-shadow: 0 1px 2px rgba(0,0,0,0.5);
@@ -175,14 +186,17 @@
             padding: 6px 4px;
             text-align: center;
             border: 2px solid #333;
-            font-size: 0.85em;
-            font-weight: 600;
+            font-family: var(--wb-font-family);
+            font-size: calc(0.85em * var(--wb-font-scale));
+            font-weight: var(--wb-font-weight);
+            text-transform: var(--wb-text-transform);
+            letter-spacing: var(--wb-letter-spacing);
         }
         .wristband-table td.play-num {
             background: #222;
             color: #fff;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: calc(0.9em * var(--wb-font-scale));
             min-width: 60px;
         }
         .wristband-table td select {
@@ -190,8 +204,11 @@
             padding: 4px;
             border: none;
             background: transparent;
-            font-size: 0.85em;
-            font-weight: 600;
+            font-family: var(--wb-font-family);
+            font-size: calc(0.85em * var(--wb-font-scale));
+            font-weight: var(--wb-font-weight);
+            text-transform: var(--wb-text-transform);
+            letter-spacing: var(--wb-letter-spacing);
             text-align: center;
             cursor: pointer;
             color: inherit;
@@ -247,8 +264,9 @@
                 height: 100%;
             }
             .print-wristband .wristband-title {
-                font-size: 0.7em;
+                font-size: calc(0.7em * var(--wb-font-scale));
                 padding: 4px;
+                font-family: var(--wb-font-family);
             }
             .print-wristband .wristband-table {
                 width: 100%;
@@ -256,11 +274,14 @@
             }
             .print-wristband .wristband-table th {
                 padding: 2px 1px;
-                font-size: 0.55em;
+                font-size: calc(0.55em * var(--wb-font-scale));
             }
             .print-wristband .wristband-table td {
                 padding: 1px;
-                font-size: 0.5em;
+                font-size: calc(0.5em * var(--wb-font-scale));
+            }
+            .print-wristband .wristband-table td.play-num {
+                font-size: calc(0.55em * var(--wb-font-scale));
             }
             .print-wristband .wristband-table td select {
                 -webkit-appearance: none;
@@ -491,6 +512,49 @@
         </div>
         <button class="btn btn-print" onclick="printWristband()">Print Wristband</button>
     </div>
+    <div class="actions-bar no-print" style="margin-top:-10px; padding:10px; background:#16213e; border-radius:8px;">
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Font:</label>
+            <select id="wbFontFamily" onchange="updateTextStyle()" style="padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;">
+                <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Sans-serif</option>
+                <option value="Arial, Helvetica, sans-serif">Arial</option>
+                <option value="'Arial Black', Gadget, sans-serif">Arial Black</option>
+                <option value="Impact, Charcoal, sans-serif">Impact</option>
+                <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="'Times New Roman', Times, serif">Times</option>
+                <option value="'Courier New', Courier, monospace">Courier</option>
+                <option value="'Lucida Console', Monaco, monospace">Lucida Console</option>
+            </select>
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Text Size:</label>
+            <input type="range" id="wbFontScale" min="0.7" max="2" step="0.05" value="1" oninput="updateTextStyle()" style="width:120px;">
+            <span id="wbFontScaleLabel" style="color:#aaa; min-width:36px;">100%</span>
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">Weight:</label>
+            <select id="wbFontWeight" onchange="updateTextStyle()" style="padding:6px; border-radius:6px; border:1px solid #333; background:#0f3460; color:#fff;">
+                <option value="400">Normal</option>
+                <option value="600" selected>Semi-Bold</option>
+                <option value="700">Bold</option>
+                <option value="800">Extra Bold</option>
+                <option value="900">Black</option>
+            </select>
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">
+                <input type="checkbox" id="wbUppercase" onchange="updateTextStyle()"> UPPERCASE
+            </label>
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:6px;">
+            <label style="margin:0; white-space:nowrap;">
+                <input type="checkbox" id="wbWideSpacing" onchange="updateTextStyle()"> Wide Spacing
+            </label>
+        </div>
+        <button class="btn btn-secondary" onclick="resetTextStyle()" style="padding:6px 14px;">Reset</button>
+    </div>
     <div class="wristband-card" id="wristbandCard"></div>
 </div>
 
@@ -502,6 +566,49 @@
 // After deploying Code.gs, paste your web app URL here:
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfv7epK2Kr70Hm3a5CeogzUJeXrEZugpAJ4JrkKRWU_dG5ZKzB9TKRjxPRjhhFCAtx1Q/exec';
 const useGoogleSheets = SCRIPT_URL !== 'PASTE_YOUR_SCRIPT_URL_HERE';
+
+// ===== Text style (readability) =====
+function updateTextStyle() {
+    const family = document.getElementById('wbFontFamily').value;
+    const scale = parseFloat(document.getElementById('wbFontScale').value) || 1;
+    const weight = document.getElementById('wbFontWeight').value;
+    const upper = document.getElementById('wbUppercase').checked;
+    const wide = document.getElementById('wbWideSpacing').checked;
+
+    const root = document.documentElement.style;
+    root.setProperty('--wb-font-family', family);
+    root.setProperty('--wb-font-scale', scale);
+    root.setProperty('--wb-font-weight', weight);
+    root.setProperty('--wb-text-transform', upper ? 'uppercase' : 'none');
+    root.setProperty('--wb-letter-spacing', wide ? '0.05em' : '0');
+
+    document.getElementById('wbFontScaleLabel').textContent = Math.round(scale * 100) + '%';
+
+    localStorage.setItem('wbTextStyle', JSON.stringify({ family, scale, weight, upper, wide }));
+}
+
+function resetTextStyle() {
+    document.getElementById('wbFontFamily').selectedIndex = 0;
+    document.getElementById('wbFontScale').value = 1;
+    document.getElementById('wbFontWeight').value = '600';
+    document.getElementById('wbUppercase').checked = false;
+    document.getElementById('wbWideSpacing').checked = false;
+    updateTextStyle();
+}
+
+function loadTextStyle() {
+    const saved = JSON.parse(localStorage.getItem('wbTextStyle') || 'null');
+    if (!saved) return;
+    const famSel = document.getElementById('wbFontFamily');
+    for (let i = 0; i < famSel.options.length; i++) {
+        if (famSel.options[i].value === saved.family) { famSel.selectedIndex = i; break; }
+    }
+    document.getElementById('wbFontScale').value = saved.scale || 1;
+    document.getElementById('wbFontWeight').value = saved.weight || '600';
+    document.getElementById('wbUppercase').checked = !!saved.upper;
+    document.getElementById('wbWideSpacing').checked = !!saved.wide;
+    updateTextStyle();
+}
 
 // ===== Print =====
 function updatePrintSize() {
@@ -1065,6 +1172,7 @@ async function init() {
     buildColumnConfig();
     buildRowConfig();
     renderCustomTerms();
+    loadTextStyle();
 
     // Load from localStorage first (instant)
     savedWristbands = JSON.parse(localStorage.getItem('savedWristbands') || '[]');
