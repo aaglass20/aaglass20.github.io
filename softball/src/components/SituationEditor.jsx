@@ -106,6 +106,34 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
     onUpdate(updated);
   };
 
+  // Copy a single entity's coordinates from the previous keyframe into the current one
+  const copyFromPrevious = (type, key) => {
+    if (activeKeyframe === 0) return;
+    const prev = keyframes[activeKeyframe - 1];
+    let prevPos;
+    if (type === 'ball') {
+      prevPos = prev.ball;
+    } else if (type === 'fielder') {
+      prevPos = prev.fielders[key];
+    } else if (type === 'runner') {
+      prevPos = prev.runners[key];
+    }
+    if (!prevPos) return;
+
+    const updated = { ...situation };
+    updated.keyframes = updated.keyframes.map((k, i) => {
+      if (i !== activeKeyframe) return k;
+      if (type === 'ball') {
+        return { ...k, ball: { ...prevPos } };
+      }
+      if (type === 'fielder') {
+        return { ...k, fielders: { ...k.fielders, [key]: { ...prevPos } } };
+      }
+      return { ...k, runners: { ...k.runners, [key]: { ...prevPos } } };
+    });
+    onUpdate(updated);
+  };
+
   // --- Record Mode ---
   const captureFrame = () => {
     const current = keyframes[activeKeyframe];
@@ -180,8 +208,8 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
     onUpdate(updated);
   };
 
-  // --- Export as pasteable JS code ---
-  const exportCode = () => {
+  // --- Build the JS code for the current situation ---
+  const buildSituationCode = () => {
     const sit = situation;
     const lines = [];
     lines.push(`  {`);
@@ -216,11 +244,129 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
 
     lines.push(`    ],`);
     lines.push(`  },`);
+    return lines.join('\n');
+  };
 
-    const code = lines.join('\n');
+  // --- Export as pasteable JS code ---
+  const exportCode = () => {
+    const code = buildSituationCode();
     navigator.clipboard.writeText(code).then(() => {
       alert('Situation code copied to clipboard! Paste it into sampleSituations.js');
     });
+  };
+
+  // --- Merge into pasted file ---
+  // Finds the existing situation block matching the current title and replaces it,
+  // or appends before the closing `];` if no match. Returns { result, action }.
+  const mergeIntoFile = (fileText) => {
+    const newCode = buildSituationCode();
+    const title = situation.title || '';
+    const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const titleRegex = new RegExp(`title:\\s*['"\`]${escapedTitle}['"\`]`);
+    const match = fileText.match(titleRegex);
+
+    if (!match) {
+      // Append before closing `];`
+      const closeIdx = fileText.lastIndexOf('];');
+      if (closeIdx === -1) {
+        return { result: '', action: 'error', message: 'Could not find closing `];` in pasted content.' };
+      }
+      const result = fileText.slice(0, closeIdx) + newCode + '\n' + fileText.slice(closeIdx);
+      return { result, action: 'appended' };
+    }
+
+    // Walk backward from title match to find the opening `{` at the start of a line
+    const titleIdx = match.index;
+    let openIdx = -1;
+    for (let i = titleIdx; i >= 0; i--) {
+      if (fileText[i] === '{') {
+        // confirm this `{` is at the start of its line (only whitespace before)
+        let lineStart = i;
+        while (lineStart > 0 && fileText[lineStart - 1] !== '\n') lineStart--;
+        if (/^\s*$/.test(fileText.slice(lineStart, i))) {
+          openIdx = i;
+          break;
+        }
+      }
+    }
+    if (openIdx === -1) {
+      return { result: '', action: 'error', message: 'Found title but could not locate opening `{`.' };
+    }
+
+    // Walk forward counting brace depth (skipping string contents)
+    let depth = 0;
+    let closeIdx = -1;
+    for (let i = openIdx; i < fileText.length; i++) {
+      const ch = fileText[i];
+      if (ch === "'" || ch === '"' || ch === '`') {
+        const quote = ch;
+        i++;
+        while (i < fileText.length && fileText[i] !== quote) {
+          if (fileText[i] === '\\') i++;
+          i++;
+        }
+        continue;
+      }
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          closeIdx = i + 1;
+          break;
+        }
+      }
+    }
+    if (closeIdx === -1) {
+      return { result: '', action: 'error', message: 'Could not find matching closing `}`.' };
+    }
+
+    // Include trailing comma if present
+    if (fileText[closeIdx] === ',') closeIdx++;
+
+    // Expand to full lines for clean replacement
+    let lineStart = openIdx;
+    while (lineStart > 0 && fileText[lineStart - 1] !== '\n') lineStart--;
+    let lineEnd = closeIdx;
+    while (lineEnd < fileText.length && fileText[lineEnd] !== '\n') lineEnd++;
+
+    const result = fileText.slice(0, lineStart) + newCode + fileText.slice(lineEnd);
+    return { result, action: 'replaced' };
+  };
+
+  // --- Update File modal state ---
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [pasteContent, setPasteContent] = useState('');
+  const [resultContent, setResultContent] = useState('');
+  const [mergeStatus, setMergeStatus] = useState('');
+
+  const runMerge = () => {
+    if (!pasteContent.trim()) {
+      setMergeStatus('Paste the file contents first.');
+      return;
+    }
+    const { result, action, message } = mergeIntoFile(pasteContent);
+    if (action === 'error') {
+      setMergeStatus('Error: ' + message);
+      setResultContent('');
+      return;
+    }
+    setResultContent(result);
+    setMergeStatus(
+      action === 'replaced'
+        ? `Replaced existing situation matching title "${situation.title}".`
+        : `No existing match for title "${situation.title}" — appended as new situation.`
+    );
+  };
+
+  const copyResult = () => {
+    navigator.clipboard.writeText(resultContent).then(() => {
+      setMergeStatus('Result copied to clipboard.');
+    });
+  };
+
+  const closeUpdateModal = () => {
+    setShowUpdateModal(false);
+    setMergeStatus('');
   };
 
   return (
@@ -233,6 +379,13 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
           </button>
           <button className="export-btn" onClick={exportCode} title="Copy code to clipboard">
             Export Code
+          </button>
+          <button
+            className="export-btn"
+            onClick={() => setShowUpdateModal(true)}
+            title="Paste file contents to find & replace this situation by title"
+          >
+            Update File
           </button>
           <button className="close-btn" onClick={onClose}>Close</button>
         </div>
@@ -357,19 +510,88 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
             <div className="coord-group">
               <span className="coord-label">Ball:</span>
               <span className="coord-val">({kf.ball.x}, {kf.ball.y})</span>
+              {activeKeyframe > 0 && (
+                <button
+                  className="copy-prev-btn"
+                  onClick={() => copyFromPrevious('ball')}
+                  title="Copy from previous keyframe"
+                >
+                  ↶
+                </button>
+              )}
             </div>
             {Object.entries(kf.fielders).map(([key, pos]) => (
               <div key={key} className="coord-group">
                 <span className="coord-label">{key}:</span>
                 <span className="coord-val">({pos.x}, {pos.y})</span>
+                {activeKeyframe > 0 && keyframes[activeKeyframe - 1].fielders[key] && (
+                  <button
+                    className="copy-prev-btn"
+                    onClick={() => copyFromPrevious('fielder', key)}
+                    title="Copy from previous keyframe"
+                  >
+                    ↶
+                  </button>
+                )}
               </div>
             ))}
             {Object.entries(kf.runners).map(([key, pos]) => (
               <div key={key} className="coord-group">
                 <span className="coord-label">{key}:</span>
                 <span className="coord-val">({pos.x}, {pos.y})</span>
+                {activeKeyframe > 0 && keyframes[activeKeyframe - 1].runners[key] && (
+                  <button
+                    className="copy-prev-btn"
+                    onClick={() => copyFromPrevious('runner', key)}
+                    title="Copy from previous keyframe"
+                  >
+                    ↶
+                  </button>
+                )}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {showUpdateModal && (
+        <div className="update-modal-overlay" onClick={closeUpdateModal}>
+          <div className="update-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="update-modal-header">
+              <h3>Update File — Find & Replace by Title</h3>
+              <button className="close-btn" onClick={closeUpdateModal}>Close</button>
+            </div>
+            <p className="update-modal-hint">
+              Paste the full <code>sampleSituations.js</code> contents below. The block matching
+              title <strong>"{situation.title}"</strong> will be replaced with the current edited
+              version. If no match is found, it will be appended.
+            </p>
+            <textarea
+              className="update-textarea"
+              placeholder="Paste sampleSituations.js contents here..."
+              value={pasteContent}
+              onChange={(e) => setPasteContent(e.target.value)}
+            />
+            <div className="update-modal-actions">
+              <button className="export-btn" onClick={runMerge}>
+                Find & Replace
+              </button>
+              <button
+                className="export-btn"
+                onClick={copyResult}
+                disabled={!resultContent}
+              >
+                Copy Result
+              </button>
+              {mergeStatus && <span className="merge-status">{mergeStatus}</span>}
+            </div>
+            {resultContent && (
+              <textarea
+                className="update-textarea result"
+                readOnly
+                value={resultContent}
+              />
+            )}
           </div>
         </div>
       )}
