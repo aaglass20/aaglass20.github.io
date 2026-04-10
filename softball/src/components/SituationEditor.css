@@ -407,3 +407,18 @@
   font-size: 12px;
   font-style: italic;
 }
+
+.save-btn {
+  background: #2ecc71 !important;
+  border-color: #27ae60 !important;
+  color: #0f0f1e !important;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #27ae60 !important;
+}
+
+.save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -364,6 +364,44 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
     });
   };
 
+  const saveResultToFile = async () => {
+    if (!resultContent) {
+      setMergeStatus('Nothing to save — run Find & Replace first.');
+      return;
+    }
+    // Safety check: refuse to save anything that doesn't look like the full file
+    if (
+      !resultContent.includes('export const SAMPLE_SITUATIONS') ||
+      !resultContent.includes('];')
+    ) {
+      setMergeStatus(
+        'Refused to save: result does not look like a full sampleSituations.js file. ' +
+          'Make sure you pasted the WHOLE file (including the import line and `export const SAMPLE_SITUATIONS = [` wrapper) before running Find & Replace.'
+      );
+      return;
+    }
+    try {
+      const res = await fetch('/__write-situations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: resultContent,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setMergeStatus('✓ Saved to src/data/sampleSituations.js (backup created).');
+      } else {
+        setMergeStatus(
+          'Save failed: ' +
+            (json.error || res.statusText || 'endpoint not available — are you running `npm run dev`?')
+        );
+      }
+    } catch (err) {
+      setMergeStatus(
+        'Save failed: ' + String(err) + ' — endpoint only works under `npm run dev`.'
+      );
+    }
+  };
+
   const closeUpdateModal = () => {
     setShowUpdateModal(false);
     setMergeStatus('');
@@ -582,6 +620,14 @@ function SituationEditor({ situation, onUpdate, onClose, activeKeyframe, onKeyfr
                 disabled={!resultContent}
               >
                 Copy Result
+              </button>
+              <button
+                className="export-btn save-btn"
+                onClick={saveResultToFile}
+                disabled={!resultContent}
+                title="Write directly to src/data/sampleSituations.js (dev server only)"
+              >
+                Save to File
               </button>
               {mergeStatus && <span className="merge-status">{mergeStatus}</span>}
             </div>
