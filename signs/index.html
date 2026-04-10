@@ -568,6 +568,9 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfv7epK2Kr70Hm3a5Ce
 const useGoogleSheets = SCRIPT_URL !== 'PASTE_YOUR_SCRIPT_URL_HERE';
 
 // ===== Text style (readability) =====
+let _textStyleSyncTimer = null;
+let _textStyleLoading = false;
+
 function updateTextStyle() {
     const family = document.getElementById('wbFontFamily').value;
     const scale = parseFloat(document.getElementById('wbFontScale').value) || 1;
@@ -584,7 +587,21 @@ function updateTextStyle() {
 
     document.getElementById('wbFontScaleLabel').textContent = Math.round(scale * 100) + '%';
 
-    localStorage.setItem('wbTextStyle', JSON.stringify({ family, scale, weight, upper, wide }));
+    const style = { family, scale, weight, upper, wide };
+    localStorage.setItem('wbTextStyle', JSON.stringify(style));
+
+    if (useGoogleSheets && !_textStyleLoading) {
+        if (_textStyleSyncTimer) clearTimeout(_textStyleSyncTimer);
+        _textStyleSyncTimer = setTimeout(async () => {
+            try {
+                await sheetPost({ action: 'saveSetting', key: 'textStyle', value: style });
+                setSyncStatus('ok', 'synced');
+            } catch (err) {
+                setSyncStatus('err', 'sync error');
+                console.error('Setting save error:', err);
+            }
+        }, 800);
+    }
 }
 
 function resetTextStyle() {
@@ -596,8 +613,7 @@ function resetTextStyle() {
     updateTextStyle();
 }
 
-function loadTextStyle() {
-    const saved = JSON.parse(localStorage.getItem('wbTextStyle') || 'null');
+function applyTextStyleToControls(saved) {
     if (!saved) return;
     const famSel = document.getElementById('wbFontFamily');
     for (let i = 0; i < famSel.options.length; i++) {
@@ -607,7 +623,14 @@ function loadTextStyle() {
     document.getElementById('wbFontWeight').value = saved.weight || '600';
     document.getElementById('wbUppercase').checked = !!saved.upper;
     document.getElementById('wbWideSpacing').checked = !!saved.wide;
+    _textStyleLoading = true;
     updateTextStyle();
+    _textStyleLoading = false;
+}
+
+function loadTextStyle() {
+    const saved = JSON.parse(localStorage.getItem('wbTextStyle') || 'null');
+    applyTextStyleToControls(saved);
 }
 
 // ===== Print =====
@@ -1182,9 +1205,10 @@ async function init() {
     if (useGoogleSheets) {
         setSyncStatus('pending', 'syncing...');
         try {
-            const [sheetWristbands, sheetTerms] = await Promise.all([
+            const [sheetWristbands, sheetTerms, sheetSettings] = await Promise.all([
                 sheetGet('getWristbands'),
-                sheetGet('getCustomTerms')
+                sheetGet('getCustomTerms'),
+                sheetGet('getSettings')
             ]);
 
             // Merge: sheet data is the source of truth
@@ -1198,6 +1222,11 @@ async function init() {
                 customTerms = sheetTerms;
                 localStorage.setItem('customTerms', JSON.stringify(customTerms));
                 renderCustomTerms();
+            }
+
+            if (sheetSettings && sheetSettings.textStyle) {
+                localStorage.setItem('wbTextStyle', JSON.stringify(sheetSettings.textStyle));
+                applyTextStyleToControls(sheetSettings.textStyle);
             }
 
             setSyncStatus('ok', 'synced');

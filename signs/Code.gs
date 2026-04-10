@@ -67,6 +67,17 @@ function setup() {
   tplSheet.setColumnWidth(8, 400);
   tplSheet.setColumnWidth(9, 160);
 
+  // --- Settings tab (key/value user prefs) ---
+  var setSheet = ss.getSheetByName('Settings');
+  if (!setSheet) {
+    setSheet = ss.insertSheet('Settings');
+  }
+  setSheet.getRange('A1:B1').setValues([['Key', 'Value']]);
+  setSheet.getRange('A1:B1').setFontWeight('bold');
+  setSheet.setFrozenRows(1);
+  setSheet.setColumnWidth(1, 160);
+  setSheet.setColumnWidth(2, 500);
+
   // Remove default Sheet1 if it exists and is empty
   var sheet1 = ss.getSheetByName('Sheet1');
   if (sheet1 && sheet1.getLastRow() <= 1 && sheet1.getLastColumn() <= 1) {
@@ -91,6 +102,9 @@ function doGet(e) {
       break;
     case 'getTemplates':
       result = getTemplates();
+      break;
+    case 'getSettings':
+      result = getSettings();
       break;
     default:
       result = { error: 'Unknown action: ' + action };
@@ -121,6 +135,9 @@ function doPost(e) {
       break;
     case 'saveTemplate':
       result = saveTemplate(data.key, data.template);
+      break;
+    case 'saveSetting':
+      result = saveSetting(data.key, data.value);
       break;
     default:
       result = { error: 'Unknown action: ' + action };
@@ -241,6 +258,49 @@ function getTemplates() {
     };
   });
   return templates;
+}
+
+// ---- Settings (key/value user prefs) ----
+
+function getSettings() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Settings');
+  if (!sheet) return {};
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return {};
+
+  var data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
+  var settings = {};
+  data.forEach(function(row) {
+    if (!row[0]) return;
+    var raw = row[1];
+    try {
+      settings[row[0]] = JSON.parse(raw);
+    } catch (e) {
+      settings[row[0]] = raw;
+    }
+  });
+  return settings;
+}
+
+function saveSetting(key, value) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Settings');
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Settings');
+    sheet.getRange('A1:B1').setValues([['Key', 'Value']]);
+    sheet.getRange('A1:B1').setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  var serialized = (typeof value === 'string') ? value : JSON.stringify(value);
+  var lastRow = sheet.getLastRow();
+
+  for (var r = 2; r <= lastRow; r++) {
+    if (sheet.getRange(r, 1).getValue() === key) {
+      sheet.getRange(r, 2).setValue(serialized);
+      return { success: true };
+    }
+  }
+  sheet.appendRow([key, serialized]);
+  return { success: true };
 }
 
 function saveTemplate(key, tpl) {
