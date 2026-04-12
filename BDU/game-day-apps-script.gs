@@ -118,6 +118,10 @@ function writeLineups(lineups) {
         }
       });
     });
+    // Out for game
+    (halves.out || []).forEach(function (name) {
+      if (name) rows.push([gid, '', 'OUT', 'Out', name]);
+    });
   });
   if (rows.length) {
     sh.getRange(2, 1, rows.length, headers.length).setValues(rows);
@@ -212,7 +216,10 @@ function readLineups() {
     if (!out[gKey]) out[gKey] = { '1': {}, '2': {} };
     if (!out[gKey][hKey]) out[gKey][hKey] = {};
     if (!out[gKey][hKey][pos]) out[gKey][hKey][pos] = { s: '', subs: [] };
-    if (String(role).toLowerCase() === 'sub') {
+    if (String(role).toLowerCase() === 'out') {
+      if (!out[gKey].out) out[gKey].out = [];
+      out[gKey].out.push(String(player));
+    } else if (String(role).toLowerCase() === 'sub') {
       out[gKey][hKey][pos].subs.push(String(player));
     } else {
       out[gKey][hKey][pos].s = String(player);

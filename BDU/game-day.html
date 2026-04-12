@@ -102,6 +102,36 @@
             color: #c53030; font-size: 1rem; line-height: 1; padding: 0 .15rem;
         }
 
+        /* Out for Game */
+        .gd-out-section {
+            margin-top: 1rem; padding-top: .75rem;
+            border-top: 2px dashed #e2e8f0;
+        }
+        .gd-out-section h4 {
+            font-size: .85rem; color: #c53030; margin: 0 0 .5rem 0;
+            display: flex; align-items: center; gap: .35rem;
+        }
+        .gd-out-list {
+            min-height: 40px; border: 1px dashed #feb2b2; border-radius: 8px;
+            padding: .35rem; display: flex; flex-direction: column; gap: .2rem;
+            transition: all .15s;
+        }
+        .gd-out-list.drag-over {
+            background: #fff5f5; border-color: #c53030; border-style: solid;
+        }
+        .gd-out-badge {
+            background: #fed7d7; border-radius: 4px; padding: .2rem .4rem;
+            font-size: .8rem; display: flex; justify-content: space-between;
+            align-items: center;
+        }
+        .gd-out-badge button {
+            background: none; border: none; cursor: pointer;
+            color: #c53030; font-size: 1rem; padding: 0 .2rem; line-height: 1;
+        }
+        .gd-player.is-out {
+            opacity: .4; text-decoration: line-through;
+        }
+
         /* Soccer field */
         .gd-field {
             position: relative; width: 100%; max-width: 520px;
@@ -510,9 +540,16 @@
             <div class="gd-roster">
                 <h3>Roster</h3>
                 <p style="font-size:.75rem;color:var(--text-light);margin:0 0 .5rem 0;">
-                    Drag onto field. Tap a slot to clear. On mobile, tap a player then tap a slot.
+                    Drag onto field or subs. Tap a slot to clear. On mobile, tap a player then tap a target.
                 </p>
                 <div class="gd-roster-list" id="gd-roster-list"></div>
+                <div class="gd-out-section">
+                    <h4><i class="fas fa-user-slash"></i> Out for Game</h4>
+                    <p style="font-size:.7rem;color:var(--text-light);margin:0 0 .35rem 0;">
+                        Drag here to mark a player out. Tap × to bring back.
+                    </p>
+                    <div class="gd-out-list" id="gd-out-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -918,24 +955,54 @@
             });
         });
 
+        // Out players
+        const outPlayers = new Set(getOutPlayers());
+
         // Roster list
         const list = $('#gd-roster-list');
         list.innerHTML = '';
         if (!state.roster.length) {
             list.innerHTML = '<div class="gd-empty">No roster. Click Pull to load from your Google Sheet.</div>';
-            return;
+        } else {
+            state.roster.forEach(p => {
+                if (outPlayers.has(p.name)) return; // hide out players from roster
+                const div = document.createElement('div');
+                div.className = 'gd-player' + (onField.has(p.name) ? ' on-field' : '');
+                div.draggable = true;
+                div.dataset.player = p.name;
+                div.innerHTML = `<span class="gd-num">${p.number || ''}</span>${p.name}`;
+                list.appendChild(div);
+            });
         }
-        state.roster.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'gd-player' + (onField.has(p.name) ? ' on-field' : '');
-            div.draggable = true;
-            div.dataset.player = p.name;
-            div.innerHTML = `<span class="gd-num">${p.number || ''}</span>${p.name}`;
-            list.appendChild(div);
+
+        // Out list
+        const outList = $('#gd-out-list');
+        outList.innerHTML = '';
+        if (!outPlayers.size) {
+            outList.innerHTML = '<span style="font-size:.75rem;color:var(--text-light);padding:.25rem;">None</span>';
+        }
+        getOutPlayers().forEach(name => {
+            const badge = document.createElement('div');
+            badge.className = 'gd-out-badge';
+            const span = document.createElement('span');
+            span.textContent = name;
+            const btn = document.createElement('button');
+            btn.innerHTML = '&times;';
+            btn.title = 'Mark available';
+            btn.onclick = e => { e.stopPropagation(); removeOutPlayer(name); };
+            badge.appendChild(span);
+            badge.appendChild(btn);
+            outList.appendChild(badge);
         });
     }
 
     function placePlayer(pos, name, role) {
+        // If this player was marked "out", un-out them (they showed up)
+        if (state.currentGameId && state.lineup[state.currentGameId]) {
+            const outArr = state.lineup[state.currentGameId].out || [];
+            const outIdx = outArr.indexOf(name);
+            if (outIdx !== -1) outArr.splice(outIdx, 1);
+        }
         const lineup = getCurrentLineup();
         // Remove this player from any other slot/role in the same half
         Object.keys(lineup).forEach(p => {
@@ -969,6 +1036,40 @@
         const s = normalizeSlot(lineup[pos]);
         s.subs = s.subs.filter(n => n !== name);
         lineup[pos] = s;
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    // ---------- OUT FOR GAME ----------
+    function getOutPlayers() {
+        if (!state.currentGameId || !state.lineup[state.currentGameId]) return [];
+        return state.lineup[state.currentGameId].out || [];
+    }
+
+    function addOutPlayer(name) {
+        if (!state.currentGameId) return;
+        if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {}, out: [] };
+        if (!state.lineup[state.currentGameId].out) state.lineup[state.currentGameId].out = [];
+        // Remove from all positions in both halves
+        ['1', '2'].forEach(h => {
+            const half = state.lineup[state.currentGameId][h] || {};
+            Object.keys(half).forEach(pos => {
+                const s = normalizeSlot(half[pos]);
+                if (s.s === name) s.s = '';
+                s.subs = s.subs.filter(n => n !== name);
+                half[pos] = s;
+            });
+        });
+        if (!state.lineup[state.currentGameId].out.includes(name)) {
+            state.lineup[state.currentGameId].out.push(name);
+        }
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    function removeOutPlayer(name) {
+        if (!state.currentGameId || !state.lineup[state.currentGameId]) return;
+        state.lineup[state.currentGameId].out = (state.lineup[state.currentGameId].out || []).filter(n => n !== name);
         lsSet(LS.lineup, state.lineup);
         renderLineup();
     }
@@ -1043,6 +1144,24 @@
                     if (confirm(`Clear starter at ${slot.dataset.pos}?`)) clearSlot(slot.dataset.pos);
                 }
             });
+        });
+
+        // Out zone: drop to mark player out
+        const outZone = $('#gd-out-list');
+        outZone.addEventListener('dragover', e => { e.preventDefault(); outZone.classList.add('drag-over'); });
+        outZone.addEventListener('dragleave', () => outZone.classList.remove('drag-over'));
+        outZone.addEventListener('drop', e => {
+            e.preventDefault();
+            outZone.classList.remove('drag-over');
+            const name = e.dataTransfer.getData('text/plain');
+            if (name) addOutPlayer(name);
+        });
+        outZone.addEventListener('click', () => {
+            if (state.selectedPlayer) {
+                addOutPlayer(state.selectedPlayer);
+                state.selectedPlayer = null;
+                $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+            }
         });
 
         // Sub cards: drop targets for substitutes
@@ -1439,6 +1558,9 @@
                     s.subs.forEach(n => lines.push([gid, h, pos, 'Sub', n].join('\t')));
                 });
             });
+            (halves.out || []).forEach(name => {
+                lines.push([gid, '', 'OUT', 'Out', name].join('\t'));
+            });
         });
         lines.push('');
         lines.push('=== STATS (paste into "Stats" sheet) ===');
@@ -1544,6 +1666,7 @@
                 ${renderHalf('1', '1st Half')}
                 ${renderHalf('2', '2nd Half')}
             </div>
+            ${(halves.out || []).length ? `<div style="margin-top:1.2em;"><strong style="color:#c53030;">Out:</strong> ${halves.out.join(', ')}</div>` : ''}
             <div class="actions">
                 <button onclick="window.print()">Print</button>
                 <button onclick="window.close()">Close</button>
