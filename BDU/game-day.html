@@ -195,16 +195,7 @@
             font-size: .8rem; line-height: 1.1; word-break: break-word;
         }
 
-        /* Position coordinates: 3-3-2 + GK, attacking up */
-        .gd-slot[data-pos="GK"] { left: 50%; top: 92%; }
-        .gd-slot[data-pos="LD"] { left: 22%; top: 75%; }
-        .gd-slot[data-pos="CD"] { left: 50%; top: 78%; }
-        .gd-slot[data-pos="RD"] { left: 78%; top: 75%; }
-        .gd-slot[data-pos="LM"] { left: 22%; top: 50%; }
-        .gd-slot[data-pos="CM"] { left: 50%; top: 50%; }
-        .gd-slot[data-pos="RM"] { left: 78%; top: 50%; }
-        .gd-slot[data-pos="LF"] { left: 32%; top: 22%; }
-        .gd-slot[data-pos="RF"] { left: 68%; top: 22%; }
+        /* Position coordinates are set inline by JS based on formation */
 
         /* Roster */
         .gd-roster {
@@ -495,12 +486,18 @@
         <div class="gd-subtabs">
             <button class="active" data-half="1">1st Half</button>
             <button data-half="2">2nd Half</button>
+            <button data-half="custom">Custom</button>
             <div class="gd-subtab-actions">
                 <button id="gd-copy-from-1st" title="Replace 2nd half with a copy of 1st half" style="display:none;"><i class="fas fa-copy"></i> Copy 1st</button>
                 <button id="gd-print-lineup" title="Print 1st &amp; 2nd half + subs"><i class="fas fa-print"></i> Print</button>
                 <button id="gd-fs-lineup" title="Fullscreen"><i class="fas fa-expand"></i> Full</button>
-                <button id="gd-clear-half" class="danger">Clear Half</button>
+                <button id="gd-clear-half" class="danger">Clear</button>
             </div>
+        </div>
+        <div id="gd-formation-picker" style="display:none;margin-bottom:.75rem;">
+            <label style="font-weight:600;font-size:.9rem;margin-right:.5rem;">Formation:</label>
+            <select id="gd-formation-select" style="padding:.4rem .6rem;border-radius:6px;border:1px solid #cbd5e0;font:inherit;">
+            </select>
         </div>
         <div class="gd-lineup-grid">
             <div class="gd-lineup-main">
@@ -509,15 +506,7 @@
                     <div class="gd-field-box bottom"></div>
                     <div class="gd-field-goal top"></div>
                     <div class="gd-field-goal bottom"></div>
-                    <div class="gd-slot" data-pos="LF"><span class="gd-slot-label">LF</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="RF"><span class="gd-slot-label">RF</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="LM"><span class="gd-slot-label">LM</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="CM"><span class="gd-slot-label">CM</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="RM"><span class="gd-slot-label">RM</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="LD"><span class="gd-slot-label">LD</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="CD"><span class="gd-slot-label">CD</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="RD"><span class="gd-slot-label">RD</span><span class="gd-slot-name"></span></div>
-                    <div class="gd-slot" data-pos="GK"><span class="gd-slot-label">GK</span><span class="gd-slot-name"></span></div>
+                    <!-- Slots generated dynamically by renderLineup() -->
                 </div>
                 <div class="gd-subs-section">
                     <h4>Substitutes</h4>
@@ -525,15 +514,7 @@
                         Drag a player onto a position to add them as a sub. Multiple subs per position OK. Tap × to remove.
                     </p>
                     <div class="gd-subs-grid" id="gd-subs-grid">
-                        <div class="gd-sub-card" data-pos="GK"><h5>GK</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="LD"><h5>LD</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="CD"><h5>CD</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="RD"><h5>RD</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="LM"><h5>LM</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="CM"><h5>CM</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="RM"><h5>RM</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="LF"><h5>LF</h5><div class="gd-sub-list"></div></div>
-                        <div class="gd-sub-card" data-pos="RF"><h5>RF</h5><div class="gd-sub-list"></div></div>
+                        <!-- Sub cards generated dynamically by renderLineup() -->
                     </div>
                 </div>
             </div>
@@ -627,6 +608,51 @@
     const SHEET_ID = '1ymL9unwdw1Y6e8vpeMfSlnYe2aRGtnAKCZ0zhGeEidA';
     const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxYpluV1wTA9RakQj4UvNRwiEiGjZipNc8QjfKmByKuQAqdMmgEcBEO2E0w2BpQRKrmzg/exec';
     const POSITIONS = ['GK','LD','CD','RD','LM','CM','RM','LF','RF'];
+    const FORMATIONS = {
+        '3-3-2': {
+            label: '3-3-2',
+            positions: [
+                { id: 'GK', label: 'GK', x: 50, y: 92 },
+                { id: 'LD', label: 'LD', x: 22, y: 75 },
+                { id: 'CD', label: 'CD', x: 50, y: 78 },
+                { id: 'RD', label: 'RD', x: 78, y: 75 },
+                { id: 'LM', label: 'LM', x: 22, y: 50 },
+                { id: 'CM', label: 'CM', x: 50, y: 50 },
+                { id: 'RM', label: 'RM', x: 78, y: 50 },
+                { id: 'LF', label: 'LF', x: 32, y: 22 },
+                { id: 'RF', label: 'RF', x: 68, y: 22 },
+            ]
+        },
+        '4-3-1': {
+            label: '4-3-1 (Stopper)',
+            positions: [
+                { id: 'GK', label: 'GK', x: 50, y: 92 },
+                { id: 'LD', label: 'LD', x: 20, y: 80 },
+                { id: 'CD', label: 'CD', x: 50, y: 82 },
+                { id: 'RD', label: 'RD', x: 80, y: 80 },
+                { id: 'ST', label: 'ST', x: 50, y: 65 },
+                { id: 'LM', label: 'LM', x: 22, y: 45 },
+                { id: 'CM', label: 'CM', x: 50, y: 45 },
+                { id: 'RM', label: 'RM', x: 78, y: 45 },
+                { id: 'F',  label: 'F',  x: 50, y: 20 },
+            ]
+        },
+        '3-4-1': {
+            label: '3-4-1',
+            positions: [
+                { id: 'GK',  label: 'GK',  x: 50, y: 92 },
+                { id: 'LD',  label: 'LD',  x: 22, y: 75 },
+                { id: 'CD',  label: 'CD',  x: 50, y: 78 },
+                { id: 'RD',  label: 'RD',  x: 78, y: 75 },
+                { id: 'LM',  label: 'LM',  x: 12, y: 48 },
+                { id: 'LCM', label: 'LCM', x: 37, y: 46 },
+                { id: 'RCM', label: 'RCM', x: 63, y: 46 },
+                { id: 'RM',  label: 'RM',  x: 88, y: 48 },
+                { id: 'F',   label: 'F',   x: 50, y: 20 },
+            ]
+        }
+    };
+    const DEFAULT_FORMATION = '3-3-2';
     const LS = {
         roster: 'bdu-gd-roster',
         games:  'bdu-gd-games',
@@ -905,42 +931,81 @@
         return { s: val.s || '', subs: Array.isArray(val.subs) ? val.subs.slice() : [] };
     }
 
+    function getCurrentFormation() {
+        if (state.currentHalf === 'custom') {
+            const lineup = getCurrentLineup();
+            return lineup._formation || DEFAULT_FORMATION;
+        }
+        return DEFAULT_FORMATION;
+    }
+
+    function getCurrentFormationPositions() {
+        const key = getCurrentFormation();
+        return (FORMATIONS[key] || FORMATIONS[DEFAULT_FORMATION]).positions;
+    }
+
     function getCurrentLineup() {
         if (!state.currentGameId) return {};
-        if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {} };
-        if (!state.lineup[state.currentGameId][state.currentHalf]) state.lineup[state.currentGameId][state.currentHalf] = {};
-        return state.lineup[state.currentGameId][state.currentHalf];
+        if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {}, custom: {} };
+        const key = state.currentHalf;
+        if (!state.lineup[state.currentGameId][key]) state.lineup[state.currentGameId][key] = {};
+        return state.lineup[state.currentGameId][key];
     }
 
     function renderLineup() {
+        // Keep subtab buttons in sync with state
+        $$('.gd-subtabs button[data-half]').forEach(b => {
+            b.classList.toggle('active', b.dataset.half === state.currentHalf);
+        });
+        $('#gd-copy-from-1st').style.display = state.currentHalf === '2' ? '' : 'none';
+
         const lineup = getCurrentLineup();
+        const formPositions = getCurrentFormationPositions();
+        const posIds = formPositions.map(p => p.id);
+
+        // Formation picker: visible only in custom tab
+        const picker = $('#gd-formation-picker');
+        picker.style.display = state.currentHalf === 'custom' ? '' : 'none';
+        if (state.currentHalf === 'custom') {
+            $('#gd-formation-select').value = getCurrentFormation();
+        }
+
+        // Compute on-field set (only for positions in the current formation)
         const onField = new Set();
-        Object.values(lineup).forEach(v => {
-            const s = normalizeSlot(v);
+        posIds.forEach(pos => {
+            const s = normalizeSlot(lineup[pos]);
             if (s.s) onField.add(s.s);
             s.subs.forEach(n => onField.add(n));
         });
 
-        // Field slots (starters)
-        $$('.gd-slot').forEach(slot => {
-            const pos = slot.dataset.pos;
-            const s = normalizeSlot(lineup[pos]);
-            const nameEl = slot.querySelector('.gd-slot-name');
-            if (s.s) {
-                slot.classList.add('filled');
-                nameEl.textContent = s.s;
-            } else {
-                slot.classList.remove('filled');
-                nameEl.textContent = '';
-            }
+        // Generate field slots dynamically
+        const field = $('#gd-field');
+        field.querySelectorAll('.gd-slot').forEach(s => s.remove());
+        formPositions.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'gd-slot';
+            div.dataset.pos = p.id;
+            div.style.left = p.x + '%';
+            div.style.top = p.y + '%';
+            const s = normalizeSlot(lineup[p.id]);
+            if (s.s) div.classList.add('filled');
+            div.innerHTML = `<span class="gd-slot-label">${p.label}</span><span class="gd-slot-name">${s.s || ''}</span>`;
+            field.appendChild(div);
         });
 
-        // Sub cards
-        $$('.gd-sub-card').forEach(card => {
-            const pos = card.dataset.pos;
+        // Generate sub cards dynamically
+        const subsGrid = $('#gd-subs-grid');
+        subsGrid.innerHTML = '';
+        posIds.forEach(pos => {
             const s = normalizeSlot(lineup[pos]);
-            const list = card.querySelector('.gd-sub-list');
-            list.innerHTML = '';
+            const card = document.createElement('div');
+            card.className = 'gd-sub-card';
+            card.dataset.pos = pos;
+            const h5 = document.createElement('h5');
+            h5.textContent = pos;
+            card.appendChild(h5);
+            const list = document.createElement('div');
+            list.className = 'gd-sub-list';
             s.subs.forEach(name => {
                 const badge = document.createElement('div');
                 badge.className = 'gd-sub-badge';
@@ -954,25 +1019,27 @@
                 badge.appendChild(btn);
                 list.appendChild(badge);
             });
+            card.appendChild(list);
+            subsGrid.appendChild(card);
         });
 
         // Out players
         const outPlayers = new Set(getOutPlayers());
 
         // Roster list
-        const list = $('#gd-roster-list');
-        list.innerHTML = '';
+        const rosterList = $('#gd-roster-list');
+        rosterList.innerHTML = '';
         if (!state.roster.length) {
-            list.innerHTML = '<div class="gd-empty">No roster. Click Pull to load from your Google Sheet.</div>';
+            rosterList.innerHTML = '<div class="gd-empty">No roster. Click Pull to load from your Google Sheet.</div>';
         } else {
             state.roster.forEach(p => {
-                if (outPlayers.has(p.name)) return; // hide out players from roster
+                if (outPlayers.has(p.name)) return;
                 const div = document.createElement('div');
                 div.className = 'gd-player' + (onField.has(p.name) ? ' on-field' : '');
                 div.draggable = true;
                 div.dataset.player = p.name;
                 div.innerHTML = `<span class="gd-num">${p.number || ''}</span>${p.name}`;
-                list.appendChild(div);
+                rosterList.appendChild(div);
             });
         }
 
@@ -1007,6 +1074,7 @@
         const lineup = getCurrentLineup();
         // Remove this player from any other slot/role in the same half
         Object.keys(lineup).forEach(p => {
+            if (p.startsWith('_')) return; // skip metadata like _formation
             const s = normalizeSlot(lineup[p]);
             if (s.s === name) s.s = '';
             s.subs = s.subs.filter(n => n !== name);
@@ -1056,6 +1124,7 @@
         // Build a map of player → current assignment label
         const assignMap = {};
         Object.entries(lineup).forEach(([p, v]) => {
+            if (p.startsWith('_')) return; // skip metadata like _formation
             const s = normalizeSlot(v);
             if (s.s) assignMap[s.s] = p;
             s.subs.forEach(n => { assignMap[n] = p + ' sub'; });
@@ -1104,10 +1173,11 @@
         if (!state.currentGameId) return;
         if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {}, out: [] };
         if (!state.lineup[state.currentGameId].out) state.lineup[state.currentGameId].out = [];
-        // Remove from all positions in both halves
-        ['1', '2'].forEach(h => {
+        // Remove from all positions in both halves + custom
+        ['1', '2', 'custom'].forEach(h => {
             const half = state.lineup[state.currentGameId][h] || {};
             Object.keys(half).forEach(pos => {
+                if (pos.startsWith('_')) return; // skip metadata like _formation
                 const s = normalizeSlot(half[pos]);
                 if (s.s === name) s.s = '';
                 s.subs = s.subs.filter(n => n !== name);
@@ -1129,8 +1199,10 @@
     }
 
     function clearHalf() {
-        if (!confirm(`Clear ${state.currentHalf === '1' ? '1st' : '2nd'} half lineup (starters and subs)?`)) return;
-        state.lineup[state.currentGameId][state.currentHalf] = {};
+        const labels = { '1': '1st half', '2': '2nd half', 'custom': 'custom' };
+        if (!confirm(`Clear ${labels[state.currentHalf] || state.currentHalf} lineup (starters and subs)?`)) return;
+        const formation = getCurrentFormation();
+        state.lineup[state.currentGameId][state.currentHalf] = state.currentHalf === 'custom' ? { _formation: formation } : {};
         lsSet(LS.lineup, state.lineup);
         renderLineup();
     }
@@ -1151,27 +1223,28 @@
         renderLineup();
     }
 
-    // Drag & drop wiring (delegated)
+    // Drag & drop wiring — all event delegation so it works with dynamic slots/cards
     function wireLineupDragDrop() {
-        const list = $('#gd-roster-list');
+        const rosterList = $('#gd-roster-list');
         const field = $('#gd-field');
+        const subsGrid = $('#gd-subs-grid');
+        const outZone = $('#gd-out-list');
 
-        list.addEventListener('dragstart', e => {
+        // Roster drag
+        rosterList.addEventListener('dragstart', e => {
             const p = e.target.closest('.gd-player');
             if (!p) return;
             e.dataTransfer.setData('text/plain', p.dataset.player);
             p.classList.add('dragging');
         });
-        list.addEventListener('dragend', e => {
+        rosterList.addEventListener('dragend', e => {
             const p = e.target.closest('.gd-player');
             if (p) p.classList.remove('dragging');
         });
-
-        // Tap-to-select for mobile
-        list.addEventListener('click', e => {
+        rosterList.addEventListener('click', e => {
             const p = e.target.closest('.gd-player');
             if (!p) return;
-            $$('.gd-player.selected', list).forEach(el => el.classList.remove('selected'));
+            $$('.gd-player.selected', rosterList).forEach(el => el.classList.remove('selected'));
             if (state.selectedPlayer === p.dataset.player) {
                 state.selectedPlayer = null;
             } else {
@@ -1180,28 +1253,64 @@
             }
         });
 
-        $$('.gd-slot').forEach(slot => {
-            slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
-            slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
-            slot.addEventListener('drop', e => {
-                e.preventDefault();
-                slot.classList.remove('drag-over');
-                const name = e.dataTransfer.getData('text/plain');
-                if (name) placePlayer(slot.dataset.pos, name, 'starter');
-            });
-            slot.addEventListener('click', () => {
-                if (state.selectedPlayer) {
-                    placePlayer(slot.dataset.pos, state.selectedPlayer, 'starter');
-                    state.selectedPlayer = null;
-                    $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
-                } else {
-                    showSlotPicker(slot.dataset.pos);
-                }
-            });
+        // Field slots (delegated on field container)
+        field.addEventListener('dragover', e => {
+            const slot = e.target.closest('.gd-slot');
+            if (slot) { e.preventDefault(); slot.classList.add('drag-over'); }
+        });
+        field.addEventListener('dragleave', e => {
+            const slot = e.target.closest('.gd-slot');
+            if (slot) slot.classList.remove('drag-over');
+        });
+        field.addEventListener('drop', e => {
+            const slot = e.target.closest('.gd-slot');
+            if (!slot) return;
+            e.preventDefault();
+            slot.classList.remove('drag-over');
+            const name = e.dataTransfer.getData('text/plain');
+            if (name) placePlayer(slot.dataset.pos, name, 'starter');
+        });
+        field.addEventListener('click', e => {
+            const slot = e.target.closest('.gd-slot');
+            if (!slot) return;
+            if (state.selectedPlayer) {
+                placePlayer(slot.dataset.pos, state.selectedPlayer, 'starter');
+                state.selectedPlayer = null;
+                $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+            } else {
+                showSlotPicker(slot.dataset.pos);
+            }
         });
 
-        // Out zone: drop to mark player out
-        const outZone = $('#gd-out-list');
+        // Sub cards (delegated on subs grid)
+        subsGrid.addEventListener('dragover', e => {
+            const card = e.target.closest('.gd-sub-card');
+            if (card) { e.preventDefault(); card.classList.add('drag-over'); }
+        });
+        subsGrid.addEventListener('dragleave', e => {
+            const card = e.target.closest('.gd-sub-card');
+            if (card) card.classList.remove('drag-over');
+        });
+        subsGrid.addEventListener('drop', e => {
+            const card = e.target.closest('.gd-sub-card');
+            if (!card) return;
+            e.preventDefault();
+            card.classList.remove('drag-over');
+            const name = e.dataTransfer.getData('text/plain');
+            if (name) placePlayer(card.dataset.pos, name, 'sub');
+        });
+        subsGrid.addEventListener('click', e => {
+            if (e.target.closest('button')) return;
+            const card = e.target.closest('.gd-sub-card');
+            if (!card) return;
+            if (state.selectedPlayer) {
+                placePlayer(card.dataset.pos, state.selectedPlayer, 'sub');
+                state.selectedPlayer = null;
+                $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+            }
+        });
+
+        // Out zone
         outZone.addEventListener('dragover', e => { e.preventDefault(); outZone.classList.add('drag-over'); });
         outZone.addEventListener('dragleave', () => outZone.classList.remove('drag-over'));
         outZone.addEventListener('drop', e => {
@@ -1216,27 +1325,6 @@
                 state.selectedPlayer = null;
                 $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
             }
-        });
-
-        // Sub cards: drop targets for substitutes
-        $$('.gd-sub-card').forEach(card => {
-            card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
-            card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-            card.addEventListener('drop', e => {
-                e.preventDefault();
-                card.classList.remove('drag-over');
-                const name = e.dataTransfer.getData('text/plain');
-                if (name) placePlayer(card.dataset.pos, name, 'sub');
-            });
-            card.addEventListener('click', e => {
-                // Only fire when clicking the card background, not a remove button
-                if (e.target.closest('button')) return;
-                if (state.selectedPlayer) {
-                    placePlayer(card.dataset.pos, state.selectedPlayer, 'sub');
-                    state.selectedPlayer = null;
-                    $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
-                }
-            });
         });
     }
 
@@ -1604,12 +1692,17 @@
         lines.push('=== LINEUPS (paste into "Lineups" sheet) ===');
         lines.push(['GameID','Half','Position','Role','Player'].join('\t'));
         Object.entries(state.lineup).forEach(([gid, halves]) => {
-            ['1','2'].forEach(h => {
+            ['1','2','custom'].forEach(h => {
                 const half = halves[h] || {};
+                if (h === 'custom' && half._formation) {
+                    lines.push([gid, 'Custom', '_formation', 'Meta', half._formation].join('\t'));
+                }
                 Object.entries(half).forEach(([pos, val]) => {
+                    if (pos.startsWith('_')) return;
                     const s = normalizeSlot(val);
-                    if (s.s) lines.push([gid, h, pos, 'Starter', s.s].join('\t'));
-                    s.subs.forEach(n => lines.push([gid, h, pos, 'Sub', n].join('\t')));
+                    const halfLabel = h === 'custom' ? 'Custom' : h;
+                    if (s.s) lines.push([gid, halfLabel, pos, 'Starter', s.s].join('\t'));
+                    s.subs.forEach(n => lines.push([gid, halfLabel, pos, 'Sub', n].join('\t')));
                 });
             });
             (halves.out || []).forEach(name => {
@@ -1669,7 +1762,11 @@
 
         const renderHalf = (h, label) => {
             const half = halves[h] || {};
-            const rows = POSITIONS.map(pos => {
+            const fKey = h === 'custom' ? (half._formation || DEFAULT_FORMATION) : DEFAULT_FORMATION;
+            const fmtPositions = FORMATIONS[fKey] ? FORMATIONS[fKey].positions : FORMATIONS[DEFAULT_FORMATION].positions;
+            const fmtLabel = h === 'custom' ? ` (${FORMATIONS[fKey]?.label || fKey})` : '';
+            label = label + fmtLabel;
+            const rows = fmtPositions.map(({ id: pos }) => {
                 const s = normalizeSlot(half[pos]);
                 return `<tr>
                     <td class="pos">${pos}</td>
@@ -1720,6 +1817,7 @@
                 ${renderHalf('1', '1st Half')}
                 ${renderHalf('2', '2nd Half')}
             </div>
+            ${(halves.custom && Object.keys(halves.custom).some(k => !k.startsWith('_'))) ? `<div style="margin-top:1.2em;">${renderHalf('custom', 'Custom')}</div>` : ''}
             ${(halves.out || []).length ? `<div style="margin-top:1.2em;"><strong style="color:#c53030;">Out:</strong> ${halves.out.join(', ')}</div>` : ''}
             <div class="actions">
                 <button onclick="window.print()">Print</button>
@@ -1804,6 +1902,20 @@
                 renderLineup();
             };
         });
+
+        // Formation selector for custom tab
+        const fmtSel = $('#gd-formation-select');
+        Object.entries(FORMATIONS).forEach(([key, f]) => {
+            const opt = document.createElement('option');
+            opt.value = key; opt.textContent = f.label;
+            fmtSel.appendChild(opt);
+        });
+        fmtSel.onchange = () => {
+            const lineup = getCurrentLineup();
+            lineup._formation = fmtSel.value;
+            lsSet(LS.lineup, state.lineup);
+            renderLineup();
+        };
     }
 
     // ---------- RENDER ALL ----------

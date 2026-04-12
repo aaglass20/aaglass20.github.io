@@ -105,17 +105,22 @@ function writeLineups(lineups) {
   const rows = [];
   Object.keys(lineups).forEach(function (gid) {
     const halves = lineups[gid] || {};
-    ['1', '2'].forEach(function (h) {
+    ['1', '2', 'custom'].forEach(function (h) {
       const half = halves[h] || {};
+      const halfLabel = h === 'custom' ? 'Custom' : h;
+      if (h === 'custom' && half._formation) {
+        rows.push([gid, 'Custom', '_formation', 'Meta', half._formation]);
+      }
       Object.keys(half).forEach(function (pos) {
+        if (pos.charAt(0) === '_') return;
         const val = half[pos];
         if (!val) return;
         if (typeof val === 'string') {
-          rows.push([gid, h, pos, 'Starter', val]);
+          rows.push([gid, halfLabel, pos, 'Starter', val]);
         } else {
-          if (val.s) rows.push([gid, h, pos, 'Starter', val.s]);
+          if (val.s) rows.push([gid, halfLabel, pos, 'Starter', val.s]);
           (val.subs || []).forEach(function (name) {
-            if (name) rows.push([gid, h, pos, 'Sub', name]);
+            if (name) rows.push([gid, halfLabel, pos, 'Sub', name]);
           });
         }
       });
@@ -236,9 +241,17 @@ function readLineups() {
     }
     if (!gid || !pos || !player) return;
     const gKey = String(gid);
-    const hKey = String(half);
-    if (!out[gKey]) out[gKey] = { '1': {}, '2': {} };
+    // Map 'Custom' half label back to 'custom' key
+    var hKey = String(half);
+    if (hKey.toLowerCase() === 'custom') hKey = 'custom';
+    if (!out[gKey]) out[gKey] = { '1': {}, '2': {}, custom: {} };
     if (!out[gKey][hKey]) out[gKey][hKey] = {};
+
+    // Handle formation metadata
+    if (String(role).toLowerCase() === 'meta' && pos === '_formation') {
+      out[gKey][hKey]._formation = String(player);
+      return;
+    }
     if (!out[gKey][hKey][pos]) out[gKey][hKey][pos] = { s: '', subs: [] };
     if (String(role).toLowerCase() === 'out') {
       if (!out[gKey].out) out[gKey].out = [];
