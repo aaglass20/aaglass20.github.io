@@ -1163,6 +1163,55 @@
         });
     }
 
+    function showSubPicker(pos) {
+        const lineup = getCurrentLineup();
+        const slot = normalizeSlot(lineup[pos]);
+        const outPlayers = new Set(getOutPlayers());
+        const assignMap = {};
+        Object.entries(lineup).forEach(([p, v]) => {
+            if (p.startsWith('_')) return;
+            const s = normalizeSlot(v);
+            if (s.s) assignMap[s.s] = p;
+            s.subs.forEach(n => { assignMap[n] = p + ' sub'; });
+        });
+
+        const available = state.roster.filter(p => !outPlayers.has(p.name));
+        let html = `<h3>${pos} – Subs</h3>`;
+
+        if (slot.subs.length) {
+            html += `<div style="margin-bottom:1rem;">`;
+            slot.subs.forEach(name => {
+                html += `<button data-remove="${name}" style="
+                    display:block;width:100%;padding:.5rem .75rem;margin-bottom:.35rem;border-radius:6px;
+                    border:1px solid #c53030;background:#fff5f5;color:#c53030;
+                    font:inherit;cursor:pointer;text-align:left;
+                "><i class="fas fa-times-circle"></i> &nbsp;Remove ${name}</button>`;
+            });
+            html += `</div>`;
+        }
+
+        html += `<p style="font-size:.85rem;color:var(--text-light);margin:0 0 .5rem 0;">Add a sub:</p>`;
+        html += `<div class="gd-player-picker">`;
+        available.forEach(p => {
+            const assign = assignMap[p.name] || '';
+            html += `<button data-name="${p.name}" style="${assign ? 'opacity:.5;' : ''}">`
+                + `${p.number ? '<strong>' + p.number + '</strong> ' : ''}${p.name}`
+                + `${assign ? ' <small>(' + assign + ')</small>' : ''}`
+                + `</button>`;
+        });
+        html += `</div>`;
+        html += `<div class="gd-modal-buttons"><button class="secondary" data-close>Cancel</button></div>`;
+
+        openModal(html);
+
+        $$('[data-remove]', $('#gd-modal-content')).forEach(b => {
+            b.onclick = () => { removeSub(pos, b.dataset.remove); closeModal(); };
+        });
+        $$('.gd-player-picker button[data-name]', $('#gd-modal-content')).forEach(b => {
+            b.onclick = () => { placePlayer(pos, b.dataset.name, 'sub'); closeModal(); };
+        });
+    }
+
     // ---------- OUT FOR GAME ----------
     function getOutPlayers() {
         if (!state.currentGameId || !state.lineup[state.currentGameId]) return [];
@@ -1307,6 +1356,8 @@
                 placePlayer(card.dataset.pos, state.selectedPlayer, 'sub');
                 state.selectedPlayer = null;
                 $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+            } else {
+                showSubPicker(card.dataset.pos);
             }
         });
 
