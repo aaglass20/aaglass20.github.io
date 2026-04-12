@@ -3,44 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BDU Soccer</title>
+    <title>BDU Soccer - Game Day</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ============================================
+           GAME DAY APP STYLES
+           ============================================ */
+        .gd-app { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+
+        /* Toolbar */
+        .gd-toolbar {
+            display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+            background: #fff; padding: .75rem; border-radius: 12px;
+            box-shadow: var(--card-shadow); margin-bottom: 1rem;
+        }
+        .gd-toolbar select, .gd-toolbar button {
+            font: inherit; padding: .5rem .75rem; border-radius: 8px;
+            border: 1px solid #cbd5e0; background: #fff; cursor: pointer;
+        }
+        .gd-toolbar select { min-width: 180px; flex: 1 1 180px; }
+        .gd-toolbar button { background: var(--secondary-color); color: #fff; border: none; }
+        .gd-toolbar button:hover { background: #0779e4; }
+        .gd-toolbar .gd-status { flex: 1 1 100%; font-size: .85rem; color: var(--text-light); }
+        .gd-toolbar .gd-status.error { color: #c53030; }
+        .gd-toolbar .gd-status.ok { color: #2f855a; }
+
+        /* Tabs */
+        .gd-tabs {
+            display: flex; flex-wrap: wrap; gap: .25rem; margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .gd-tabs button {
+            font: inherit; padding: .75rem 1.25rem; border: none; background: transparent;
+            cursor: pointer; color: var(--text-light); font-weight: 600;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+        }
+        .gd-tabs button.active {
+            color: var(--secondary-color); border-bottom-color: var(--primary-color);
+        }
+        .gd-panel { display: none; animation: fadeIn .2s; }
+        .gd-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Sub-tabs */
+        .gd-subtabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+        .gd-subtabs button {
+            font: inherit; padding: .5rem 1rem; border-radius: 999px;
+            border: 1px solid #cbd5e0; background: #fff; cursor: pointer;
+        }
+        .gd-subtabs button.active {
+            background: var(--secondary-color); color: #fff; border-color: var(--secondary-color);
+        }
+
+        /* Lineup grid: field+subs column on left, roster on right */
+        .gd-lineup-grid {
+            display: grid; grid-template-columns: 1fr 240px; gap: 1rem;
+        }
+        .gd-lineup-main { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+        @media (max-width: 720px) {
+            .gd-lineup-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Substitutes section */
+        .gd-subs-section {
+            background: #fff; border-radius: 12px; padding: 1rem;
+            box-shadow: var(--card-shadow);
+        }
+        .gd-subs-section h4 {
+            margin: 0 0 .25rem 0; color: var(--secondary-color);
+            font-size: .95rem;
+        }
+        .gd-subs-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: .5rem;
+        }
+        .gd-sub-card {
+            border: 1px dashed #cbd5e0; border-radius: 8px;
+            padding: .4rem .5rem; min-height: 64px;
+            transition: all .15s;
+        }
+        .gd-sub-card.drag-over {
+            background: #f0fff4; border-color: var(--secondary-color); border-style: solid;
+        }
+        .gd-sub-card h5 {
+            margin: 0 0 .25rem 0; font-size: .7rem; font-weight: 700;
+            color: var(--text-light); letter-spacing: .05em;
+        }
+        .gd-sub-list { display: flex; flex-direction: column; gap: .2rem; }
+        .gd-sub-badge {
+            background: #edf2f7; border-radius: 4px;
+            padding: .15rem .35rem; font-size: .75rem;
+            display: flex; justify-content: space-between; align-items: center;
+            gap: .25rem;
+        }
+        .gd-sub-badge button {
+            background: none; border: none; cursor: pointer;
+            color: #c53030; font-size: 1rem; line-height: 1; padding: 0 .15rem;
+        }
+
+        /* Soccer field */
+        .gd-field {
+            position: relative; width: 100%; max-width: 520px;
+            aspect-ratio: 2/3; margin: 0 auto;
+            background: repeating-linear-gradient(
+                to bottom, #4a8a4f 0 40px, #5fa362 40px 80px
+            );
+            border: 3px solid #fff;
+            border-radius: 6px;
+            box-shadow: var(--card-shadow);
+        }
+        /* Field markings — pointer-events:none so drops pass through to slots underneath */
+        .gd-field::before {
+            content: ''; position: absolute; left: 0; right: 0; top: 50%;
+            height: 3px; background: #fff; pointer-events: none;
+        }
+        .gd-field::after {
+            content: ''; position: absolute; left: 50%; top: 50%;
+            width: 80px; height: 80px; transform: translate(-50%, -50%);
+            border: 3px solid #fff; border-radius: 50%; pointer-events: none;
+        }
+        .gd-field-box, .gd-field-goal { pointer-events: none; }
+        .gd-field-goal {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 40%; height: 7%; border: 3px solid #fff; border-top: none;
+        }
+        .gd-field-goal.top { top: 0; border-top: 3px solid #fff; border-bottom: none; }
+        .gd-field-goal.bottom { bottom: 0; }
+        .gd-field-box {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 65%; height: 18%; border: 3px solid #fff;
+        }
+        .gd-field-box.top { top: 0; border-top: none; }
+        .gd-field-box.bottom { bottom: 0; border-bottom: none; }
+
+        /* Position slots */
+        .gd-slot {
+            position: absolute; transform: translate(-50%, -50%);
+            width: 72px; height: 72px; border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            border: 2px dashed rgba(0,0,0,0.4);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: .75rem; font-weight: 700; text-align: center;
+            cursor: pointer; padding: 4px;
+            transition: all .15s;
+        }
+        .gd-slot:hover { transform: translate(-50%, -50%) scale(1.05); }
+        .gd-slot.drag-over {
+            background: var(--primary-color);
+            border-style: solid; border-color: var(--secondary-color);
+        }
+        .gd-slot.filled {
+            background: var(--secondary-color); color: #fff;
+            border-style: solid; border-color: var(--primary-color);
+        }
+        .gd-slot .gd-slot-label {
+            font-size: .65rem; opacity: .75;
+        }
+        .gd-slot .gd-slot-name {
+            font-size: .8rem; line-height: 1.1; word-break: break-word;
+        }
+
+        /* Position coordinates: 3-3-2 + GK, attacking up */
+        .gd-slot[data-pos="GK"] { left: 50%; top: 92%; }
+        .gd-slot[data-pos="LD"] { left: 22%; top: 75%; }
+        .gd-slot[data-pos="CD"] { left: 50%; top: 78%; }
+        .gd-slot[data-pos="RD"] { left: 78%; top: 75%; }
+        .gd-slot[data-pos="LM"] { left: 22%; top: 50%; }
+        .gd-slot[data-pos="CM"] { left: 50%; top: 50%; }
+        .gd-slot[data-pos="RM"] { left: 78%; top: 50%; }
+        .gd-slot[data-pos="LF"] { left: 32%; top: 22%; }
+        .gd-slot[data-pos="RF"] { left: 68%; top: 22%; }
+
+        /* Roster */
+        .gd-roster {
+            background: #fff; border-radius: 12px; padding: 1rem;
+            box-shadow: var(--card-shadow);
+        }
+        .gd-roster h3 {
+            margin: 0 0 .5rem 0; font-size: 1rem; color: var(--secondary-color);
+        }
+        .gd-roster-list {
+            display: flex; flex-direction: column; gap: .35rem;
+            max-height: 480px; overflow-y: auto;
+        }
+        .gd-player {
+            padding: .5rem .75rem; border-radius: 8px;
+            background: #edf2f7; cursor: grab;
+            font-size: .9rem; user-select: none;
+            border: 2px solid transparent;
+            transition: all .15s;
+        }
+        .gd-player:hover { background: #e2e8f0; }
+        .gd-player.dragging { opacity: .4; }
+        .gd-player.on-field { background: #c6f6d5; border-color: var(--primary-color); }
+        .gd-player.selected { background: var(--primary-color); border-color: var(--secondary-color); }
+        .gd-player .gd-num {
+            display: inline-block; min-width: 1.5em; font-weight: 700;
+            color: var(--text-light); margin-right: .35em;
+        }
+
+        /* Depth chart */
+        .gd-depth-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .gd-depth-card {
+            background: #fff; border-radius: 12px; padding: 1rem;
+            box-shadow: var(--card-shadow);
+        }
+        .gd-depth-card h4 {
+            margin: 0 0 .5rem 0; color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color); padding-bottom: .25rem;
+        }
+        .gd-depth-list {
+            display: flex; flex-direction: column; gap: .35rem; min-height: 60px;
+        }
+        .gd-depth-list .gd-player { display: flex; align-items: center; }
+        .gd-depth-list .gd-rank {
+            display: inline-block; width: 1.5em; text-align: center;
+            font-weight: 700; color: var(--text-light); margin-right: .5em;
+        }
+        .gd-depth-list.drag-over { background: #f0fff4; border-radius: 8px; }
+
+        /* Stats */
+        .gd-stats-controls { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .gd-stats-controls button {
+            font: inherit; padding: .75rem 1.25rem; border-radius: 8px; border: none;
+            cursor: pointer; font-weight: 700; color: #fff;
+        }
+        .gd-stats-controls button.goal { background: #38a169; }
+        .gd-stats-controls button.assist { background: #3182ce; }
+        .gd-stats-list {
+            background: #fff; border-radius: 12px; padding: 1rem;
+            box-shadow: var(--card-shadow); max-height: 500px; overflow-y: auto;
+        }
+        .gd-stat-row {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .5rem; border-bottom: 1px solid #edf2f7;
+        }
+        .gd-stat-row:last-child { border-bottom: none; }
+        .gd-stat-row .gd-stat-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: .9rem;
+        }
+        .gd-stat-row .gd-stat-icon.goal { background: #38a169; }
+        .gd-stat-row .gd-stat-icon.assist { background: #3182ce; }
+        .gd-stat-row .gd-stat-min { font-weight: 700; min-width: 3em; }
+        .gd-stat-row .gd-stat-player { flex: 1; }
+        .gd-stat-row button {
+            background: transparent; border: none; color: #c53030; cursor: pointer; font-size: 1rem;
+        }
+        .gd-stats-summary {
+            display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+        }
+        .gd-stats-summary div {
+            background: #fff; padding: .5rem 1rem; border-radius: 8px;
+            box-shadow: var(--card-shadow); font-size: .9rem;
+        }
+        .gd-stats-summary strong { color: var(--secondary-color); }
+
+        /* Plays */
+        .gd-plays-controls { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .5rem; }
+        .gd-plays-controls button, .gd-plays-controls select {
+            font: inherit; padding: .5rem .75rem; border-radius: 8px;
+            border: 1px solid #cbd5e0; background: #fff; cursor: pointer;
+        }
+        .gd-plays-controls button.active { background: var(--secondary-color); color: #fff; }
+        .gd-plays-canvas-wrap {
+            position: relative; width: 100%; max-width: 520px; margin: 0 auto;
+            aspect-ratio: 2/3;
+        }
+        #gd-plays-canvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                to bottom, #4a8a4f 0 40px, #5fa362 40px 80px
+            );
+            border: 3px solid #fff; border-radius: 6px; cursor: crosshair;
+            box-shadow: var(--card-shadow);
+            touch-action: none;
+        }
+
+        /* Modal */
+        .gd-modal {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .gd-modal.active { display: flex; }
+        .gd-modal-content {
+            background: #fff; padding: 1.5rem; border-radius: 12px;
+            max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
+        }
+        .gd-modal-content h3 { margin-top: 0; color: var(--secondary-color); }
+        .gd-modal-content label { display: block; margin: .75rem 0 .25rem; font-weight: 600; font-size: .9rem; }
+        .gd-modal-content input, .gd-modal-content select, .gd-modal-content textarea {
+            width: 100%; padding: .5rem; border: 1px solid #cbd5e0; border-radius: 6px; font: inherit;
+        }
+        .gd-modal-content textarea { font-family: monospace; font-size: .8rem; min-height: 200px; }
+        .gd-modal-buttons { display: flex; gap: .5rem; margin-top: 1rem; justify-content: flex-end; }
+        .gd-modal-buttons button {
+            padding: .5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font: inherit;
+        }
+        .gd-modal-buttons .primary { background: var(--secondary-color); color: #fff; }
+        .gd-modal-buttons .secondary { background: #e2e8f0; }
+
+        .gd-player-picker {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: .5rem; margin-top: 1rem;
+        }
+        .gd-player-picker button {
+            padding: .75rem; border-radius: 8px; border: 1px solid #cbd5e0;
+            background: #fff; cursor: pointer; font: inherit;
+        }
+        .gd-player-picker button:hover { background: var(--primary-color); }
+
+        .gd-empty {
+            text-align: center; padding: 2rem; color: var(--text-light);
+        }
+
+        /* Subtab utility buttons (Print, Fullscreen, Clear) */
+        .gd-subtab-actions {
+            margin-left: auto; display: flex; gap: .5rem; flex-wrap: wrap;
+        }
+        .gd-subtab-actions button {
+            font: inherit; padding: .5rem .85rem; border-radius: 999px;
+            border: 1px solid #cbd5e0; background: #fff; cursor: pointer;
+        }
+        .gd-subtab-actions button.danger { color: #c53030; }
+
+        /* Save button on stats page */
+        .gd-stats-controls button.save {
+            background: var(--secondary-color);
+        }
+        .gd-stats-controls button.save:hover { background: #0779e4; }
+
+        /* Fullscreen styling */
+        .gd-panel:fullscreen { background: var(--bg-light); padding: 1rem; overflow-y: auto; }
+        .gd-panel:-webkit-full-screen { background: var(--bg-light); padding: 1rem; overflow-y: auto; }
+
+        /* Floating Exit button — only visible when its parent panel is fullscreen */
+        .gd-fs-exit { display: none; }
+        .gd-is-fs .gd-fs-exit {
+            display: inline-flex; align-items: center; gap: 6px;
+            position: fixed; top: 12px; right: 12px; z-index: 99999;
+            padding: 10px 18px; border-radius: 999px; border: none;
+            background: rgba(0, 0, 0, 0.75); color: #fff;
+            font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
+        .gd-is-fs .gd-fs-exit:hover { background: rgba(197, 48, 48, 0.85); }
+
+        /* Lineup fullscreen: only field + subs visible */
+        .gd-is-fs[data-panel="lineup"] .gd-subtabs,
+        .gd-is-fs[data-panel="lineup"] .gd-roster {
+            display: none !important;
+        }
+        .gd-is-fs[data-panel="lineup"] .gd-lineup-grid {
+            grid-template-columns: 1fr;
+        }
+        .gd-is-fs[data-panel="lineup"] .gd-field {
+            max-width: min(100%, 47vh); /* keeps field at ~70vh tall via 2:3 ratio */
+        }
+        .gd-is-fs[data-panel="lineup"] .gd-subs-section {
+            max-width: 900px; margin: 0 auto;
+        }
+
+        /* Plays fullscreen: hide tab-level chrome, leave canvas + tools */
+        .gd-is-fs[data-panel="plays"] .gd-plays-canvas-wrap {
+            max-width: min(100%, 55vh); margin: 0 auto;
+        }
+
+        /* Depth chart roster pool toggle */
+        #gd-depth-pool h3 {
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; user-select: none;
+        }
+        #gd-depth-pool h3 .gd-pool-toggle {
+            background: none; border: none; cursor: pointer; font-size: 1rem;
+            color: var(--text-light); padding: 0 .25rem;
+        }
+        #gd-depth-pool.collapsed #gd-depth-pool-list { display: none; }
+
+        /* Print styles */
+        @media print {
+            header, .waffle-menu-toggle, #waffleMenuContainer, #training-menu,
+            .gd-toolbar, .gd-tabs, .gd-panel, #shared-footer { display: none !important; }
+            body { background: #fff; }
+        }
+    </style>
 </head>
 <body>
 <header>
     <div class="highlight-banner">
-         <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
-        <!--        <h1>Practice 5/5/2025</h1>-->
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
         <h1>Game Day <span id="currentDate"></span></h1>
-
         <script>
             const today = new Date();
-            const formattedDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
-            document.getElementById('currentDate').textContent = formattedDate;
+            document.getElementById('currentDate').textContent =
+                (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
         </script>
-
     </div>
 </header>
 
-<!-- Waffle Menu Toggle Button -->
 <div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
 </div>
-
-<!--&lt;!&ndash; Highlight Banner &ndash;&gt;-->
-<!--<div class="highlight-banner">-->
-<!--    <h2>Welcome to Practice</h2>-->
-<!--    <h2>4/28/2025</h2>-->
-<!--</div>-->
-
-<!-- Add this line to load the waffle menu -->
 <div id="waffleMenuContainer"></div>
-
-<!-- Include the menu using JavaScript -->
 <div id="training-menu"></div>
 
 <script>
@@ -48,399 +419,1253 @@
         .then(response => response.text())
         .then(data => {
             document.getElementById('training-menu').innerHTML = data;
-
-            // Highlight current page in menu and scroll to it
             const currentPage = window.location.pathname.split('/').pop();
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
+            document.querySelectorAll('.menu-item').forEach(item => {
                 if (item.getAttribute('href') === currentPage) {
                     item.classList.add('active');
-                    // Scroll the item into view with smooth behavior
-                    setTimeout(() => {
-                        item.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'nearest',
-                            inline: 'center'
-                        });
-                    }, 100);
+                    setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 100);
                 }
             });
         });
 </script>
 
-<div class="container">
+<div class="gd-app">
 
-    <section class="collapsible-section" id="game-time-warmup">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Game Time Warmup
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <div class="video-container">
-                    <video controls>
-                        <source src="vid/gametimewarmup.mp4" type="video/mp4">
-                    </video>
+    <!-- Toolbar -->
+    <div class="gd-toolbar">
+        <select id="gd-game-select"><option>Loading…</option></select>
+        <button id="gd-add-game" title="Add a game (e.g. tournament)"><i class="fas fa-plus"></i> Game</button>
+        <button id="gd-refresh" title="Pull roster, schedule, lineups & stats from Google Sheet"><i class="fas fa-cloud-download-alt"></i> Pull</button>
+        <button id="gd-save" title="Save lineups, stats & depth chart to Google Sheet"><i class="fas fa-cloud-upload-alt"></i> Save</button>
+        <button id="gd-export" title="Export lineups &amp; stats as paste-ready text (manual fallback)"><i class="fas fa-file-export"></i> Export</button>
+        <span class="gd-status" id="gd-status"></span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="gd-tabs">
+        <button class="active" data-tab="warmup"><i class="fas fa-running"></i> Warmup</button>
+        <button data-tab="lineup"><i class="far fa-file-alt"></i> Lineup</button>
+        <button data-tab="depth"><i class="fas fa-layer-group"></i> Depth Chart</button>
+        <button data-tab="stats"><i class="fas fa-futbol"></i> Stats</button>
+        <button data-tab="plays"><i class="fas fa-pen"></i> Plays</button>
+    </div>
+
+    <!-- Warmup -->
+    <div class="gd-panel active" data-panel="warmup">
+        <div class="video-container">
+            <video controls style="width:100%;max-width:800px;display:block;margin:0 auto;border-radius:12px;">
+                <source src="vid/gametimewarmup.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <!-- Lineup -->
+    <div class="gd-panel" data-panel="lineup">
+        <button class="gd-fs-exit" data-fs-exit><i class="fas fa-compress"></i> Exit</button>
+        <div class="gd-subtabs">
+            <button class="active" data-half="1">1st Half</button>
+            <button data-half="2">2nd Half</button>
+            <div class="gd-subtab-actions">
+                <button id="gd-print-lineup" title="Print 1st &amp; 2nd half + subs"><i class="fas fa-print"></i> Print</button>
+                <button id="gd-fs-lineup" title="Fullscreen"><i class="fas fa-expand"></i> Full</button>
+                <button id="gd-clear-half" class="danger">Clear Half</button>
+            </div>
+        </div>
+        <div class="gd-lineup-grid">
+            <div class="gd-lineup-main">
+                <div class="gd-field" id="gd-field">
+                    <div class="gd-field-box top"></div>
+                    <div class="gd-field-box bottom"></div>
+                    <div class="gd-field-goal top"></div>
+                    <div class="gd-field-goal bottom"></div>
+                    <div class="gd-slot" data-pos="LF"><span class="gd-slot-label">LF</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="RF"><span class="gd-slot-label">RF</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="LM"><span class="gd-slot-label">LM</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="CM"><span class="gd-slot-label">CM</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="RM"><span class="gd-slot-label">RM</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="LD"><span class="gd-slot-label">LD</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="CD"><span class="gd-slot-label">CD</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="RD"><span class="gd-slot-label">RD</span><span class="gd-slot-name"></span></div>
+                    <div class="gd-slot" data-pos="GK"><span class="gd-slot-label">GK</span><span class="gd-slot-name"></span></div>
+                </div>
+                <div class="gd-subs-section">
+                    <h4>Substitutes</h4>
+                    <p style="font-size:.75rem;color:var(--text-light);margin:0 0 .5rem 0;">
+                        Drag a player onto a position to add them as a sub. Multiple subs per position OK. Tap × to remove.
+                    </p>
+                    <div class="gd-subs-grid" id="gd-subs-grid">
+                        <div class="gd-sub-card" data-pos="GK"><h5>GK</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="LD"><h5>LD</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="CD"><h5>CD</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="RD"><h5>RD</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="LM"><h5>LM</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="CM"><h5>CM</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="RM"><h5>RM</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="LF"><h5>LF</h5><div class="gd-sub-list"></div></div>
+                        <div class="gd-sub-card" data-pos="RF"><h5>RF</h5><div class="gd-sub-list"></div></div>
+                    </div>
                 </div>
             </div>
-        </ul>
-    </section>
-
-
-    <!-- 1st half lineup -->
-    <section class="collapsible-section" id="lineup">
-        <h2 class="section-title">
-            <i class="far fa-file-alt"></i> Lineup
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
-                <div class="lineup-container">
-                    <div class="position-card">
-                        <div class="position-header">Goalkeeper (G)</div>
-                        <div class="players">
-                            <div class="player first-half">Ava</div>
-                            <div class="player substitute">Whitney</div>
-                            <div class="player substitute">Claire B</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Defense (LD)</div>
-                        <div class="players">
-                            <div class="player first-half">JoJo</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Defense (CD)</div>
-                        <div class="players">
-                            <div class="player first-half">Hannah</div>
-                            <div class="player substitute">Whitney/Charlie/Claire</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Defense (RD)</div>
-                        <div class="players">
-                            <div class="player first-half">Mara</div>
-                            <div class="player substitute">Josie</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Midfield (LM)</div>
-                        <div class="players">
-                            <div class="player first-half">Emery</div>
-                            <div class="player substitute">Lily</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Center Midfield (CM)</div>
-                        <div class="players">
-                            <div class="player first-half">Whitney</div>
-                            <div class="player substitute">Hannah/Charlie/Claire</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Midfield (RM)</div>
-                        <div class="players">
-                            <div class="player first-half">Jordan</div>
-                            <div class="player substitute">Hazel</div>
-                            <div class="player substitute">JoJo</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Left Forward (LF)</div>
-                        <div class="players">
-                            <div class="player first-half">Charlie</div>
-                            <div class="player substitute">Lily</div>
-                        </div>
-                    </div>
-
-                    <div class="position-card">
-                        <div class="position-header">Right Forward (RF)</div>
-                        <div class="players">
-                            <div class="player first-half">Claire B</div>
-                            <div class="player substitute">Isabelle</div>
-                            <div class="player substitute">Emery</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <p>Bold = First Half Starter</p>
-                    <p>Gray = Substitutes</p>
-                </div>
+            <div class="gd-roster">
+                <h3>Roster</h3>
+                <p style="font-size:.75rem;color:var(--text-light);margin:0 0 .5rem 0;">
+                    Drag onto field. Tap a slot to clear. On mobile, tap a player then tap a slot.
+                </p>
+                <div class="gd-roster-list" id="gd-roster-list"></div>
             </div>
-        </ul>
-    </section>
+        </div>
+    </div>
 
+    <!-- Depth Chart -->
+    <div class="gd-panel" data-panel="depth">
+        <p style="color:var(--text-light);font-size:.9rem;">
+            Drag players from any position list to set depth order. Stored locally and included in Export.
+        </p>
+        <div class="gd-depth-grid" id="gd-depth-grid"></div>
+    </div>
 
-    <section class="collapsible-section" id="sheet-lineup">
-        <h2 class="section-title">
-            <i class="fas fa-futbol"></i> Sheet Lineup
-            <button class="toggle-button" aria-expanded="false">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </h2>
-        <ul>
-            <div class="collapsible-content">
+    <!-- Stats -->
+    <div class="gd-panel" data-panel="stats">
+        <div class="gd-stats-summary" id="gd-stats-summary"></div>
+        <div class="gd-stats-controls">
+            <button class="goal" data-stat="Goal"><i class="fas fa-futbol"></i> + Goal</button>
+            <button class="assist" data-stat="Assist"><i class="fas fa-hands-helping"></i> + Assist</button>
+            <button class="save" id="gd-stats-save" title="Save stats to Google Sheet"><i class="fas fa-cloud-upload-alt"></i> Save</button>
+        </div>
+        <div class="gd-stats-list" id="gd-stats-list"></div>
+    </div>
 
-                <div class="lineup-container">
-                    <h2>1st Half</h2>
-                    <table class="lineup-table">
-                        <thead>
-                        <tr>
-                            <th>G</th>
-                            <th>LD</th>
-                            <th>CD</th>
-                            <th>RD</th>
-                            <th>LM</th>
-                            <th>CM</th>
-                            <th>RM</th>
-                            <th>LF</th>
-                            <th>RF</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Ava</td>
-                            <td>Emma</td>
-                            <td>Hannah</td>
-                            <td>Mara</td>
-                            <td>Emery</td>
-                            <td>Whitney</td>
-                            <td>Jordan</td>
-                            <td>Charlie</td>
-                            <td>Claire B</td>
-                        </tr>
-                        <tr>
-                            <td>Ava</td>
-                            <td></td>
-                            <td></td>
-                            <td>Josie</td>
-                            <td>Lily</td>
-                            <td></td>
-                            <td>Hazel</td>
-                            <td></td>
-                            <td>Isabelle</td>
-                        </tr>
-                        <tr>
-                            <td><strong></strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><strong></strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Depth</strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Whitney</td>
-                            <td>Emma</td>
-                            <td>Emma</td>
-                            <td></td>
-                            <td></td>
-                            <td>Hannah</td>
-                            <td>JoJo</td>
-                            <td>Emery</td>
-                            <td>Ava</td>
-                        </tr>
-                        <tr>
-                            <td>Claire</td>
-                            <td></td>
-                            <td>Whitney</td>
-                            <td></td>
-                            <td></td>
-                            <td>Emma</td>
-                            <td></td>
-                            <td>Josie</td>
-                            <td>Lily</td>
-                        </tr>
-                        <tr>
-                            <td>Emery</td>
-                            <td></td>
-                            <td>Claire</td>
-                            <td></td>
-                            <td></td>
-                            <td>Charlie</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                                                <tr>
-                            <td>Jordan</td>
-                            <td></td>
-                            <td>Charlie</td>
-                            <td></td>
-                            <td></td>
-                            <td>Claire</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-<!--                    <h2>2nd Half</h2>-->
-<!--                    <table class="lineup-table">-->
-<!--                        <thead>-->
-<!--                        <tr>-->
-<!--                            <th>G</th>-->
-<!--                            <th>LD</th>-->
-<!--                            <th>CD</th>-->
-<!--                            <th>RD</th>-->
-<!--                            <th>LM</th>-->
-<!--                            <th>CM</th>-->
-<!--                            <th>RM</th>-->
-<!--                            <th>LF</th>-->
-<!--                            <th>RF</th>-->
-<!--                        </tr>-->
-<!--                        </thead>-->
-<!--                        <tbody>-->
-<!--                        <tr>-->
-<!--                            <td>Ava/Claire S&B/Emma</td>-->
-<!--                            <td>JoJo</td>-->
-<!--                            <td>Hannah</td>-->
-<!--                            <td>Mara</td>-->
-<!--                            <td>Evie</td>-->
-<!--                            <td>Whitney</td>-->
-<!--                            <td>Jordan</td>-->
-<!--                            <td>Charlie</td>-->
-<!--                            <td>Claire B</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td>Ava/Claire S&B/Emma</td>-->
-<!--                            <td>Ella</td>-->
-<!--                            <td>Emma</td>-->
-<!--                            <td>Josie</td>-->
-<!--                            <td>Ava</td>-->
-<!--                            <td>Claire S</td>-->
-<!--                            <td>Emery</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Isabelle</td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td><strong></strong></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td>Emma/Ella</td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td><strong></strong></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td><strong>Depth</strong></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td></td>-->
-<!--                            <td>Charlie</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Claire B</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Audrey</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Isabelle</td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-
-<!--                        <tr>-->
-<!--                            <td></td>-->
-<!--                            <td>Evie</td>-->
-<!--                            <td>Claire S</td>-->
-<!--                            <td>Jordan</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Ava</td>-->
-<!--                            <td>Whitney</td>-->
-<!--                            <td>Emery</td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <td></td>-->
-<!--                            <td>JoJo</td>-->
-<!--                            <td>Hannah</td>-->
-<!--                            <td>Mara</td>-->
-<!--                            <td></td>-->
-<!--                            <td>Ella</td>-->
-<!--                            <td>Emma</td>-->
-<!--                            <td>Josie</td>-->
-<!--                            <td></td>-->
-<!--                        </tr>-->
-<!--                        </tbody>-->
-<!--                    </table>-->
-                </div>
-            </div>
-        </ul>
-    </section>
-
+    <!-- Plays -->
+    <div class="gd-panel" data-panel="plays">
+        <button class="gd-fs-exit" data-fs-exit><i class="fas fa-compress"></i> Exit</button>
+        <div class="gd-plays-controls">
+            <button id="gd-play-pen" class="active" data-tool="pen">Pen</button>
+            <button id="gd-play-arrow" data-tool="arrow">Arrow</button>
+            <button id="gd-play-dot" data-tool="dot">Dot</button>
+            <button id="gd-play-erase" data-tool="erase">Erase</button>
+            <input type="color" id="gd-play-color" value="#ffffff" title="Color">
+            <button id="gd-play-clear">Clear</button>
+            <button id="gd-play-save">Save</button>
+            <select id="gd-play-load"><option value="">Load play…</option></select>
+            <button id="gd-play-delete">Delete</button>
+            <button id="gd-fs-plays" title="Fullscreen"><i class="fas fa-expand"></i> Full</button>
+        </div>
+        <p style="font-size:.75rem;color:var(--text-light);margin:.25rem 0;">
+            Saved plays are tied to the selected game and stored in your browser.
+        </p>
+        <div class="gd-plays-canvas-wrap">
+            <canvas id="gd-plays-canvas" width="520" height="780"></canvas>
+        </div>
+    </div>
 
 </div>
-<div id="shared-footer"></div>
 
+<!-- Generic modal -->
+<div class="gd-modal" id="gd-modal">
+    <div class="gd-modal-content" id="gd-modal-content"></div>
+</div>
+
+<div id="shared-footer"></div>
 <script>
-    // Load the shared footer
     fetch('menus/shared-footer.html')
         .then(response => response.text())
-        .then(data => {
-            document.getElementById('shared-footer').innerHTML = data;
-        });
+        .then(data => { document.getElementById('shared-footer').innerHTML = data; });
 </script>
-
-
 <script src="scripts/scripts.js"></script>
+
+<!-- ============================================
+     GAME DAY APP
+     ============================================ -->
+<script>
+(function() {
+    'use strict';
+
+    // ---------- CONFIG ----------
+    // 1. SHEET_ID — published Google Sheet ID. Sheet must be "Anyone with the link – Viewer".
+    //    Used for read-only pulls of Roster / Games / DepthChart via the public gviz endpoint.
+    // 2. WEBAPP_URL — Google Apps Script web app URL for two-way sync of Lineups / Stats / Depth.
+    //    Optional. Leave blank to fall back to manual Export button only.
+    //    See README-game-day.md for setup instructions.
+    const SHEET_ID = '1ymL9unwdw1Y6e8vpeMfSlnYe2aRGtnAKCZ0zhGeEidA';
+    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxYpluV1wTA9RakQj4UvNRwiEiGjZipNc8QjfKmByKuQAqdMmgEcBEO2E0w2BpQRKrmzg/exec';
+    const POSITIONS = ['GK','LD','CD','RD','LM','CM','RM','LF','RF'];
+    const LS = {
+        roster: 'bdu-gd-roster',
+        games:  'bdu-gd-games',
+        custom: 'bdu-gd-games-custom',
+        lineup: 'bdu-gd-lineup',   // { gameId: { '1': {GK:'Ava',...}, '2': {...} } }
+        depth:  'bdu-gd-depth',    // { GK: ['Ava','Whitney'], ... }
+        stats:  'bdu-gd-stats',    // { gameId: [ {minute, type, player} ] }
+        plays:  'bdu-gd-plays',    // { gameId: { name: dataURL } }
+        currentGame: 'bdu-gd-current-game'
+    };
+
+    // ---------- STATE ----------
+    let state = {
+        roster: [],          // [{name, number, prefs:[], active}]
+        games: [],           // [{id, date, opponent, location, type, notes, source:'sheet'|'local'}]
+        currentGameId: null,
+        currentHalf: '1',
+        lineup: {},
+        depth: {},
+        stats: {},
+        plays: {},
+        selectedPlayer: null // for tap-mode placement
+    };
+
+    // ---------- UTIL ----------
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    const lsSet = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+    const setStatus = (msg, kind = '') => {
+        const el = $('#gd-status'); el.textContent = msg; el.className = 'gd-status ' + kind;
+    };
+
+    // ---------- GOOGLE SHEET FETCH ----------
+    async function fetchSheet(sheetName) {
+        if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') {
+            throw new Error('SHEET_ID not configured – see README-game-day.md');
+        }
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+        const res = await fetch(url);
+        const text = await res.text();
+        // gviz wraps response: /*O_o*/google.visualization.Query.setResponse({...});
+        const start = text.indexOf('(') + 1;
+        const end = text.lastIndexOf(')');
+        const json = JSON.parse(text.substring(start, end));
+        const cols = json.table.cols.map(c => (c.label || c.id || '').trim());
+        return json.table.rows.map(row => {
+            const obj = {};
+            (row.c || []).forEach((cell, i) => {
+                obj[cols[i]] = cell ? cell.v : null;
+            });
+            return obj;
+        });
+    }
+
+    async function loadFromSheet() {
+        setStatus('Loading from Google Sheet…');
+        try {
+            const [rosterRows, gameRows] = await Promise.all([
+                fetchSheet('Roster'),
+                fetchSheet('Games')
+            ]);
+            state.roster = rosterRows
+                .filter(r => r.Name)
+                .filter(r => r.Active === null || r.Active === true || String(r.Active).toUpperCase() === 'TRUE' || r.Active === 1)
+                .map(r => ({
+                    name: String(r.Name).trim(),
+                    number: r.Number ?? '',
+                    prefs: r.PreferredPositions ? String(r.PreferredPositions).split(',').map(s => s.trim()) : [],
+                    active: true
+                }));
+            state.games = gameRows
+                .filter(r => r.GameID)
+                .map(r => ({
+                    id: String(r.GameID),
+                    date: r.Date ? String(r.Date) : '',
+                    opponent: r.Opponent || '',
+                    location: r.Location || '',
+                    homeAway: r.HomeAway || '',
+                    type: r.Type || 'League',
+                    notes: r.Notes || '',
+                    source: 'sheet'
+                }));
+            // Try optional DepthChart sheet (seed only if we have nothing locally)
+            try {
+                const depthRows = await fetchSheet('DepthChart');
+                const depthSeed = {};
+                POSITIONS.forEach(p => depthSeed[p] = []);
+                depthRows
+                    .filter(r => r.Position && r.Player)
+                    .sort((a, b) => (a.Rank || 99) - (b.Rank || 99))
+                    .forEach(r => {
+                        if (depthSeed[r.Position]) depthSeed[r.Position].push(String(r.Player));
+                    });
+                if (!Object.keys(state.depth).length) state.depth = depthSeed;
+            } catch (_) { /* optional */ }
+
+            lsSet(LS.roster, state.roster);
+            lsSet(LS.games, state.games);
+            lsSet(LS.depth, state.depth);
+            setStatus(`Loaded ${state.roster.length} players, ${state.games.length} games from sheet.`, 'ok');
+
+            // If a web app endpoint is configured, also pull editable data (lineups/stats/depth)
+            if (WEBAPP_URL) await pullFromWebApp();
+        } catch (err) {
+            console.error(err);
+            setStatus('Sheet load failed: ' + err.message + '. Using cached/local data.', 'error');
+        }
+    }
+
+    // ---------- WEB APP SYNC (two-way) ----------
+    async function pullFromWebApp() {
+        if (!WEBAPP_URL) return;
+        try {
+            const res = await fetch(WEBAPP_URL + '?action=pull');
+            const data = await res.json();
+            if (!data || data.ok === false) throw new Error(data && data.error || 'pull failed');
+            if (data.lineups) { state.lineup = data.lineups; lsSet(LS.lineup, state.lineup); }
+            if (data.stats)   { state.stats  = data.stats;   lsSet(LS.stats,  state.stats);  }
+            if (data.depth && Object.keys(data.depth).length) {
+                // Merge: ensure all positions exist
+                POSITIONS.forEach(p => { if (!data.depth[p]) data.depth[p] = []; });
+                state.depth = data.depth; lsSet(LS.depth, state.depth);
+            }
+            setStatus(`Synced from sheet: ${Object.keys(state.lineup).length} game lineups, ${Object.keys(state.stats).length} stat sets.`, 'ok');
+        } catch (err) {
+            console.warn('Web app pull failed:', err);
+            setStatus('Sheet pull OK, but web app sync failed: ' + err.message, 'error');
+        }
+    }
+
+    async function saveToWebApp() {
+        if (!WEBAPP_URL) {
+            alert('Web app sync not configured. Set WEBAPP_URL in game-day.html (see README-game-day.md), or use Export for manual paste.');
+            return;
+        }
+        setStatus('Saving to sheet…');
+        try {
+            const payload = {
+                action: 'sync',
+                lineups: state.lineup,
+                stats: state.stats,
+                depth: state.depth,
+                games: state.games.filter(g => g.source === 'local')
+            };
+            // Use text/plain to avoid CORS preflight (Apps Script reads e.postData.contents regardless)
+            const res = await fetch(WEBAPP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!data || data.ok === false) throw new Error(data && data.error || 'save failed');
+            const w = data.written || {};
+            // Promote any local games that were just persisted to source: 'sheet'
+            if (w.games > 0) {
+                state.games.forEach(g => { if (g.source === 'local') g.source = 'sheet'; });
+                lsSet(LS.custom, []); // clear pending custom games
+            }
+            setStatus(`Saved: ${w.lineups||0} lineup rows, ${w.stats||0} stats, ${w.depth||0} depth rows, ${w.games||0} new games.`, 'ok');
+        } catch (err) {
+            console.error(err);
+            setStatus('Save failed: ' + err.message + '. Try Export as fallback.', 'error');
+        }
+    }
+
+    // ---------- INIT STATE ----------
+    function loadLocal() {
+        state.roster = lsGet(LS.roster, []);
+        state.games  = lsGet(LS.games, []);
+        state.lineup = lsGet(LS.lineup, {});
+        state.depth  = lsGet(LS.depth, {});
+        state.stats  = lsGet(LS.stats, {});
+        state.plays  = lsGet(LS.plays, {});
+        state.currentGameId = lsGet(LS.currentGame, null);
+        // Merge custom games
+        const customGames = lsGet(LS.custom, []);
+        const ids = new Set(state.games.map(g => g.id));
+        customGames.forEach(g => { if (!ids.has(g.id)) state.games.push({...g, source: 'local'}); });
+        if (!Object.keys(state.depth).length) {
+            POSITIONS.forEach(p => state.depth[p] = []);
+        }
+    }
+
+    // ---------- GAMES ----------
+    function renderGameSelect() {
+        const sel = $('#gd-game-select');
+        sel.innerHTML = '';
+        if (!state.games.length) {
+            sel.innerHTML = '<option value="">No games – click + Game or refresh</option>';
+            return;
+        }
+        state.games
+            .slice()
+            .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
+            .forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                const dateStr = g.date ? formatDate(g.date) + ' ' : '';
+                opt.textContent = `${dateStr}${g.opponent || g.id}${g.type === 'Tournament' ? ' (T)' : ''}`;
+                sel.appendChild(opt);
+            });
+        if (state.currentGameId && state.games.find(g => g.id === state.currentGameId)) {
+            sel.value = state.currentGameId;
+        } else {
+            state.currentGameId = sel.value;
+            lsSet(LS.currentGame, state.currentGameId);
+        }
+    }
+
+    function formatDate(d) {
+        // Sheet may give "Date(2026,3,15)" or "2026-04-15" or epoch
+        if (typeof d === 'string' && d.startsWith('Date(')) {
+            const m = d.match(/Date\((\d+),(\d+),(\d+)/);
+            if (m) return `${parseInt(m[2])+1}/${m[3]}`;
+        }
+        try {
+            const dt = new Date(d);
+            if (!isNaN(dt)) return `${dt.getMonth()+1}/${dt.getDate()}`;
+        } catch {}
+        return d || '';
+    }
+
+    function showAddGameModal() {
+        openModal(`
+            <h3>Add Game</h3>
+            <label>Game ID <small style="color:#718096">(unique, e.g. G09 or T01)</small></label>
+            <input id="ag-id" placeholder="G09">
+            <label>Date</label>
+            <input id="ag-date" type="date">
+            <label>Opponent</label>
+            <input id="ag-opp">
+            <label>Location</label>
+            <input id="ag-loc">
+            <label>Type</label>
+            <select id="ag-type">
+                <option>League</option>
+                <option>Tournament</option>
+                <option>Friendly</option>
+            </select>
+            <label>Notes</label>
+            <input id="ag-notes">
+            <div class="gd-modal-buttons">
+                <button class="secondary" data-close>Cancel</button>
+                <button class="primary" id="ag-save">Add</button>
+            </div>
+        `);
+        $('#ag-save').onclick = () => {
+            const id = $('#ag-id').value.trim();
+            if (!id) { alert('Game ID required'); return; }
+            if (state.games.find(g => g.id === id)) { alert('Game ID already exists'); return; }
+            const game = {
+                id, date: $('#ag-date').value, opponent: $('#ag-opp').value,
+                location: $('#ag-loc').value, homeAway: '', type: $('#ag-type').value,
+                notes: $('#ag-notes').value, source: 'local'
+            };
+            state.games.push(game);
+            const custom = lsGet(LS.custom, []);
+            custom.push(game);
+            lsSet(LS.custom, custom);
+            state.currentGameId = id;
+            lsSet(LS.currentGame, id);
+            renderGameSelect();
+            $('#gd-game-select').value = id;
+            closeModal();
+            renderAll();
+        };
+    }
+
+    // ---------- LINEUP ----------
+    // Each slot is { s: starterName, subs: [name, ...] }. Old data may be a plain string.
+    function normalizeSlot(val) {
+        if (!val) return { s: '', subs: [] };
+        if (typeof val === 'string') return { s: val, subs: [] };
+        return { s: val.s || '', subs: Array.isArray(val.subs) ? val.subs.slice() : [] };
+    }
+
+    function getCurrentLineup() {
+        if (!state.currentGameId) return {};
+        if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {} };
+        if (!state.lineup[state.currentGameId][state.currentHalf]) state.lineup[state.currentGameId][state.currentHalf] = {};
+        return state.lineup[state.currentGameId][state.currentHalf];
+    }
+
+    function renderLineup() {
+        const lineup = getCurrentLineup();
+        const onField = new Set();
+        Object.values(lineup).forEach(v => {
+            const s = normalizeSlot(v);
+            if (s.s) onField.add(s.s);
+            s.subs.forEach(n => onField.add(n));
+        });
+
+        // Field slots (starters)
+        $$('.gd-slot').forEach(slot => {
+            const pos = slot.dataset.pos;
+            const s = normalizeSlot(lineup[pos]);
+            const nameEl = slot.querySelector('.gd-slot-name');
+            if (s.s) {
+                slot.classList.add('filled');
+                nameEl.textContent = s.s;
+            } else {
+                slot.classList.remove('filled');
+                nameEl.textContent = '';
+            }
+        });
+
+        // Sub cards
+        $$('.gd-sub-card').forEach(card => {
+            const pos = card.dataset.pos;
+            const s = normalizeSlot(lineup[pos]);
+            const list = card.querySelector('.gd-sub-list');
+            list.innerHTML = '';
+            s.subs.forEach(name => {
+                const badge = document.createElement('div');
+                badge.className = 'gd-sub-badge';
+                const span = document.createElement('span');
+                span.textContent = name;
+                const btn = document.createElement('button');
+                btn.innerHTML = '&times;';
+                btn.title = 'Remove';
+                btn.onclick = e => { e.stopPropagation(); removeSub(pos, name); };
+                badge.appendChild(span);
+                badge.appendChild(btn);
+                list.appendChild(badge);
+            });
+        });
+
+        // Roster list
+        const list = $('#gd-roster-list');
+        list.innerHTML = '';
+        if (!state.roster.length) {
+            list.innerHTML = '<div class="gd-empty">No roster. Click Pull to load from your Google Sheet.</div>';
+            return;
+        }
+        state.roster.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'gd-player' + (onField.has(p.name) ? ' on-field' : '');
+            div.draggable = true;
+            div.dataset.player = p.name;
+            div.innerHTML = `<span class="gd-num">${p.number || ''}</span>${p.name}`;
+            list.appendChild(div);
+        });
+    }
+
+    function placePlayer(pos, name, role) {
+        const lineup = getCurrentLineup();
+        // Remove this player from any other slot/role in the same half
+        Object.keys(lineup).forEach(p => {
+            const s = normalizeSlot(lineup[p]);
+            if (s.s === name) s.s = '';
+            s.subs = s.subs.filter(n => n !== name);
+            lineup[p] = s;
+        });
+        const target = normalizeSlot(lineup[pos]);
+        if (role === 'sub') {
+            if (target.s !== name && !target.subs.includes(name)) target.subs.push(name);
+        } else {
+            target.s = name;
+        }
+        lineup[pos] = target;
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    function clearSlot(pos) {
+        const lineup = getCurrentLineup();
+        const s = normalizeSlot(lineup[pos]);
+        s.s = '';
+        lineup[pos] = s;
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    function removeSub(pos, name) {
+        const lineup = getCurrentLineup();
+        const s = normalizeSlot(lineup[pos]);
+        s.subs = s.subs.filter(n => n !== name);
+        lineup[pos] = s;
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    function clearHalf() {
+        if (!confirm(`Clear ${state.currentHalf === '1' ? '1st' : '2nd'} half lineup (starters and subs)?`)) return;
+        state.lineup[state.currentGameId][state.currentHalf] = {};
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    // Drag & drop wiring (delegated)
+    function wireLineupDragDrop() {
+        const list = $('#gd-roster-list');
+        const field = $('#gd-field');
+
+        list.addEventListener('dragstart', e => {
+            const p = e.target.closest('.gd-player');
+            if (!p) return;
+            e.dataTransfer.setData('text/plain', p.dataset.player);
+            p.classList.add('dragging');
+        });
+        list.addEventListener('dragend', e => {
+            const p = e.target.closest('.gd-player');
+            if (p) p.classList.remove('dragging');
+        });
+
+        // Tap-to-select for mobile
+        list.addEventListener('click', e => {
+            const p = e.target.closest('.gd-player');
+            if (!p) return;
+            $$('.gd-player.selected', list).forEach(el => el.classList.remove('selected'));
+            if (state.selectedPlayer === p.dataset.player) {
+                state.selectedPlayer = null;
+            } else {
+                state.selectedPlayer = p.dataset.player;
+                p.classList.add('selected');
+            }
+        });
+
+        $$('.gd-slot').forEach(slot => {
+            slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+            slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+            slot.addEventListener('drop', e => {
+                e.preventDefault();
+                slot.classList.remove('drag-over');
+                const name = e.dataTransfer.getData('text/plain');
+                if (name) placePlayer(slot.dataset.pos, name, 'starter');
+            });
+            slot.addEventListener('click', () => {
+                if (state.selectedPlayer) {
+                    placePlayer(slot.dataset.pos, state.selectedPlayer, 'starter');
+                    state.selectedPlayer = null;
+                    $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+                } else if (slot.classList.contains('filled')) {
+                    if (confirm(`Clear starter at ${slot.dataset.pos}?`)) clearSlot(slot.dataset.pos);
+                }
+            });
+        });
+
+        // Sub cards: drop targets for substitutes
+        $$('.gd-sub-card').forEach(card => {
+            card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
+            card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+            card.addEventListener('drop', e => {
+                e.preventDefault();
+                card.classList.remove('drag-over');
+                const name = e.dataTransfer.getData('text/plain');
+                if (name) placePlayer(card.dataset.pos, name, 'sub');
+            });
+            card.addEventListener('click', e => {
+                // Only fire when clicking the card background, not a remove button
+                if (e.target.closest('button')) return;
+                if (state.selectedPlayer) {
+                    placePlayer(card.dataset.pos, state.selectedPlayer, 'sub');
+                    state.selectedPlayer = null;
+                    $$('.gd-player.selected').forEach(el => el.classList.remove('selected'));
+                }
+            });
+        });
+    }
+
+    // ---------- DEPTH CHART ----------
+    function renderDepthChart() {
+        const grid = $('#gd-depth-grid');
+        grid.innerHTML = '';
+        POSITIONS.forEach(pos => {
+            const card = document.createElement('div');
+            card.className = 'gd-depth-card';
+            card.innerHTML = `<h4>${pos}</h4><div class="gd-depth-list" data-pos="${pos}"></div>`;
+            const list = card.querySelector('.gd-depth-list');
+            (state.depth[pos] || []).forEach((name, i) => {
+                const div = document.createElement('div');
+                div.className = 'gd-player';
+                div.draggable = true;
+                div.dataset.player = name;
+                div.dataset.from = pos;
+                div.innerHTML = `<span class="gd-rank">${i+1}</span>${name}`;
+                list.appendChild(div);
+            });
+            grid.appendChild(card);
+        });
+        wireDepthDragDrop();
+    }
+
+    function wireDepthDragDrop() {
+        let dragName = null, dragFrom = null;
+        $$('.gd-depth-list .gd-player').forEach(p => {
+            p.addEventListener('dragstart', e => {
+                dragName = p.dataset.player; dragFrom = p.dataset.from;
+                e.dataTransfer.setData('text/plain', dragName);
+            });
+        });
+        $$('.gd-depth-list').forEach(list => {
+            list.addEventListener('dragover', e => { e.preventDefault(); list.classList.add('drag-over'); });
+            list.addEventListener('dragleave', () => list.classList.remove('drag-over'));
+            list.addEventListener('drop', e => {
+                e.preventDefault();
+                list.classList.remove('drag-over');
+                const targetPos = list.dataset.pos;
+                const name = dragName || e.dataTransfer.getData('text/plain');
+                if (!name) return;
+                if (dragFrom && dragFrom !== targetPos) {
+                    state.depth[dragFrom] = (state.depth[dragFrom] || []).filter(n => n !== name);
+                }
+                state.depth[targetPos] = (state.depth[targetPos] || []).filter(n => n !== name);
+                state.depth[targetPos].push(name);
+                lsSet(LS.depth, state.depth);
+                renderDepthChart();
+            });
+        });
+    }
+
+    function showDepthAddModal() { /* not used – players come from roster via drag from lineup or seed */ }
+
+    // Allow seeding depth from roster too: long-press not implemented; users can also drag roster names
+    // by enabling drag from a "pool". Skipping that to keep this simple — they can drag roster names
+    // from the Lineup tab? Better: add a roster pool above the depth grid.
+    function renderDepthRosterPool() {
+        let pool = $('#gd-depth-pool');
+        if (!pool) {
+            pool = document.createElement('div');
+            pool.id = 'gd-depth-pool';
+            pool.className = 'gd-roster';
+            pool.style.marginBottom = '1rem';
+            pool.innerHTML = `
+                <h3>
+                    <span>Drag from roster</span>
+                    <button class="gd-pool-toggle" title="Show/hide"><i class="fas fa-chevron-down"></i></button>
+                </h3>
+                <div class="gd-roster-list" id="gd-depth-pool-list"></div>`;
+            const panel = $('[data-panel="depth"]');
+            panel.insertBefore(pool, $('#gd-depth-grid'));
+            // Default collapsed on mobile
+            if (window.innerWidth <= 720) pool.classList.add('collapsed');
+            // Toggle on header click
+            const togglePool = () => {
+                pool.classList.toggle('collapsed');
+                const icon = pool.querySelector('.gd-pool-toggle i');
+                icon.className = pool.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-down';
+            };
+            pool.querySelector('h3').addEventListener('click', togglePool);
+            // Set initial icon state
+            if (pool.classList.contains('collapsed')) {
+                pool.querySelector('.gd-pool-toggle i').className = 'fas fa-chevron-right';
+            }
+        }
+        const list = $('#gd-depth-pool-list');
+        list.innerHTML = '';
+        state.roster.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'gd-player';
+            div.draggable = true;
+            div.dataset.player = p.name;
+            div.dataset.from = ''; // not from a position
+            div.innerHTML = `<span class="gd-num">${p.number || ''}</span>${p.name}`;
+            list.appendChild(div);
+        });
+        list.querySelectorAll('.gd-player').forEach(p => {
+            p.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', p.dataset.player);
+            });
+        });
+    }
+
+    // ---------- STATS ----------
+    function getCurrentStats() {
+        if (!state.currentGameId) return [];
+        if (!state.stats[state.currentGameId]) state.stats[state.currentGameId] = [];
+        return state.stats[state.currentGameId];
+    }
+
+    function renderStats() {
+        const stats = getCurrentStats();
+        const summary = $('#gd-stats-summary');
+        const goals = stats.filter(s => s.type === 'Goal');
+        const assists = stats.filter(s => s.type === 'Assist');
+        const byPlayer = {};
+        stats.forEach(s => {
+            if (!byPlayer[s.player]) byPlayer[s.player] = { Goal: 0, Assist: 0 };
+            byPlayer[s.player][s.type]++;
+        });
+        const topScorers = Object.entries(byPlayer)
+            .filter(([, c]) => c.Goal > 0)
+            .sort((a, b) => b[1].Goal - a[1].Goal)
+            .map(([n, c]) => `${n} ${c.Goal}`).join(', ');
+        summary.innerHTML = `
+            <div><strong>${goals.length}</strong> Goals</div>
+            <div><strong>${assists.length}</strong> Assists</div>
+            ${topScorers ? `<div>Scorers: ${topScorers}</div>` : ''}
+        `;
+
+        const list = $('#gd-stats-list');
+        if (!stats.length) {
+            list.innerHTML = '<div class="gd-empty">No stats yet. Tap + Goal or + Assist.</div>';
+            return;
+        }
+        list.innerHTML = '';
+        stats.slice().reverse().forEach((s, idx) => {
+            const realIdx = stats.length - 1 - idx;
+            const row = document.createElement('div');
+            row.className = 'gd-stat-row';
+            row.innerHTML = `
+                <div class="gd-stat-icon ${s.type.toLowerCase()}">
+                    <i class="fas fa-${s.type === 'Goal' ? 'futbol' : 'hands-helping'}"></i>
+                </div>
+                <span class="gd-stat-min">${s.minute || ''}'</span>
+                <span class="gd-stat-player">${s.player} <small style="color:#718096">${s.type}</small></span>
+                <button data-idx="${realIdx}"><i class="fas fa-times"></i></button>
+            `;
+            row.querySelector('button').onclick = () => {
+                getCurrentStats().splice(realIdx, 1);
+                lsSet(LS.stats, state.stats);
+                renderStats();
+            };
+            list.appendChild(row);
+        });
+    }
+
+    function showStatPicker(type) {
+        if (!state.roster.length) { alert('No roster loaded'); return; }
+        const buttons = state.roster
+            .map(p => `<button data-name="${p.name}">${p.number ? p.number + ' - ' : ''}${p.name}</button>`)
+            .join('');
+        openModal(`
+            <h3>Who scored ${type === 'Goal' ? 'the goal' : 'the assist'}?</h3>
+            <label>Minute (optional)</label>
+            <input id="sp-min" type="number" min="1" max="120" placeholder="e.g. 12">
+            <div class="gd-player-picker">${buttons}</div>
+            <div class="gd-modal-buttons">
+                <button class="secondary" data-close>Cancel</button>
+            </div>
+        `);
+        $$('.gd-player-picker button').forEach(b => {
+            b.onclick = () => {
+                const stat = {
+                    minute: $('#sp-min').value || '',
+                    type: type,
+                    player: b.dataset.name,
+                    timestamp: Date.now()
+                };
+                getCurrentStats().push(stat);
+                lsSet(LS.stats, state.stats);
+                closeModal();
+                renderStats();
+            };
+        });
+    }
+
+    // ---------- PLAYS (canvas) ----------
+    let playsCtx, playsTool = 'pen', playsColor = '#ffffff', playsDrawing = false;
+    let playsLast = null, playsArrowStart = null;
+
+    function initPlays() {
+        const canvas = $('#gd-plays-canvas');
+        playsCtx = canvas.getContext('2d');
+        drawFieldMarkings();
+
+        const getPos = e => {
+            const rect = canvas.getBoundingClientRect();
+            const t = e.touches ? e.touches[0] : e;
+            return {
+                x: (t.clientX - rect.left) * (canvas.width / rect.width),
+                y: (t.clientY - rect.top) * (canvas.height / rect.height)
+            };
+        };
+
+        const start = e => {
+            e.preventDefault();
+            const pos = getPos(e);
+            playsDrawing = true;
+            if (playsTool === 'pen' || playsTool === 'erase') {
+                playsLast = pos;
+            } else if (playsTool === 'arrow') {
+                playsArrowStart = pos;
+            } else if (playsTool === 'dot') {
+                drawDot(pos);
+                playsDrawing = false;
+            }
+        };
+        const move = e => {
+            if (!playsDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            if (playsTool === 'pen') {
+                playsCtx.strokeStyle = playsColor;
+                playsCtx.lineWidth = 3; playsCtx.lineCap = 'round';
+                playsCtx.beginPath();
+                playsCtx.moveTo(playsLast.x, playsLast.y);
+                playsCtx.lineTo(pos.x, pos.y);
+                playsCtx.stroke();
+                playsLast = pos;
+            } else if (playsTool === 'erase') {
+                playsCtx.save();
+                playsCtx.globalCompositeOperation = 'destination-out';
+                playsCtx.beginPath();
+                playsCtx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+                playsCtx.fill();
+                playsCtx.restore();
+            }
+        };
+        const end = e => {
+            if (!playsDrawing) return;
+            if (playsTool === 'arrow' && playsArrowStart) {
+                const pos = getPos(e.changedTouches ? { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } : e);
+                drawArrow(playsArrowStart, pos);
+                playsArrowStart = null;
+            }
+            playsDrawing = false;
+        };
+
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        canvas.addEventListener('mouseup', end);
+        canvas.addEventListener('mouseleave', end);
+        canvas.addEventListener('touchstart', start, { passive: false });
+        canvas.addEventListener('touchmove', move, { passive: false });
+        canvas.addEventListener('touchend', end);
+
+        $$('.gd-plays-controls button[data-tool]').forEach(b => {
+            b.onclick = () => {
+                playsTool = b.dataset.tool;
+                $$('.gd-plays-controls button[data-tool]').forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+            };
+        });
+        $('#gd-play-color').onchange = e => playsColor = e.target.value;
+        $('#gd-play-clear').onclick = () => { if (confirm('Clear canvas?')) clearCanvas(); };
+        $('#gd-play-save').onclick = savePlay;
+        $('#gd-play-load').onchange = e => { if (e.target.value) loadPlay(e.target.value); };
+        $('#gd-play-delete').onclick = deletePlay;
+    }
+
+    function drawFieldMarkings() {
+        const c = playsCtx, w = c.canvas.width, h = c.canvas.height;
+        c.strokeStyle = '#fff'; c.lineWidth = 3;
+        c.beginPath(); c.moveTo(0, h/2); c.lineTo(w, h/2); c.stroke();
+        c.beginPath(); c.arc(w/2, h/2, 50, 0, Math.PI*2); c.stroke();
+        c.strokeRect(w*0.175, 0, w*0.65, h*0.18);
+        c.strokeRect(w*0.175, h*0.82, w*0.65, h*0.18);
+    }
+
+    function clearCanvas() {
+        const c = playsCtx;
+        c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+        drawFieldMarkings();
+    }
+
+    function drawDot(pos) {
+        const c = playsCtx;
+        c.fillStyle = playsColor;
+        c.beginPath(); c.arc(pos.x, pos.y, 12, 0, Math.PI*2); c.fill();
+        c.strokeStyle = '#000'; c.lineWidth = 2; c.stroke();
+    }
+
+    function drawArrow(from, to) {
+        const c = playsCtx;
+        c.strokeStyle = playsColor; c.fillStyle = playsColor;
+        c.lineWidth = 4; c.lineCap = 'round';
+        c.beginPath(); c.moveTo(from.x, from.y); c.lineTo(to.x, to.y); c.stroke();
+        const angle = Math.atan2(to.y - from.y, to.x - from.x);
+        const head = 16;
+        c.beginPath();
+        c.moveTo(to.x, to.y);
+        c.lineTo(to.x - head * Math.cos(angle - Math.PI/6), to.y - head * Math.sin(angle - Math.PI/6));
+        c.lineTo(to.x - head * Math.cos(angle + Math.PI/6), to.y - head * Math.sin(angle + Math.PI/6));
+        c.closePath(); c.fill();
+    }
+
+    function getPlayStore() {
+        if (!state.currentGameId) return null;
+        if (!state.plays[state.currentGameId]) state.plays[state.currentGameId] = {};
+        return state.plays[state.currentGameId];
+    }
+
+    function savePlay() {
+        if (!state.currentGameId) { alert('Select a game first'); return; }
+        const name = prompt('Play name:');
+        if (!name) return;
+        const store = getPlayStore();
+        store[name] = $('#gd-plays-canvas').toDataURL('image/png');
+        lsSet(LS.plays, state.plays);
+        refreshPlayList();
+        alert('Saved.');
+    }
+
+    function loadPlay(name) {
+        const store = getPlayStore();
+        if (!store || !store[name]) return;
+        const img = new Image();
+        img.onload = () => {
+            clearCanvas();
+            playsCtx.drawImage(img, 0, 0, playsCtx.canvas.width, playsCtx.canvas.height);
+        };
+        img.src = store[name];
+    }
+
+    function deletePlay() {
+        const sel = $('#gd-play-load');
+        const name = sel.value;
+        if (!name) return;
+        if (!confirm(`Delete play "${name}"?`)) return;
+        delete getPlayStore()[name];
+        lsSet(LS.plays, state.plays);
+        refreshPlayList();
+        clearCanvas();
+    }
+
+    function refreshPlayList() {
+        const sel = $('#gd-play-load');
+        sel.innerHTML = '<option value="">Load play…</option>';
+        const store = getPlayStore();
+        if (!store) return;
+        Object.keys(store).forEach(n => {
+            const opt = document.createElement('option');
+            opt.value = n; opt.textContent = n;
+            sel.appendChild(opt);
+        });
+    }
+
+    // ---------- EXPORT ----------
+    function buildExportTSV() {
+        const lines = [];
+        lines.push('=== LINEUPS (paste into "Lineups" sheet) ===');
+        lines.push(['GameID','Half','Position','Role','Player'].join('\t'));
+        Object.entries(state.lineup).forEach(([gid, halves]) => {
+            ['1','2'].forEach(h => {
+                const half = halves[h] || {};
+                Object.entries(half).forEach(([pos, val]) => {
+                    const s = normalizeSlot(val);
+                    if (s.s) lines.push([gid, h, pos, 'Starter', s.s].join('\t'));
+                    s.subs.forEach(n => lines.push([gid, h, pos, 'Sub', n].join('\t')));
+                });
+            });
+        });
+        lines.push('');
+        lines.push('=== STATS (paste into "Stats" sheet) ===');
+        lines.push(['GameID','Minute','Type','Player'].join('\t'));
+        Object.entries(state.stats).forEach(([gid, arr]) => {
+            arr.forEach(s => lines.push([gid, s.minute || '', s.type, s.player].join('\t')));
+        });
+        lines.push('');
+        lines.push('=== DEPTH CHART (paste into "DepthChart" sheet) ===');
+        lines.push(['Position','Rank','Player'].join('\t'));
+        POSITIONS.forEach(p => {
+            (state.depth[p] || []).forEach((name, i) => {
+                lines.push([p, i + 1, name].join('\t'));
+            });
+        });
+        lines.push('');
+        lines.push('=== CUSTOM GAMES (paste into "Games" sheet if you want to keep them) ===');
+        lines.push(['GameID','Date','Opponent','Location','HomeAway','Type','Notes'].join('\t'));
+        state.games.filter(g => g.source === 'local').forEach(g => {
+            lines.push([g.id, g.date, g.opponent, g.location, g.homeAway, g.type, g.notes].join('\t'));
+        });
+        return lines.join('\n');
+    }
+
+    function showExportModal() {
+        const tsv = buildExportTSV();
+        openModal(`
+            <h3>Export</h3>
+            <p style="font-size:.85rem;color:#718096;">
+                Copy each section and paste into the matching tab in your Google Sheet.
+                Tab-separated; pastes cleanly into Sheets.
+            </p>
+            <textarea id="ex-text" readonly>${tsv}</textarea>
+            <div class="gd-modal-buttons">
+                <button class="secondary" data-close>Close</button>
+                <button class="primary" id="ex-copy">Copy All</button>
+            </div>
+        `);
+        $('#ex-copy').onclick = () => {
+            $('#ex-text').select();
+            document.execCommand('copy');
+            $('#ex-copy').textContent = 'Copied!';
+            setTimeout(() => $('#ex-copy').textContent = 'Copy All', 1500);
+        };
+    }
+
+    // ---------- PRINT ----------
+    function showPrintView() {
+        if (!state.currentGameId) { alert('Pick a game first.'); return; }
+        const game = state.games.find(g => g.id === state.currentGameId);
+        const halves = state.lineup[state.currentGameId] || { '1': {}, '2': {} };
+
+        const renderHalf = (h, label) => {
+            const half = halves[h] || {};
+            const rows = POSITIONS.map(pos => {
+                const s = normalizeSlot(half[pos]);
+                return `<tr>
+                    <td class="pos">${pos}</td>
+                    <td class="starter">${s.s || '<span class="empty">—</span>'}</td>
+                    <td class="subs">${s.subs.length ? s.subs.join(', ') : ''}</td>
+                </tr>`;
+            }).join('');
+            return `<div class="half">
+                <h2>${label}</h2>
+                <table>
+                    <thead><tr><th>Pos</th><th>Starter</th><th>Subs</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
+        };
+
+        const gameLine = game
+            ? `<strong>${game.opponent || game.id}</strong>`
+              + (game.date ? ` &nbsp; ${formatDate(game.date)}` : '')
+              + (game.location ? ` &nbsp; @ ${game.location}` : '')
+              + (game.type ? ` &nbsp; (${game.type})` : '')
+            : state.currentGameId;
+
+        const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+            <title>BDU Lineup – ${game ? (game.opponent || game.id) : ''}</title>
+            <style>
+                * { box-sizing: border-box; }
+                body { font-family: -apple-system, Helvetica, Arial, sans-serif; padding: 24px; color: #111; }
+                h1 { margin: 0 0 .25em 0; font-size: 1.6em; }
+                .meta { color: #444; margin-bottom: 1.2em; }
+                .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+                .half h2 { margin: 0 0 .4em 0; padding-bottom: 4px; border-bottom: 2px solid #000; font-size: 1.1em; }
+                table { width: 100%; border-collapse: collapse; font-size: .95em; }
+                th { text-align: left; font-size: .75em; text-transform: uppercase; color: #666; padding: 4px 6px; border-bottom: 1px solid #999; }
+                td { padding: 6px; border-bottom: 1px solid #ddd; vertical-align: top; }
+                td.pos { width: 42px; font-weight: 700; color: #003366; }
+                td.starter { width: 38%; font-weight: 600; }
+                td.subs { color: #555; font-size: .85em; }
+                .empty { color: #aaa; }
+                .actions { margin-top: 24px; }
+                .actions button { font: inherit; padding: 8px 16px; border-radius: 6px; border: 1px solid #888; background: #f3f3f3; cursor: pointer; }
+                @media print { .actions { display: none; } body { padding: 12px; } }
+                @page { size: letter; margin: 0.5in; }
+            </style></head><body>
+            <h1>BDU Soccer – Game Day Lineup</h1>
+            <div class="meta">${gameLine}</div>
+            <div class="grid">
+                ${renderHalf('1', '1st Half')}
+                ${renderHalf('2', '2nd Half')}
+            </div>
+            <div class="actions">
+                <button onclick="window.print()">Print</button>
+                <button onclick="window.close()">Close</button>
+            </div>
+        </body></html>`;
+
+        const w = window.open('', '_blank', 'width=900,height=1100');
+        if (!w) { alert('Pop-up blocked – allow pop-ups for this page.'); return; }
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
+        // Auto-trigger print after the new window paints
+        w.onload = () => setTimeout(() => w.print(), 200);
+    }
+
+    // ---------- FULLSCREEN ----------
+    function toggleFullscreen(el, btn) {
+        const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (isFs) {
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        } else {
+            const req = el.requestFullscreen || el.webkitRequestFullscreen;
+            if (req) req.call(el);
+            else alert('Fullscreen not supported on this browser.');
+        }
+    }
+    function wireFullscreenButtons() {
+        const lineupPanel = $('.gd-panel[data-panel="lineup"]');
+        const playsPanel = $('.gd-panel[data-panel="plays"]');
+        $('#gd-fs-lineup').onclick = () => toggleFullscreen(lineupPanel);
+        $('#gd-fs-plays').onclick = () => toggleFullscreen(playsPanel);
+
+        // Wire any "Exit" overlay buttons inside fullscreenable panels
+        $$('[data-fs-exit]').forEach(btn => {
+            btn.onclick = () => {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+                }
+            };
+        });
+
+        const onFsChange = () => {
+            const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            // Only the currently-fullscreen panel gets the gd-is-fs class
+            $$('.gd-is-fs').forEach(el => el.classList.remove('gd-is-fs'));
+            if (fsEl && fsEl.classList.contains('gd-panel')) {
+                fsEl.classList.add('gd-is-fs');
+            }
+        };
+        document.addEventListener('fullscreenchange', onFsChange);
+        document.addEventListener('webkitfullscreenchange', onFsChange);
+    }
+
+    // ---------- MODAL ----------
+    function openModal(html) {
+        $('#gd-modal-content').innerHTML = html;
+        $('#gd-modal').classList.add('active');
+        $$('[data-close]', $('#gd-modal-content')).forEach(b => b.onclick = closeModal);
+    }
+    function closeModal() { $('#gd-modal').classList.remove('active'); }
+    $('#gd-modal').addEventListener('click', e => { if (e.target.id === 'gd-modal') closeModal(); });
+
+    // ---------- TABS ----------
+    function wireTabs() {
+        $$('.gd-tabs button').forEach(b => {
+            b.onclick = () => {
+                $$('.gd-tabs button').forEach(x => x.classList.remove('active'));
+                $$('.gd-panel').forEach(p => p.classList.remove('active'));
+                b.classList.add('active');
+                $(`.gd-panel[data-panel="${b.dataset.tab}"]`).classList.add('active');
+                if (b.dataset.tab === 'depth') { renderDepthRosterPool(); renderDepthChart(); }
+                if (b.dataset.tab === 'plays') refreshPlayList();
+            };
+        });
+        $$('.gd-subtabs button[data-half]').forEach(b => {
+            b.onclick = () => {
+                $$('.gd-subtabs button[data-half]').forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+                state.currentHalf = b.dataset.half;
+                renderLineup();
+            };
+        });
+    }
+
+    // ---------- RENDER ALL ----------
+    function renderAll() {
+        renderGameSelect();
+        renderLineup();
+        renderDepthChart();
+        renderDepthRosterPool();
+        renderStats();
+        refreshPlayList();
+    }
+
+    // ---------- BOOT ----------
+    async function boot() {
+        loadLocal();
+        wireTabs();
+        wireLineupDragDrop();
+        initPlays();
+
+        $('#gd-game-select').onchange = e => {
+            state.currentGameId = e.target.value;
+            lsSet(LS.currentGame, state.currentGameId);
+            renderAll();
+        };
+        $('#gd-add-game').onclick = showAddGameModal;
+        $('#gd-refresh').onclick = async () => { await loadFromSheet(); renderAll(); };
+        const saveBtn = $('#gd-save');
+        saveBtn.onclick = async () => { await saveToWebApp(); renderAll(); };
+        if (!WEBAPP_URL) saveBtn.style.display = 'none'; // Export is the fallback
+        $('#gd-export').onclick = showExportModal;
+        $('#gd-clear-half').onclick = clearHalf;
+        $('#gd-print-lineup').onclick = showPrintView;
+        wireFullscreenButtons();
+        $('#gd-stats-save').onclick = async () => { await saveToWebApp(); renderAll(); };
+        if (!WEBAPP_URL) $('#gd-stats-save').style.display = 'none';
+        $$('.gd-stats-controls button[data-stat]').forEach(b => {
+            b.onclick = () => showStatPicker(b.dataset.stat);
+        });
+
+        renderAll();
+
+        // Try sheet load on first visit (or if cache empty)
+        if (!state.roster.length || !state.games.length) {
+            await loadFromSheet();
+            renderAll();
+        } else {
+            setStatus(`Using cached data (${state.roster.length} players, ${state.games.length} games). Click Sheet to refresh.`);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+})();
+</script>
 
 </body>
 </html>
