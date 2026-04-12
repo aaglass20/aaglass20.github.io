@@ -746,6 +746,7 @@
             if (!data || data.ok === false) throw new Error(data && data.error || 'pull failed');
             if (data.lineups) { state.lineup = data.lineups; lsSet(LS.lineup, state.lineup); }
             if (data.stats)   { state.stats  = data.stats;   lsSet(LS.stats,  state.stats);  }
+            if (data.plays)   { state.plays  = data.plays;   lsSet(LS.plays,  state.plays);  }
             if (data.depth && Object.keys(data.depth).length) {
                 // Merge: ensure all positions exist
                 POSITIONS.forEach(p => { if (!data.depth[p]) data.depth[p] = []; });
@@ -770,7 +771,8 @@
                 lineups: state.lineup,
                 stats: state.stats,
                 depth: state.depth,
-                games: state.games.filter(g => g.source === 'local')
+                games: state.games.filter(g => g.source === 'local'),
+                plays: state.plays
             };
             // Use text/plain to avoid CORS preflight (Apps Script reads e.postData.contents regardless)
             const res = await fetch(WEBAPP_URL, {
@@ -781,12 +783,11 @@
             const data = await res.json();
             if (!data || data.ok === false) throw new Error(data && data.error || 'save failed');
             const w = data.written || {};
-            // Promote any local games that were just persisted to source: 'sheet'
             if (w.games > 0) {
                 state.games.forEach(g => { if (g.source === 'local') g.source = 'sheet'; });
-                lsSet(LS.custom, []); // clear pending custom games
+                lsSet(LS.custom, []);
             }
-            setStatus(`Saved: ${w.lineups||0} lineup rows, ${w.stats||0} stats, ${w.depth||0} depth rows, ${w.games||0} new games.`, 'ok');
+            setStatus(`Saved: ${w.lineups||0} lineup, ${w.stats||0} stats, ${w.depth||0} depth, ${w.plays||0} plays, ${w.games||0} new games.`, 'ok');
         } catch (err) {
             console.error(err);
             setStatus('Save failed: ' + err.message + '. Try Export as fallback.', 'error');

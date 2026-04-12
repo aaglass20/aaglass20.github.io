@@ -48,6 +48,7 @@ const HEADERS = {
   [TAB.STATS]:   ['GameID', 'Minute', 'Type', 'Player'],
   [TAB.DEPTH]:   ['Position', 'Rank', 'Player'],
   [TAB.GAMES]:   ['GameID', 'Date', 'Opponent', 'Location', 'HomeAway', 'Type', 'Notes'],
+  Plays:         ['GameID', 'Name', 'ImageData'],
 };
 
 // ---------- HTTP ENTRY POINTS ----------
@@ -73,6 +74,7 @@ function doPost(e) {
         stats:   writeStats(body.stats || {}),
         depth:   writeDepth(body.depth || {}),
         games:   appendGames(body.games || []),
+        plays:   writePlays(body.plays || {}),
       };
       return jsonResponse({ ok: true, written: written });
     }
@@ -183,6 +185,27 @@ function appendGames(games) {
   return rows.length;
 }
 
+function writePlays(plays) {
+  var sh = getOrCreateSheet('Plays');
+  var headers = HEADERS['Plays'];
+  sh.getRange(1, 1, 1, headers.length).setValues([headers]);
+  clearBody(sh, headers.length);
+  var rows = [];
+  Object.keys(plays).forEach(function (gid) {
+    var gamePlays = plays[gid] || {};
+    Object.keys(gamePlays).forEach(function (name) {
+      var dataUrl = gamePlays[name];
+      if (dataUrl && dataUrl.length < 50000) {
+        rows.push([gid, name, dataUrl]);
+      }
+    });
+  });
+  if (rows.length) {
+    sh.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  }
+  return rows.length;
+}
+
 // ---------- PULL (sheet → browser) ----------
 
 function pullAll() {
@@ -190,7 +213,8 @@ function pullAll() {
     ok: true,
     lineups: readLineups(),
     stats: readStats(),
-    depth: readDepth()
+    depth: readDepth(),
+    plays: readPlays()
   };
 }
 
@@ -258,6 +282,21 @@ function readDepth() {
     if (!pos || !player) return;
     if (!out[pos]) out[pos] = [];
     out[pos].push(String(player));
+  });
+  return out;
+}
+
+function readPlays() {
+  var sh = SpreadsheetApp.getActive().getSheetByName('Plays');
+  if (!sh || sh.getLastRow() < 2) return {};
+  var data = sh.getRange(2, 1, sh.getLastRow() - 1, 3).getValues();
+  var out = {};
+  data.forEach(function (row) {
+    var gid = row[0], name = row[1], img = row[2];
+    if (!gid || !name || !img) return;
+    var gKey = String(gid);
+    if (!out[gKey]) out[gKey] = {};
+    out[gKey][String(name)] = String(img);
   });
   return out;
 }
