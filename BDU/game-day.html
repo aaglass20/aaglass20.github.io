@@ -466,6 +466,7 @@
             <button class="active" data-half="1">1st Half</button>
             <button data-half="2">2nd Half</button>
             <div class="gd-subtab-actions">
+                <button id="gd-copy-from-1st" title="Replace 2nd half with a copy of 1st half" style="display:none;"><i class="fas fa-copy"></i> Copy 1st</button>
                 <button id="gd-print-lineup" title="Print 1st &amp; 2nd half + subs"><i class="fas fa-print"></i> Print</button>
                 <button id="gd-fs-lineup" title="Fullscreen"><i class="fas fa-expand"></i> Full</button>
                 <button id="gd-clear-half" class="danger">Clear Half</button>
@@ -975,6 +976,22 @@
     function clearHalf() {
         if (!confirm(`Clear ${state.currentHalf === '1' ? '1st' : '2nd'} half lineup (starters and subs)?`)) return;
         state.lineup[state.currentGameId][state.currentHalf] = {};
+        lsSet(LS.lineup, state.lineup);
+        renderLineup();
+    }
+
+    function copyFromFirstHalf() {
+        if (!state.currentGameId || state.currentHalf !== '2') return;
+        const first = (state.lineup[state.currentGameId] || {})['1'] || {};
+        if (!Object.keys(first).length) { alert('1st half is empty — nothing to copy.'); return; }
+        if (!confirm('Replace 2nd half lineup with a copy of 1st half?')) return;
+        const copy = {};
+        Object.keys(first).forEach(pos => {
+            const s = normalizeSlot(first[pos]);
+            copy[pos] = { s: s.s, subs: s.subs.slice() };
+        });
+        if (!state.lineup[state.currentGameId]) state.lineup[state.currentGameId] = { '1': {}, '2': {} };
+        state.lineup[state.currentGameId]['2'] = copy;
         lsSet(LS.lineup, state.lineup);
         renderLineup();
     }
@@ -1606,6 +1623,7 @@
                 $$('.gd-subtabs button[data-half]').forEach(x => x.classList.remove('active'));
                 b.classList.add('active');
                 state.currentHalf = b.dataset.half;
+                $('#gd-copy-from-1st').style.display = state.currentHalf === '2' ? '' : 'none';
                 renderLineup();
             };
         });
@@ -1640,6 +1658,7 @@
         if (!WEBAPP_URL) saveBtn.style.display = 'none'; // Export is the fallback
         $('#gd-export').onclick = showExportModal;
         $('#gd-clear-half').onclick = clearHalf;
+        $('#gd-copy-from-1st').onclick = copyFromFirstHalf;
         $('#gd-print-lineup').onclick = showPrintView;
         wireFullscreenButtons();
         $('#gd-stats-save').onclick = async () => { await saveToWebApp(); renderAll(); };
