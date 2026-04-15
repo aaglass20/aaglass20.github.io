@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - Finishing On Target</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+        <h1>Finishing On Target — April 14, 2026</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+<script>
+    fetch('menus/index-menu.html')
+        .then(r => r.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+            const current = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.menu-item').forEach(item => {
+                if (item.getAttribute('href') === current) {
+                    item.classList.add('active');
+                    setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <!-- Session Overview -->
+    <section class="collapsible-section" id="session-overview">
+        <h2 class="section-title">
+            <i class="fas fa-clipboard-list"></i> Session Overview
+            <button class="toggle-button" aria-expanded="true"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content" style="display:block;">
+            <p><strong>Focus:</strong> Finishing on target — low shots, placement over power</p>
+            <p><strong>Age Group:</strong> U12 &nbsp;|&nbsp; <strong>Duration:</strong> 60 min &nbsp;|&nbsp; <strong>Players:</strong> 12</p>
+            <p><strong>Context:</strong> Last game: 1 goal scored, multiple shots over the bar and wide. Primary issue is body shape at contact — players leaning back and swiping across the ball.</p>
+
+            <h3>Objectives</h3>
+            <ul>
+                <li>Strike through the center or lower half of the ball with the plant foot beside — not behind — the ball</li>
+                <li>Pick a corner and aim for it before the shot, not during</li>
+                <li>Release the shot when the opportunity is there — don't wait for a "perfect" moment inside the box</li>
+            </ul>
+
+            <h3>Session Theme</h3>
+            <p>
+                <strong>"Low and on frame beats high and hard. Every time."</strong><br>
+                A goalkeeper can't stop what they can't reach. A shot on target gives you a chance. A shot over the bar gives you nothing. Today every rep has one standard: it must be on frame.
+            </p>
+        </div>
+    </section>
+
+    <!-- Warm-up -->
+    <section class="collapsible-section" id="warmup">
+        <h2 class="section-title">
+            <i class="fas fa-dumbbell"></i> Warm-Up (10 min)
+            <button class="toggle-button" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Dynamic Movement (5 min)</h3>
+            <ul>
+                <li>1, 2, 3, Touch Toe &rarr; 1, 2, 3, Blue Devils</li>
+                <li>Lunges &rarr; Blue, Devils, Blue, Devils</li>
+                <li>Hug Knee to Chest &rarr; Blue, Devils, Blue, Devils</li>
+                <li>Cradle Leg and Ankle &rarr; Blue, Devils, Blue, Devils</li>
+                <li>Criss Cross Quad &rarr; Blue, Devils, Blue, Devils</li>
+                <li>Skips</li>
+                <li>Stand in Place (10 Counts each): Scissors, Front to Back Hop, Side to Side, Criss Cross, Hops</li>
+                <li>Sprint</li>
+            </ul>
+
+            <h3>Ball Work — "Contact Point" Passing (5 min)</h3>
+            <p><strong>Setup:</strong> Pairs, 8 yards apart, one ball each pair. 12 players = 6 pairs.</p>
+            <ul>
+                <li><strong>Round 1:</strong> Inside-of-foot passes — focus on planting the non-kicking foot <em>beside</em> the ball. Say it out loud: "plant beside."</li>
+                <li><strong>Round 2:</strong> Laces passes — lean forward, head over ball, strike through the center. Ball must stay below knee height of receiver.</li>
+                <li><strong>Round 3:</strong> One-two combos — player passes, receives back, passes again. Keep moving feet.</li>
+            </ul>
+            <p><strong>Coaching cue:</strong> "If your plant foot is behind the ball, your body leans back and the ball goes over. Plant beside. Head over. Ball stays down."</p>
+        </div>
+    </section>
+
+    <!-- Technical Activity -->
+    <section class="collapsible-section" id="technical">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Technical: Corner Targeting (15 min)
+            <button class="toggle-button" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Setup</h3>
+            <ul>
+                <li>Full-size goal (or 2 smaller goals if full-size not available)</li>
+                <li>Cones marking 4 spots: two at 14 yards out (slightly left and right of center), two at 10 yards out (slightly inside the posts)</li>
+                <li>6 balls at each shooting station, split into 2 lines of 6 players each</li>
+                <li>Coach or GK in goal</li>
+            </ul>
+
+            <h3>Progression 1 — Static Ball, Technique Focus (5 min)</h3>
+            <p>Ball placed on cone. Player calls a corner ("near post low" or "far post low") before approaching. Then shoots.</p>
+            <ul>
+                <li>Plant foot 6–8 inches beside the ball, toe pointing at the target</li>
+                <li>Lean forward — chest over the knee, knee over the ball</li>
+                <li>Strike with laces through the center or lower half of the ball</li>
+                <li>Follow through low — kicking foot finishes pointing at the target, not at the sky</li>
+            </ul>
+            <p><strong>Counting rule:</strong> Only count shots that land below crossbar height. Say "good" out loud when it's on frame. No comment when it goes over — just reset.</p>
+
+            <h3>Progression 2 — Serve to Self (5 min)</h3>
+            <p>Player stands 3 yards behind the ball. Tosses it forward with their hands, takes 1 touch to set, then shoots. Same targeting rule: call the corner before you shoot.</p>
+            <ul>
+                <li>This simulates receiving a pass in stride — set your feet, then strike</li>
+                <li>Common error to watch: players rush the touch and lean back to "get more power" — freeze and correct immediately</li>
+            </ul>
+
+            <h3>Progression 3 — Pass and Shoot (5 min)</h3>
+            <p>Player receives a pass from a feeder standing 6 yards to the side, takes 1 touch to set the ball, shoots. Feeder rotates into the shooting line after each pass.</p>
+            <ul>
+                <li>First touch must be forward and out of feet — not directly underfoot</li>
+                <li>Shoot within 2 seconds of the first touch</li>
+                <li>Call the corner before the ball arrives</li>
+            </ul>
+
+            <h3>Key Coaching Points</h3>
+            <ul>
+                <li><strong>Plant foot beside, not behind</strong> — behind = lean back = ball over</li>
+                <li><strong>Head over the ball at contact</strong> — eyes on ball until it's gone</li>
+                <li><strong>Strike the lower half of the ball</strong> — this is what keeps it down</li>
+                <li><strong>Decide before you shoot</strong> — pick a corner, then commit</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Tactical Activity -->
+    <section class="collapsible-section" id="tactical">
+        <h2 class="section-title">
+            <i class="fas fa-chess"></i> Tactical: 2v1 Finishing Waves (15 min)
+            <button class="toggle-button" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Setup</h3>
+            <ul>
+                <li>Full-size goal with GK (rotate a field player into goal every 3–4 minutes)</li>
+                <li>One defender starts at the top of the 18-yard box</li>
+                <li>Two attackers start at the halfway line with a ball</li>
+                <li>Coach stands at the side with extra balls to feed the next pair immediately after each rep</li>
+                <li>12 players: 2 attacking, 1 defending, 1 in goal, 8 waiting. Rotate quickly.</li>
+            </ul>
+
+            <h3>Rules</h3>
+            <ul>
+                <li>Attackers must get a shot off within 8 seconds of crossing the 18-yard line</li>
+                <li>Goal only counts if the ball stays below the crossbar</li>
+                <li>Defender can only engage once the attackers cross the cone line at 22 yards</li>
+                <li>After scoring or ball goes dead, next pair goes immediately — keep the reps flowing</li>
+            </ul>
+
+            <h3>Coaching Points</h3>
+            <ul>
+                <li><strong>Shooter's first job is to get on frame</strong> — take the chance when the defender commits to one player</li>
+                <li><strong>Non-shooter: create the angle</strong> — drag the defender wide so the shooter has a lane</li>
+                <li><strong>Near post first</strong> — aim for the near post low; GK has to move. Far post is a bonus.</li>
+                <li><strong>Don't square the ball for a tap-in unless you're 3 yards out</strong> — at 12 yards, just shoot</li>
+            </ul>
+
+            <h3>Common Errors to Watch</h3>
+            <ul>
+                <li>Over-dribbling: players carrying the ball into traffic instead of releasing early — stop play, reset, ask "when did you have the shot?"</li>
+                <li>Rushed shot with no plant foot — defender pressure causes the lean-back reflex — remind them to take that extra 0.5 seconds to set their foot</li>
+                <li>Passing to a covered teammate when the shot is open — freeze and ask the group "what would you do here?"</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Small-Sided Game -->
+    <section class="collapsible-section" id="ssg">
+        <h2 class="section-title">
+            <i class="fas fa-trophy"></i> Small-Sided Game: Low Shot Rule 6v6 (15 min)
+            <button class="toggle-button" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Format</h3>
+            <ul>
+                <li><strong>6v6</strong> (5 field players + GK each side) on a 40 x 30 yard field</li>
+                <li>Two full-size goals (or 7v7 goals)</li>
+                <li>12 players, no subs — everyone plays the full game</li>
+            </ul>
+
+            <h3>The Condition</h3>
+            <p><strong>Goals only count if the ball is below waist height when it crosses the line.</strong> Shots above the waist = goal kick, no goal. Coach is the judge — call it clearly and quickly so the game doesn't stop long.</p>
+
+            <h3>Bonus Rule (activate at 8 min mark)</h3>
+            <p>Any goal scored with <strong>one touch inside the 18</strong> counts as 2 points. This rewards quick shooting over holding and dribbling in the box.</p>
+
+            <h3>How to Coach It Live</h3>
+            <ul>
+                <li>Let the game run — don't freeze play for every missed shot</li>
+                <li>When 3 shots in a row go over, call a 10-second pause: "What are we forgetting?" Let a player answer. Then restart.</li>
+                <li>Shout positive reinforcement when a low shot goes in: "Yes — that's exactly what we worked on."</li>
+                <li>Watch for the player who is scared to shoot — encourage them specifically: "If it's there, trust it and hit it."</li>
+            </ul>
+
+            <h3>Keep Score</h3>
+            <p>Competition matters at U12. Keep the score, let them care about it. The condition is the coaching — you don't need to stop constantly.</p>
+        </div>
+    </section>
+
+    <!-- Debrief -->
+    <section class="collapsible-section" id="debrief">
+        <h2 class="section-title">
+            <i class="fas fa-comments"></i> Debrief (5 min)
+            <button class="toggle-button" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+        </h2>
+        <div class="collapsible-content">
+            <h3>Cool-Down</h3>
+            <ul>
+                <li>Walk one slow lap around the field</li>
+                <li>Sit in a circle: quad stretch (30 sec each leg), hamstring stretch (30 sec each leg), hip flexor lunge stretch (30 sec each side)</li>
+            </ul>
+
+            <h3>Questions for the Group</h3>
+            <ol>
+                <li><strong>"What's the one thing you focused on before every shot today?"</strong> — looking for: plant foot placement, head over ball, picking a corner. Let 2–3 players answer.</li>
+                <li><strong>"In our last game, why did shots go over the bar?"</strong> — looking for: leaning back, rushing, plant foot behind the ball. Don't answer it for them.</li>
+                <li><strong>"Next game — someone puts you through on goal, one-on-one with the keeper. What do you do?"</strong> — looking for: stay calm, pick a corner, keep it low.</li>
+            </ol>
+
+            <h3>Connection Forward</h3>
+            <p>
+                "We scored 1 goal last game. We had more chances than that. The difference between 1 goal and 4 goals isn't shooting harder — it's shooting smarter. Plant foot beside the ball. Head over. Pick your corner. If you remember those three things, you'll finish your chances."
+            </p>
+            <p>Next session can build on this with <strong>finishing under pressure</strong> — add a closing defender from behind to simulate real game speed.</p>
+        </div>
+    </section>
+
+</div>
+
+<script src="js/collapsible.js"></script>
+<script src="js/waffle-menu.js"></script>
+</body>
+</html>
