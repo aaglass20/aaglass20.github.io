@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyBracketly - Tournament Brackets</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="appicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/brackets.css">
@@ -14,8 +17,8 @@
     <!-- Header -->
     <header class="app-header">
         <div class="header-content">
-            <div class="header-icon"><i class="fas fa-trophy"></i></div>
-            <h1 class="app-title">My<span>Bracketly</span></h1>
+            <img src="logo.png" alt="MyBracketly" class="header-logo">
+            <h1 class="app-title">MyBracketly</h1>
             <p class="app-subtitle" id="tournamentSubtitle">Tournament Brackets</p>
         </div>
     </header>
@@ -2296,10 +2299,10 @@ function renderChBody(body) {
         html += `<table style="width:100%;border-collapse:collapse;font-size:0.75rem;">
             <thead><tr style="background:var(--secondary);color:white;">
                 <th style="padding:0.3rem;">Rnd</th>
-                <th style="padding:0.3rem;color:#FF9E40;">Bags</th><th style="padding:0.3rem;color:#FF9E40;">Pts</th>
+                <th style="padding:0.3rem;color:var(--primary-light);">Bags</th><th style="padding:0.3rem;color:var(--primary-light);">Pts</th>
                 <th style="padding:0.3rem;">Diff</th>
                 <th style="padding:0.3rem;color:#EF9A9A;">Pts</th><th style="padding:0.3rem;color:#EF9A9A;">Bags</th>
-                <th style="padding:0.3rem;color:#FF9E40;">Tot</th><th style="padding:0.3rem;color:#EF9A9A;">Tot</th>
+                <th style="padding:0.3rem;color:var(--primary-light);">Tot</th><th style="padding:0.3rem;color:#EF9A9A;">Tot</th>
             </tr></thead><tbody>`;
         let r1 = 0, r2 = 0;
         s.rounds.forEach((rd, i) => {

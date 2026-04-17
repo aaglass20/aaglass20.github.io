@@ -243,8 +243,8 @@
 
 .sport-option.selected {
     border-color: var(--primary);
-    background: #FFF3E0;
-    box-shadow: 0 0 0 3px rgba(255,109,0,0.15);
+    background: #E3F2FD;
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
 }
 
 .sport-option i {
