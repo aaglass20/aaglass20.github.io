@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team News — BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ── Page Header ── */
+        .news-page-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2.5rem 1.5rem 2rem;
+            text-align: center;
+            border-bottom: 4px solid #0779e4;
+        }
+        .news-page-header img {
+            height: 70px;
+            margin-bottom: 0.75rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+        .news-page-header h1 {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .news-page-header p {
+            color: #00ff88;
+            font-size: 0.95rem;
+            margin: 0.4rem 0 0;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Tab Navigation ── */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            background: #fff;
+            border-bottom: 3px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .tab-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #718096;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tab-btn:hover { color: #2d3748; }
+        .tab-btn.active {
+            color: #0779e4;
+            border-bottom-color: #0779e4;
+        }
+
+        /* ── Tab Panels ── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── News Feed ── */
+        .news-feed {
+            max-width: 820px;
+            margin: 2.5rem auto;
+            padding: 0 1.25rem;
+        }
+        .news-article {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .news-article:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+
+        .article-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 1.4rem 1.75rem;
+        }
+        .article-category {
+            display: inline-block;
+            background: #0779e4;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            margin-bottom: 0.6rem;
+        }
+        .article-title {
+            color: #fff;
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin: 0 0 0.4rem;
+        }
+        .article-meta {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .article-body {
+            padding: 1.75rem;
+        }
+        .article-body p {
+            color: #4a5568;
+            line-height: 1.8;
+            margin: 0 0 1rem;
+        }
+        .article-body p:last-child { margin-bottom: 0; }
+
+        .article-section-heading {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 1.5rem 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Stats / Highlights box */
+        .highlights-box {
+            background: #f7fafc;
+            border-left: 4px solid #0779e4;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+        .highlights-box h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #0779e4;
+            margin: 0 0 0.6rem;
+        }
+        .highlights-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .highlights-box ul li {
+            padding: 0.2rem 0;
+            color: #4a5568;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .highlights-box ul li::before {
+            content: '⚽';
+            font-size: 0.8rem;
+        }
+
+        /* Player of the Game card */
+        .potg-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .potg-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+        .potg-info h4 {
+            color: #00ff88;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            margin: 0 0 0.2rem;
+        }
+        .potg-info .potg-name {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.4rem;
+        }
+        .potg-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .potg-info ul li {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            padding: 0.15rem 0;
+        }
+
+        /* Score badge */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #00ff88;
+            color: #1a1a2e;
+            font-size: 1.05rem;
+            font-weight: 800;
+            padding: 0.35rem 1rem;
+            border-radius: 999px;
+            margin: 0.75rem 0 1.25rem;
+        }
+
+        /* ── Photo Grid ── */
+        .photo-feed {
+            max-width: 960px;
+            margin: 2.5rem auto;
+            padding: 0 1.25rem;
+        }
+        .photo-section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 1.25rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .photo-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .photo-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+            transform: translateY(-2px);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        .photo-card .photo-caption {
+            padding: 0.75rem 1rem;
+            font-size: 0.88rem;
+            color: #718096;
+        }
+        .photos-placeholder {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #a0aec0;
+        }
+        .photos-placeholder i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #cbd5e0;
+        }
+        .photos-placeholder p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .tab-btn { padding: 0.85rem 1.25rem; font-size: 0.9rem; }
+            .article-title { font-size: 1.1rem; }
+            .article-body { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Animation -->
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+</div>
+
+<!-- Waffle Menu Toggle -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Waffle Menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Page Header -->
+<div class="news-page-header">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Shield">
+    <h1>BDU Team Hub</h1>
+    <p>U12 Girls · Spring 2026</p>
+</div>
+
+<!-- Tab Navigation -->
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('news', this)">
+        <i class="fas fa-newspaper"></i> News
+    </button>
+    <button class="tab-btn" onclick="switchTab('photos', this)">
+        <i class="fas fa-camera"></i> Photos
+    </button>
+</nav>
+
+<!-- ══ NEWS TAB ══ -->
+<div id="tab-news" class="tab-panel active">
+    <div class="news-feed">
+
+        <!-- Article 1 -->
+        <article class="news-article">
+            <div class="article-header">
+                <span class="article-category">Match Report</span>
+                <h2 class="article-title">🔵 BDU Breaks Through with 5–3 Win Over Geauga</h2>
+                <div class="article-meta"><i class="fas fa-map-marker-alt"></i> Independence, OH &nbsp;·&nbsp; <i class="fas fa-calendar"></i> April 19, 2026</div>
+            </div>
+            <img src="pics/4_19_2026/2026-04-20_00-05-52.jpg" alt="BDU vs Geauga April 19, 2026" style="width:100%;max-height:420px;object-fit:cover;display:block;">
+            <div class="article-body">
+                <div class="score-badge"><i class="fas fa-futbol"></i> BDU 5 – Geauga 3</div>
+
+                <div class="article-section-heading">⚡ Fast Start Sets the Tone</div>
+                <p>Claire Brandt opened the scoring early, continuing her relentless attack. After narrowly missing on a couple of chances—including a shot off the post—Claire stayed aggressive and finished unassisted to give BDU a 1–0 lead.</p>
+                <p>Moments later, JoJo Rollins used her signature long throw to create another opportunity, placing a perfect ball into the box. Charlie Merker was ready, finishing cleanly to put BDU up 2–0.</p>
+                <p>Geauga responded with a goal to cut the lead to 2–1, but BDU kept pressing. Whitney Phillips, who was applying constant pressure all game, broke free on a breakaway and calmly finished to extend the lead to 3–1 at halftime.</p>
+
+                <div class="article-section-heading">🔥 Second Half Push</div>
+                <p>BDU wasted no time after the break. Early in the second half, Phillips again made her impact felt, finding Emery Osysko with a well-placed pass. Emery finished with confidence, pushing the lead to 4–1.</p>
+                <p>Geauga Federation fought back, capitalizing on a scramble in the box to make it 4–2, but BDU answered once again. On a great transition play, Emma Barwacz launched a strong punt that found Phillips streaking downfield. Whitney controlled it and buried her second goal of the day, extending the lead to 5–2.</p>
+                <p>Geauga added one final goal late, but BDU held firm as the final whistle blew—securing a 5–3 victory.</p>
+
+                <div class="article-section-heading">💪 Team Effort Leads the Way</div>
+                <p>This match was defined by teamwork and persistence in the attacking third. BDU consistently followed up opportunities, applied pressure, and created chances through effort and smart play. Defensively, the team held strong, anchored by Hannah Bechlem and Emma Barwacz, who helped organize the back line and limit high-quality chances.</p>
+
+                <!-- Player of the Game -->
+                <div class="potg-card">
+                    <div class="potg-icon">⭐</div>
+                    <div class="potg-info">
+                        <h4>Player of the Game</h4>
+                        <div class="potg-name">Whitney Phillips</div>
+                        <ul>
+                            <li>2 Goals, 1 Assist</li>
+                            <li>Relentless pressure throughout the match</li>
+                            <li>Strong vocal leadership on the field</li>
+                            <li>Translated a full week of training into game action</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Game Highlights -->
+                <div class="highlights-box">
+                    <h4>📊 Game Highlights</h4>
+                    <ul>
+                        <li>Claire Brandt – 1 goal</li>
+                        <li>Charlie Merker – 1 goal</li>
+                        <li>Emery Osysko – 1 goal</li>
+                        <li>Whitney Phillips – 2 goals, 1 assist</li>
+                        <li>JoJo Rollins – 1 assist</li>
+                        <li>Emma Barwacz – 1 assist (goalkeeper punt)</li>
+                    </ul>
+                </div>
+
+                <p>BDU moves forward with momentum, showing growth, resilience, and a commitment to playing as a team.</p>
+
+                <div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0 0;">
+                    <div style="color:#00ff88;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">📅 Next Match</div>
+                    <div style="color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:0.6rem;">Wednesday, April 29 vs. Mayfield SS</div>
+                    <div style="color:#a0aec0;font-size:0.92rem;margin-bottom:0.75rem;">
+                        🕡 6:30 PM &nbsp;·&nbsp; 📍 Mayfield Village <span style="font-size:0.85rem;">(North Field – closest to Route 91)</span>
+                    </div>
+                    <p style="color:#cbd5e0;font-size:0.92rem;margin:0;line-height:1.7;">The Blue Devils will look to build on their momentum and continue their strong offensive pressure as they hit the road for their next challenge.</p>
+                </div>
+            </div>
+        </article>
+
+    </div>
+</div>
+
+<!-- ══ PHOTOS TAB ══ -->
+<div id="tab-photos" class="tab-panel">
+    <div class="photo-feed">
+
+        <!-- April 12, 2026 -->
+        <div class="photo-section-title">
+            <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>April 12, 2026
+        </div>
+        <div class="photo-grid" id="photoGrid-4-12-2026">
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0032.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0059.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0088.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0102.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0132.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0147.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0170.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0200.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0215.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0229.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0238.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0252.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0268.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0271.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0280.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0294.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0317.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0365.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0366.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0418.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0424.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0515.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0526.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+            <div class="photo-card"><img src="pics/4_12_2026/DSC_0553.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="" style="max-width:92vw;max-height:92vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+    <button onclick="event.stopPropagation();navigateLightbox(-1)" style="position:fixed;left:1.5rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:2rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;">&#8249;</button>
+    <button onclick="event.stopPropagation();navigateLightbox(1)"  style="position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:2rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;">&#8250;</button>
+    <button onclick="closeLightbox()" style="position:fixed;top:1.5rem;right:1.5rem;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:1.5rem;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer;">✕</button>
+</div>
+
+<!-- Scroll to Top -->
+<button id="scrollToTop" class="scroll-top-btn">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<div id="shared-footer"></div>
+
+<script>
+    function switchTab(tabName, btn) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // Waffle menu
+    fetch('menus/waffle-menu.html')
+        .then(r => r.text())
+        .then(data => { document.getElementById('waffleMenuContainer').innerHTML = data; });
+
+    // Footer
+    fetch('menus/shared-footer.html')
+        .then(r => r.text())
+        .then(data => { document.getElementById('shared-footer').innerHTML = data; });
+
+    // Loader
+    window.addEventListener('load', function () {
+        const loader = document.getElementById('loader');
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        }, 800);
+    });
+
+    // Scroll to top
+    const scrollBtn = document.getElementById('scrollToTop');
+    window.addEventListener('scroll', () => {
+        scrollBtn.classList.toggle('visible', window.pageYOffset > 300);
+    });
+    scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // Lightbox
+    let lightboxSrcs = [];
+    let lightboxIdx = 0;
+
+    function openLightbox(src) {
+        lightboxSrcs = Array.from(document.querySelectorAll('.photo-grid img')).map(i => i.src);
+        lightboxIdx = lightboxSrcs.indexOf(src);
+        document.getElementById('lightboxImg').src = src;
+        const lb = document.getElementById('lightbox');
+        lb.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    function navigateLightbox(dir) {
+        lightboxIdx = (lightboxIdx + dir + lightboxSrcs.length) % lightboxSrcs.length;
+        document.getElementById('lightboxImg').src = lightboxSrcs[lightboxIdx];
+    }
+    document.addEventListener('keydown', e => {
+        const lb = document.getElementById('lightbox');
+        if (lb.style.display === 'flex') {
+            if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+            if (e.key === 'Escape')     closeLightbox();
+        }
+    });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
