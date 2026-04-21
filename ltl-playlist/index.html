@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Louder Than Life Playlist Builder</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <h1>Louder Than Life <span id="year-label">2026</span> — Spotify Playlist Builder</h1>
+  <div id="auth-status" class="pill pill-off">Not connected</div>
+</header>
+
+<main>
+
+<section class="card">
+  <h2>Setup</h2>
+  <div class="row">
+    <label for="client-id">Spotify Client ID</label>
+    <input type="text" id="client-id" placeholder="paste your Spotify app's Client ID" autocomplete="off" spellcheck="false" />
+  </div>
+  <div class="row">
+    <label>Redirect URI</label>
+    <code id="redirect-uri">—</code>
+    <button type="button" id="copy-redirect" class="small">Copy</button>
+    <p class="hint">Add this exact URI to <strong>Redirect URIs</strong> in your Spotify app dashboard (developer.spotify.com → your app → Edit Settings).</p>
+  </div>
+  <div class="row">
+    <label for="year">Festival Year</label>
+    <input type="number" id="year" min="2000" max="2099" value="2026" />
+  </div>
+  <div class="row">
+    <button type="button" id="connect-btn" class="primary">Connect to Spotify</button>
+    <button type="button" id="disconnect-btn" class="ghost" hidden>Disconnect</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Lineup <span class="hint">— one artist per line</span></h2>
+  <div class="lineup-grid">
+    <div class="day">
+      <h3>Thursday</h3>
+      <textarea id="lineup-Thursday" rows="18" spellcheck="false" placeholder="Pantera&#10;Megadeth&#10;..."></textarea>
+      <div class="day-meta"><span class="day-count">0</span> artists</div>
+    </div>
+    <div class="day">
+      <h3>Friday</h3>
+      <textarea id="lineup-Friday" rows="18" spellcheck="false"></textarea>
+      <div class="day-meta"><span class="day-count">0</span> artists</div>
+    </div>
+    <div class="day">
+      <h3>Saturday</h3>
+      <textarea id="lineup-Saturday" rows="18" spellcheck="false"></textarea>
+      <div class="day-meta"><span class="day-count">0</span> artists</div>
+    </div>
+    <div class="day">
+      <h3>Sunday</h3>
+      <textarea id="lineup-Sunday" rows="18" spellcheck="false"></textarea>
+      <div class="day-meta"><span class="day-count">0</span> artists</div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="actions">
+    <button type="button" id="preview-btn">Preview Changes</button>
+    <button type="button" id="sync-btn" class="primary" disabled>Sync to Spotify</button>
+    <button type="button" id="export-btn" class="ghost">Export state (JSON)</button>
+    <label class="import-label ghost">
+      Import state
+      <input type="file" id="import-file" accept="application/json" hidden />
+    </label>
+  </div>
+</section>
+
+<section id="diff-section" class="card" hidden>
+  <h2>Changes since last sync</h2>
+  <div id="diff-body"></div>
+</section>
+
+<section class="card">
+  <h2>Log</h2>
+  <div id="log" class="log"></div>
+</section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
