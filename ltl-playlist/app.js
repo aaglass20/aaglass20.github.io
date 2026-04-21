@@ -247,6 +247,76 @@ async function api(path, opts = {}) {
 
 // -------- lineup parsing --------
 
+// -------- fetch lineup from louderthanlifefestival.com --------
+
+// The festival site is behind Cloudflare, so browsers can't fetch it directly (CORS + WAF).
+// codetabs' public proxy passes the Cloudflare check where corsproxy.io / allorigins do not.
+const LTL_URL = "https://louderthanlifefestival.com/lineup/";
+const CORS_PROXY = "https://api.codetabs.com/v1/proxy?quest=";
+
+// Parse the lineup page HTML and return:
+//   { lineup: { Thursday: [name,...], ... }, resolved: { normalizedName: {id,name,popularity} } }
+// Artist cards on the page carry data-name, data-day-playing, and (sometimes) data-spotify
+// with a direct "https://open.spotify.com/artist/{id}" URL — when present we skip Spotify search.
+function parseLineupHtml(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const cards = doc.querySelectorAll("[data-day-playing][data-name]");
+  const byDay = Object.fromEntries(DAYS.map((d) => [d, new Map()])); // name key → display name
+  const resolved = {};
+  let withId = 0;
+  for (const el of cards) {
+    const name = (el.getAttribute("data-name") || "").trim();
+    const dayRaw = (el.getAttribute("data-day-playing") || "").trim().toLowerCase();
+    if (!name || !dayRaw) continue;
+    const day = DAYS.find((d) => d.toLowerCase() === dayRaw);
+    if (!day) continue;
+    const key = normalize(name);
+    if (!byDay[day].has(key)) byDay[day].set(key, name);
+    const spotifyUrl = el.getAttribute("data-spotify") || "";
+    const m = spotifyUrl.match(/open\.spotify\.com\/artist\/([A-Za-z0-9]+)/);
+    if (m && !resolved[key]) {
+      resolved[key] = { id: m[1], name, popularity: 100 };
+      withId++;
+    }
+  }
+  const lineup = Object.fromEntries(DAYS.map((d) => [d, [...byDay[d].values()].sort((a, b) => a.localeCompare(b))]));
+  return { lineup, resolved, total: cards.length, withId };
+}
+
+async function fetchLineupFromLtl() {
+  const btn = $("#fetch-lineup-btn");
+  const status = $("#fetch-status");
+  btn.disabled = true;
+  status.textContent = "Fetching…";
+  try {
+    const res = await fetch(CORS_PROXY + encodeURIComponent(LTL_URL));
+    if (!res.ok) throw new Error(`proxy returned ${res.status}`);
+    const html = await res.text();
+    const { lineup, resolved, total, withId } = parseLineupHtml(html);
+    const sum = DAYS.reduce((s, d) => s + lineup[d].length, 0);
+    if (!sum) throw new Error("no artists found in page (site layout may have changed)");
+
+    for (const d of DAYS) $(`#lineup-${d}`).value = lineup[d].join("\n");
+    updateDayCounts();
+    saveDrafts();
+
+    // Pre-populate the resolved cache on the current year's sync state so sync skips search for these.
+    const year = Number($("#year").value);
+    const state = getSyncState(year);
+    state.resolved = { ...(state.resolved || {}), ...resolved };
+    saveSyncState(state);
+
+    status.textContent = `${total} cards, ${sum} artists across ${DAYS.filter((d) => lineup[d].length).length} days, ${withId} with embedded Spotify ID`;
+    log(`Fetched ${sum} artists from LTL site (${withId} pre-resolved via embedded Spotify IDs).`, "ok");
+    for (const d of DAYS) log(`  ${d}: ${lineup[d].length}`, "muted");
+  } catch (e) {
+    status.textContent = `failed: ${e.message}`;
+    log(`Fetch failed: ${e.message}. The CORS proxy may be down — try again, or paste the lineup manually.`, "err");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 function readLineup() {
   const lineup = {};
   for (const day of DAYS) {
@@ -622,6 +692,7 @@ function wireUI() {
     $(`#lineup-${day}`).addEventListener("input", () => { updateDayCounts(); saveDrafts(); });
   }
 
+  $("#fetch-lineup-btn").addEventListener("click", fetchLineupFromLtl);
   $("#connect-btn").addEventListener("click", startAuthFlow);
   $("#disconnect-btn").addEventListener("click", disconnect);
   $("#preview-btn").addEventListener("click", previewChanges);
