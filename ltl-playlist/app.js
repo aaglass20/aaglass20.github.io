@@ -2,7 +2,7 @@
 // Single-page app, PKCE auth, idempotent playlist sync with diff tracking.
 
 // Public Spotify Client ID (not a secret — PKCE flow uses no client_secret).
-const DEFAULT_CLIENT_ID = "6d73b6f691ef4f1cb0bed8dbf20e3572";
+const DEFAULT_CLIENT_ID = "86d37036b28445fcb3dba2269c80d048";
 
 const DAYS = ["Thursday", "Friday", "Saturday", "Sunday"];
 const SCOPES = [
