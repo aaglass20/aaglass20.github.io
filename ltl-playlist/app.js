@@ -32,6 +32,7 @@ const LS = {
 
 const $ = (sel) => document.querySelector(sel);
 const redirectUri = () => location.origin + location.pathname;
+const getActiveDays = () => DAYS.filter((d) => $(`.day-enabled[data-day="${d}"]`)?.checked);
 
 function log(msg, level = "") {
   const el = $("#log");
@@ -502,6 +503,8 @@ async function syncToSpotify() {
   if (!isAuthed()) { log("Connect to Spotify first.", "err"); return; }
   const year = Number($("#year").value);
   if (!year) { log("Enter a festival year.", "err"); return; }
+  const activeDays = getActiveDays();
+  if (!activeDays.length) { log("Check at least one day to sync.", "err"); return; }
   saveDrafts();
 
   const lineup = readLineup();
@@ -511,10 +514,10 @@ async function syncToSpotify() {
   if (!localStorage.getItem(LS.userId)) await loadMe();
 
   clearLog();
-  log(`Starting sync for LTL ${year}…`);
+  log(`Starting sync for LTL ${year} — days: ${activeDays.join(", ")}${activeDays.length < DAYS.length ? ` (skipping ${DAYS.filter((d) => !activeDays.includes(d)).join(", ")})` : ""}`);
 
-  // Ensure a playlist exists for each day that has artists (or had them previously).
-  for (const day of DAYS) {
+  // Ensure a playlist exists for each active day that has artists (or had them previously).
+  for (const day of activeDays) {
     const needed = (lineup[day].length > 0) || Object.keys(state.days[day].artists).length > 0;
     if (!needed) continue;
     if (!state.days[day].playlistId) {
@@ -535,7 +538,7 @@ async function syncToSpotify() {
   // Cache resolutions in state.resolved to avoid re-searching known-stable names.
   const resolvedCache = { ...(state.resolved || {}) };
   const resolved = {}; // day → [{ inputName, artistId, name, trackUris }]
-  for (const day of DAYS) {
+  for (const day of activeDays) {
     resolved[day] = [];
     for (const input of lineup[day]) {
       try {
@@ -555,13 +558,13 @@ async function syncToSpotify() {
 
   // Build sets of artistIds per day for diffing against prior state.
   const prevByDay = {};
-  for (const day of DAYS) prevByDay[day] = Object.keys(state.days[day].artists);
+  for (const day of activeDays) prevByDay[day] = Object.keys(state.days[day].artists);
   const newByDay = {};
-  for (const day of DAYS) newByDay[day] = resolved[day].map((r) => r.artistId);
+  for (const day of activeDays) newByDay[day] = resolved[day].map((r) => r.artistId);
 
   // Per-day: artistIds to add, to remove. (Moves are handled as remove-from-old + add-to-new.)
   const addIdsByDay = {}, removeIdsByDay = {};
-  for (const day of DAYS) {
+  for (const day of activeDays) {
     const prev = new Set(prevByDay[day]);
     const next = new Set(newByDay[day]);
     addIdsByDay[day] = [...next].filter((id) => !prev.has(id));
@@ -569,7 +572,7 @@ async function syncToSpotify() {
   }
 
   // Apply to Spotify: remove old artists' tracks, add new.
-  for (const day of DAYS) {
+  for (const day of activeDays) {
     const ds = state.days[day];
     if (!ds.playlistId) continue;
 
@@ -597,9 +600,9 @@ async function syncToSpotify() {
   log(`Sync complete for LTL ${year}.`, "ok");
   renderDiff(
     computeDiff(
-      // for the post-sync diff we show what we just applied
-      Object.fromEntries(DAYS.map((d) => [d, prevByDay[d].map((id) => state.days[d].artists[id]?.name || id)])),
-      Object.fromEntries(DAYS.map((d) => [d, resolved[d].map((r) => r.name)]))
+      // for the post-sync diff we show what we just applied (active days only)
+      Object.fromEntries(activeDays.map((d) => [d, prevByDay[d].map((id) => state.days[d].artists[id]?.name || id)])),
+      Object.fromEntries(activeDays.map((d) => [d, resolved[d].map((r) => r.name)]))
     ),
     Object.values(prevByDay).every((a) => a.length === 0)
   );
@@ -608,15 +611,20 @@ async function syncToSpotify() {
 // Preview: compute diff without touching Spotify.
 function previewChanges() {
   const year = Number($("#year").value);
+  const activeDays = getActiveDays();
   const state = getSyncState(year);
   const lineup = readLineup();
   saveDrafts();
-  const prevByDay = {};
-  for (const day of DAYS) prevByDay[day] = Object.values(state.days[day].artists).map((a) => a.name);
+  const prevByDay = {}, nextByDay = {};
+  for (const day of activeDays) {
+    prevByDay[day] = Object.values(state.days[day].artists).map((a) => a.name);
+    nextByDay[day] = lineup[day];
+  }
   const isFirst = Object.values(prevByDay).every((a) => a.length === 0);
-  const diff = computeDiff(prevByDay, lineup);
+  const diff = computeDiff(prevByDay, nextByDay);
   renderDiff(diff, isFirst);
-  log("Preview rendered (no Spotify calls made).", "muted");
+  const skipped = DAYS.filter((d) => !activeDays.includes(d));
+  log(`Preview rendered for ${activeDays.join(", ") || "(no days)"}${skipped.length ? ` — skipped ${skipped.join(", ")}` : ""}.`, "muted");
 }
 
 // -------- drafts & export/import --------
@@ -695,6 +703,10 @@ function wireUI() {
 
   for (const day of DAYS) {
     $(`#lineup-${day}`).addEventListener("input", () => { updateDayCounts(); saveDrafts(); });
+    const cb = $(`.day-enabled[data-day="${day}"]`);
+    cb.addEventListener("change", () => {
+      cb.closest(".day").classList.toggle("disabled", !cb.checked);
+    });
   }
 
   $("#fetch-lineup-btn").addEventListener("click", fetchLineupFromLtl);

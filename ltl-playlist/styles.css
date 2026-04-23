@@ -155,6 +155,10 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   text-transform: uppercase;
   color: var(--muted);
 }
+.day h3 label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.day h3 input[type="checkbox"] { margin: 0; }
+.day.disabled textarea { opacity: 0.4; }
+.day.disabled .day-meta { opacity: 0.4; }
 .day-meta {
   font-size: 11px;
   color: var(--muted);

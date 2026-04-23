@@ -42,24 +42,25 @@
     <button type="button" id="fetch-lineup-btn">Fetch from louderthanlifefestival.com</button>
     <span class="hint" id="fetch-status"></span>
   </div>
+  <p class="hint">Uncheck a day to skip it on sync/preview (saves Spotify API calls when you're rate limited).</p>
   <div class="lineup-grid">
     <div class="day">
-      <h3>Thursday</h3>
+      <h3><label><input type="checkbox" class="day-enabled" data-day="Thursday" checked /> Thursday</label></h3>
       <textarea id="lineup-Thursday" rows="18" spellcheck="false" placeholder="Pantera&#10;Megadeth&#10;..."></textarea>
       <div class="day-meta"><span class="day-count">0</span> artists</div>
     </div>
     <div class="day">
-      <h3>Friday</h3>
+      <h3><label><input type="checkbox" class="day-enabled" data-day="Friday" checked /> Friday</label></h3>
       <textarea id="lineup-Friday" rows="18" spellcheck="false"></textarea>
       <div class="day-meta"><span class="day-count">0</span> artists</div>
     </div>
     <div class="day">
-      <h3>Saturday</h3>
+      <h3><label><input type="checkbox" class="day-enabled" data-day="Saturday" checked /> Saturday</label></h3>
       <textarea id="lineup-Saturday" rows="18" spellcheck="false"></textarea>
       <div class="day-meta"><span class="day-count">0</span> artists</div>
     </div>
     <div class="day">
-      <h3>Sunday</h3>
+      <h3><label><input type="checkbox" class="day-enabled" data-day="Sunday" checked /> Sunday</label></h3>
       <textarea id="lineup-Sunday" rows="18" spellcheck="false"></textarea>
       <div class="day-meta"><span class="day-count">0</span> artists</div>
     </div>
