@@ -447,9 +447,14 @@ async function searchArtist(name, cache) {
   return result;
 }
 
-async function getTopTrackUris(artistId, limit = 5) {
-  const data = await api(`/artists/${artistId}/top-tracks?market=US`);
-  return (data.tracks || []).slice(0, limit).map((t) => t.uri);
+async function getTopTrackUris(artistId, artistName, limit = 5) {
+  // /artists/{id}/top-tracks is restricted for Development Mode apps; use search instead.
+  const params = new URLSearchParams({ q: `artist:"${artistName}"`, type: "track", limit: 20, market: "US" });
+  const data = await api(`/search?${params}`);
+  const tracks = (data.tracks?.items || [])
+    .filter((t) => t.artists?.some((a) => a.id === artistId))
+    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+  return tracks.slice(0, limit).map((t) => t.uri);
 }
 
 // -------- playlist sync --------
@@ -538,7 +543,7 @@ async function syncToSpotify() {
         if (!hit) { log(`✗ Not found: ${input}`, "err"); continue; }
         const exact = normalize(hit.name) === normalize(input);
         log(`${exact ? "✓" : "?"} ${input}${exact ? "" : ` → ${hit.name}`} (${hit.id})`, exact ? "ok" : "warn");
-        const uris = await getTopTrackUris(hit.id, 5);
+        const uris = await getTopTrackUris(hit.id, hit.name, 5);
         if (!uris.length) { log(`  no top tracks for ${hit.name}`, "warn"); continue; }
         resolved[day].push({ inputName: input, artistId: hit.id, name: hit.name, trackUris: uris });
       } catch (e) {
