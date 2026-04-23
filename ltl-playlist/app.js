@@ -449,8 +449,8 @@ async function searchArtist(name, cache) {
 
 async function getTopTrackUris(artistId, artistName, limit = 5) {
   // /artists/{id}/top-tracks is restricted for Development Mode apps; use search instead.
-  const params = new URLSearchParams({ q: `artist:"${artistName}"`, type: "track", limit: 20, market: "US" });
-  const data = await api(`/search?${params}`);
+  const q = encodeURIComponent(`artist:"${artistName}"`);
+  const data = await api(`/search?q=${q}&type=track&limit=10&market=US`);
   const tracks = (data.tracks?.items || [])
     .filter((t) => t.artists?.some((a) => a.id === artistId))
     .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
