@@ -222,7 +222,8 @@ async function api(path, opts = {}) {
     body: opts.body && typeof opts.body !== "string" ? JSON.stringify(opts.body) : opts.body,
   });
 
-  for (let attempt = 0; attempt < 4; attempt++) {
+  let backoff = 5000;
+  for (let attempt = 0; attempt < 6; attempt++) {
     const res = await doFetch();
     if (res.status === 401 && attempt === 0) {
       await refreshAccessToken();
@@ -230,9 +231,11 @@ async function api(path, opts = {}) {
       continue;
     }
     if (res.status === 429) {
-      const wait = Number(res.headers.get("Retry-After") || 1) * 1000;
-      log(`Rate limited, waiting ${wait}ms…`, "warn");
+      const headerSec = Number(res.headers.get("Retry-After") || 0);
+      const wait = Math.max(headerSec * 1000, backoff);
+      log(`Rate limited, waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1}/6)…`, "warn");
       await sleep(wait);
+      backoff = Math.min(backoff * 2, 60000);
       continue;
     }
     if (!res.ok) {
@@ -537,6 +540,14 @@ async function syncToSpotify() {
   // Resolve every artist in the new lineup to a Spotify artist id + top tracks.
   // Cache resolutions in state.resolved to avoid re-searching known-stable names.
   const resolvedCache = { ...(state.resolved || {}) };
+  // Cross-day track cache: reuse previously-resolved trackUris so we skip /search?type=track
+  // for any artist already in state (from this or a prior day). Massively cuts API calls on re-runs.
+  const trackUrisCache = {};
+  for (const d of DAYS) {
+    for (const [id, info] of Object.entries(state.days[d].artists || {})) {
+      if (info.trackUris?.length) trackUrisCache[id] = info.trackUris;
+    }
+  }
   const resolved = {}; // day → [{ inputName, artistId, name, trackUris }]
   for (const day of activeDays) {
     resolved[day] = [];
@@ -546,8 +557,14 @@ async function syncToSpotify() {
         if (!hit) { log(`✗ Not found: ${input}`, "err"); continue; }
         const exact = normalize(hit.name) === normalize(input);
         log(`${exact ? "✓" : "?"} ${input}${exact ? "" : ` → ${hit.name}`} (${hit.id})`, exact ? "ok" : "warn");
-        const uris = await getTopTrackUris(hit.id, hit.name, 5);
-        if (!uris.length) { log(`  no top tracks for ${hit.name}`, "warn"); continue; }
+        let uris = trackUrisCache[hit.id];
+        if (!uris) {
+          uris = await getTopTrackUris(hit.id, hit.name, 5);
+          if (!uris.length) { log(`  no top tracks for ${hit.name}`, "warn"); continue; }
+          trackUrisCache[hit.id] = uris;
+        } else {
+          log(`  (cached) ${uris.length} tracks`, "muted");
+        }
         resolved[day].push({ inputName: input, artistId: hit.id, name: hit.name, trackUris: uris });
       } catch (e) {
         log(`✗ ${input}: ${e.message}`, "err");
