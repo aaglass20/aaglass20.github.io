@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scheduler Admin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Login -->
+  <div id="loginWrap" style="display:none;">
+    <div class="login-wrap">
+      <h1>Admin Sign-In</h1>
+      <div class="field">
+        <label>PIN</label>
+        <input id="pinInput" type="password" autofocus />
+      </div>
+      <div id="loginErr"></div>
+      <div class="modal-actions">
+        <a href="index.html" class="btn btn-ghost">Back</a>
+        <button class="btn btn-primary" id="loginBtn">Sign in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main admin UI -->
+  <div class="app admin-mode" id="adminApp" style="display:none;">
+    <div class="topbar">
+      <div>
+        <h1>Scheduler Admin</h1>
+        <div class="sub" id="statusLine">—</div>
+      </div>
+      <div class="actions">
+        <a href="index.html" class="btn btn-ghost" target="_blank">View consumer page</a>
+        <button class="btn" id="logoutBtn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="availability">Availability</button>
+      <button class="tab" data-tab="bookings">Bookings</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <div id="banner"></div>
+
+    <!-- Availability panel -->
+    <div class="panel active" id="panel-availability">
+      <div class="week-nav">
+        <button class="btn" id="prevWeek">← Prev</button>
+        <div class="range" id="weekRange">—</div>
+        <button class="btn" id="nextWeek">Next →</button>
+        <button class="btn btn-ghost" id="todayBtn">Today</button>
+        <div style="flex: 1;"></div>
+        <button class="btn" id="clearWeek">Lock all</button>
+        <button class="btn" id="openAllWeek">Unlock all</button>
+      </div>
+
+      <div class="grid-wrap">
+        <div class="grid-scroll">
+          <div class="grid" id="grid"></div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot available"></span>Open (consumers can book)</span>
+        <span><span class="dot booked"></span>Booked — click for details</span>
+        <span><span class="dot locked"></span>Locked — click to open</span>
+      </div>
+    </div>
+
+    <!-- Bookings panel -->
+    <div class="panel" id="panel-bookings">
+      <div class="week-nav">
+        <button class="btn" id="blPrev">← Prev</button>
+        <div class="range" id="blRange">—</div>
+        <button class="btn" id="blNext">Next →</button>
+        <button class="btn btn-ghost" id="blToday">Today</button>
+      </div>
+      <div id="bookingList" class="booking-list"></div>
+    </div>
+
+    <!-- Settings panel -->
+    <div class="panel" id="panel-settings">
+      <h2 style="font-size:16px; margin-top:0;">Settings</h2>
+      <div class="settings-grid" id="settingsList"></div>
+    </div>
+  </div>
+
+  <div id="modalRoot"></div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

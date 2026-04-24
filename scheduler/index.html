@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scheduler</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="topbar">
+      <div>
+        <h1>Book a Time</h1>
+        <div class="sub">Pick an available 30-minute slot.</div>
+      </div>
+      <div class="actions">
+        <a href="admin.html" class="btn btn-ghost">Admin</a>
+      </div>
+    </div>
+
+    <div id="banner"></div>
+
+    <div class="week-nav">
+      <button class="btn" id="prevWeek">← Prev</button>
+      <div class="range" id="weekRange">—</div>
+      <button class="btn" id="nextWeek">Next →</button>
+      <button class="btn btn-ghost" id="todayBtn">Today</button>
+    </div>
+
+    <div class="grid-wrap">
+      <div class="grid-scroll">
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot available"></span>Available</span>
+      <span><span class="dot booked"></span>Booked</span>
+      <span><span class="dot locked"></span>Unavailable</span>
+      <span><span class="dot past"></span>Past / closed</span>
+    </div>
+  </div>
+
+  <div id="modalRoot"></div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/consumer.js"></script>
+</body>
+</html>
