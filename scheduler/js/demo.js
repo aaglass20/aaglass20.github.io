@@ -68,6 +68,10 @@ function demoDispatch(action, p) {
       if (!cfg.site_published) return { error: 'Booking is not open yet' };
       if (!p.name || !String(p.name).trim()) return { error: 'Name is required' };
       if (!p.phone || !String(p.phone).trim()) return { error: 'Phone is required' };
+      const weekMon = ymd(startOfWeek(parseYMD(p.date)));
+      if (!isWeekBookable(weekMon)) {
+        return { error: `This week isn't open yet — booking opens Sunday, ${formatFullDate(weekOpensOn(weekMon))}.` };
+      }
       if (isBlockedByAdvance(p.date, cfg.advance_days)) return { error: 'This slot is not yet open for booking' };
       const key = p.date + '|' + p.time;
       if (!s.available[key]) return { error: 'Slot is not available' };

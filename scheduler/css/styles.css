@@ -148,14 +148,21 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--shadow-sm);
 }
 
+/* Both axes scroll here so the sticky day-header has a scrolling ancestor. */
 .grid-scroll {
-  overflow-x: auto;
+  overflow: auto;
+  max-height: calc(100dvh - 260px);
 }
 
 .grid {
   display: grid;
   grid-template-columns: 72px repeat(7, minmax(110px, 1fr));
   min-width: 720px;
+}
+
+.grid.single-day {
+  grid-template-columns: 72px 1fr;
+  min-width: 0;
 }
 
 .grid .cell {
@@ -174,6 +181,7 @@ a:hover { text-decoration: underline; }
   position: sticky;
   top: 0;
   z-index: 2;
+  box-shadow: 0 1px 0 var(--border);
 }
 .grid .head .dow { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
 .grid .head .dnum { font-size: 16px; margin-top: 2px; }
@@ -183,9 +191,10 @@ a:hover { text-decoration: underline; }
 .grid .head.today .dow { color: var(--primary); }
 
 .grid .time-label {
-  padding: 6px 6px 6px 10px;
-  font-size: 11px;
-  color: var(--muted);
+  padding: 6px 8px 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
   background: #fafbfc;
   text-align: right;
   border-right: 1px solid var(--border);
@@ -193,6 +202,7 @@ a:hover { text-decoration: underline; }
   align-items: flex-start;
   justify-content: flex-end;
   min-height: 32px;
+  letter-spacing: -0.005em;
 }
 
 .slot {
@@ -241,6 +251,19 @@ a:hover { text-decoration: underline; }
   color: var(--locked-text);
   cursor: not-allowed;
   font-size: 11px;
+}
+.slot.future-week {
+  background: #fafbfc;
+  color: var(--locked-text);
+  cursor: pointer;
+  font-size: 11px;
+  position: relative;
+}
+.slot.future-week:hover { background: #f1f5f9; }
+.slot.future-week::before {
+  content: "🔒";
+  font-size: 10px;
+  opacity: 0.45;
 }
 .slot.selected {
   outline: 2px solid var(--primary);
@@ -488,13 +511,56 @@ a:hover { text-decoration: underline; }
 .switch input:checked + .slider { background: var(--primary); }
 .switch input:checked + .slider:before { transform: translateX(20px); }
 
+/* ----- Day picker (mobile only) ----- */
+
+.day-picker {
+  display: none;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0 10px;
+  margin-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.day-picker::-webkit-scrollbar { display: none; }
+
+.day-pill {
+  flex: 1 0 auto;
+  min-width: 52px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.15;
+  cursor: pointer;
+  color: var(--text);
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+.day-pill:hover { background: #f8fafc; }
+.day-pill .dow { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.day-pill .dnum { font-size: 15px; font-weight: 600; margin-top: 2px; }
+.day-pill.today { border-color: var(--primary-soft); }
+.day-pill.today .dow, .day-pill.today .dnum { color: var(--primary); }
+.day-pill.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.day-pill.selected .dow, .day-pill.selected .dnum { color: #fff; }
+
 /* Responsive */
 @media (max-width: 640px) {
   .app { padding: 16px 12px 60px; }
   .topbar h1 { font-size: 18px; }
-  .grid { grid-template-columns: 56px repeat(7, minmax(82px, 1fr)); min-width: 630px; }
-  .grid .time-label { font-size: 10px; padding: 4px 4px 4px 6px; }
-  .slot { font-size: 11px; }
+  .day-picker { display: flex; }
+  .grid-scroll { max-height: calc(100dvh - 320px); }
+  .grid { grid-template-columns: 56px 1fr; min-width: 0; }
+  .grid .head { padding: 8px 4px; }
+  .grid .time-label { font-size: 12px; font-weight: 600; padding: 8px 6px 4px 8px; }
+  .slot { font-size: 12px; min-height: 40px; padding: 6px 10px; }
+  .slot.booked { font-size: 13px; }
   .booking-row { grid-template-columns: 72px 1fr; gap: 6px 12px; }
   .booking-row .phone, .booking-row .team { grid-column: 2; }
 }

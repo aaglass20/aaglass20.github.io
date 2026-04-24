@@ -329,6 +329,14 @@ function book(date, time, name, phone, team) {
 
   const tz = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
   const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+
+  const weekMon = mondayOf_(date);
+  const bookableMon = bookableMondayFor_(today);
+  if (weekMon > bookableMon) {
+    const opens = ymd_(new Date(parseYMD_(weekMon).getFullYear(), parseYMD_(weekMon).getMonth(), parseYMD_(weekMon).getDate() - 1));
+    return { error: 'This week is not yet open for booking — opens Sunday ' + opens };
+  }
+
   const daysOut = dateDiffDays_(today, date);
   if (daysOut < cfg.advance_days) {
     return { error: 'This slot is not yet open for booking' };
@@ -447,4 +455,17 @@ function dateDiffDays_(fromYMD, toYMD) {
   const a = parseYMD_(fromYMD).getTime();
   const b = parseYMD_(toYMD).getTime();
   return Math.round((b - a) / 86400000);
+}
+
+function mondayOf_(dateYMD) {
+  const d = parseYMD_(dateYMD);
+  const dow = d.getDay(); // 0=Sun..6=Sat
+  const delta = (dow === 0) ? -6 : (1 - dow);
+  return ymd_(new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta));
+}
+
+function bookableMondayFor_(todayYMD) {
+  const d = parseYMD_(todayYMD);
+  // Most recent Sunday (including today if Sunday) + 1 day
+  return ymd_(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay() + 1));
 }

@@ -5,6 +5,7 @@
     pin: sessionStorage.getItem(SESSION_KEY) || '',
     weekStart: ymd(startOfWeek(new Date())),
     blWeekStart: ymd(startOfWeek(new Date())),
+    selectedDayIndex: defaultDayIndex(ymd(startOfWeek(new Date()))),
     week: null,
     config: null
   };
@@ -68,9 +69,23 @@
 
   // ---------- Availability ----------
 
-  document.getElementById('prevWeek').addEventListener('click', () => { state.weekStart = ymd(addDays(parseYMD(state.weekStart), -7)); load(); });
-  document.getElementById('nextWeek').addEventListener('click', () => { state.weekStart = ymd(addDays(parseYMD(state.weekStart), 7)); load(); });
-  document.getElementById('todayBtn').addEventListener('click', () => { state.weekStart = ymd(startOfWeek(new Date())); load(); });
+  document.getElementById('prevWeek').addEventListener('click', () => {
+    state.weekStart = ymd(addDays(parseYMD(state.weekStart), -7));
+    state.selectedDayIndex = defaultDayIndex(state.weekStart);
+    load();
+  });
+  document.getElementById('nextWeek').addEventListener('click', () => {
+    state.weekStart = ymd(addDays(parseYMD(state.weekStart), 7));
+    state.selectedDayIndex = defaultDayIndex(state.weekStart);
+    load();
+  });
+  document.getElementById('todayBtn').addEventListener('click', () => {
+    state.weekStart = ymd(startOfWeek(new Date()));
+    state.selectedDayIndex = defaultDayIndex(state.weekStart);
+    load();
+  });
+
+  onBreakpointChange(() => { if (state.week) renderGrid(); });
 
   document.getElementById('clearWeek').addEventListener('click', () => bulkSetWeek(false));
   document.getElementById('openAllWeek').addEventListener('click', () => bulkSetWeek(true));
@@ -96,7 +111,10 @@
 
   function renderGrid() {
     const cfg = state.config;
-    const dates = state.week.dates;
+    const allDates = state.week.dates;
+    const mobile = isMobile();
+    if (state.selectedDayIndex >= allDates.length) state.selectedDayIndex = 0;
+    const dates = mobile ? [allDates[state.selectedDayIndex]] : allDates;
     const times = slotTimes(cfg.start_hour, cfg.end_hour);
     const availableSet = new Set(state.week.available);
     const bookings = state.week.bookings;
@@ -104,7 +122,21 @@
 
     document.getElementById('weekRange').textContent = formatRange(state.weekStart);
 
+    const $weekInfo = document.getElementById('weekInfo');
+    if (!isWeekBookable(state.weekStart)) {
+      const opens = weekOpensOn(state.weekStart);
+      $weekInfo.innerHTML = `<div class="banner banner-info">This week is not yet open for consumers. It opens Sunday, ${escapeHtml(formatFullDate(opens))}. You can still set availability now.</div>`;
+    } else {
+      $weekInfo.innerHTML = '';
+    }
+
+    renderDayPicker(document.getElementById('dayPicker'), allDates, state.selectedDayIndex, (idx) => {
+      state.selectedDayIndex = idx;
+      renderGrid();
+    });
+
     const $grid = document.getElementById('grid');
+    $grid.classList.toggle('single-day', dates.length === 1);
     const parts = [];
 
     parts.push('<div class="cell head"></div>');
