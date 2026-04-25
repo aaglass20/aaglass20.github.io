@@ -154,25 +154,34 @@ a:hover { text-decoration: underline; }
   max-height: calc(100dvh - 260px);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 72px repeat(7, minmax(110px, 1fr));
-  min-width: 720px;
+/* Container row that places one or more day-hour groups side by side. */
+.grid-row {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
 }
 
-.grid.single-day {
-  grid-template-columns: 72px 1fr;
+/* One CSS-grid block per group of days that share the same hours. Flex
+ * sizing uses --cols (day count) so blocks share space proportionally to the
+ * number of day columns, with a 72px basis that matches the time column —
+ * this keeps day-column widths consistent across blocks. */
+.grid-block {
+  display: grid;
+  flex: var(--cols, 1) 1 72px;
   min-width: 0;
 }
+.grid-block + .grid-block {
+  border-left: 2px solid var(--border);
+}
 
-.grid .cell {
+.grid-block .cell {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 0;
 }
-.grid .cell:nth-child(8n) { border-right: none; }
+.grid-block .cell.last-col { border-right: none; }
 
-.grid .head {
+.grid-block .head {
   background: #fafbfc;
   font-weight: 600;
   padding: 10px 8px;
@@ -183,14 +192,12 @@ a:hover { text-decoration: underline; }
   z-index: 2;
   box-shadow: 0 1px 0 var(--border);
 }
-.grid .head .dow { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
-.grid .head .dnum { font-size: 16px; margin-top: 2px; }
-.grid .head.today .dnum {
-  color: var(--primary);
-}
-.grid .head.today .dow { color: var(--primary); }
+.grid-block .head .dow { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.grid-block .head .dnum { font-size: 16px; margin-top: 2px; }
+.grid-block .head.today .dnum { color: var(--primary); }
+.grid-block .head.today .dow { color: var(--primary); }
 
-.grid .time-label {
+.grid-block .time-label {
   padding: 6px 8px 6px 10px;
   font-size: 12px;
   font-weight: 600;
@@ -265,6 +272,13 @@ a:hover { text-decoration: underline; }
   font-size: 10px;
   opacity: 0.45;
 }
+.slot.gap-locked {
+  background: repeating-linear-gradient(135deg, #f1f5f9, #f1f5f9 6px, #e2e8f0 6px, #e2e8f0 7px);
+  color: var(--locked-text);
+  cursor: pointer;
+  font-size: 11px;
+}
+.slot.gap-locked:hover { filter: brightness(0.97); }
 .slot.selected {
   outline: 2px solid var(--primary);
   outline-offset: -2px;
@@ -273,6 +287,45 @@ a:hover { text-decoration: underline; }
 /* Admin-only: click-to-toggle feedback */
 .admin-mode .slot.locked { cursor: pointer; }
 .admin-mode .slot.locked:hover { background: #e2e8f0; }
+
+/* In Book mode the locked cells are inert (only available cells are click targets). */
+.admin-mode.book-mode .slot.locked { cursor: default; }
+.admin-mode.book-mode .slot.locked:hover { background: var(--locked); }
+.admin-mode.book-mode .slot.available { cursor: pointer; }
+
+/* View-only consumer grid: keep the colors so consumers can see what's open,
+ * but disable interaction. */
+.view-only .slot.available { cursor: default; }
+.view-only .slot.available:hover { background: var(--success-soft); }
+
+/* Mode toggle pill (admin Schedule vs Book) */
+.mode-toggle {
+  display: inline-flex;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+.mode-toggle button {
+  padding: 7px 14px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+.mode-toggle button:hover { color: var(--text); }
+.mode-toggle button.active {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
 
 /* Legend */
 .legend {
@@ -485,6 +538,29 @@ a:hover { text-decoration: underline; }
   text-align: right;
 }
 
+.day-hours-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.day-hours-row {
+  display: grid;
+  grid-template-columns: 80px 80px 16px 80px;
+  gap: 8px;
+  align-items: center;
+}
+.day-hours-row .day-name { font-weight: 500; font-size: 14px; }
+.day-hours-row .dash { text-align: center; color: var(--muted); }
+.day-hours-row input[type="number"] {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  text-align: right;
+}
+
 /* Switch */
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
@@ -556,9 +632,8 @@ a:hover { text-decoration: underline; }
   .topbar h1 { font-size: 18px; }
   .day-picker { display: flex; }
   .grid-scroll { max-height: calc(100dvh - 320px); }
-  .grid { grid-template-columns: 56px 1fr; min-width: 0; }
-  .grid .head { padding: 8px 4px; }
-  .grid .time-label { font-size: 12px; font-weight: 600; padding: 8px 6px 4px 8px; }
+  .grid-block .head { padding: 8px 4px; }
+  .grid-block .time-label { font-size: 12px; font-weight: 600; padding: 8px 6px 4px 8px; }
   .slot { font-size: 12px; min-height: 40px; padding: 6px 10px; }
   .slot.booked { font-size: 13px; }
   .booking-row { grid-template-columns: 72px 1fr; gap: 6px 12px; }

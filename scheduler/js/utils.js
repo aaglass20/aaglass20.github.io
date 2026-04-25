@@ -120,6 +120,56 @@ function weekOpensOn(weekMondayYMD) {
   return ymd(addDays(parseYMD(weekMondayYMD), -1));
 }
 
+// Given a sorted array of "HH:MM" admin-opened times for one day, plus a Set
+// of booked "HH:MM" times, return the Set of times that are currently
+// bookable under the no-gaps rule:
+//
+//  - Group times into contiguous blocks (consecutive 30-min slots).
+//  - In a block with no bookings yet, all slots are bookable (first user
+//    can pick anywhere).
+//  - In a block with one or more bookings, only slots immediately adjacent
+//    (±30 min) to at least one booked slot are bookable.
+function noGapsBookableTimes(openTimesSorted, bookedSet) {
+  const bookable = new Set();
+  const blocks = [];
+  let current = [];
+  for (let i = 0; i < openTimesSorted.length; i++) {
+    const t = openTimesSorted[i];
+    if (current.length === 0) {
+      current.push(t);
+    } else if (toMinutes_(t) - toMinutes_(current[current.length - 1]) === 30) {
+      current.push(t);
+    } else {
+      blocks.push(current);
+      current = [t];
+    }
+  }
+  if (current.length) blocks.push(current);
+
+  blocks.forEach(block => {
+    const hasBooking = block.some(t => bookedSet.has(t));
+    if (!hasBooking) {
+      block.forEach(t => bookable.add(t));
+      return;
+    }
+    for (let i = 0; i < block.length; i++) {
+      const t = block[i];
+      if (bookedSet.has(t)) continue;
+      const prev = i > 0 ? block[i - 1] : null;
+      const next = i < block.length - 1 ? block[i + 1] : null;
+      if ((prev && bookedSet.has(prev)) || (next && bookedSet.has(next))) {
+        bookable.add(t);
+      }
+    }
+  });
+  return bookable;
+}
+
+function toMinutes_(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+}
+
 // Format a raw string as a US phone number while the user types.
 // Accepts any input, keeps up to 10 digits, returns "(XXX) XXX-XXXX" chunks.
 function formatPhone(value) {
@@ -128,6 +178,40 @@ function formatPhone(value) {
   if (d.length <= 3) return '(' + d;
   if (d.length <= 6) return '(' + d.slice(0, 3) + ') ' + d.slice(3);
   return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6);
+}
+
+const DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
+
+// Look up { startHour, endHour } for a single date based on cfg.day_hours,
+// falling back to legacy cfg.start_hour / cfg.end_hour when per-day is missing.
+function getDayHoursFromCfg(cfg, dateYMD) {
+  const dow = parseYMD(dateYMD).getDay(); // 0=Sun..6=Sat
+  const dayKey = DAY_KEYS[dow];
+  const dh = cfg && cfg.day_hours && cfg.day_hours[dayKey];
+  if (dh && Number.isFinite(dh.start) && Number.isFinite(dh.end)) {
+    return { startHour: dh.start, endHour: dh.end };
+  }
+  return {
+    startHour: parseInt(cfg.start_hour, 10) || 8,
+    endHour: parseInt(cfg.end_hour, 10) || 21
+  };
+}
+
+// Group an ordered list of dates into runs that share the same day-hours.
+// Each group: { startHour, endHour, dates: [...] }.
+function groupDaysByHours(dates, cfg) {
+  const groups = [];
+  let cur = null;
+  dates.forEach(d => {
+    const h = getDayHoursFromCfg(cfg, d);
+    if (cur && cur.startHour === h.startHour && cur.endHour === h.endHour) {
+      cur.dates.push(d);
+    } else {
+      cur = { startHour: h.startHour, endHour: h.endHour, dates: [d] };
+      groups.push(cur);
+    }
+  });
+  return groups;
 }
 
 const MOBILE_QUERY = '(max-width: 640px)';

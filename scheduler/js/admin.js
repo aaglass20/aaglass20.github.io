@@ -6,6 +6,7 @@
     weekStart: ymd(startOfWeek(new Date())),
     blWeekStart: ymd(startOfWeek(new Date())),
     selectedDayIndex: defaultDayIndex(ymd(startOfWeek(new Date()))),
+    clickMode: 'schedule', // 'schedule' | 'book'
     week: null,
     config: null
   };
@@ -90,6 +91,16 @@
   document.getElementById('clearWeek').addEventListener('click', () => bulkSetWeek(false));
   document.getElementById('openAllWeek').addEventListener('click', () => bulkSetWeek(true));
 
+  document.querySelectorAll('#modeToggle button').forEach(btn => {
+    btn.addEventListener('click', () => setClickMode(btn.dataset.mode));
+  });
+
+  function setClickMode(mode) {
+    state.clickMode = mode;
+    document.querySelectorAll('#modeToggle button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    document.getElementById('adminApp').classList.toggle('book-mode', mode === 'book');
+  }
+
   document.getElementById('blPrev').addEventListener('click', () => { state.blWeekStart = ymd(addDays(parseYMD(state.blWeekStart), -7)); renderBookingList(); });
   document.getElementById('blNext').addEventListener('click', () => { state.blWeekStart = ymd(addDays(parseYMD(state.blWeekStart), 7)); renderBookingList(); });
   document.getElementById('blToday').addEventListener('click', () => { state.blWeekStart = ymd(startOfWeek(new Date())); renderBookingList(); });
@@ -115,7 +126,6 @@
     const mobile = isMobile();
     if (state.selectedDayIndex >= allDates.length) state.selectedDayIndex = 0;
     const dates = mobile ? [allDates[state.selectedDayIndex]] : allDates;
-    const times = slotTimes(cfg.start_hour, cfg.end_hour);
     const availableSet = new Set(state.week.available);
     const bookings = state.week.bookings;
     const todayStr = todayYMD();
@@ -135,14 +145,28 @@
       renderGrid();
     });
 
+    const groups = groupDaysByHours(dates, cfg);
     const $grid = document.getElementById('grid');
-    $grid.classList.toggle('single-day', dates.length === 1);
+    $grid.innerHTML = groups.map(g => renderAdminBlock(g, availableSet, bookings, todayStr)).join('');
+
+    $grid.querySelectorAll('.slot').forEach(el => {
+      el.addEventListener('click', () => onSlotClick(el));
+    });
+  }
+
+  function renderAdminBlock(group, availableSet, bookings, todayStr) {
+    const { startHour, endHour, dates } = group;
+    const times = slotTimes(startHour, endHour);
+    const cols = `72px repeat(${dates.length}, minmax(0, 1fr))`;
     const parts = [];
 
+    parts.push(`<div class="grid-block" style="grid-template-columns: ${cols}; --cols: ${dates.length};">`);
+
     parts.push('<div class="cell head"></div>');
-    dates.forEach(d => {
+    dates.forEach((d, i) => {
       const h = formatDayHeader(d);
-      parts.push(`<div class="cell head ${d === todayStr ? 'today' : ''}">
+      const last = i === dates.length - 1 ? 'last-col' : '';
+      parts.push(`<div class="cell head ${d === todayStr ? 'today' : ''} ${last}">
         <div class="dow">${h.dow}</div>
         <div class="dnum">${h.dnum}</div>
       </div>`);
@@ -150,7 +174,8 @@
 
     times.forEach(t => {
       parts.push(`<div class="cell time-label">${formatTimeLabel(t)}</div>`);
-      dates.forEach(d => {
+      dates.forEach((d, i) => {
+        const last = i === dates.length - 1 ? 'last-col' : '';
         const key = d + '|' + t;
         const booking = bookings[key];
         let cls;
@@ -158,15 +183,12 @@
         if (booking) { cls = 'booked'; label = escapeHtml(booking.name); }
         else if (availableSet.has(key)) cls = 'available';
         else cls = 'locked';
-        parts.push(`<div class="cell"><div class="slot ${cls}" data-date="${d}" data-time="${t}">${label}</div></div>`);
+        parts.push(`<div class="cell ${last}"><div class="slot ${cls}" data-date="${d}" data-time="${t}">${label}</div></div>`);
       });
     });
 
-    $grid.innerHTML = parts.join('');
-
-    $grid.querySelectorAll('.slot').forEach(el => {
-      el.addEventListener('click', () => onSlotClick(el));
-    });
+    parts.push('</div>');
+    return parts.join('');
   }
 
   async function onSlotClick(el) {
@@ -178,7 +200,16 @@
       openBookingDetail(date, time);
       return;
     }
-    // Toggle availability
+
+    // Book-on-behalf mode: only available slots are actionable.
+    if (state.clickMode === 'book') {
+      if (el.classList.contains('available')) {
+        openAdminBookingModal(date, time);
+      }
+      return;
+    }
+
+    // Schedule mode: toggle availability.
     const isAvail = el.classList.contains('available');
     const willBe = !isAvail;
     // Optimistic UI
@@ -213,6 +244,73 @@
     const res = await API.adminSetWeek(state.pin, state.weekStart, slots);
     if (res.error) { showBanner('error', res.error); return; }
     load();
+  }
+
+  function openAdminBookingModal(date, time) {
+    $modal.innerHTML = `
+      <div class="modal-backdrop" id="mb">
+        <div class="modal" role="dialog" aria-modal="true">
+          <h2>Book on behalf</h2>
+          <div class="slot-label">${escapeHtml(formatFullDate(date))} at ${formatTimeLabel(time)}</div>
+
+          <div class="field">
+            <label>Name <span class="required">*</span></label>
+            <input id="f-name" autofocus autocomplete="name" />
+          </div>
+          <div class="field">
+            <label>Phone <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+            <input id="f-phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="(555) 555-5555" />
+          </div>
+          <div class="field">
+            <label>Team <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+            <input id="f-team" />
+          </div>
+
+          <div id="f-err"></div>
+
+          <div class="modal-actions">
+            <button class="btn" id="f-cancel" type="button">Cancel</button>
+            <button class="btn btn-primary" id="f-save" type="button">Save booking</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const close = () => { $modal.innerHTML = ''; };
+    document.getElementById('f-cancel').onclick = close;
+    document.getElementById('mb').addEventListener('click', e => { if (e.target.id === 'mb') close(); });
+
+    const $phone = document.getElementById('f-phone');
+    $phone.addEventListener('input', () => { $phone.value = formatPhone($phone.value); });
+
+    document.getElementById('f-save').onclick = async () => {
+      const name = document.getElementById('f-name').value.trim();
+      const phone = $phone.value.trim();
+      const team = document.getElementById('f-team').value.trim();
+      const $err = document.getElementById('f-err');
+      $err.innerHTML = '';
+      if (!name) {
+        $err.innerHTML = `<div class="banner banner-error">Name is required.</div>`;
+        return;
+      }
+      if (phone && phone.replace(/\D/g, '').length !== 10) {
+        $err.innerHTML = `<div class="banner banner-error">If filled in, phone must be 10 digits.</div>`;
+        return;
+      }
+      const $btn = document.getElementById('f-save');
+      $btn.disabled = true;
+      $btn.textContent = 'Saving…';
+      const res = await API.adminBook(state.pin, date, time, name, phone, team);
+      if (res.error) {
+        $err.innerHTML = `<div class="banner banner-error">${escapeHtml(res.error)}</div>`;
+        $btn.disabled = false;
+        $btn.textContent = 'Save booking';
+        return;
+      }
+      close();
+      showBanner('success', `Booked ${name} for ${formatFullDate(date)} at ${formatTimeLabel(time)}.`);
+      load();
+    };
   }
 
   async function openBookingDetail(date, time) {
@@ -302,6 +400,8 @@
     if (cfg.error) { $list.innerHTML = `<div class="booking-empty">${escapeHtml(cfg.error)}</div>`; return; }
 
     const published = String(cfg.site_published).toLowerCase() === 'true' || cfg.site_published === true;
+    const noGaps = String(cfg.no_gaps).toLowerCase() === 'true' || cfg.no_gaps === true;
+    const viewOnly = String(cfg.view_only).toLowerCase() === 'true' || cfg.view_only === true;
 
     $list.innerHTML = `
       <div class="setting-row">
@@ -317,26 +417,52 @@
 
       <div class="setting-row">
         <div>
+          <div class="label">No gaps</div>
+          <div class="desc">When on, consumers can only book slots adjacent to existing bookings (after the first booking in a contiguous block). Prevents holes in your schedule.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="s-nogaps" ${noGaps ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="label">View only</div>
+          <div class="desc">When on, consumers can see the schedule but cannot book. You (admin) can still book on behalf via the Book mode.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="s-viewonly" ${viewOnly ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div>
           <div class="label">Advance-booking window (days)</div>
           <div class="desc">0 = same-day OK, 1 = earliest is tomorrow, 2 = earliest is day after tomorrow.</div>
         </div>
         <input type="number" min="0" max="30" id="s-adv" value="${escapeAttr(cfg.advance_days)}" />
       </div>
 
-      <div class="setting-row">
-        <div>
-          <div class="label">Day start hour</div>
-          <div class="desc">First slot of the day (0–23).</div>
+      <div class="setting-row" style="display:block;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom: 12px;">
+          <div>
+            <div class="label">Hours per day</div>
+            <div class="desc">Hours run from start (inclusive, 0–23) to end (exclusive, 1–24). Days that share the same hours are rendered as a single column group.</div>
+          </div>
+          <button type="button" class="btn btn-ghost" id="s-copy-weekday">Copy Mon → Tue–Fri</button>
         </div>
-        <input type="number" min="0" max="23" id="s-start" value="${escapeAttr(cfg.start_hour)}" />
-      </div>
-
-      <div class="setting-row">
-        <div>
-          <div class="label">Day end hour</div>
-          <div class="desc">Last slot ends at this hour (1–24).</div>
+        <div class="day-hours-grid">
+          ${['mon','tue','wed','thu','fri','sat','sun'].map(d => `
+            <div class="day-hours-row">
+              <span class="day-name">${d.charAt(0).toUpperCase() + d.slice(1)}</span>
+              <input type="number" min="0" max="23" data-day="${d}" data-key="start" value="${escapeAttr(getCfgHour(cfg, d, 'start', 8))}" />
+              <span class="dash">–</span>
+              <input type="number" min="1" max="24" data-day="${d}" data-key="end" value="${escapeAttr(getCfgHour(cfg, d, 'end', 21))}" />
+            </div>
+          `).join('')}
         </div>
-        <input type="number" min="1" max="24" id="s-end" value="${escapeAttr(cfg.end_hour)}" />
       </div>
 
       <div class="setting-row">
@@ -353,25 +479,53 @@
     `;
 
     document.getElementById('s-save').addEventListener('click', saveSettings);
+    document.getElementById('s-copy-weekday').addEventListener('click', () => {
+      const monStart = document.querySelector('.day-hours-row input[data-day="mon"][data-key="start"]').value;
+      const monEnd = document.querySelector('.day-hours-row input[data-day="mon"][data-key="end"]').value;
+      ['tue','wed','thu','fri'].forEach(d => {
+        document.querySelector(`.day-hours-row input[data-day="${d}"][data-key="start"]`).value = monStart;
+        document.querySelector(`.day-hours-row input[data-day="${d}"][data-key="end"]`).value = monEnd;
+      });
+    });
+  }
+
+  function getCfgHour(cfg, day, key, fallback) {
+    const direct = cfg[day + '_' + key];
+    if (direct !== undefined && direct !== null && direct !== '') return direct;
+    const legacy = key === 'start' ? cfg.start_hour : cfg.end_hour;
+    if (legacy !== undefined && legacy !== null && legacy !== '') return legacy;
+    return fallback;
   }
 
   async function saveSettings() {
     const pub = document.getElementById('s-pub').checked;
     const adv = parseInt(document.getElementById('s-adv').value, 10);
-    const startH = parseInt(document.getElementById('s-start').value, 10);
-    const endH = parseInt(document.getElementById('s-end').value, 10);
     const pin = document.getElementById('s-pin').value.trim();
 
     if (isNaN(adv) || adv < 0) return showBanner('error', 'Advance days must be 0 or more.');
-    if (isNaN(startH) || startH < 0 || startH > 23) return showBanner('error', 'Start hour must be 0–23.');
-    if (isNaN(endH) || endH <= startH || endH > 24) return showBanner('error', 'End hour must be greater than start hour.');
     if (!pin) return showBanner('error', 'PIN cannot be empty.');
+
+    const noGaps = document.getElementById('s-nogaps').checked;
+    const viewOnly = document.getElementById('s-viewonly').checked;
+
+    // Per-day hours
+    const days = ['mon','tue','wed','thu','fri','sat','sun'];
+    const dayHourPairs = [];
+    for (const d of days) {
+      const sh = parseInt(document.querySelector(`.day-hours-row input[data-day="${d}"][data-key="start"]`).value, 10);
+      const eh = parseInt(document.querySelector(`.day-hours-row input[data-day="${d}"][data-key="end"]`).value, 10);
+      if (isNaN(sh) || sh < 0 || sh > 23) return showBanner('error', `${d.toUpperCase()} start hour must be 0–23.`);
+      if (isNaN(eh) || eh <= sh || eh > 24) return showBanner('error', `${d.toUpperCase()} end hour must be greater than start hour.`);
+      dayHourPairs.push([d + '_start', String(sh)]);
+      dayHourPairs.push([d + '_end', String(eh)]);
+    }
 
     const steps = [
       ['site_published', String(pub)],
+      ['no_gaps', String(noGaps)],
+      ['view_only', String(viewOnly)],
       ['advance_days', String(adv)],
-      ['start_hour', String(startH)],
-      ['end_hour', String(endH)],
+      ...dayHourPairs,
       ['admin_pin', pin]
     ];
 

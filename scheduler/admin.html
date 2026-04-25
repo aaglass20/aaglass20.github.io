@@ -46,6 +46,11 @@
 
     <!-- Availability panel -->
     <div class="panel active" id="panel-availability">
+      <div class="mode-toggle" id="modeToggle" role="tablist" aria-label="Click mode">
+        <button class="active" data-mode="schedule" type="button">Schedule availability</button>
+        <button data-mode="book" type="button">Book on behalf</button>
+      </div>
+
       <div class="week-nav">
         <button class="btn" id="prevWeek">← Prev</button>
         <div class="range" id="weekRange">—</div>
@@ -61,7 +66,7 @@
 
       <div class="grid-wrap">
         <div class="grid-scroll">
-          <div class="grid" id="grid"></div>
+          <div class="grid-row" id="grid"></div>
         </div>
       </div>
 

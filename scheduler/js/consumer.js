@@ -46,6 +46,8 @@
     $banner.innerHTML = '';
     if (!cfg.site_published) {
       showBanner('warn', 'Booking is not open yet — please check back later.');
+    } else if (cfg.view_only) {
+      showBanner('info', 'Viewing schedule only — booking is currently closed.');
     }
   }
 
@@ -59,48 +61,43 @@
     const mobile = isMobile();
     if (state.selectedDayIndex >= allDates.length) state.selectedDayIndex = 0;
     const dates = mobile ? [allDates[state.selectedDayIndex]] : allDates;
-    const times = slotTimes(cfg.start_hour, cfg.end_hour);
-    const availableSet = new Set(state.week.available);
+    const adminOpenSet = new Set(state.week.available);
     const bookings = state.week.bookings;
     const todayStr = todayYMD();
+
+    // If no-gaps is on, restrict consumer-bookable slots per day.
+    let availableSet = adminOpenSet;
+    if (cfg.no_gaps) {
+      availableSet = new Set();
+      allDates.forEach(d => {
+        const opens = [...adminOpenSet]
+          .filter(k => k.startsWith(d + '|'))
+          .map(k => k.split('|')[1])
+          .sort();
+        const booked = new Set(
+          Object.keys(bookings)
+            .filter(k => k.startsWith(d + '|'))
+            .map(k => k.split('|')[1])
+        );
+        const ok = noGapsBookableTimes(opens, booked);
+        ok.forEach(t => availableSet.add(d + '|' + t));
+      });
+    }
 
     renderDayPicker($dayPicker, allDates, state.selectedDayIndex, (idx) => {
       state.selectedDayIndex = idx;
       renderGrid();
     });
 
-    $grid.classList.toggle('single-day', dates.length === 1);
+    const groups = groupDaysByHours(dates, cfg);
+    $grid.innerHTML = groups.map(g => renderConsumerBlock(g, cfg, availableSet, adminOpenSet, bookings, todayStr)).join('');
+    $grid.classList.toggle('view-only', !!cfg.view_only);
 
-    const parts = [];
-
-    // Header row: empty corner + day headers
-    parts.push('<div class="cell head"></div>');
-    dates.forEach(d => {
-      const h = formatDayHeader(d);
-      const today = d === todayStr;
-      parts.push(`<div class="cell head ${today ? 'today' : ''}">
-        <div class="dow">${h.dow}</div>
-        <div class="dnum">${h.dnum}</div>
-      </div>`);
-    });
-
-    // Time rows
-    times.forEach(t => {
-      parts.push(`<div class="cell time-label">${formatTimeLabel(t)}</div>`);
-      dates.forEach(d => {
-        const key = d + '|' + t;
-        const cls = classifySlot(d, t, availableSet, bookings, cfg);
-        const booking = bookings[key];
-        const label = cls === 'booked' ? escapeHtml(booking.name) : '';
-        parts.push(`<div class="cell"><div class="slot ${cls}" data-date="${d}" data-time="${t}">${label}</div></div>`);
+    if (!cfg.view_only) {
+      $grid.querySelectorAll('.slot.available').forEach(el => {
+        el.addEventListener('click', () => openBookingModal(el.dataset.date, el.dataset.time));
       });
-    });
-
-    $grid.innerHTML = parts.join('');
-
-    $grid.querySelectorAll('.slot.available').forEach(el => {
-      el.addEventListener('click', () => openBookingModal(el.dataset.date, el.dataset.time));
-    });
+    }
 
     $grid.querySelectorAll('.slot.future-week').forEach(el => {
       el.addEventListener('click', () => {
@@ -110,7 +107,51 @@
       });
     });
 
+    $grid.querySelectorAll('.slot.gap-locked').forEach(el => {
+      el.addEventListener('click', () => {
+        showTransientBanner('warn', 'This time opens once an adjacent slot is booked.');
+      });
+    });
+
     scrollToFirstAvailable();
+  }
+
+  function renderConsumerBlock(group, cfg, availableSet, adminOpenSet, bookings, todayStr) {
+    const { startHour, endHour, dates } = group;
+    const times = slotTimes(startHour, endHour);
+    const cols = `72px repeat(${dates.length}, minmax(0, 1fr))`;
+    const parts = [];
+
+    parts.push(`<div class="grid-block" style="grid-template-columns: ${cols}; --cols: ${dates.length};">`);
+
+    parts.push('<div class="cell head"></div>');
+    dates.forEach((d, i) => {
+      const h = formatDayHeader(d);
+      const today = d === todayStr;
+      const last = i === dates.length - 1 ? 'last-col' : '';
+      parts.push(`<div class="cell head ${today ? 'today' : ''} ${last}">
+        <div class="dow">${h.dow}</div>
+        <div class="dnum">${h.dnum}</div>
+      </div>`);
+    });
+
+    times.forEach(t => {
+      parts.push(`<div class="cell time-label">${formatTimeLabel(t)}</div>`);
+      dates.forEach((d, i) => {
+        const last = i === dates.length - 1 ? 'last-col' : '';
+        const key = d + '|' + t;
+        let cls = classifySlot(d, t, availableSet, bookings, cfg);
+        if (cls === 'locked' && cfg.no_gaps && adminOpenSet.has(key) && !isPast(d)) {
+          cls = 'gap-locked';
+        }
+        const booking = bookings[key];
+        const label = cls === 'booked' ? escapeHtml(booking.name) : '';
+        parts.push(`<div class="cell ${last}"><div class="slot ${cls}" data-date="${d}" data-time="${t}">${label}</div></div>`);
+      });
+    });
+
+    parts.push('</div>');
+    return parts.join('');
   }
 
   function showTransientBanner(kind, msg) {
@@ -155,7 +196,7 @@
             <input id="f-name" autofocus autocomplete="name" />
           </div>
           <div class="field">
-            <label>Phone <span class="required">*</span></label>
+            <label>Phone <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
             <input id="f-phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="(555) 555-5555" />
           </div>
           <div class="field">
@@ -190,12 +231,12 @@
       const team = document.getElementById('f-team').value.trim();
       const $err = document.getElementById('f-err');
       $err.innerHTML = '';
-      if (!name || !phone) {
-        $err.innerHTML = `<div class="banner banner-error">Name and phone are required.</div>`;
+      if (!name) {
+        $err.innerHTML = `<div class="banner banner-error">Name is required.</div>`;
         return;
       }
-      if (phone.replace(/\D/g, '').length !== 10) {
-        $err.innerHTML = `<div class="banner banner-error">Phone must be 10 digits (format: (555) 555-5555).</div>`;
+      if (phone && phone.replace(/\D/g, '').length !== 10) {
+        $err.innerHTML = `<div class="banner banner-error">If filled in, phone must be 10 digits (format: (555) 555-5555).</div>`;
         return;
       }
       const $btn = document.getElementById('f-save');

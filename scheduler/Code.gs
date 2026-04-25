@@ -27,8 +27,17 @@ const DEFAULTS = {
   admin_pin: '1234',
   advance_days: '1',
   site_published: 'false',
+  no_gaps: 'false',
+  view_only: 'false',
   start_hour: '8',
-  end_hour: '21'
+  end_hour: '21',
+  mon_start: '8', mon_end: '21',
+  tue_start: '8', tue_end: '21',
+  wed_start: '8', wed_end: '21',
+  thu_start: '8', thu_end: '21',
+  fri_start: '8', fri_end: '21',
+  sat_start: '9', sat_end: '21',
+  sun_start: '9', sun_end: '21'
 };
 
 /**
@@ -148,6 +157,7 @@ function handle(action, p) {
       case 'adminSetWeek':      result = requirePin(p.pin, () => setWeek(p.weekStart, p.slots)); break;
       case 'adminGetBookings':  result = requirePin(p.pin, () => getWeekBookings(p.weekStart)); break;
       case 'adminDeleteBooking':result = requirePin(p.pin, () => deleteBooking(p.date, p.time)); break;
+      case 'adminBook':         result = requirePin(p.pin, () => adminBook(p.date, p.time, p.name, p.phone, p.team)); break;
       default: result = { error: 'Unknown action: ' + action };
     }
   } catch (err) {
@@ -190,11 +200,24 @@ function getAllConfig() {
 
 function getPublicConfig() {
   const all = getAllConfig();
+  const startFallback = parseIntOr_(all.start_hour, 8);
+  const endFallback = parseIntOr_(all.end_hour, 21);
+  const days = ['sun','mon','tue','wed','thu','fri','sat'];
+  const day_hours = {};
+  days.forEach(d => {
+    day_hours[d] = {
+      start: parseIntOr_(all[d + '_start'], startFallback),
+      end: parseIntOr_(all[d + '_end'], endFallback)
+    };
+  });
   return {
     advance_days: parseInt(all.advance_days, 10) || 0,
     site_published: String(all.site_published).toLowerCase() === 'true',
-    start_hour: parseInt(all.start_hour, 10) || 8,
-    end_hour: parseInt(all.end_hour, 10) || 21
+    no_gaps: String(all.no_gaps || 'false').toLowerCase() === 'true',
+    view_only: String(all.view_only || 'false').toLowerCase() === 'true',
+    start_hour: startFallback,
+    end_hour: endFallback,
+    day_hours: day_hours
   };
 }
 
@@ -322,10 +345,10 @@ function getWeek(weekStart) {
 function book(date, time, name, phone, team) {
   if (!date || !time) return { error: 'Missing date/time' };
   if (!name || !String(name).trim()) return { error: 'Name is required' };
-  if (!phone || !String(phone).trim()) return { error: 'Phone is required' };
 
   const cfg = getPublicConfig();
   if (!cfg.site_published) return { error: 'Booking is not open yet' };
+  if (cfg.view_only) return { error: 'Booking is currently view-only' };
 
   const tz = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
   const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
@@ -358,13 +381,62 @@ function book(date, time, name, phone, team) {
 
     const bookSheet = getBookingsSheet_();
     const bookRows = bookSheet.getDataRange().getValues();
+    const bookedTimesOnDay = {};
+    for (let i = 1; i < bookRows.length; i++) {
+      if (fmtDate_(bookRows[i][0]) === date) {
+        const tt = fmtTime_(bookRows[i][1]);
+        if (tt === time) return { error: 'Slot already booked' };
+        bookedTimesOnDay[tt] = true;
+      }
+    }
+
+    if (cfg.no_gaps) {
+      const opensOnDay = [];
+      for (let i = 1; i < availRows.length; i++) {
+        if (fmtDate_(availRows[i][0]) === date) opensOnDay.push(fmtTime_(availRows[i][1]));
+      }
+      if (!isNoGapsBookable_(time, opensOnDay, bookedTimesOnDay)) {
+        return { error: 'This slot is not currently bookable. An adjacent slot must be booked first.' };
+      }
+    }
+
+    bookSheet.appendRow([date, time, String(name).trim(), String(phone).trim(), String(team || '').trim(), new Date()]);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Admin booking — bypasses consumer-facing rules (site_published, view_only,
+// week-bookable, advance_days, no_gaps). Still requires the slot to be open
+// and not double-booked.
+function adminBook(date, time, name, phone, team) {
+  if (!date || !time) return { error: 'Missing date/time' };
+  if (!name || !String(name).trim()) return { error: 'Name is required' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const availSheet = getAvailSheet_();
+    const availRows = availSheet.getDataRange().getValues();
+    let isAvailable = false;
+    for (let i = 1; i < availRows.length; i++) {
+      if (fmtDate_(availRows[i][0]) === date && fmtTime_(availRows[i][1]) === time) {
+        isAvailable = true;
+        break;
+      }
+    }
+    if (!isAvailable) return { error: 'Slot is not available' };
+
+    const bookSheet = getBookingsSheet_();
+    const bookRows = bookSheet.getDataRange().getValues();
     for (let i = 1; i < bookRows.length; i++) {
       if (fmtDate_(bookRows[i][0]) === date && fmtTime_(bookRows[i][1]) === time) {
         return { error: 'Slot already booked' };
       }
     }
 
-    bookSheet.appendRow([date, time, String(name).trim(), String(phone).trim(), String(team || '').trim(), new Date()]);
+    bookSheet.appendRow([date, time, String(name).trim(), String(phone || '').trim(), String(team || '').trim(), new Date()]);
     return { ok: true };
   } finally {
     lock.releaseLock();
@@ -468,4 +540,38 @@ function bookableMondayFor_(todayYMD) {
   const d = parseYMD_(todayYMD);
   // Most recent Sunday (including today if Sunday) + 1 day
   return ymd_(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay() + 1));
+}
+
+// Returns true if `time` is currently bookable under the no-gaps rule, given
+// the list of admin-opened times on the same day and the map of already-booked
+// times on the same day.
+function isNoGapsBookable_(time, opensOnDay, bookedMap) {
+  const opens = opensOnDay.slice().sort();
+  const idx = opens.indexOf(time);
+  if (idx === -1) return false;
+
+  // Walk left/right from this slot to find the contiguous block boundaries.
+  let lo = idx, hi = idx;
+  while (lo > 0 && toMin_(opens[lo]) - toMin_(opens[lo - 1]) === 30) lo--;
+  while (hi < opens.length - 1 && toMin_(opens[hi + 1]) - toMin_(opens[hi]) === 30) hi++;
+
+  let blockHasBooking = false;
+  for (let i = lo; i <= hi; i++) {
+    if (bookedMap[opens[i]]) { blockHasBooking = true; break; }
+  }
+  if (!blockHasBooking) return true;
+
+  const prev = idx > lo ? opens[idx - 1] : null;
+  const next = idx < hi ? opens[idx + 1] : null;
+  return (prev && bookedMap[prev]) || (next && bookedMap[next]);
+}
+
+function parseIntOr_(v, fallback) {
+  const n = parseInt(v, 10);
+  return isNaN(n) ? fallback : n;
+}
+
+function toMin_(hhmm) {
+  const parts = String(hhmm).split(':');
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
 }

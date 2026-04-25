@@ -4,7 +4,7 @@
 // /exec URL. For local dev we leave it blank and the pages fall back to a
 // demo/mock layer (see demo.js).
 
-const API_URL = ''; // <-- paste your Apps Script /exec URL here after deploy
+const API_URL = 'https://script.google.com/macros/s/AKfycbzc2lvyZ9oC5Yw00PCy4gp_WM3345Wy6hFJ-IKqJPleFYywFG8-Kp39XtUYtfXL_NO4/exec';
 
 async function apiGet(action, params) {
   if (!API_URL) return demoApi(action, params || {});
@@ -42,5 +42,6 @@ const API = {
   adminSetSlot: (pin, date, time, available) => apiPost('adminSetSlot', { pin, date, time, available }),
   adminSetWeek: (pin, weekStart, slots) => apiPost('adminSetWeek', { pin, weekStart, slots }),
   adminGetBookings: (pin, weekStart) => apiGet('adminGetBookings', { pin, weekStart }),
-  adminDeleteBooking: (pin, date, time) => apiPost('adminDeleteBooking', { pin, date, time })
+  adminDeleteBooking: (pin, date, time) => apiPost('adminDeleteBooking', { pin, date, time }),
+  adminBook: (pin, date, time, name, phone, team) => apiPost('adminBook', { pin, date, time, name, phone, team })
 };

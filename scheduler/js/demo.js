@@ -11,8 +11,17 @@ function demoState() {
       admin_pin: '1234',
       advance_days: 1,
       site_published: false,
+      no_gaps: false,
+      view_only: false,
       start_hour: 8,
-      end_hour: 21
+      end_hour: 21,
+      mon_start: 8, mon_end: 21,
+      tue_start: 8, tue_end: 21,
+      wed_start: 8, wed_end: 21,
+      thu_start: 8, thu_end: 21,
+      fri_start: 8, fri_end: 21,
+      sat_start: 9, sat_end: 21,
+      sun_start: 9, sun_end: 21
     },
     available: {},   // key "date|time" -> true
     bookings: {}     // key "date|time" -> { name, phone, team, timestamp }
@@ -24,11 +33,25 @@ function demoState() {
 function demoSave(s) { localStorage.setItem(DEMO_KEY, JSON.stringify(s)); }
 
 function demoPublicConfig(s) {
+  const intOr = (v, f) => { const n = parseInt(v, 10); return isNaN(n) ? f : n; };
+  const startFallback = intOr(s.config.start_hour, 8);
+  const endFallback = intOr(s.config.end_hour, 21);
+  const days = ['sun','mon','tue','wed','thu','fri','sat'];
+  const day_hours = {};
+  days.forEach(d => {
+    day_hours[d] = {
+      start: intOr(s.config[d + '_start'], startFallback),
+      end: intOr(s.config[d + '_end'], endFallback)
+    };
+  });
   return {
     advance_days: parseInt(s.config.advance_days, 10) || 0,
     site_published: !!s.config.site_published,
-    start_hour: parseInt(s.config.start_hour, 10) || 8,
-    end_hour: parseInt(s.config.end_hour, 10) || 21
+    no_gaps: !!s.config.no_gaps,
+    view_only: !!s.config.view_only,
+    start_hour: startFallback,
+    end_hour: endFallback,
+    day_hours: day_hours
   };
 }
 
@@ -66,8 +89,8 @@ function demoDispatch(action, p) {
     case 'book': {
       const cfg = demoPublicConfig(s);
       if (!cfg.site_published) return { error: 'Booking is not open yet' };
+      if (cfg.view_only) return { error: 'Booking is currently view-only' };
       if (!p.name || !String(p.name).trim()) return { error: 'Name is required' };
-      if (!p.phone || !String(p.phone).trim()) return { error: 'Phone is required' };
       const weekMon = ymd(startOfWeek(parseYMD(p.date)));
       if (!isWeekBookable(weekMon)) {
         return { error: `This week isn't open yet — booking opens Sunday, ${formatFullDate(weekOpensOn(weekMon))}.` };
@@ -76,6 +99,22 @@ function demoDispatch(action, p) {
       const key = p.date + '|' + p.time;
       if (!s.available[key]) return { error: 'Slot is not available' };
       if (s.bookings[key]) return { error: 'Slot already booked' };
+
+      if (cfg.no_gaps) {
+        const opens = Object.keys(s.available)
+          .filter(k => k.startsWith(p.date + '|'))
+          .map(k => k.split('|')[1])
+          .sort();
+        const booked = new Set(
+          Object.keys(s.bookings)
+            .filter(k => k.startsWith(p.date + '|'))
+            .map(k => k.split('|')[1])
+        );
+        const ok = noGapsBookableTimes(opens, booked);
+        if (!ok.has(p.time)) {
+          return { error: 'This slot is not currently bookable. An adjacent slot must be booked first.' };
+        }
+      }
       s.bookings[key] = {
         name: p.name.trim(),
         phone: p.phone.trim(),
@@ -96,8 +135,10 @@ function demoDispatch(action, p) {
     case 'adminSetConfig': {
       if (!pinOK()) return { error: 'Invalid PIN' };
       let v = p.value;
-      if (p.key === 'site_published') v = (v === true || v === 'true');
-      if (p.key === 'advance_days' || p.key === 'start_hour' || p.key === 'end_hour') v = parseInt(v, 10);
+      if (p.key === 'site_published' || p.key === 'no_gaps') v = (v === true || v === 'true');
+      else if (/_start$|_end$/.test(p.key) || p.key === 'advance_days' || p.key === 'start_hour' || p.key === 'end_hour') {
+        v = parseInt(v, 10);
+      }
       s.config[p.key] = v;
       demoSave(s);
       return { ok: true };
@@ -142,6 +183,22 @@ function demoDispatch(action, p) {
       const key = p.date + '|' + p.time;
       if (!s.bookings[key]) return { error: 'Booking not found' };
       delete s.bookings[key];
+      demoSave(s);
+      return { ok: true };
+    }
+
+    case 'adminBook': {
+      if (!pinOK()) return { error: 'Invalid PIN' };
+      if (!p.name || !String(p.name).trim()) return { error: 'Name is required' };
+      const key = p.date + '|' + p.time;
+      if (!s.available[key]) return { error: 'Slot is not available' };
+      if (s.bookings[key]) return { error: 'Slot already booked' };
+      s.bookings[key] = {
+        name: p.name.trim(),
+        phone: (p.phone || '').trim(),
+        team: (p.team || '').trim(),
+        timestamp: new Date().toISOString()
+      };
       demoSave(s);
       return { ok: true };
     }
