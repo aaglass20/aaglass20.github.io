@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - 2026 Tryout Evaluations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .tryout-container {
+            max-width: 680px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem;
+        }
+
+        /* ---- Player selector card ---- */
+        .selector-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .player-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1.05rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .player-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .jersey-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .jersey-row .field-label {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .jersey-input {
+            width: 90px;
+            padding: 0.55rem 0.8rem;
+            font-size: 1rem;
+            font-family: monospace;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .jersey-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-jersey-save {
+            padding: 0.55rem 1rem;
+            background: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-jersey-save:hover { background: #2d3748; }
+
+        .jersey-saved-msg {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38a169;
+            display: none;
+        }
+
+        .btn-add-player {
+            width: 100%;
+            margin-top: 0.85rem;
+            padding: 0.55rem 1rem;
+            background: none;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            color: #718096;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add-player:hover {
+            border-color: var(--primary-color);
+            color: var(--text-dark);
+        }
+
+        /* ---- Evaluation form card ---- */
+        .eval-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            display: none;
+        }
+
+        .eval-card.visible { display: block; }
+
+        .eval-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.3rem;
+        }
+
+        /* ---- Rating rows ---- */
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .rating-name {
+            width: 185px;
+            flex-shrink: 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .r-btn {
+            width: 44px;
+            height: 44px;
+            border: 2px solid #e2e8f0;
+            background: #f7fafc;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .r-btn:hover {
+            border-color: #a0aec0;
+            background: #edf2f7;
+            color: var(--text-dark);
+        }
+
+        /* Selected states by value */
+        .r-btn.sel-1 { background:#fc8181; border-color:#fc8181; color:white; }
+        .r-btn.sel-2 { background:#f6ad55; border-color:#f6ad55; color:white; }
+        .r-btn.sel-3 { background:#ecc94b; border-color:#ecc94b; color:#5a3e00; }
+        .r-btn.sel-4 { background:#68d391; border-color:#68d391; color:#1a4731; }
+        .r-btn.sel-5 { background:#00ff88; border-color:#00cc6a; color:#1a1a2e; }
+
+        /* ---- Notes ---- */
+        .notes-wrap {
+            margin-top: 1.2rem;
+        }
+
+        .notes-wrap textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 0.7rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            color: var(--text-dark);
+        }
+
+        .notes-wrap textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* ---- Save button ---- */
+        .btn-save-eval {
+            width: 100%;
+            margin-top: 1.4rem;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #0779e4 0%, #00ff88 100%);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save-eval:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(7, 121, 228, 0.35);
+        }
+
+        .btn-save-eval:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ---- Status message ---- */
+        .status-msg {
+            margin-top: 0.9rem;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .status-msg.success {
+            display: block;
+            background: rgba(0,255,136,0.12);
+            border: 1px solid var(--primary-color);
+            color: #1a4731;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: rgba(252,129,129,0.12);
+            border: 1px solid #fc8181;
+            color: #742a2a;
+        }
+
+        /* ---- Modal ---- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-box h3 {
+            font-size: 1.15rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .modal-box input,
+        .modal-box select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .modal-box input:focus,
+        .modal-box select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.7rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-ok {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .btn-modal-cancel {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 500px) {
+            .rating-name { width: 150px; font-size: 0.88rem; }
+            .r-btn { width: 38px; height: 38px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Shield">
+        <h1>2026 Tryout Evaluations</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<div id="tactical-menu"></div>
+
+<script>
+    fetch('menus/tactical-menu.html')
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('tactical-menu').innerHTML = html;
+            const page = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if (el.getAttribute('href') === page) el.classList.add('active');
+            });
+        });
+</script>
+
+<div class="tryout-container">
+
+    <!-- Player Selector -->
+    <div class="selector-card">
+        <label class="field-label" for="playerSelect">
+            <i class="fas fa-user"></i> &nbsp;Select Player
+        </label>
+        <select id="playerSelect" class="player-select" onchange="onPlayerChange()">
+            <option value="">-- Choose a player --</option>
+            <optgroup label="Age 8">
+                <option value="Carson Bellanger|Age 8">Carson Bellanger</option>
+                <option value="Gabrielle Loerch|Age 8">Gabrielle Loerch</option>
+                <option value="Kelsey Ketvertis|Age 8">Kelsey Ketvertis</option>
+            </optgroup>
+            <optgroup label="Age 9">
+                <option value="Austin Bellanger|Age 9">Austin Bellanger</option>
+                <option value="Gabriella Beastrom|Age 9">Gabriella Beastrom</option>
+                <option value="Haylie Hujarski|Age 9">Haylie Hujarski</option>
+            </optgroup>
+            <optgroup label="Age 10">
+                <option value="Felicity Nash|Age 10">Felicity Nash</option>
+            </optgroup>
+            <optgroup label="Age 11">
+                <option value="Alena Rodgers|Age 11">Alena Rodgers</option>
+                <option value="Isla Zdolshek|Age 11">Isla Zdolshek</option>
+                <option value="Layla Kandzer|Age 11">Layla Kandzer</option>
+                <option value="Lilly Karim|Age 11">Lilly Karim</option>
+                <option value="Olivia Karim|Age 11">Olivia Karim</option>
+            </optgroup>
+        </select>
+
+        <!-- Jersey row (hidden until a player is chosen) -->
+        <div class="jersey-row" id="jerseyRow" style="display:none;">
+            <label class="field-label">Jersey:</label>
+            <input type="text" id="jerseyInput" class="jersey-input"
+                   placeholder="e.g. R14" maxlength="10" autocomplete="off">
+            <button class="btn-jersey-save" onclick="saveJersey()">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <span class="jersey-saved-msg" id="jerseyMsg">&#10003; Saved</span>
+        </div>
+
+        <button class="btn-add-player" onclick="openModal()">
+            <i class="fas fa-plus"></i> &nbsp;Add Player Not on List
+        </button>
+    </div>
+
+    <!-- Evaluation Form -->
+    <div class="eval-card" id="evalCard">
+        <div class="eval-header">
+            <i class="fas fa-clipboard-list"></i>
+            &nbsp;Evaluation &mdash; <span id="evalPlayerName"></span>
+        </div>
+
+        <div id="ratingsArea"></div>
+
+        <div class="notes-wrap">
+            <label class="field-label">Notes</label>
+            <textarea id="notesField" placeholder="Observations, highlights, concerns..."></textarea>
+        </div>
+
+        <button class="btn-save-eval" id="saveBtn" onclick="saveEvaluation()">
+            <i class="fas fa-save"></i> &nbsp;Save Evaluation
+        </button>
+
+        <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+</div>
+
+<!-- Add Player Modal -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-box">
+        <h3><i class="fas fa-user-plus"></i> &nbsp;Add New Player</h3>
+        <input type="text" id="newName" placeholder="Full Name" autocomplete="off">
+        <select id="newAge">
+            <option value="">-- Age Group --</option>
+            <option value="Age 8">Age 8</option>
+            <option value="Age 9">Age 9</option>
+            <option value="Age 10">Age 10</option>
+            <option value="Age 11">Age 11</option>
+            <option value="Age 12">Age 12</option>
+        </select>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-modal-ok" onclick="confirmAdd()">Add Player</button>
+        </div>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+    fetch('menus/shared-footer.html')
+        .then(r => r.text())
+        .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+// ============================================================
+//  CONFIG — paste your Apps Script web app URL here
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+
+// ============================================================
+//  Categories
+// ============================================================
+const CATS = [
+    'Speed',
+    'Control',
+    'Shot Accuracy',
+    'Touch',
+    'Shot Power',
+    'Long Pass Accuracy',
+    'Short Pass Accuracy',
+    'Hustle',
+];
+
+// key used in JSON payload (spaces → underscores)
+function catKey(cat) { return cat.replace(/\s+/g, '_'); }
+
+// ============================================================
+//  State
+// ============================================================
+let currentName = '';
+let currentAge  = '';
+let ratings     = {};     // { 'Speed': 3, ... }
+
+// ============================================================
+//  Build ratings UI
+// ============================================================
+function buildRatings() {
+    const area = document.getElementById('ratingsArea');
+    area.innerHTML = '';
+    CATS.forEach(cat => {
+        const row = document.createElement('div');
+        row.className = 'rating-row';
+        row.innerHTML =
+            `<div class="rating-name">${cat}</div>` +
+            `<div class="rating-buttons" data-cat="${cat}">` +
+            [1,2,3,4,5].map(n =>
+                `<button class="r-btn" data-val="${n}"
+                         onclick="pickRating('${cat}', ${n}, this)">${n}</button>`
+            ).join('') +
+            '</div>';
+        area.appendChild(row);
+    });
+}
+
+function pickRating(cat, val, btn) {
+    ratings[cat] = val;
+    const group = btn.closest('.rating-buttons');
+    group.querySelectorAll('.r-btn').forEach(b => {
+        b.className = 'r-btn';
+        if (parseInt(b.dataset.val) === val) b.classList.add(`sel-${val}`);
+    });
+}
+
+function applyLoadedRatings() {
+    CATS.forEach(cat => {
+        const val = ratings[cat];
+        if (!val) return;
+        const group = document.querySelector(`.rating-buttons[data-cat="${cat}"]`);
+        if (!group) return;
+        group.querySelectorAll('.r-btn').forEach(b => {
+            b.className = 'r-btn';
+            if (parseInt(b.dataset.val) === val) b.classList.add(`sel-${val}`);
+        });
+    });
+}
+
+// ============================================================
+//  Player change
+// ============================================================
+function onPlayerChange() {
+    const val = document.getElementById('playerSelect').value;
+    hideStatus();
+    if (!val) {
+        document.getElementById('evalCard').classList.remove('visible');
+        document.getElementById('jerseyRow').style.display = 'none';
+        currentName = '';
+        return;
+    }
+    const [name, age] = val.split('|');
+    currentName = name;
+    currentAge  = age;
+    ratings = {};
+
+    document.getElementById('evalPlayerName').textContent = name;
+    document.getElementById('jerseyInput').value = '';
+    document.getElementById('notesField').value = '';
+    document.getElementById('jerseyMsg').style.display = 'none';
+    buildRatings();
+    document.getElementById('jerseyRow').style.display = 'flex';
+    document.getElementById('evalCard').classList.add('visible');
+    resetSaveBtn();
+
+    if (SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+        loadPlayerData(name);
+    }
+}
+
+// ============================================================
+//  Load existing data
+// ============================================================
+function loadPlayerData(name) {
+    fetch(`${SCRIPT_URL}?action=get&name=${encodeURIComponent(name)}`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success || !data.row) return;
+            const row = data.row;
+            document.getElementById('jerseyInput').value = row.Jersey || '';
+            document.getElementById('notesField').value = row.Notes || '';
+            ratings = {};
+            CATS.forEach(cat => {
+                const v = parseInt(row[catKey(cat)]);
+                if (v >= 1 && v <= 5) ratings[cat] = v;
+            });
+            applyLoadedRatings();
+        })
+        .catch(() => {});
+}
+
+// ============================================================
+//  Save jersey only
+// ============================================================
+function saveJersey() {
+    if (!currentName) return;
+    const jersey = document.getElementById('jerseyInput').value.trim().toUpperCase();
+    document.getElementById('jerseyInput').value = jersey;
+    const msg = document.getElementById('jerseyMsg');
+    msg.style.display = 'none';
+    msg.style.color = '#38a169';
+    msg.textContent = '✓ Saved';
+
+    post({ action: 'saveJersey', name: currentName, jersey })
+        .then(() => {
+            msg.style.display = 'inline';
+            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+        })
+        .catch(() => {
+            msg.style.color = '#e53e3e';
+            msg.textContent = '✗ Error';
+            msg.style.display = 'inline';
+        });
+}
+
+// ============================================================
+//  Save full evaluation
+// ============================================================
+function saveEvaluation() {
+    if (!currentName) return;
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> &nbsp;Saving...';
+    hideStatus();
+
+    const payload = {
+        action:   'save',
+        name:     currentName,
+        ageGroup: currentAge,
+        jersey:   document.getElementById('jerseyInput').value.trim().toUpperCase(),
+        notes:    document.getElementById('notesField').value.trim(),
+    };
+    CATS.forEach(cat => { payload[catKey(cat)] = ratings[cat] || ''; });
+
+    post(payload)
+        .then(() => {
+            showStatus('&#10003; Evaluation saved!', 'success');
+            resetSaveBtn();
+        })
+        .catch(err => {
+            const msg = (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE')
+                ? 'Apps Script URL not configured yet.'
+                : 'Save failed. Check connection.';
+            showStatus('&#10007; ' + msg, 'error');
+            resetSaveBtn();
+        });
+}
+
+function resetSaveBtn() {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> &nbsp;Save Evaluation';
+}
+
+// ============================================================
+//  HTTP helper
+// ============================================================
+function post(data) {
+    if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+        return Promise.reject(new Error('URL not set'));
+    }
+    return fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data),
+        redirect: 'follow',
+    })
+    .then(r => r.json())
+    .then(d => { if (!d.success) throw new Error(d.error || 'failed'); return d; });
+}
+
+// ============================================================
+//  Status helpers
+// ============================================================
+function showStatus(html, type) {
+    const el = document.getElementById('statusMsg');
+    el.innerHTML = html;
+    el.className = `status-msg ${type}`;
+}
+
+function hideStatus() {
+    const el = document.getElementById('statusMsg');
+    el.className = 'status-msg';
+    el.textContent = '';
+}
+
+// ============================================================
+//  Add player modal
+// ============================================================
+function openModal()  { document.getElementById('addModal').classList.add('open'); }
+function closeModal() {
+    document.getElementById('addModal').classList.remove('open');
+    document.getElementById('newName').value = '';
+    document.getElementById('newAge').value = '';
+}
+
+function confirmAdd() {
+    const name = document.getElementById('newName').value.trim();
+    const age  = document.getElementById('newAge').value;
+    if (!name) { alert('Please enter a name.'); return; }
+    if (!age)  { alert('Please select an age group.'); return; }
+
+    // Add to dropdown
+    const select = document.getElementById('playerSelect');
+    let group = Array.from(select.querySelectorAll('optgroup'))
+                     .find(g => g.label === age);
+    if (!group) {
+        group = document.createElement('optgroup');
+        group.label = age;
+        select.appendChild(group);
+    }
+    const opt = document.createElement('option');
+    opt.value = `${name}|${age}`;
+    opt.textContent = name;
+    group.appendChild(opt);
+
+    // Notify sheet
+    if (SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+        post({ action: 'addPlayer', name, ageGroup: age }).catch(() => {});
+    }
+
+    // Select and load
+    select.value = opt.value;
+    closeModal();
+    onPlayerChange();
+}
+</script>
+
+</body>
+</html>
