@@ -118,6 +118,18 @@
             margin-top: 0.15rem;
         }
 
+        .card-jersey {
+            display: inline-block;
+            margin-top: 0.25rem;
+            font-size: 0.78rem;
+            font-family: monospace;
+            font-weight: 700;
+            background: #edf2f7;
+            color: #2d3748;
+            border-radius: 4px;
+            padding: 0.1rem 0.4rem;
+        }
+
         .card-tally {
             text-align: center;
             font-size: 3.5rem;
@@ -350,14 +362,14 @@ function makeCard(p) {
     card.className = 'player-card';
     card.id = `card-${slugify(p.name)}`;
 
-    const meta = [p.ageGroup, p.jersey].filter(Boolean).join(' · ');
     const nonzero = p.scrimmagePoints > 0 ? ' nonzero' : '';
 
     card.innerHTML = `
         <div class="err-dot" id="err-${slugify(p.name)}"></div>
         <div class="card-info">
             <div class="card-name">${p.name}</div>
-            ${meta ? `<div class="card-meta">${meta}</div>` : ''}
+            ${p.ageGroup ? `<div class="card-meta">${p.ageGroup}</div>` : ''}
+            ${p.jersey   ? `<div class="card-jersey">${p.jersey}</div>` : ''}
         </div>
         <div class="card-tally${nonzero}" id="tally-${slugify(p.name)}">${p.scrimmagePoints}</div>
         <button class="btn-plus" onclick="addPoint('${esc(p.name)}', 1)">+ 1</button>
