@@ -329,9 +329,30 @@
             color: var(--text-dark);
         }
 
-        @media (max-width: 500px) {
-            .rating-name { width: 150px; font-size: 0.88rem; }
-            .r-btn { width: 38px; height: 38px; font-size: 0.9rem; }
+        @media (max-width: 540px) {
+            .tryout-container { padding: 0 0.5rem 4rem; }
+            .selector-card, .eval-card { padding: 1rem; }
+
+            .rating-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+                margin-bottom: 1rem;
+            }
+            .rating-name {
+                width: 100%;
+                font-size: 0.88rem;
+            }
+            .rating-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .r-btn {
+                flex: 1;
+                width: auto;
+                height: 46px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>

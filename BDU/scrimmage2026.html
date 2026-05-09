@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - 2026 Scrimmage Tally</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .scrim-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem;
+        }
+
+        /* ---- Controls bar ---- */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            background: white;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.25rem;
+        }
+
+        .controls-bar label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+
+        .sort-btn {
+            padding: 0.45rem 0.9rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            background: #f7fafc;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+
+        .sort-btn.active {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: #00ff88;
+        }
+
+        .spacer { flex: 1; }
+
+        .load-status {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* ---- Age group headings ---- */
+        .age-heading {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            margin: 1.2rem 0 0.5rem;
+            padding-left: 0.25rem;
+            display: none; /* shown only in Name sort mode */
+        }
+
+        .age-heading.visible { display: block; }
+
+        /* ---- Player grid ---- */
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.85rem;
+        }
+
+        /* ---- Player card ---- */
+        .player-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+            position: relative;
+        }
+
+        .player-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.14); }
+
+        /* Flashes green on successful save */
+        .player-card.saved-flash {
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .card-info {
+            padding: 0.7rem 0.8rem 0.4rem;
+        }
+
+        .card-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--secondary-color);
+            line-height: 1.2;
+        }
+
+        .card-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.15rem;
+        }
+
+        .card-tally {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--secondary-color);
+            line-height: 1;
+            padding: 0.3rem 0 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .card-tally.nonzero { color: #0779e4; }
+
+        /* +1 button — big tap target */
+        .btn-plus {
+            width: 100%;
+            padding: 1rem 0;
+            background: linear-gradient(135deg, #0779e4, #00ff88);
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: filter 0.15s, transform 0.1s;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-plus:active {
+            filter: brightness(0.9);
+            transform: scale(0.98);
+        }
+
+        /* Sub-row: undo + reset */
+        .card-sub {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0.5rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .btn-sub {
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 0.25rem 0.4rem;
+            border-radius: 4px;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .btn-sub:hover { color: var(--text-dark); background: #f7fafc; }
+        .btn-sub.undo:hover { color: #c05621; }
+        .btn-sub.reset:hover { color: #e53e3e; }
+
+        /* Error dot */
+        .err-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #fc8181;
+            border-radius: 50%;
+            display: none;
+            title: 'Save failed';
+        }
+
+        .err-dot.visible { display: block; }
+
+        /* ---- Loading overlay ---- */
+        .loading-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 400px) {
+            .player-grid { grid-template-columns: 1fr 1fr; }
+            .card-tally { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Shield">
+        <h1>2026 Scrimmage Tally</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<div id="tactical-menu"></div>
+
+<script>
+    fetch('menus/tactical-menu.html')
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('tactical-menu').innerHTML = html;
+            const page = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if (el.getAttribute('href') === page) el.classList.add('active');
+            });
+        });
+</script>
+
+<div class="scrim-wrap">
+
+    <div class="controls-bar">
+        <label>Sort:</label>
+        <button class="sort-btn active" id="sortNameBtn" onclick="setSort('name')">
+            <i class="fas fa-sort-alpha-down"></i> Name / Age
+        </button>
+        <button class="sort-btn" id="sortTallyBtn" onclick="setSort('tally')">
+            <i class="fas fa-sort-amount-down"></i> Tally
+        </button>
+        <div class="spacer"></div>
+        <span class="load-status" id="loadStatus">Loading players...</span>
+    </div>
+
+    <div id="playerArea">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i> Loading players from sheet...
+        </div>
+    </div>
+
+</div>
+
+<div id="shared-footer"></div>
+<script>
+    fetch('menus/shared-footer.html')
+        .then(r => r.text())
+        .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+
+// ============================================================
+//  State
+// ============================================================
+let players  = [];   // [ { name, ageGroup, jersey, scrimmagePoints, ... } ]
+let sortMode = 'name';
+const saveTimers = {};   // debounce timers keyed by player name
+
+// ============================================================
+//  Boot
+// ============================================================
+window.addEventListener('DOMContentLoaded', loadPlayers);
+
+function loadPlayers() {
+    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.error);
+            players = data.players.map(p => ({
+                name:            p.Name            || '',
+                ageGroup:        p.Age_Group        || '',
+                jersey:          p.Jersey           || '',
+                scrimmagePoints: parseInt(p.Scrimmage_Points) || 0,
+            }));
+            document.getElementById('loadStatus').textContent =
+                players.length + ' players loaded';
+            render();
+        })
+        .catch(err => {
+            document.getElementById('loadStatus').textContent = 'Load failed';
+            document.getElementById('playerArea').innerHTML =
+                `<div class="loading-state" style="color:#e53e3e;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Could not load players. Check connection.<br>
+                    <small>${err.message}</small>
+                </div>`;
+        });
+}
+
+// ============================================================
+//  Render
+// ============================================================
+function render() {
+    const area = document.getElementById('playerArea');
+
+    const sorted = [...players].sort((a, b) => {
+        if (sortMode === 'tally') return b.scrimmagePoints - a.scrimmagePoints;
+        // Name/age sort: age group first, then name
+        if (a.ageGroup !== b.ageGroup) return a.ageGroup.localeCompare(b.ageGroup);
+        return a.name.localeCompare(b.name);
+    });
+
+    if (sortMode === 'name') {
+        // Group by age
+        const groups = {};
+        sorted.forEach(p => {
+            const key = p.ageGroup || 'Unknown';
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(p);
+        });
+
+        area.innerHTML = '';
+        Object.keys(groups).sort().forEach(age => {
+            const heading = document.createElement('div');
+            heading.className = 'age-heading visible';
+            heading.textContent = age;
+            area.appendChild(heading);
+
+            const grid = document.createElement('div');
+            grid.className = 'player-grid';
+            groups[age].forEach(p => grid.appendChild(makeCard(p)));
+            area.appendChild(grid);
+        });
+    } else {
+        area.innerHTML = '';
+        const grid = document.createElement('div');
+        grid.className = 'player-grid';
+        sorted.forEach(p => grid.appendChild(makeCard(p)));
+        area.appendChild(grid);
+    }
+}
+
+function makeCard(p) {
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.id = `card-${slugify(p.name)}`;
+
+    const meta = [p.ageGroup, p.jersey].filter(Boolean).join(' · ');
+    const nonzero = p.scrimmagePoints > 0 ? ' nonzero' : '';
+
+    card.innerHTML = `
+        <div class="err-dot" id="err-${slugify(p.name)}"></div>
+        <div class="card-info">
+            <div class="card-name">${p.name}</div>
+            ${meta ? `<div class="card-meta">${meta}</div>` : ''}
+        </div>
+        <div class="card-tally${nonzero}" id="tally-${slugify(p.name)}">${p.scrimmagePoints}</div>
+        <button class="btn-plus" onclick="addPoint('${esc(p.name)}', 1)">+ 1</button>
+        <div class="card-sub">
+            <button class="btn-sub undo" onclick="addPoint('${esc(p.name)}', -1)"
+                    title="Undo last point">
+                <i class="fas fa-undo"></i> Undo
+            </button>
+            <button class="btn-sub reset" onclick="resetPlayer('${esc(p.name)}')"
+                    title="Reset to 0">
+                <i class="fas fa-times"></i> Reset
+            </button>
+        </div>`;
+    return card;
+}
+
+// ============================================================
+//  Tally actions
+// ============================================================
+function addPoint(name, delta) {
+    const p = players.find(x => x.name === name);
+    if (!p) return;
+
+    p.scrimmagePoints = Math.max(0, p.scrimmagePoints + delta);
+    updateCardTally(name, p.scrimmagePoints);
+    scheduleSave(name, p.scrimmagePoints);
+}
+
+function resetPlayer(name) {
+    if (!confirm(`Reset ${name}'s tally to 0?`)) return;
+    const p = players.find(x => x.name === name);
+    if (!p) return;
+    p.scrimmagePoints = 0;
+    updateCardTally(name, 0);
+    scheduleSave(name, 0);
+}
+
+function updateCardTally(name, value) {
+    const slug = slugify(name);
+    const tallyEl = document.getElementById(`tally-${slug}`);
+    if (!tallyEl) return;
+    tallyEl.textContent = value;
+    tallyEl.className = 'card-tally' + (value > 0 ? ' nonzero' : '');
+}
+
+// ============================================================
+//  Debounced save — groups rapid taps into one request
+// ============================================================
+function scheduleSave(name, points) {
+    clearTimeout(saveTimers[name]);
+    saveTimers[name] = setTimeout(() => saveTally(name, points), 800);
+}
+
+function saveTally(name, points) {
+    const slug    = slugify(name);
+    const errDot  = document.getElementById(`err-${slug}`);
+    const card    = document.getElementById(`card-${slug}`);
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'setScrimmagePoints', name, points }),
+        redirect: 'follow',
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (!d.success) throw new Error(d.error);
+        if (errDot) errDot.classList.remove('visible');
+        if (card) {
+            card.classList.add('saved-flash');
+            setTimeout(() => card.classList.remove('saved-flash'), 600);
+        }
+    })
+    .catch(() => {
+        if (errDot) errDot.classList.add('visible');
+    });
+}
+
+// ============================================================
+//  Sort toggle
+// ============================================================
+function setSort(mode) {
+    sortMode = mode;
+    document.getElementById('sortNameBtn').classList.toggle('active', mode === 'name');
+    document.getElementById('sortTallyBtn').classList.toggle('active', mode === 'tally');
+    render();
+}
+
+// ============================================================
+//  Utilities
+// ============================================================
+function slugify(str) { return str.replace(/[^a-z0-9]/gi, '-').toLowerCase(); }
+function esc(str)     { return str.replace(/'/g, "\\'"); }
+</script>
+
+</body>
+</html>

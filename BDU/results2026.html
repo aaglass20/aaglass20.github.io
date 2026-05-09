@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - 2026 Tryout Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .results-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem;
+        }
+
+        /* ---- Controls panel ---- */
+        .controls-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .ctrl-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-light);
+        }
+
+        /* Weight slider */
+        .weight-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .weight-slider-wrap input[type=range] {
+            width: 160px;
+            accent-color: #0779e4;
+        }
+
+        .weight-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--text-light);
+            margin-top: 0.1rem;
+        }
+
+        .weight-badge {
+            min-width: 38px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0779e4;
+        }
+
+        /* Sort select */
+        .sort-select {
+            padding: 0.5rem 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            background: #f7fafc;
+            cursor: pointer;
+        }
+
+        .sort-select:focus { outline: none; border-color: var(--primary-color); }
+
+        /* Age filter pills */
+        .pill-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+        .pill {
+            padding: 0.3rem 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f7fafc;
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+
+        .pill.active {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: #00ff88;
+        }
+
+        .spacer { flex: 1; }
+
+        .refresh-btn {
+            padding: 0.5rem 0.9rem;
+            background: none;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.15s;
+        }
+
+        .refresh-btn:hover { border-color: var(--primary-color); color: var(--text-dark); }
+
+        /* Score bar legend */
+        .legend {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+        .legend-dot  {
+            width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+        }
+
+        /* ---- Results table ---- */
+        .results-table-wrap {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table thead tr {
+            background: var(--secondary-color);
+            color: #00ff88;
+        }
+
+        .results-table th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        .results-table th.sortable { cursor: pointer; user-select: none; }
+        .results-table th.sortable:hover { color: white; }
+
+        .results-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.1s;
+        }
+
+        .results-table tbody tr:hover { background: #f7fafc; }
+        .results-table tbody tr:last-child { border-bottom: none; }
+
+        .results-table td {
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        /* Rank cell */
+        .rank-cell {
+            font-weight: 900;
+            font-size: 1rem;
+            text-align: center;
+            width: 40px;
+        }
+
+        .rank-1 { color: #d4af37; }  /* gold */
+        .rank-2 { color: #a8a9ad; }  /* silver */
+        .rank-3 { color: #cd7f32; }  /* bronze */
+
+        .player-name-cell { font-weight: 700; }
+
+        .jersey-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-family: monospace;
+            font-weight: 700;
+            background: #edf2f7;
+            color: #4a5568;
+            border-radius: 4px;
+            padding: 0.1rem 0.35rem;
+            margin-left: 0.3rem;
+        }
+
+        .age-tag {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            display: block;
+        }
+
+        /* Score bar */
+        .score-wrap { display: flex; align-items: center; gap: 0.5rem; }
+
+        .score-bar-outer {
+            flex: 1;
+            background: #f0f0f0;
+            border-radius: 4px;
+            height: 10px;
+            overflow: hidden;
+            min-width: 60px;
+        }
+
+        .score-bar-inner {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .score-val {
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        /* Color classes for bars */
+        .bar-tryout   { background: #0779e4; }
+        .bar-scrim    { background: #00cc6a; }
+        .bar-overall  { background: linear-gradient(90deg, #0779e4, #00ff88); }
+
+        /* Unrated indicator */
+        .unrated { color: #cbd5e0; font-style: italic; font-size: 0.82rem; }
+
+        /* Loading state */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .results-table th:nth-child(4),
+            .results-table td:nth-child(4),
+            .results-table th:nth-child(5),
+            .results-table td:nth-child(5) { display: none; }
+
+            .controls-row { gap: 0.75rem; }
+            .weight-slider-wrap input[type=range] { width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Shield">
+        <h1>2026 Tryout Results</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<div id="tactical-menu"></div>
+
+<script>
+    fetch('menus/tactical-menu.html')
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('tactical-menu').innerHTML = html;
+            const page = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if (el.getAttribute('href') === page) el.classList.add('active');
+            });
+        });
+</script>
+
+<div class="results-wrap">
+
+    <!-- Controls -->
+    <div class="controls-panel">
+        <div class="controls-row">
+
+            <!-- Scrimmage weight -->
+            <div class="control-group">
+                <span class="ctrl-label"><i class="fas fa-futbol"></i> Scrimmage Weight</span>
+                <div class="weight-slider-wrap">
+                    <span style="font-size:0.78rem;color:var(--text-light);">0%</span>
+                    <input type="range" id="weightSlider" min="0" max="100" value="30"
+                           oninput="onWeightChange(this.value)">
+                    <span style="font-size:0.78rem;color:var(--text-light);">100%</span>
+                    <span class="weight-badge" id="weightBadge">30%</span>
+                </div>
+                <div class="weight-labels" style="width:160px; margin-left:2rem;">
+                    <span>Tryout only</span>
+                    <span>Scrim only</span>
+                </div>
+            </div>
+
+            <!-- Sort -->
+            <div class="control-group">
+                <span class="ctrl-label"><i class="fas fa-sort"></i> Sort By</span>
+                <select class="sort-select" id="sortSelect" onchange="render()">
+                    <option value="overall">Overall Score</option>
+                    <option value="tryout">Tryout Score</option>
+                    <option value="scrimmage">Scrimmage Points</option>
+                    <option value="name">Name</option>
+                    <option value="age">Age Group</option>
+                </select>
+            </div>
+
+            <!-- Age filter -->
+            <div class="control-group">
+                <span class="ctrl-label"><i class="fas fa-filter"></i> Age Group</span>
+                <div class="pill-group" id="agePills">
+                    <button class="pill active" data-age="All" onclick="setAgeFilter('All', this)">All</button>
+                    <button class="pill" data-age="Age 8" onclick="setAgeFilter('Age 8', this)">U8</button>
+                    <button class="pill" data-age="Age 9" onclick="setAgeFilter('Age 9', this)">U9</button>
+                    <button class="pill" data-age="Age 10" onclick="setAgeFilter('Age 10', this)">U10</button>
+                    <button class="pill" data-age="Age 11" onclick="setAgeFilter('Age 11', this)">U11</button>
+                </div>
+            </div>
+
+            <div class="spacer"></div>
+
+            <button class="refresh-btn" onclick="loadData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#0779e4;"></div>
+                Tryout score = average of all 8 ratings (1–5 scale → 0–100)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#00cc6a;"></div>
+                Scrimmage score = points relative to top scorer in group (0–100)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:linear-gradient(90deg,#0779e4,#00ff88);width:30px;height:10px;border-radius:4px;"></div>
+                Overall = weighted blend of both scores
+            </div>
+        </div>
+    </div>
+
+    <!-- Results table -->
+    <div class="results-table-wrap" id="resultsWrap">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i> Loading results...
+        </div>
+    </div>
+
+</div>
+
+<div id="shared-footer"></div>
+<script>
+    fetch('menus/shared-footer.html')
+        .then(r => r.text())
+        .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+
+const RATING_KEYS = [
+    'Speed', 'Control', 'Shot_Accuracy', 'Touch', 'Shot_Power',
+    'Long_Pass_Accuracy', 'Short_Pass_Accuracy', 'Hustle'
+];
+
+const RATING_LABELS = {
+    Speed: 'Speed', Control: 'Control', Shot_Accuracy: 'Shot Acc.',
+    Touch: 'Touch', Shot_Power: 'Shot Pwr', Long_Pass_Accuracy: 'Long Pass',
+    Short_Pass_Accuracy: 'Short Pass', Hustle: 'Hustle'
+};
+
+// ============================================================
+//  State
+// ============================================================
+let rawPlayers  = [];
+let ageFilter   = 'All';
+let scrimmageWeight = 0.30;   // 0.0 – 1.0
+
+// ============================================================
+//  Boot
+// ============================================================
+window.addEventListener('DOMContentLoaded', loadData);
+
+function loadData() {
+    document.getElementById('resultsWrap').innerHTML =
+        `<div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
+
+    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.error);
+            rawPlayers = data.players;
+            render();
+        })
+        .catch(err => {
+            document.getElementById('resultsWrap').innerHTML =
+                `<div class="loading-state" style="color:#e53e3e;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Could not load data.<br><small>${err.message}</small>
+                </div>`;
+        });
+}
+
+// ============================================================
+//  Scoring
+// ============================================================
+function calcScores(player, maxScrimmage) {
+    // Tryout score: average rating / 5 * 100
+    const ratings = RATING_KEYS.map(k => parseFloat(player[k])).filter(v => v >= 1 && v <= 5);
+    const tryoutScore = ratings.length
+        ? (ratings.reduce((a, b) => a + b, 0) / ratings.length / 5) * 100
+        : 0;
+    const tryoutRated = ratings.length;
+
+    // Scrimmage score: normalized to max in current view
+    const sp = parseInt(player['Scrimmage_Points']) || 0;
+    const scrimmageScore = maxScrimmage > 0 ? (sp / maxScrimmage) * 100 : 0;
+
+    // Overall weighted score
+    const overall = tryoutScore * (1 - scrimmageWeight) + scrimmageScore * scrimmageWeight;
+
+    return { tryoutScore, scrimmageScore, scrimmagePoints: sp, tryoutRated, overall };
+}
+
+// ============================================================
+//  Render
+// ============================================================
+function render() {
+    const sortBy = document.getElementById('sortSelect').value;
+
+    // Filter
+    let visible = rawPlayers.filter(p => p.Name);
+    if (ageFilter !== 'All') {
+        visible = visible.filter(p => p.Age_Group === ageFilter);
+    }
+
+    // Max scrimmage among visible players (for normalization)
+    const maxScrimmage = Math.max(...visible.map(p => parseInt(p.Scrimmage_Points) || 0), 0);
+
+    // Attach scores
+    const scored = visible.map(p => ({
+        ...p,
+        _scores: calcScores(p, maxScrimmage)
+    }));
+
+    // Sort
+    scored.sort((a, b) => {
+        switch (sortBy) {
+            case 'overall':   return b._scores.overall - a._scores.overall;
+            case 'tryout':    return b._scores.tryoutScore - a._scores.tryoutScore;
+            case 'scrimmage': return b._scores.scrimmagePoints - a._scores.scrimmagePoints;
+            case 'name':      return a.Name.localeCompare(b.Name);
+            case 'age':
+                if (a.Age_Group !== b.Age_Group) return a.Age_Group.localeCompare(b.Age_Group);
+                return b._scores.overall - a._scores.overall;
+            default: return 0;
+        }
+    });
+
+    if (scored.length === 0) {
+        document.getElementById('resultsWrap').innerHTML =
+            `<div class="loading-state">No players found for this filter.</div>`;
+        return;
+    }
+
+    // Build table
+    const table = document.createElement('table');
+    table.className = 'results-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>Tryout Score</th>
+                <th>Scrimmage</th>
+                <th>Overall</th>
+            </tr>
+        </thead>`;
+
+    const tbody = document.createElement('tbody');
+
+    scored.forEach((p, i) => {
+        const s      = p._scores;
+        const rank   = i + 1;
+        const rankCls = rank <= 3 ? ` rank-${rank}` : '';
+        const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+        const jersey = p.Jersey ? `<span class="jersey-badge">${p.Jersey}</span>` : '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="rank-cell${rankCls}">${rankEmoji}</td>
+            <td class="player-name-cell">
+                ${p.Name}${jersey}
+                <span class="age-tag">${p.Age_Group || ''}</span>
+            </td>
+            <td>
+                ${s.tryoutRated === 0
+                    ? '<span class="unrated">Not rated</span>'
+                    : scoreCell(s.tryoutScore, 'bar-tryout')}
+            </td>
+            <td>
+                ${s.scrimmagePoints === 0
+                    ? '<span class="unrated">—</span>'
+                    : scoreCell(s.scrimmageScore, 'bar-scrim', s.scrimmagePoints + ' pts')}
+            </td>
+            <td>
+                ${(s.tryoutRated === 0 && s.scrimmagePoints === 0)
+                    ? '<span class="unrated">No data</span>'
+                    : scoreCell(s.overall, 'bar-overall')}
+            </td>`;
+
+        // Expandable detail row
+        tr.style.cursor = 'pointer';
+        tr.title = 'Click for rating breakdown';
+        tr.addEventListener('click', () => toggleDetail(tr, p, s));
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    document.getElementById('resultsWrap').innerHTML = '';
+    document.getElementById('resultsWrap').appendChild(table);
+}
+
+function scoreCell(value, barClass, label) {
+    const disp = label || Math.round(value);
+    return `<div class="score-wrap">
+        <div class="score-bar-outer">
+            <div class="score-bar-inner ${barClass}" style="width:${value.toFixed(1)}%"></div>
+        </div>
+        <span class="score-val">${disp}</span>
+    </div>`;
+}
+
+// ============================================================
+//  Expandable detail rows
+// ============================================================
+function toggleDetail(tr, p, scores) {
+    const existingDetail = tr.nextElementSibling;
+    if (existingDetail && existingDetail.classList.contains('detail-row')) {
+        existingDetail.remove();
+        return;
+    }
+
+    const detail = document.createElement('tr');
+    detail.className = 'detail-row';
+
+    const ratingHtml = RATING_KEYS.map(key => {
+        const val = parseFloat(p[key]);
+        const pct = (val >= 1 && val <= 5) ? (val / 5 * 100) : 0;
+        const colors = ['', '#fc8181', '#f6ad55', '#ecc94b', '#68d391', '#00ff88'];
+        const color  = (val >= 1 && val <= 5) ? colors[Math.round(val)] : '#e2e8f0';
+        return `<div style="margin-bottom:0.35rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span style="width:110px;font-size:0.8rem;color:#4a5568;">${RATING_LABELS[key]}</span>
+                <div style="flex:1;background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden;">
+                    <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;"></div>
+                </div>
+                <span style="font-weight:700;font-size:0.85rem;min-width:20px;text-align:right;color:#2d3748;">
+                    ${(val >= 1 && val <= 5) ? val : '—'}
+                </span>
+            </div>
+        </div>`;
+    }).join('');
+
+    detail.innerHTML = `
+        <td></td>
+        <td colspan="4" style="padding:0.75rem 1rem 1rem; background:#fafafa;">
+            <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;
+                        letter-spacing:0.06em;color:#718096;margin-bottom:0.6rem;">
+                Rating Breakdown
+            </div>
+            ${ratingHtml}
+            ${p.Notes ? `<div style="margin-top:0.6rem;font-size:0.82rem;color:#4a5568;">
+                <b>Notes:</b> ${p.Notes}
+            </div>` : ''}
+        </td>`;
+
+    tr.after(detail);
+}
+
+// ============================================================
+//  Controls
+// ============================================================
+function onWeightChange(val) {
+    scrimmageWeight = val / 100;
+    document.getElementById('weightBadge').textContent = val + '%';
+    if (rawPlayers.length) render();
+}
+
+function setAgeFilter(age, btn) {
+    ageFilter = age;
+    document.querySelectorAll('#agePills .pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.age === age);
+    });
+    render();
+}
+</script>
+
+</body>
+</html>
