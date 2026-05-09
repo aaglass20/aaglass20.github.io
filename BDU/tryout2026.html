@@ -391,27 +391,7 @@
             <i class="fas fa-user"></i> &nbsp;Select Player
         </label>
         <select id="playerSelect" class="player-select" onchange="onPlayerChange()">
-            <option value="">-- Choose a player --</option>
-            <optgroup label="Age 8">
-                <option value="Carson Bellanger|Age 8">Carson Bellanger</option>
-                <option value="Gabrielle Loerch|Age 8">Gabrielle Loerch</option>
-                <option value="Kelsey Ketvertis|Age 8">Kelsey Ketvertis</option>
-            </optgroup>
-            <optgroup label="Age 9">
-                <option value="Austin Bellanger|Age 9">Austin Bellanger</option>
-                <option value="Gabriella Beastrom|Age 9">Gabriella Beastrom</option>
-                <option value="Haylie Hujarski|Age 9">Haylie Hujarski</option>
-            </optgroup>
-            <optgroup label="Age 10">
-                <option value="Felicity Nash|Age 10">Felicity Nash</option>
-            </optgroup>
-            <optgroup label="Age 11">
-                <option value="Alena Rodgers|Age 11">Alena Rodgers</option>
-                <option value="Isla Zdolshek|Age 11">Isla Zdolshek</option>
-                <option value="Layla Kandzer|Age 11">Layla Kandzer</option>
-                <option value="Lilly Karim|Age 11">Lilly Karim</option>
-                <option value="Olivia Karim|Age 11">Olivia Karim</option>
-            </optgroup>
+            <option value="">Loading players...</option>
         </select>
 
         <!-- Jersey row (hidden until a player is chosen) -->
@@ -510,6 +490,47 @@ function catKey(cat) { return cat.replace(/\s+/g, '_'); }
 let currentName = '';
 let currentAge  = '';
 let ratings     = {};     // { 'Speed': 3, ... }
+
+// ============================================================
+//  Boot — load dropdown from sheet
+// ============================================================
+window.addEventListener('DOMContentLoaded', loadPlayersIntoDropdown);
+
+function loadPlayersIntoDropdown() {
+    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.error);
+            const select = document.getElementById('playerSelect');
+            select.innerHTML = '<option value="">-- Choose a player --</option>';
+
+            // Group by age
+            const groups = {};
+            data.players.forEach(p => {
+                const age = p.Age_Group || 'Other';
+                if (!groups[age]) groups[age] = [];
+                groups[age].push(p.Name);
+            });
+
+            // Sort age groups, then names within each group
+            Object.keys(groups).sort().forEach(age => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = age;
+                groups[age].sort().forEach(name => {
+                    const opt = document.createElement('option');
+                    opt.value = `${name}|${age}`;
+                    opt.textContent = name;
+                    optgroup.appendChild(opt);
+                });
+                select.appendChild(optgroup);
+            });
+        })
+        .catch(() => {
+            // Fall back to a usable placeholder if fetch fails
+            const select = document.getElementById('playerSelect');
+            select.innerHTML = '<option value="">-- Could not load (check connection) --</option>';
+        });
+}
 
 // ============================================================
 //  Build ratings UI
