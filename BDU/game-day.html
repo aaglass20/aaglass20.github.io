@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* ============================================
            GAME DAY APP STYLES
@@ -620,13 +621,9 @@
     'use strict';
 
     // ---------- CONFIG ----------
-    // 1. SHEET_ID — published Google Sheet ID. Sheet must be "Anyone with the link – Viewer".
-    //    Used for read-only pulls of Roster / Games / DepthChart via the public gviz endpoint.
-    // 2. WEBAPP_URL — Google Apps Script web app URL for two-way sync of Lineups / Stats / Depth.
-    //    Optional. Leave blank to fall back to manual Export button only.
-    //    See README-game-day.md for setup instructions.
-    const SHEET_ID = '1ymL9unwdw1Y6e8vpeMfSlnYe2aRGtnAKCZ0zhGeEidA';
-    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxYpluV1wTA9RakQj4UvNRwiEiGjZipNc8QjfKmByKuQAqdMmgEcBEO2E0w2BpQRKrmzg/exec';
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const POSITIONS = ['GK','LD','CD','RD','LM','CM','RM','LF','RF'];
     const FORMATIONS = {
         '3-3-2': {
@@ -706,138 +703,256 @@
         const el = $('#gd-status'); el.textContent = msg; el.className = 'gd-status ' + kind;
     };
 
-    // ---------- GOOGLE SHEET FETCH ----------
-    async function fetchSheet(sheetName) {
-        if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') {
-            throw new Error('SHEET_ID not configured – see README-game-day.md');
-        }
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-        const res = await fetch(url);
-        const text = await res.text();
-        // gviz wraps response: /*O_o*/google.visualization.Query.setResponse({...});
-        const start = text.indexOf('(') + 1;
-        const end = text.lastIndexOf(')');
-        const json = JSON.parse(text.substring(start, end));
-        const cols = json.table.cols.map(c => (c.label || c.id || '').trim());
-        return json.table.rows.map(row => {
-            const obj = {};
-            (row.c || []).forEach((cell, i) => {
-                obj[cols[i]] = cell ? cell.v : null;
-            });
-            return obj;
-        });
-    }
+    // ---------- SUPABASE SYNC ----------
 
-    async function loadFromSheet() {
-        setStatus('Loading from Google Sheet…');
+    async function loadFromSupabase() {
+        setStatus('Loading from Supabase…');
         try {
-            const [rosterRows, gameRows] = await Promise.all([
-                fetchSheet('Roster'),
-                fetchSheet('Games')
+            const [
+                { data: rosterData,  error: e1 },
+                { data: gamesData,   error: e2 },
+                { data: lineupsData, error: e3 },
+                { data: statsData,   error: e4 },
+                { data: depthData,   error: e5 },
+                { data: playsData,   error: e6 },
+            ] = await Promise.all([
+                db.from('game_day_roster').select('*').eq('active', true).order('name'),
+                db.from('game_day_games').select('*').order('date'),
+                db.from('game_day_lineups').select('*'),
+                db.from('game_day_stats').select('*'),
+                db.from('game_day_depth').select('*').order('rank'),
+                db.from('game_day_plays').select('game_id, name, image_data'),
             ]);
-            state.roster = rosterRows
-                .filter(r => r.Name)
-                .filter(r => r.Active === null || r.Active === true || String(r.Active).toUpperCase() === 'TRUE' || r.Active === 1)
-                .map(r => ({
-                    name: String(r.Name).trim(),
-                    number: r.Number ?? '',
-                    prefs: r.PreferredPositions ? String(r.PreferredPositions).split(',').map(s => s.trim()) : [],
-                    active: true
-                }));
-            state.games = gameRows
-                .filter(r => r.GameID)
-                .map(r => ({
-                    id: String(r.GameID),
-                    date: r.Date ? String(r.Date) : '',
-                    opponent: r.Opponent || '',
-                    location: r.Location || '',
-                    homeAway: r.HomeAway || '',
-                    type: r.Type || 'League',
-                    notes: r.Notes || '',
-                    source: 'sheet'
-                }));
-            // Try optional DepthChart sheet (seed only if we have nothing locally)
-            try {
-                const depthRows = await fetchSheet('DepthChart');
-                const depthSeed = {};
-                POSITIONS.forEach(p => depthSeed[p] = []);
-                depthRows
-                    .filter(r => r.Position && r.Player)
-                    .sort((a, b) => (a.Rank || 99) - (b.Rank || 99))
-                    .forEach(r => {
-                        if (depthSeed[r.Position]) depthSeed[r.Position].push(String(r.Player));
-                    });
-                if (!Object.keys(state.depth).length) state.depth = depthSeed;
-            } catch (_) { /* optional */ }
+            if (e1) throw new Error('Roster: ' + e1.message);
+            if (e2) throw new Error('Games: ' + e2.message);
+
+            state.roster = (rosterData || []).map(r => ({
+                name:   r.name,
+                number: r.number || '',
+                prefs:  r.preferred_positions
+                            ? r.preferred_positions.split(',').map(s => s.trim()).filter(Boolean)
+                            : [],
+                active: true,
+            }));
+
+            const sheetGames = (gamesData || []).map(r => ({
+                id:       r.game_id,
+                date:     r.date     || '',
+                opponent: r.opponent || '',
+                location: r.location || '',
+                homeAway: r.home_away || '',
+                type:     r.type     || 'League',
+                notes:    r.notes    || '',
+                source:   'sheet',
+            }));
+            const sheetIds = new Set(sheetGames.map(g => g.id));
+            const localOnly = state.games.filter(g => g.source === 'local' && !sheetIds.has(g.id));
+            state.games = [...sheetGames, ...localOnly];
+
+            const newLineups = parseLineups(lineupsData || []);
+            const newStats   = parseStats(statsData || []);
+            const newDepth   = parseDepth(depthData || []);
+            const newPlays   = parsePlays(playsData || []);
+
+            if (Object.keys(newLineups).length) state.lineup = newLineups;
+            if (Object.keys(newStats).length)   state.stats  = newStats;
+            if (Object.keys(newDepth).some(k => newDepth[k].length)) state.depth = newDepth;
+            if (Object.keys(newPlays).length)   state.plays  = newPlays;
 
             lsSet(LS.roster, state.roster);
+            lsSet(LS.games,  state.games);
+            lsSet(LS.lineup, state.lineup);
+            lsSet(LS.stats,  state.stats);
+            lsSet(LS.depth,  state.depth);
+            lsSet(LS.plays,  state.plays);
+
+            setStatus(
+                `Loaded ${state.roster.length} players, ${state.games.length} games, ` +
+                `${Object.keys(state.lineup).length} lineups.`, 'ok'
+            );
+        } catch (err) {
+            console.error(err);
+            setStatus('Load failed: ' + err.message + '. Using cached data.', 'error');
+        }
+    }
+
+    async function saveToSupabase() {
+        setStatus('Saving to Supabase…');
+        try {
+            await Promise.all([
+                _saveLineups(state.lineup),
+                _saveStats(state.stats),
+                _saveDepth(state.depth),
+                _savePlays(state.plays),
+                _saveNewGames(state.games.filter(g => g.source === 'local')),
+            ]);
+            state.games.forEach(g => { if (g.source === 'local') g.source = 'sheet'; });
             lsSet(LS.games, state.games);
-            lsSet(LS.depth, state.depth);
-            setStatus(`Loaded ${state.roster.length} players, ${state.games.length} games from sheet.`, 'ok');
-
-            // If a web app endpoint is configured, also pull editable data (lineups/stats/depth)
-            if (WEBAPP_URL) await pullFromWebApp();
+            lsSet(LS.custom, []);
+            setStatus('Saved to Supabase.', 'ok');
         } catch (err) {
             console.error(err);
-            setStatus('Sheet load failed: ' + err.message + '. Using cached/local data.', 'error');
+            setStatus('Save failed: ' + err.message + '. Use Export as fallback.', 'error');
         }
     }
 
-    // ---------- WEB APP SYNC (two-way) ----------
-    async function pullFromWebApp() {
-        if (!WEBAPP_URL) return;
-        try {
-            const res = await fetch(WEBAPP_URL + '?action=pull');
-            const data = await res.json();
-            if (!data || data.ok === false) throw new Error(data && data.error || 'pull failed');
-            if (data.lineups) { state.lineup = data.lineups; lsSet(LS.lineup, state.lineup); }
-            if (data.stats)   { state.stats  = data.stats;   lsSet(LS.stats,  state.stats);  }
-            if (data.plays)   { state.plays  = data.plays;   lsSet(LS.plays,  state.plays);  }
-            if (data.depth && Object.keys(data.depth).length) {
-                // Merge: ensure all positions exist
-                POSITIONS.forEach(p => { if (!data.depth[p]) data.depth[p] = []; });
-                state.depth = data.depth; lsSet(LS.depth, state.depth);
-            }
-            setStatus(`Synced from sheet: ${Object.keys(state.lineup).length} game lineups, ${Object.keys(state.stats).length} stat sets.`, 'ok');
-        } catch (err) {
-            console.warn('Web app pull failed:', err);
-            setStatus('Sheet pull OK, but web app sync failed: ' + err.message, 'error');
-        }
-    }
+    // ---- Write helpers ----
 
-    async function saveToWebApp() {
-        if (!WEBAPP_URL) {
-            alert('Web app sync not configured. Set WEBAPP_URL in game-day.html (see README-game-day.md), or use Export for manual paste.');
-            return;
-        }
-        setStatus('Saving to sheet…');
-        try {
-            const payload = {
-                action: 'sync',
-                lineups: state.lineup,
-                stats: state.stats,
-                depth: state.depth,
-                games: state.games.filter(g => g.source === 'local'),
-                plays: state.plays
-            };
-            // Use text/plain to avoid CORS preflight (Apps Script reads e.postData.contents regardless)
-            const res = await fetch(WEBAPP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
+    async function _saveLineups(lineups) {
+        const gameIds = Object.keys(lineups);
+        if (!gameIds.length) return;
+        const { error: delErr } = await db.from('game_day_lineups').delete().in('game_id', gameIds);
+        if (delErr) throw new Error('Lineup delete: ' + delErr.message);
+        const rows = [];
+        gameIds.forEach(gid => {
+            const halves = lineups[gid] || {};
+            ['1', '2', 'custom'].forEach(h => {
+                const half = halves[h] || {};
+                const halfLabel = h === 'custom' ? 'Custom' : h;
+                if (h === 'custom' && half._formation) {
+                    rows.push({ game_id: gid, half: 'Custom', position: '_formation', role: 'Meta', player: half._formation });
+                }
+                Object.keys(half).forEach(pos => {
+                    if (pos.startsWith('_')) return;
+                    const val = half[pos];
+                    if (!val) return;
+                    if (typeof val === 'string') {
+                        rows.push({ game_id: gid, half: halfLabel, position: pos, role: 'Starter', player: val });
+                    } else {
+                        if (val.s) rows.push({ game_id: gid, half: halfLabel, position: pos, role: 'Starter', player: val.s });
+                        (val.subs || []).forEach(name => {
+                            if (name) rows.push({ game_id: gid, half: halfLabel, position: pos, role: 'Sub', player: name });
+                        });
+                    }
+                });
             });
-            const data = await res.json();
-            if (!data || data.ok === false) throw new Error(data && data.error || 'save failed');
-            const w = data.written || {};
-            if (w.games > 0) {
-                state.games.forEach(g => { if (g.source === 'local') g.source = 'sheet'; });
-                lsSet(LS.custom, []);
-            }
-            setStatus(`Saved: ${w.lineups||0} lineup, ${w.stats||0} stats, ${w.depth||0} depth, ${w.plays||0} plays, ${w.games||0} new games.`, 'ok');
-        } catch (err) {
-            console.error(err);
-            setStatus('Save failed: ' + err.message + '. Try Export as fallback.', 'error');
+            (halves.out || []).forEach(name => {
+                if (name) rows.push({ game_id: gid, half: '', position: 'OUT', role: 'Out', player: name });
+            });
+        });
+        if (rows.length) {
+            const { error } = await db.from('game_day_lineups').insert(rows);
+            if (error) throw new Error('Lineup insert: ' + error.message);
         }
+    }
+
+    async function _saveStats(stats) {
+        const gameIds = Object.keys(stats);
+        if (!gameIds.length) return;
+        const { error: delErr } = await db.from('game_day_stats').delete().in('game_id', gameIds);
+        if (delErr) throw new Error('Stats delete: ' + delErr.message);
+        const rows = [];
+        gameIds.forEach(gid => {
+            (stats[gid] || []).forEach(s => {
+                rows.push({ game_id: gid, minute: s.minute || '', type: s.type || '', player: s.player || '' });
+            });
+        });
+        if (rows.length) {
+            const { error } = await db.from('game_day_stats').insert(rows);
+            if (error) throw new Error('Stats insert: ' + error.message);
+        }
+    }
+
+    async function _saveDepth(depth) {
+        await db.from('game_day_depth').delete().neq('id', 0);
+        const rows = [];
+        Object.keys(depth).forEach(pos => {
+            (depth[pos] || []).forEach((player, i) => {
+                rows.push({ position: pos, rank: i + 1, player });
+            });
+        });
+        if (rows.length) {
+            const { error } = await db.from('game_day_depth').insert(rows);
+            if (error) throw new Error('Depth insert: ' + error.message);
+        }
+    }
+
+    async function _savePlays(plays) {
+        const rows = [];
+        Object.keys(plays).forEach(gid => {
+            Object.keys(plays[gid] || {}).forEach(name => {
+                const dataUrl = plays[gid][name];
+                if (dataUrl && dataUrl.length < 50000) {
+                    rows.push({ game_id: gid, name, image_data: dataUrl });
+                }
+            });
+        });
+        if (rows.length) {
+            const { error } = await db.from('game_day_plays')
+                .upsert(rows, { onConflict: 'game_id,name' });
+            if (error) throw new Error('Plays upsert: ' + error.message);
+        }
+    }
+
+    async function _saveNewGames(newGames) {
+        if (!newGames.length) return;
+        const rows = newGames.map(g => ({
+            game_id:   g.id,
+            date:      g.date      || '',
+            opponent:  g.opponent  || '',
+            location:  g.location  || '',
+            home_away: g.homeAway  || '',
+            type:      g.type      || 'League',
+            notes:     g.notes     || '',
+        }));
+        const { error } = await db.from('game_day_games')
+            .upsert(rows, { onConflict: 'game_id' });
+        if (error) throw new Error('Games upsert: ' + error.message);
+    }
+
+    // ---- Read helpers (flat rows → nested state objects) ----
+
+    function parseLineups(rows) {
+        const out = {};
+        rows.forEach(({ game_id: gid, half, position: pos, role, player }) => {
+            if (!gid || !pos || !player) return;
+            let hKey = String(half);
+            if (hKey.toLowerCase() === 'custom') hKey = 'custom';
+            if (!out[gid]) out[gid] = { '1': {}, '2': {}, custom: {} };
+            if (!out[gid][hKey]) out[gid][hKey] = {};
+            if (role.toLowerCase() === 'meta' && pos === '_formation') {
+                out[gid][hKey]._formation = player;
+            } else if (role.toLowerCase() === 'out') {
+                if (!out[gid].out) out[gid].out = [];
+                out[gid].out.push(player);
+            } else {
+                if (!out[gid][hKey][pos]) out[gid][hKey][pos] = { s: '', subs: [] };
+                if (role.toLowerCase() === 'sub') out[gid][hKey][pos].subs.push(player);
+                else out[gid][hKey][pos].s = player;
+            }
+        });
+        return out;
+    }
+
+    function parseStats(rows) {
+        const out = {};
+        rows.forEach(({ game_id: gid, minute, type, player }) => {
+            if (!gid || !type || !player) return;
+            if (!out[gid]) out[gid] = [];
+            out[gid].push({ minute: minute || '', type: String(type), player: String(player) });
+        });
+        return out;
+    }
+
+    function parseDepth(rows) {
+        const out = {};
+        POSITIONS.forEach(p => out[p] = []);
+        rows.forEach(({ position: pos, player }) => {
+            if (!pos || !player) return;
+            if (!out[pos]) out[pos] = [];
+            out[pos].push(player);
+        });
+        return out;
+    }
+
+    function parsePlays(rows) {
+        const out = {};
+        rows.forEach(({ game_id: gid, name, image_data }) => {
+            if (!gid || !name || !image_data) return;
+            if (!out[gid]) out[gid] = {};
+            out[gid][name] = image_data;
+        });
+        return out;
     }
 
     // ---------- INIT STATE ----------
@@ -2019,10 +2134,9 @@
             renderAll();
         };
         $('#gd-add-game').onclick = showAddGameModal;
-        $('#gd-refresh').onclick = async () => { await loadFromSheet(); renderAll(); };
+        $('#gd-refresh').onclick = async () => { await loadFromSupabase(); renderAll(); };
         const saveBtn = $('#gd-save');
-        saveBtn.onclick = async () => { await saveToWebApp(); renderAll(); };
-        if (!WEBAPP_URL) saveBtn.style.display = 'none'; // Export is the fallback
+        saveBtn.onclick = async () => { await saveToSupabase(); renderAll(); };
         $('#gd-export').onclick = showExportModal;
         $('#gd-more-toggle').onclick = () => {
             const actions = $('#gd-subtab-actions');
@@ -2035,20 +2149,19 @@
         $('#gd-copy-from-1st').onclick = copyFromFirstHalf;
         $('#gd-print-lineup').onclick = showPrintView;
         wireFullscreenButtons();
-        $('#gd-stats-save').onclick = async () => { await saveToWebApp(); renderAll(); };
-        if (!WEBAPP_URL) $('#gd-stats-save').style.display = 'none';
+        $('#gd-stats-save').onclick = async () => { await saveToSupabase(); renderAll(); };
         $$('.gd-stats-controls button[data-stat]').forEach(b => {
             b.onclick = () => showStatPicker(b.dataset.stat);
         });
 
         renderAll();
 
-        // Try sheet load on first visit (or if cache empty)
+        // Try Supabase load on first visit (or if cache empty)
         if (!state.roster.length || !state.games.length) {
-            await loadFromSheet();
+            await loadFromSupabase();
             renderAll();
         } else {
-            setStatus(`Using cached data (${state.roster.length} players, ${state.games.length} games). Click Sheet to refresh.`);
+            setStatus(`Using cached data (${state.roster.length} players, ${state.games.length} games). Click refresh to sync.`);
         }
     }
 
