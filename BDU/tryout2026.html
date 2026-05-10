@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .tryout-container {
             max-width: 680px;
@@ -463,73 +464,70 @@
 
 <script>
 // ============================================================
-//  CONFIG — paste your Apps Script web app URL here
+//  Supabase
 // ============================================================
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================================
-//  Categories
+//  Categories — label shown in UI, key matches DB column
 // ============================================================
 const CATS = [
-    'Speed',
-    'Control',
-    'Shot Accuracy',
-    'Touch',
-    'Shot Power',
-    'Long Pass Accuracy',
-    'Short Pass Accuracy',
-    'Hustle',
+    { label: 'Speed',               key: 'speed' },
+    { label: 'Control',             key: 'control' },
+    { label: 'Shot Accuracy',       key: 'shot_accuracy' },
+    { label: 'Touch',               key: 'touch' },
+    { label: 'Shot Power',          key: 'shot_power' },
+    { label: 'Long Pass Accuracy',  key: 'long_pass_accuracy' },
+    { label: 'Short Pass Accuracy', key: 'short_pass_accuracy' },
+    { label: 'Hustle',              key: 'hustle' },
 ];
-
-// key used in JSON payload (spaces → underscores)
-function catKey(cat) { return cat.replace(/\s+/g, '_'); }
 
 // ============================================================
 //  State
 // ============================================================
 let currentName = '';
 let currentAge  = '';
-let ratings     = {};     // { 'Speed': 3, ... }
+let ratings     = {};
 
 // ============================================================
-//  Boot — load dropdown from sheet
+//  Boot — load dropdown from Supabase
 // ============================================================
 window.addEventListener('DOMContentLoaded', loadPlayersIntoDropdown);
 
-function loadPlayersIntoDropdown() {
-    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.success) throw new Error(data.error);
-            const select = document.getElementById('playerSelect');
-            select.innerHTML = '<option value="">-- Choose a player --</option>';
+async function loadPlayersIntoDropdown() {
+    const select = document.getElementById('playerSelect');
+    const { data, error } = await db
+        .from('tryout2026')
+        .select('name, age_group')
+        .order('age_group')
+        .order('name');
 
-            // Group by age
-            const groups = {};
-            data.players.forEach(p => {
-                const age = p.Age_Group || 'Other';
-                if (!groups[age]) groups[age] = [];
-                groups[age].push(p.Name);
-            });
+    select.innerHTML = '<option value="">-- Choose a player --</option>';
+    if (error || !data) {
+        select.innerHTML = '<option value="">-- Could not load (check connection) --</option>';
+        return;
+    }
 
-            // Sort age groups, then names within each group
-            Object.keys(groups).sort().forEach(age => {
-                const optgroup = document.createElement('optgroup');
-                optgroup.label = age;
-                groups[age].sort().forEach(name => {
-                    const opt = document.createElement('option');
-                    opt.value = `${name}|${age}`;
-                    opt.textContent = name;
-                    optgroup.appendChild(opt);
-                });
-                select.appendChild(optgroup);
-            });
-        })
-        .catch(() => {
-            // Fall back to a usable placeholder if fetch fails
-            const select = document.getElementById('playerSelect');
-            select.innerHTML = '<option value="">-- Could not load (check connection) --</option>';
+    const groups = {};
+    data.forEach(p => {
+        const age = p.age_group || 'Other';
+        if (!groups[age]) groups[age] = [];
+        groups[age].push(p.name);
+    });
+
+    Object.keys(groups).sort().forEach(age => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = age;
+        groups[age].forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = `${name}|${age}`;
+            opt.textContent = name;
+            optgroup.appendChild(opt);
         });
+        select.appendChild(optgroup);
+    });
 }
 
 // ============================================================
@@ -538,23 +536,23 @@ function loadPlayersIntoDropdown() {
 function buildRatings() {
     const area = document.getElementById('ratingsArea');
     area.innerHTML = '';
-    CATS.forEach(cat => {
+    CATS.forEach(({ label, key }) => {
         const row = document.createElement('div');
         row.className = 'rating-row';
         row.innerHTML =
-            `<div class="rating-name">${cat}</div>` +
-            `<div class="rating-buttons" data-cat="${cat}">` +
+            `<div class="rating-name">${label}</div>` +
+            `<div class="rating-buttons" data-key="${key}">` +
             [1,2,3,4,5].map(n =>
                 `<button class="r-btn" data-val="${n}"
-                         onclick="pickRating('${cat}', ${n}, this)">${n}</button>`
+                         onclick="pickRating('${key}', ${n}, this)">${n}</button>`
             ).join('') +
             '</div>';
         area.appendChild(row);
     });
 }
 
-function pickRating(cat, val, btn) {
-    ratings[cat] = val;
+function pickRating(key, val, btn) {
+    ratings[key] = val;
     const group = btn.closest('.rating-buttons');
     group.querySelectorAll('.r-btn').forEach(b => {
         b.className = 'r-btn';
@@ -563,10 +561,10 @@ function pickRating(cat, val, btn) {
 }
 
 function applyLoadedRatings() {
-    CATS.forEach(cat => {
-        const val = ratings[cat];
+    CATS.forEach(({ key }) => {
+        const val = ratings[key];
         if (!val) return;
-        const group = document.querySelector(`.rating-buttons[data-cat="${cat}"]`);
+        const group = document.querySelector(`.rating-buttons[data-key="${key}"]`);
         if (!group) return;
         group.querySelectorAll('.r-btn').forEach(b => {
             b.className = 'r-btn';
@@ -601,60 +599,56 @@ function onPlayerChange() {
     document.getElementById('evalCard').classList.add('visible');
     resetSaveBtn();
 
-    if (SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-        loadPlayerData(name);
-    }
+    loadPlayerData(name);
 }
 
 // ============================================================
 //  Load existing data
 // ============================================================
-function loadPlayerData(name) {
-    fetch(`${SCRIPT_URL}?action=get&name=${encodeURIComponent(name)}`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.success || !data.row) return;
-            const row = data.row;
-            document.getElementById('jerseyInput').value = row.Jersey || '';
-            document.getElementById('notesField').value = row.Notes || '';
-            ratings = {};
-            CATS.forEach(cat => {
-                const v = parseInt(row[catKey(cat)]);
-                if (v >= 1 && v <= 5) ratings[cat] = v;
-            });
-            applyLoadedRatings();
-        })
-        .catch(() => {});
+async function loadPlayerData(name) {
+    const { data, error } = await db
+        .from('tryout2026')
+        .select('*')
+        .eq('name', name)
+        .maybeSingle();
+
+    if (error || !data) return;
+
+    document.getElementById('jerseyInput').value = data.jersey || '';
+    document.getElementById('notesField').value  = data.notes  || '';
+    ratings = {};
+    CATS.forEach(({ key }) => {
+        const v = parseInt(data[key]);
+        if (v >= 1 && v <= 5) ratings[key] = v;
+    });
+    applyLoadedRatings();
 }
 
 // ============================================================
 //  Save jersey only
 // ============================================================
-function saveJersey() {
+async function saveJersey() {
     if (!currentName) return;
     const jersey = document.getElementById('jerseyInput').value.trim().toUpperCase();
     document.getElementById('jerseyInput').value = jersey;
     const msg = document.getElementById('jerseyMsg');
     msg.style.display = 'none';
-    msg.style.color = '#38a169';
-    msg.textContent = '✓ Saved';
 
-    post({ action: 'saveJersey', name: currentName, jersey })
-        .then(() => {
-            msg.style.display = 'inline';
-            setTimeout(() => { msg.style.display = 'none'; }, 2500);
-        })
-        .catch(() => {
-            msg.style.color = '#e53e3e';
-            msg.textContent = '✗ Error';
-            msg.style.display = 'inline';
-        });
+    const { error } = await db
+        .from('tryout2026')
+        .update({ jersey, updated_at: new Date().toISOString() })
+        .eq('name', currentName);
+
+    msg.style.color   = error ? '#e53e3e' : '#38a169';
+    msg.textContent   = error ? '✗ Error'  : '✓ Saved';
+    msg.style.display = 'inline';
+    if (!error) setTimeout(() => { msg.style.display = 'none'; }, 2500);
 }
 
 // ============================================================
 //  Save full evaluation
 // ============================================================
-function saveEvaluation() {
+async function saveEvaluation() {
     if (!currentName) return;
     const btn = document.getElementById('saveBtn');
     btn.disabled = true;
@@ -662,49 +656,30 @@ function saveEvaluation() {
     hideStatus();
 
     const payload = {
-        action:   'save',
-        name:     currentName,
-        ageGroup: currentAge,
-        jersey:   document.getElementById('jerseyInput').value.trim().toUpperCase(),
-        notes:    document.getElementById('notesField').value.trim(),
+        name:      currentName,
+        age_group: currentAge,
+        jersey:    document.getElementById('jerseyInput').value.trim().toUpperCase() || null,
+        notes:     document.getElementById('notesField').value.trim() || null,
+        updated_at: new Date().toISOString(),
     };
-    CATS.forEach(cat => { payload[catKey(cat)] = ratings[cat] || ''; });
+    CATS.forEach(({ key }) => { payload[key] = ratings[key] || null; });
 
-    post(payload)
-        .then(() => {
-            showStatus('&#10003; Evaluation saved!', 'success');
-            resetSaveBtn();
-        })
-        .catch(err => {
-            const msg = (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE')
-                ? 'Apps Script URL not configured yet.'
-                : 'Save failed. Check connection.';
-            showStatus('&#10007; ' + msg, 'error');
-            resetSaveBtn();
-        });
+    const { error } = await db
+        .from('tryout2026')
+        .upsert(payload, { onConflict: 'name' });
+
+    if (error) {
+        showStatus('✗ Save failed: ' + error.message, 'error');
+    } else {
+        showStatus('✓ Evaluation saved!', 'success');
+    }
+    resetSaveBtn();
 }
 
 function resetSaveBtn() {
     const btn = document.getElementById('saveBtn');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-save"></i> &nbsp;Save Evaluation';
-}
-
-// ============================================================
-//  HTTP helper
-// ============================================================
-function post(data) {
-    if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-        return Promise.reject(new Error('URL not set'));
-    }
-    return fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(data),
-        redirect: 'follow',
-    })
-    .then(r => r.json())
-    .then(d => { if (!d.success) throw new Error(d.error || 'failed'); return d; });
 }
 
 // ============================================================
@@ -732,11 +707,14 @@ function closeModal() {
     document.getElementById('newAge').value = '';
 }
 
-function confirmAdd() {
+async function confirmAdd() {
     const name = document.getElementById('newName').value.trim();
     const age  = document.getElementById('newAge').value;
     if (!name) { alert('Please enter a name.'); return; }
     if (!age)  { alert('Please select an age group.'); return; }
+
+    // Save to Supabase (ignore if already exists)
+    await db.from('tryout2026').insert({ name, age_group: age });
 
     // Add to dropdown
     const select = document.getElementById('playerSelect');
@@ -752,12 +730,6 @@ function confirmAdd() {
     opt.textContent = name;
     group.appendChild(opt);
 
-    // Notify sheet
-    if (SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-        post({ action: 'addPlayer', name, ageGroup: age }).catch(() => {});
-    }
-
-    // Select and load
     select.value = opt.value;
     closeModal();
     onPlayerChange();

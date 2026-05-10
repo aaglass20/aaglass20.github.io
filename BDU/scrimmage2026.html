@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .scrim-wrap {
             max-width: 900px;
@@ -272,46 +273,50 @@
 
 <script>
 // ============================================================
-//  CONFIG
+//  Supabase
 // ============================================================
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================================
 //  State
 // ============================================================
-let players  = [];   // [ { name, ageGroup, jersey, scrimmagePoints, ... } ]
+let players  = [];
 let sortMode = 'name';
-const saveTimers = {};   // debounce timers keyed by player name
+const saveTimers = {};
 
 // ============================================================
 //  Boot
 // ============================================================
 window.addEventListener('DOMContentLoaded', loadPlayers);
 
-function loadPlayers() {
-    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.success) throw new Error(data.error);
-            players = data.players.map(p => ({
-                name:            p.Name            || '',
-                ageGroup:        p.Age_Group        || '',
-                jersey:          p.Jersey           || '',
-                scrimmagePoints: parseInt(p.Scrimmage_Points) || 0,
-            }));
-            document.getElementById('loadStatus').textContent =
-                players.length + ' players loaded';
-            render();
-        })
-        .catch(err => {
-            document.getElementById('loadStatus').textContent = 'Load failed';
-            document.getElementById('playerArea').innerHTML =
-                `<div class="loading-state" style="color:#e53e3e;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Could not load players. Check connection.<br>
-                    <small>${err.message}</small>
-                </div>`;
-        });
+async function loadPlayers() {
+    const { data, error } = await db
+        .from('tryout2026')
+        .select('name, age_group, jersey, scrimmage_points')
+        .order('age_group')
+        .order('name');
+
+    if (error || !data) {
+        document.getElementById('loadStatus').textContent = 'Load failed';
+        document.getElementById('playerArea').innerHTML =
+            `<div class="loading-state" style="color:#e53e3e;">
+                <i class="fas fa-exclamation-triangle"></i>
+                Could not load players.<br>
+                <small>${error?.message || ''}</small>
+            </div>`;
+        return;
+    }
+
+    players = data.map(p => ({
+        name:            p.name             || '',
+        ageGroup:        p.age_group        || '',
+        jersey:          p.jersey           || '',
+        scrimmagePoints: parseInt(p.scrimmage_points) || 0,
+    }));
+    document.getElementById('loadStatus').textContent = players.length + ' players loaded';
+    render();
 }
 
 // ============================================================
@@ -424,28 +429,24 @@ function scheduleSave(name, points) {
 }
 
 function saveTally(name, points) {
-    const slug    = slugify(name);
-    const errDot  = document.getElementById(`err-${slug}`);
-    const card    = document.getElementById(`card-${slug}`);
+    const slug   = slugify(name);
+    const errDot = document.getElementById(`err-${slug}`);
+    const card   = document.getElementById(`card-${slug}`);
 
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'setScrimmagePoints', name, points }),
-        redirect: 'follow',
-    })
-    .then(r => r.json())
-    .then(d => {
-        if (!d.success) throw new Error(d.error);
-        if (errDot) errDot.classList.remove('visible');
-        if (card) {
-            card.classList.add('saved-flash');
-            setTimeout(() => card.classList.remove('saved-flash'), 600);
-        }
-    })
-    .catch(() => {
-        if (errDot) errDot.classList.add('visible');
-    });
+    db.from('tryout2026')
+      .update({ scrimmage_points: points, updated_at: new Date().toISOString() })
+      .eq('name', name)
+      .then(({ error }) => {
+          if (error) {
+              if (errDot) errDot.classList.add('visible');
+          } else {
+              if (errDot) errDot.classList.remove('visible');
+              if (card) {
+                  card.classList.add('saved-flash');
+                  setTimeout(() => card.classList.remove('saved-flash'), 600);
+              }
+          }
+      });
 }
 
 // ============================================================

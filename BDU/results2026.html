@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .results-wrap {
             max-width: 900px;
@@ -383,19 +384,21 @@
 
 <script>
 // ============================================================
-//  CONFIG
+//  Supabase
 // ============================================================
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAImL7wFqw_c5e3jEMjTJ3FhxiUCXQyEHYmMV-UjxUVw2Uulqc9uGuKcwwzPF8TvwUyw/exec';
+const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const RATING_KEYS = [
-    'Speed', 'Control', 'Shot_Accuracy', 'Touch', 'Shot_Power',
-    'Long_Pass_Accuracy', 'Short_Pass_Accuracy', 'Hustle'
+    'speed', 'control', 'shot_accuracy', 'touch', 'shot_power',
+    'long_pass_accuracy', 'short_pass_accuracy', 'hustle'
 ];
 
 const RATING_LABELS = {
-    Speed: 'Speed', Control: 'Control', Shot_Accuracy: 'Shot Acc.',
-    Touch: 'Touch', Shot_Power: 'Shot Pwr', Long_Pass_Accuracy: 'Long Pass',
-    Short_Pass_Accuracy: 'Short Pass', Hustle: 'Hustle'
+    speed: 'Speed', control: 'Control', shot_accuracy: 'Shot Acc.',
+    touch: 'Touch', shot_power: 'Shot Pwr', long_pass_accuracy: 'Long Pass',
+    short_pass_accuracy: 'Short Pass', hustle: 'Hustle'
 };
 
 // ============================================================
@@ -410,24 +413,26 @@ let scrimmageWeight = 0.30;   // 0.0 – 1.0
 // ============================================================
 window.addEventListener('DOMContentLoaded', loadData);
 
-function loadData() {
+async function loadData() {
     document.getElementById('resultsWrap').innerHTML =
         `<div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
 
-    fetch(`${SCRIPT_URL}?action=getAllPlayers`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.success) throw new Error(data.error);
-            rawPlayers = data.players;
-            render();
-        })
-        .catch(err => {
-            document.getElementById('resultsWrap').innerHTML =
-                `<div class="loading-state" style="color:#e53e3e;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Could not load data.<br><small>${err.message}</small>
-                </div>`;
-        });
+    const { data, error } = await db
+        .from('tryout2026')
+        .select('*')
+        .order('name');
+
+    if (error || !data) {
+        document.getElementById('resultsWrap').innerHTML =
+            `<div class="loading-state" style="color:#e53e3e;">
+                <i class="fas fa-exclamation-triangle"></i>
+                Could not load data.<br><small>${error?.message || ''}</small>
+            </div>`;
+        return;
+    }
+
+    rawPlayers = data;
+    render();
 }
 
 // ============================================================
@@ -442,7 +447,7 @@ function calcScores(player, maxScrimmage) {
     const tryoutRated = ratings.length;
 
     // Scrimmage score: normalized to max in current view
-    const sp = parseInt(player['Scrimmage_Points']) || 0;
+    const sp = parseInt(player.scrimmage_points) || 0;
     const scrimmageScore = maxScrimmage > 0 ? (sp / maxScrimmage) * 100 : 0;
 
     // Overall weighted score
@@ -458,13 +463,13 @@ function render() {
     const sortBy = document.getElementById('sortSelect').value;
 
     // Filter
-    let visible = rawPlayers.filter(p => p.Name);
+    let visible = rawPlayers.filter(p => p.name);
     if (ageFilter !== 'All') {
-        visible = visible.filter(p => p.Age_Group === ageFilter);
+        visible = visible.filter(p => p.age_group === ageFilter);
     }
 
     // Max scrimmage among visible players (for normalization)
-    const maxScrimmage = Math.max(...visible.map(p => parseInt(p.Scrimmage_Points) || 0), 0);
+    const maxScrimmage = Math.max(...visible.map(p => parseInt(p.scrimmage_points) || 0), 0);
 
     // Attach scores
     const scored = visible.map(p => ({
@@ -478,9 +483,9 @@ function render() {
             case 'overall':   return b._scores.overall - a._scores.overall;
             case 'tryout':    return b._scores.tryoutScore - a._scores.tryoutScore;
             case 'scrimmage': return b._scores.scrimmagePoints - a._scores.scrimmagePoints;
-            case 'name':      return a.Name.localeCompare(b.Name);
+            case 'name':      return a.name.localeCompare(b.name);
             case 'age':
-                if (a.Age_Group !== b.Age_Group) return a.Age_Group.localeCompare(b.Age_Group);
+                if (a.age_group !== b.age_group) return a.age_group.localeCompare(b.age_group);
                 return b._scores.overall - a._scores.overall;
             default: return 0;
         }
@@ -513,14 +518,14 @@ function render() {
         const rank   = i + 1;
         const rankCls = rank <= 3 ? ` rank-${rank}` : '';
         const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-        const jersey = p.Jersey ? `<span class="jersey-badge">${p.Jersey}</span>` : '';
+        const jersey = p.jersey ? `<span class="jersey-badge">${p.jersey}</span>` : '';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="rank-cell${rankCls}">${rankEmoji}</td>
             <td class="player-name-cell">
-                ${p.Name}${jersey}
-                <span class="age-tag">${p.Age_Group || ''}</span>
+                ${p.name}${jersey}
+                <span class="age-tag">${p.age_group || ''}</span>
             </td>
             <td>
                 ${s.tryoutRated === 0
@@ -600,8 +605,8 @@ function toggleDetail(tr, p, scores) {
                 Rating Breakdown
             </div>
             ${ratingHtml}
-            ${p.Notes ? `<div style="margin-top:0.6rem;font-size:0.82rem;color:#4a5568;">
-                <b>Notes:</b> ${p.Notes}
+            ${p.notes ? `<div style="margin-top:0.6rem;font-size:0.82rem;color:#4a5568;">
+                <b>Notes:</b> ${p.notes}
             </div>` : ''}
         </td>`;
 
@@ -615,6 +620,7 @@ function onWeightChange(val) {
     scrimmageWeight = val / 100;
     document.getElementById('weightBadge').textContent = val + '%';
     if (rawPlayers.length) render();
+
 }
 
 function setAgeFilter(age, btn) {
