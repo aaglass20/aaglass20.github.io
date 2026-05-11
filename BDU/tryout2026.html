@@ -116,6 +116,32 @@
             color: var(--text-dark);
         }
 
+        .btn-delete-player {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.55rem 1rem;
+            background: none;
+            border: 2px dashed #fc8181;
+            border-radius: 8px;
+            color: #c53030;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .btn-delete-player:hover {
+            background: #fff5f5;
+            border-color: #e53e3e;
+        }
+
+        .btn-modal-delete {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-modal-delete:hover { background: #c53030; }
+
         /* ---- Evaluation form card ---- */
         .eval-card {
             background: white;
@@ -185,6 +211,18 @@
         .r-btn.sel-3 { background:#ecc94b; border-color:#ecc94b; color:#5a3e00; }
         .r-btn.sel-4 { background:#68d391; border-color:#68d391; color:#1a4731; }
         .r-btn.sel-5 { background:#00ff88; border-color:#00cc6a; color:#1a1a2e; }
+
+        /* ---- Section divider ---- */
+        .section-divider {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            border-top: 2px solid #e2e8f0;
+            padding-top: 0.8rem;
+            margin: 1rem 0 0.6rem;
+        }
 
         /* ---- Notes ---- */
         .notes-wrap {
@@ -409,6 +447,9 @@
         <button class="btn-add-player" onclick="openModal()">
             <i class="fas fa-plus"></i> &nbsp;Add Player Not on List
         </button>
+        <button class="btn-delete-player" id="deletePlayerBtn" onclick="openDeleteModal()">
+            <i class="fas fa-trash-alt"></i> &nbsp;Delete This Participant
+        </button>
     </div>
 
     <!-- Evaluation Form -->
@@ -454,6 +495,20 @@
     </div>
 </div>
 
+<!-- Delete Participant Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <h3><i class="fas fa-trash-alt" style="color:#e53e3e"></i> &nbsp;Delete Participant</h3>
+        <p style="margin-bottom:1.2rem;color:#4a5568;">
+            Are you sure you want to delete <strong id="deletePlayerNameLabel"></strong>? This cannot be undone.
+        </p>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-modal-delete" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
 <div id="shared-footer"></div>
 <script>
     fetch('menus/shared-footer.html')
@@ -482,6 +537,12 @@ const CATS = [
     { label: 'Long Pass Accuracy',  key: 'long_pass_accuracy' },
     { label: 'Short Pass Accuracy', key: 'short_pass_accuracy' },
     { label: 'Hustle',              key: 'hustle' },
+    { section: 'Defense' },
+    { label: 'Tackling',            key: 'tackling' },
+    { label: 'Positioning',         key: 'positioning' },
+    { label: '1v1',                 key: 'one_v_one' },
+    { label: 'Communication',       key: 'communication' },
+    { label: 'Shadow',              key: 'shadow' },
 ];
 
 // ============================================================
@@ -536,7 +597,15 @@ async function loadPlayersIntoDropdown() {
 function buildRatings() {
     const area = document.getElementById('ratingsArea');
     area.innerHTML = '';
-    CATS.forEach(({ label, key }) => {
+    CATS.forEach(cat => {
+        if (cat.section) {
+            const div = document.createElement('div');
+            div.className = 'section-divider';
+            div.textContent = cat.section;
+            area.appendChild(div);
+            return;
+        }
+        const { label, key } = cat;
         const row = document.createElement('div');
         row.className = 'rating-row';
         row.innerHTML =
@@ -561,7 +630,9 @@ function pickRating(key, val, btn) {
 }
 
 function applyLoadedRatings() {
-    CATS.forEach(({ key }) => {
+    CATS.forEach(cat => {
+        if (cat.section) return;
+        const { key } = cat;
         const val = ratings[key];
         if (!val) return;
         const group = document.querySelector(`.rating-buttons[data-key="${key}"]`);
@@ -582,6 +653,7 @@ function onPlayerChange() {
     if (!val) {
         document.getElementById('evalCard').classList.remove('visible');
         document.getElementById('jerseyRow').style.display = 'none';
+        document.getElementById('deletePlayerBtn').style.display = 'none';
         currentName = '';
         return;
     }
@@ -596,6 +668,7 @@ function onPlayerChange() {
     document.getElementById('jerseyMsg').style.display = 'none';
     buildRatings();
     document.getElementById('jerseyRow').style.display = 'flex';
+    document.getElementById('deletePlayerBtn').style.display = 'block';
     document.getElementById('evalCard').classList.add('visible');
     resetSaveBtn();
 
@@ -617,9 +690,10 @@ async function loadPlayerData(name) {
     document.getElementById('jerseyInput').value = data.jersey || '';
     document.getElementById('notesField').value  = data.notes  || '';
     ratings = {};
-    CATS.forEach(({ key }) => {
-        const v = parseInt(data[key]);
-        if (v >= 1 && v <= 5) ratings[key] = v;
+    CATS.forEach(cat => {
+        if (cat.section) return;
+        const v = parseInt(data[cat.key]);
+        if (v >= 1 && v <= 5) ratings[cat.key] = v;
     });
     applyLoadedRatings();
 }
@@ -662,7 +736,7 @@ async function saveEvaluation() {
         notes:     document.getElementById('notesField').value.trim() || null,
         updated_at: new Date().toISOString(),
     };
-    CATS.forEach(({ key }) => { payload[key] = ratings[key] || null; });
+    CATS.forEach(cat => { if (!cat.section) payload[cat.key] = ratings[cat.key] || null; });
 
     const { error } = await db
         .from('tryout2026')
@@ -705,6 +779,61 @@ function closeModal() {
     document.getElementById('addModal').classList.remove('open');
     document.getElementById('newName').value = '';
     document.getElementById('newAge').value = '';
+}
+
+// ============================================================
+//  Delete participant modal
+// ============================================================
+function openDeleteModal() {
+    if (!currentName) return;
+    document.getElementById('deletePlayerNameLabel').textContent = currentName;
+    document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+}
+
+async function confirmDelete() {
+    const name = currentName;
+    closeDeleteModal();
+
+    const { error } = await db
+        .from('tryout2026')
+        .delete()
+        .eq('name', name);
+
+    if (error) {
+        showStatus('✗ Delete failed: ' + error.message, 'error');
+        return;
+    }
+
+    // Remove from dropdown
+    const select = document.getElementById('playerSelect');
+    const opt = Array.from(select.options).find(o => o.value.startsWith(name + '|'));
+    if (opt) {
+        const group = opt.parentElement;
+        opt.remove();
+        if (group.tagName === 'OPTGROUP' && group.options.length === 0) group.remove();
+    }
+
+    // Reset UI
+    select.value = '';
+    currentName = '';
+    currentAge  = '';
+    document.getElementById('evalCard').classList.remove('visible');
+    document.getElementById('jerseyRow').style.display = 'none';
+    document.getElementById('deletePlayerBtn').style.display = 'none';
+
+    // Show brief deleted confirmation at top of selector card
+    const banner = document.createElement('div');
+    banner.className = 'status-msg success';
+    banner.style.display = 'block';
+    banner.style.marginTop = '0.85rem';
+    banner.textContent = `✓ ${name} deleted`;
+    const selectorCard = document.querySelector('.selector-card');
+    selectorCard.appendChild(banner);
+    setTimeout(() => banner.remove(), 3000);
 }
 
 async function confirmAdd() {
