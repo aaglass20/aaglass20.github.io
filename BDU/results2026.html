@@ -282,13 +282,13 @@
     <span></span><span></span><span></span>
 </div>
 <div id="waffleMenuContainer"></div>
-<div id="tactical-menu"></div>
+<div id="planning-menu"></div>
 
 <script>
-    fetch('menus/tactical-menu.html')
+    fetch('menus/planning-menu.html')
         .then(r => r.text())
         .then(html => {
-            document.getElementById('tactical-menu').innerHTML = html;
+            document.getElementById('planning-menu').innerHTML = html;
             const page = window.location.pathname.split('/').pop();
             document.querySelectorAll('.menu-item').forEach(el => {
                 if (el.getAttribute('href') === page) el.classList.add('active');
