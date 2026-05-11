@@ -259,13 +259,30 @@
         }
 
         @media (max-width: 600px) {
-            .results-table th:nth-child(4),
-            .results-table td:nth-child(4),
-            .results-table th:nth-child(5),
-            .results-table td:nth-child(5) { display: none; }
-
             .controls-row { gap: 0.75rem; }
             .weight-slider-wrap input[type=range] { width: 120px; }
+
+            /* Compact all cells so all 5 columns fit */
+            .results-table th,
+            .results-table td { padding: 0.55rem 0.35rem; }
+
+            /* Abbreviate score column headers */
+            .results-table th:nth-child(3):after { content: 'Try'; }
+            .results-table th:nth-child(4):after { content: 'Scr'; }
+            .results-table th:nth-child(5):after { content: 'Tot'; }
+            .results-table th:nth-child(3) .th-label,
+            .results-table th:nth-child(4) .th-label,
+            .results-table th:nth-child(5) .th-label { display: none; }
+
+            /* Hide bars — show just the number centered */
+            .score-bar-outer { display: none; }
+            .score-wrap { justify-content: center; }
+            .score-val {
+                font-size: 1rem;
+                font-weight: 800;
+                min-width: unset;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -352,7 +369,7 @@
         <div class="legend">
             <div class="legend-item">
                 <div class="legend-dot" style="background:#0779e4;"></div>
-                Tryout score = average of all 8 ratings (1–5 scale → 0–100)
+                Tryout score = average of all 13 ratings (1–5 scale → 0–100)
             </div>
             <div class="legend-item">
                 <div class="legend-dot" style="background:#00cc6a;"></div>
@@ -390,16 +407,23 @@ const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const RATING_KEYS = [
-    'speed', 'control', 'shot_accuracy', 'touch', 'shot_power',
-    'long_pass_accuracy', 'short_pass_accuracy', 'hustle'
+const RATING_CATS = [
+    { label: 'Speed',               key: 'speed' },
+    { label: 'Control',             key: 'control' },
+    { label: 'Shot Accuracy',       key: 'shot_accuracy' },
+    { label: 'Touch',               key: 'touch' },
+    { label: 'Shot Power',          key: 'shot_power' },
+    { label: 'Long Pass',           key: 'long_pass_accuracy' },
+    { label: 'Short Pass',          key: 'short_pass_accuracy' },
+    { label: 'Hustle',              key: 'hustle' },
+    { section: 'Defense' },
+    { label: 'Tackling',            key: 'tackling' },
+    { label: 'Positioning',         key: 'positioning' },
+    { label: '1v1',                 key: 'one_v_one' },
+    { label: 'Communication',       key: 'communication' },
+    { label: 'Shadow',              key: 'shadow' },
 ];
-
-const RATING_LABELS = {
-    speed: 'Speed', control: 'Control', shot_accuracy: 'Shot Acc.',
-    touch: 'Touch', shot_power: 'Shot Pwr', long_pass_accuracy: 'Long Pass',
-    short_pass_accuracy: 'Short Pass', hustle: 'Hustle'
-};
+const RATING_KEYS = RATING_CATS.filter(c => !c.section).map(c => c.key);
 
 // ============================================================
 //  State
@@ -505,9 +529,9 @@ function render() {
             <tr>
                 <th>#</th>
                 <th>Player</th>
-                <th>Tryout Score</th>
-                <th>Scrimmage</th>
-                <th>Overall</th>
+                <th><span class="th-label">Tryout Score</span></th>
+                <th><span class="th-label">Scrimmage</span></th>
+                <th><span class="th-label">Overall</span></th>
             </tr>
         </thead>`;
 
@@ -579,14 +603,19 @@ function toggleDetail(tr, p, scores) {
     const detail = document.createElement('tr');
     detail.className = 'detail-row';
 
-    const ratingHtml = RATING_KEYS.map(key => {
-        const val = parseFloat(p[key]);
-        const pct = (val >= 1 && val <= 5) ? (val / 5 * 100) : 0;
-        const colors = ['', '#fc8181', '#f6ad55', '#ecc94b', '#68d391', '#00ff88'];
-        const color  = (val >= 1 && val <= 5) ? colors[Math.round(val)] : '#e2e8f0';
+    const colors = ['', '#fc8181', '#f6ad55', '#ecc94b', '#68d391', '#00ff88'];
+    const ratingHtml = RATING_CATS.map(cat => {
+        if (cat.section) {
+            return `<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;
+                                letter-spacing:0.08em;color:#a0aec0;margin:0.6rem 0 0.35rem;
+                                border-top:1px solid #e2e8f0;padding-top:0.5rem;">${cat.section}</div>`;
+        }
+        const val = parseFloat(p[cat.key]);
+        const pct   = (val >= 1 && val <= 5) ? (val / 5 * 100) : 0;
+        const color = (val >= 1 && val <= 5) ? colors[Math.round(val)] : '#e2e8f0';
         return `<div style="margin-bottom:0.35rem;">
             <div style="display:flex;align-items:center;gap:0.5rem;">
-                <span style="width:110px;font-size:0.8rem;color:#4a5568;">${RATING_LABELS[key]}</span>
+                <span style="width:110px;font-size:0.8rem;color:#4a5568;">${cat.label}</span>
                 <div style="flex:1;background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden;">
                     <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;"></div>
                 </div>
