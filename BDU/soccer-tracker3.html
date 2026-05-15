@@ -4,256 +4,1200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jordan's Soccer Sessions Tracker</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #1a1a2e;
+            --accent-color: #ff6b6b;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem 1.5rem 4rem;
         }
 
-        h1 {
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 24px;
+            padding: 3rem 2rem;
             text-align: center;
-            color: #333;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .progress-counter {
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.08) 0%, transparent 70%);
+            animation: pulse 10s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
+        .hero-ball {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            animation: bounce 1.8s ease-in-out infinite;
+            filter: drop-shadow(0 6px 20px rgba(0, 255, 136, 0.4));
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50%      { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .hero .subtitle {
+            color: #a3d8f4;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           STATS
+           ============================================ */
+        .stats-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .stats-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .stats-tag.goal1 {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.3));
+            color: #00a85a;
+            border: 1px solid rgba(0, 255, 136, 0.4);
+        }
+
+        .stats-tag.goal2 {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 149, 0, 0.3));
+            color: #c87800;
+            border: 1px solid rgba(255, 165, 0, 0.5);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
             text-align: center;
-            font-size: 24px;
-            margin: 20px 0;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 35px rgba(0, 255, 136, 0.15);
+        }
+
+        .stat-card i {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           PROGRESS BAR
+           ============================================ */
+        .progress-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .progress-header h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .progress-percent {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
 
         .progress-bar {
             width: 100%;
-            height: 20px;
-            background-color: #f0f0f0;
+            height: 14px;
+            background-color: #e2e8f0;
             border-radius: 10px;
-            margin: 10px 0;
             overflow: hidden;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background-color: #4CAF50;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--primary-color), #00cc70);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
+            position: relative;
+            overflow: hidden;
         }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ============================================
+           GOAL CARDS
+           ============================================ */
+        .goals {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 820px) {
+            .goals { grid-template-columns: 1fr; }
+        }
+
+        .goal-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 1.75rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .goal-card:hover { transform: translateY(-4px); }
+
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #00cc70);
+        }
+
+        .goal-card.goal-newphone::before {
+            background: linear-gradient(90deg, #ffd700, #ff9500);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .goal-title {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .goal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.25));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .goal-icon.gold {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 149, 0, 0.25));
+            color: #ff9500;
+        }
+
+        .goal-title h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1.1;
+        }
+
+        .goal-sub {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 0.15rem;
+        }
+
+        .goal-count {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+        }
+
+        .goal-card.goal-newphone .goal-count { color: #ff9500; }
+
+        .progress-fill.gold {
+            background: linear-gradient(90deg, #ffd700, #ff9500);
+            box-shadow: 0 0 12px rgba(255, 165, 0, 0.6);
+        }
+
+        .goal-remaining {
+            margin-top: 0.6rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .goal-card.complete {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        }
+
+        .goal-card.complete .goal-remaining {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        /* ============================================
+           CELEBRATION MODAL
+           ============================================ */
+        .celebration {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 1.5rem;
+        }
+
+        .celebration.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .celebration-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e 60%, #0f3460);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            color: white;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: scale(0.7) translateY(40px);
+            transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .celebration.show .celebration-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .celebration-card.gold {
+            border-color: rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, #1a1a2e, #3a2a0e 60%, #6b4500);
+        }
+
+        .celebration-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: trophyPulse 1.4s ease-in-out infinite;
+            color: var(--primary-color);
+            filter: drop-shadow(0 0 25px rgba(0, 255, 136, 0.6));
+        }
+
+        .celebration-card.gold .celebration-icon {
+            color: #ffd700;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.7));
+        }
+
+        @keyframes trophyPulse {
+            0%, 100% { transform: scale(1) rotate(-5deg); }
+            50%      { transform: scale(1.15) rotate(5deg); }
+        }
+
+        .celebration-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1.6rem, 6vw, 2.4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), #00cc70);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .celebration-card.gold .celebration-title {
+            background: linear-gradient(135deg, #ffd700, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .celebration-message {
+            font-size: 1.15rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+
+        .celebration-sub {
+            font-size: 0.95rem;
+            color: #a3d8f4;
+            margin-bottom: 2rem;
+        }
+
+        .celebration-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #00cc70);
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .celebration-card.gold .celebration-btn {
+            background: linear-gradient(135deg, #ffd700, #ff9500);
+            color: #1a1a2e;
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
+        }
+
+        .celebration-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.6);
+        }
+
+        /* CONFETTI */
+        .confetti-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 3500;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -20px;
+            width: 10px;
+            height: 16px;
+            border-radius: 2px;
+            animation: confetti-fall linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0.9;
+            }
+        }
+
+        /* ============================================
+           SESSION GRID
+           ============================================ */
+        .grid-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .grid-header h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 3px solid #0779e4;
+            padding-bottom: 0.25rem;
+        }
+
+        .grid-header h2 i {
+            color: var(--primary-color);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .legend-swatch.done { background: linear-gradient(135deg, var(--primary-color), #00cc70); }
+        .legend-swatch.todo { background: #f7fafc; border: 1px solid #cbd5e0; }
 
         .sessions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            gap: 5px;
+            grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+            gap: 6px;
         }
 
         .session-box {
             aspect-ratio: 1;
-            border: 1px solid #ccc;
+            border: 1px solid #e2e8f0;
+            background: #f7fafc;
+            color: var(--text-light);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 14px;
-        }
-
-        .session-box.completed {
-            background-color: #4CAF50;
-            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: var(--transition);
+            user-select: none;
+            position: relative;
         }
 
         .session-box:hover {
-            background-color: #e0e0e0;
+            transform: translateY(-2px) scale(1.05);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.25);
+            z-index: 2;
+        }
+
+        .session-box.completed {
+            background: linear-gradient(135deg, var(--primary-color), #00cc70);
+            color: var(--secondary-color);
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.35);
         }
 
         .session-box.completed:hover {
-            background-color: #45a049;
+            box-shadow: 0 6px 16px rgba(0, 255, 136, 0.5);
         }
 
-        .reset-button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #ff4444;
-            color: white;
+        .session-box.pending {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           BUTTONS & STATUS
+           ============================================ */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.75rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
         }
 
-        .reset-button:hover {
-            background-color: #cc0000;
+        .btn-reset {
+            background: linear-gradient(135deg, var(--accent-color), #e74c3c);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .status-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .status-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status-toast.success { background: linear-gradient(135deg, var(--primary-color), #00cc70); color: var(--secondary-color); }
+        .status-toast.error   { background: linear-gradient(135deg, var(--accent-color), #e74c3c); }
+
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .page-wrapper { padding: 1rem 0.75rem 3rem; }
+            .hero { padding: 2rem 1rem; border-radius: 18px; }
+            .hero-ball { font-size: 3rem; }
+            .stat-value { font-size: 2rem; }
+            .grid-section, .progress-section { padding: 1.25rem; }
+            .sessions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 4px;
+            }
+            .session-box { font-size: 0.75rem; border-radius: 6px; }
+            .status-toast { left: 1rem; right: 1rem; bottom: 1rem; justify-content: center; }
         }
     </style>
 </head>
 <body>
-<h1>Jordan's Soccer Sessions Tracker</h1>
-<div class="progress-counter">
-    Completed: <span id="completed-count">0</span> / 365
+
+<div class="loader-overlay" id="loader">
+    <div class="spinner"></div>
+    <p style="color: var(--text-light); font-weight: 600;">Loading sessions...</p>
 </div>
-<div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
+
+<div class="page-wrapper">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-ball"><i class="fas fa-futbol"></i></div>
+            <h1>Jordan's Soccer Sessions</h1>
+            <p class="subtitle">365 sessions of skill, grit, and growth</p>
+        </div>
+    </section>
+
+    <!-- STATS (tracks the active goal) -->
+    <div class="stats-banner">
+        <span class="stats-banner-label">Tracking</span>
+        <span class="stats-tag goal1" id="stats-tag">Goal 1</span>
+    </div>
+    <section class="stats">
+        <div class="stat-card">
+            <i class="fas fa-check-circle"></i>
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-hourglass-half"></i>
+            <div class="stat-value" id="stat-remaining">365</div>
+            <div class="stat-label">Remaining</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-fire"></i>
+            <div class="stat-value" id="stat-streak">0</div>
+            <div class="stat-label">Current Streak</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-trophy"></i>
+            <div class="stat-value" id="stat-percent">0%</div>
+            <div class="stat-label">Complete</div>
+        </div>
+    </section>
+
+    <!-- GOALS -->
+    <section class="goals">
+        <div class="goal-card goal-phone">
+            <div class="goal-header">
+                <div class="goal-title">
+                    <div class="goal-icon"><i class="fas fa-mobile-screen"></i></div>
+                    <div>
+                        <h2>Goal 1 · Phone</h2>
+                        <p class="goal-sub">Reach 200 sessions to earn a phone</p>
+                    </div>
+                </div>
+                <span class="goal-count" id="goal-phone-count">0 / 200</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="goal-phone-fill" style="width: 0%"></div>
+            </div>
+            <p class="goal-remaining" id="goal-phone-remaining">200 sessions to go</p>
+        </div>
+
+        <div class="goal-card goal-newphone">
+            <div class="goal-header">
+                <div class="goal-title">
+                    <div class="goal-icon gold"><i class="fas fa-crown"></i></div>
+                    <div>
+                        <h2>Goal 2 · Brand New Phone</h2>
+                        <p class="goal-sub">Finish all 365 sessions for a brand new phone</p>
+                    </div>
+                </div>
+                <span class="goal-count" id="goal-newphone-count">0 / 365</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill gold" id="goal-newphone-fill" style="width: 0%"></div>
+            </div>
+            <p class="goal-remaining" id="goal-newphone-remaining">365 sessions to go</p>
+        </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="grid-section">
+        <div class="grid-header">
+            <h2><i class="fas fa-th"></i> All Sessions</h2>
+            <div class="legend">
+                <span class="legend-item"><span class="legend-swatch done"></span> Completed</span>
+                <span class="legend-item"><span class="legend-swatch todo"></span> Not yet</span>
+            </div>
+        </div>
+        <div class="sessions-grid" id="sessions-grid"></div>
+    </section>
+
+    <!-- CONTROLS (hidden — uncomment to re-enable) -->
+    <div class="controls" style="display: none;">
+        <button class="btn btn-reset" onclick="resetProgress()">
+            <i class="fas fa-rotate-left"></i> Reset Progress
+        </button>
+    </div>
+
 </div>
-<div class="sessions-grid" id="sessions-grid"></div>
-<button class="reset-button" onclick="resetProgress()">Reset Progress</button>
+
+<div class="status-toast" id="toast"></div>
+
+<!-- CELEBRATION -->
+<div class="confetti-layer" id="confetti-layer"></div>
+<div class="celebration" id="celebration">
+    <div class="celebration-card" id="celebration-card">
+        <div class="celebration-icon" id="celebration-icon"><i class="fas fa-trophy"></i></div>
+        <div class="celebration-title" id="celebration-title">Milestone!</div>
+        <p class="celebration-message" id="celebration-message"></p>
+        <p class="celebration-sub" id="celebration-sub"></p>
+        <button class="celebration-btn" onclick="closeCelebration()">
+            <i class="fas fa-futbol"></i> Keep Going
+        </button>
+    </div>
+</div>
 
 <script>
+    /* ============================================================
+       Supabase setup
+       ------------------------------------------------------------
+       Required table (run once in Supabase SQL editor):
+
+         create table sessiontracker (
+             session_id int primary key,
+             completed_at timestamptz not null default now()
+         );
+
+       Seed completed sessions 1-97 and 201-222:
+
+         insert into sessiontracker (session_id)
+         select generate_series(1, 97)
+         union all
+         select generate_series(201, 222)
+         on conflict (session_id) do nothing;
+
+       RLS: either disable RLS on this table, or add anon insert/select/delete policies.
+       ============================================================ */
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const TOTAL_SESSIONS = 365;
-    let completedSessions = [];
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE52n0i9n7DQ6_2AwaldIz8AHbOMRjLYMepRKrTHzgagH6jGawZEVPfoFWW9oKN54l/exec';
+    const GOAL1_END  = 200;                 // cells 1..200 count toward Goal 1
+    const GOAL2_START = 201, GOAL2_END = 365; // cells 201..365 count toward Goal 2
+    const GOAL1_SIZE = GOAL1_END;           // 200
+    const GOAL2_SIZE = GOAL2_END - GOAL2_START + 1; // 165
+    const TABLE = 'sessiontracker';
+    const CELEBRATED_KEY = 'jordan_celebrated_milestones';
 
-    // Load completed sessions from localStorage
+    const MILESTONES = [
+        { count: 100, title: 'Century Club!',     icon: 'fa-medal',      message: '100 sessions in the books!',        sub: 'Halfway to your phone. Keep cooking. 🔥' },
+        { count: 150, title: '150 Strong!',       icon: 'fa-fire',       message: 'Three quarters of the way there!',  sub: 'Just 50 more sessions until the phone is yours.' },
+        { count: 190, title: '10 To Go!',         icon: 'fa-bullseye',   message: 'The phone is in sight!',            sub: 'Only 10 more sessions to Goal 1. 📱' },
+        { count: 200, title: 'Phone Unlocked!',   icon: 'fa-mobile-screen-button', message: 'You earned the phone!',   sub: 'Goal 1 complete. Now the bigger prize awaits — 165 to a brand new phone.', gold: false, big: true },
+        { count: 365, title: 'CHAMPION!',         icon: 'fa-crown',      message: 'All 365 sessions complete!',        sub: 'A brand new phone is yours. Legendary effort. 👑', gold: true, big: true },
+    ];
+
+    let completedSessions = new Set();
+    let pending = new Set();
+    let celebrated = loadCelebrated();
+
+    function loadCelebrated() {
+        try {
+            return new Set(JSON.parse(localStorage.getItem(CELEBRATED_KEY) || '[]'));
+        } catch { return new Set(); }
+    }
+    function saveCelebrated() {
+        localStorage.setItem(CELEBRATED_KEY, JSON.stringify([...celebrated]));
+    }
+
+    /* ------------------------------------------------------------
+       Toast helper
+       ------------------------------------------------------------ */
+    let toastTimer = null;
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.className = `status-toast show ${type}`;
+        const icon = type === 'success' ? 'fa-check'
+                   : type === 'error'   ? 'fa-triangle-exclamation'
+                                        : 'fa-circle-info';
+        toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    /* ------------------------------------------------------------
+       Load
+       ------------------------------------------------------------ */
     async function loadProgress() {
-        try {
-            const response = await fetch(`${SCRIPT_URL}?action=getProgress`);
-            const data = await response.json();
-            completedSessions = data.sessions || [];
-            updateDisplay();
-        } catch (error) {
-            console.error('Error loading progress:', error);
+        const { data, error } = await db
+            .from(TABLE)
+            .select('session_id');
+
+        if (error) {
+            console.error('Load error:', error);
+            showToast('Could not load progress', 'error');
+            document.getElementById('loader').classList.add('hide');
+            return;
         }
+
+        completedSessions = new Set(data.map(r => r.session_id));
+
+        // Prime: if a milestone cell is already checked when the page loads,
+        // mark its celebration as "seen" so it won't fire retroactively.
+        MILESTONES.forEach(m => {
+            if (completedSessions.has(m.count)) celebrated.add(m.count);
+        });
+        saveCelebrated();
+
+        buildGrid();
+        updateStats();
+        document.getElementById('loader').classList.add('hide');
     }
 
-
-    // Save progress to localStorage
-    async function saveProgress() {
-        try {
-            console.log('Attempting to save sessions:', completedSessions); // Log data being sent
-
-            const requestBody = {
-                action: 'updateProgress',
-                sessions: completedSessions
-            };
-            console.log('Request body:', requestBody); // Log the full request body
-
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'no-cors', // Try changing to no-cors
-                body: JSON.stringify(requestBody)
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response:', response);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Response data:', data);
-
-        } catch (error) {
-            console.error('Detailed error:', error);
-            alert('It kinda saved');
-        }
-    }
-
-
-    // Toggle session completion
+    /* ------------------------------------------------------------
+       Toggle one session
+       ------------------------------------------------------------ */
     async function toggleSession(sessionId) {
-        const index = completedSessions.indexOf(sessionId);
-        if (index === -1) {
-            completedSessions.push(sessionId);
+        if (pending.has(sessionId)) return;
+        pending.add(sessionId);
+
+        const wasCompleted = completedSessions.has(sessionId);
+        const box = document.querySelector(`[data-session="${sessionId}"]`);
+        box.classList.add('pending');
+
+        // Optimistic update
+        if (wasCompleted) {
+            completedSessions.delete(sessionId);
+            box.classList.remove('completed');
         } else {
-            completedSessions.splice(index, 1);
+            completedSessions.add(sessionId);
+            box.classList.add('completed');
         }
-        await saveProgress();
-        updateDisplay();
+        // Only check for milestones when adding a completion
+        updateStats({ checkMilestones: !wasCompleted, justClicked: wasCompleted ? null : sessionId });
+
+        const { error } = wasCompleted
+            ? await db.from(TABLE).delete().eq('session_id', sessionId)
+            : await db.from(TABLE).insert({ session_id: sessionId });
+
+        pending.delete(sessionId);
+        box.classList.remove('pending');
+
+        if (error) {
+            // Roll back
+            if (wasCompleted) {
+                completedSessions.add(sessionId);
+                box.classList.add('completed');
+            } else {
+                completedSessions.delete(sessionId);
+                box.classList.remove('completed');
+            }
+            updateStats();
+            console.error('Toggle error:', error);
+            showToast('Save failed — try again', 'error');
+        }
     }
 
-    // Reset all progress
+    /* ------------------------------------------------------------
+       Reset all
+       ------------------------------------------------------------ */
     async function resetProgress() {
-        if (confirm('Are you sure you want to reset all progress?')) {
-            completedSessions = [];
-            await saveProgress();
-            updateDisplay();
+        if (!confirm('Reset all session progress? This cannot be undone.')) return;
+
+        const previous = new Set(completedSessions);
+        completedSessions.clear();
+        buildGrid();
+        updateStats();
+
+        const { error } = await db.from(TABLE).delete().neq('session_id', -1);
+
+        if (error) {
+            completedSessions = previous;
+            buildGrid();
+            updateStats();
+            console.error('Reset error:', error);
+            showToast('Reset failed', 'error');
+        } else {
+            showToast('Progress reset');
         }
     }
 
-
-    // Update the visual display
-    function updateDisplay() {
+    /* ------------------------------------------------------------
+       Rendering
+       ------------------------------------------------------------ */
+    function buildGrid() {
         const grid = document.getElementById('sessions-grid');
-        grid.innerHTML = '';
-
-        // Create session boxes
-        for (let i = 0; i < TOTAL_SESSIONS; i++) {
+        const frag = document.createDocumentFragment();
+        for (let i = 1; i <= TOTAL_SESSIONS; i++) {
             const box = document.createElement('div');
-            box.className = `session-box${completedSessions.includes(i) ? ' completed' : ''}`;
-            box.textContent = i + 1;
+            box.className = 'session-box' + (completedSessions.has(i) ? ' completed' : '');
+            box.dataset.session = i;
+            box.textContent = i;
             box.onclick = () => toggleSession(i);
-            grid.appendChild(box);
+            frag.appendChild(box);
         }
-
-        // Update progress counter and bar
-        const completedCount = completedSessions.length;
-        document.getElementById('completed-count').textContent = completedCount;
-        const progressPercentage = (completedCount / TOTAL_SESSIONS) * 100;
-        document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
+        grid.innerHTML = '';
+        grid.appendChild(frag);
     }
 
+    // Longest consecutive run of completed cells inside [lo..hi].
+    function currentStreak(lo = 1, hi = TOTAL_SESSIONS) {
+        let longest = 0, run = 0;
+        for (let i = lo; i <= hi; i++) {
+            if (completedSessions.has(i)) {
+                run++;
+                if (run > longest) longest = run;
+            } else {
+                run = 0;
+            }
+        }
+        return longest;
+    }
 
-    // Initial load
+    function countInRange(lo, hi) {
+        let c = 0;
+        for (const id of completedSessions) {
+            if (id >= lo && id <= hi) c++;
+        }
+        return c;
+    }
+
+    function updateStats({ checkMilestones = false, justClicked = null } = {}) {
+        const goal1Done = countInRange(1, GOAL1_END);
+        const goal2Done = countInRange(GOAL2_START, GOAL2_END);
+        const goal1Complete = goal1Done >= GOAL1_SIZE;
+
+        // ----- Hero stats: mirror Goal 1 until it's complete, then mirror Goal 2 -----
+        const active = goal1Complete
+            ? { name: 'Goal 2', done: goal2Done, size: GOAL2_SIZE, lo: GOAL2_START, hi: GOAL2_END }
+            : { name: 'Goal 1', done: goal1Done, size: GOAL1_SIZE, lo: 1,           hi: GOAL1_END };
+
+        const pct = Math.round((active.done / active.size) * 1000) / 10;
+        document.getElementById('stat-completed').textContent = String(active.done);
+        document.getElementById('stat-remaining').textContent = String(active.size - active.done);
+        document.getElementById('stat-percent').textContent = pct + '%';
+        document.getElementById('stat-streak').textContent = String(currentStreak(active.lo, active.hi));
+
+        // Show which goal the stats reflect
+        const tag = document.getElementById('stats-tag');
+        tag.textContent = active.name;
+        tag.className = 'stats-tag ' + (goal1Complete ? 'goal2' : 'goal1');
+
+        // ----- Goal 1 card -----
+        const phonePct = Math.min(100, (goal1Done / GOAL1_SIZE) * 100);
+        document.getElementById('goal-phone-count').textContent = `${goal1Done} / ${GOAL1_SIZE}`;
+        document.getElementById('goal-phone-fill').style.width = phonePct + '%';
+        const phoneLeft = Math.max(0, GOAL1_SIZE - goal1Done);
+        const phoneRemainEl = document.getElementById('goal-phone-remaining');
+        const phoneCard = document.querySelector('.goal-phone');
+        if (phoneLeft === 0) {
+            phoneRemainEl.innerHTML = '<i class="fas fa-check-circle"></i> Goal complete — phone earned!';
+            phoneCard.classList.add('complete');
+        } else {
+            phoneRemainEl.textContent = `${phoneLeft} session${phoneLeft === 1 ? '' : 's'} to go (cells 1–200)`;
+            phoneCard.classList.remove('complete');
+        }
+
+        // ----- Goal 2 card -----
+        const newPct = (goal2Done / GOAL2_SIZE) * 100;
+        document.getElementById('goal-newphone-count').textContent = `${goal2Done} / ${GOAL2_SIZE}`;
+        document.getElementById('goal-newphone-fill').style.width = newPct + '%';
+        const newLeft = GOAL2_SIZE - goal2Done;
+        const newRemainEl = document.getElementById('goal-newphone-remaining');
+        const newCard = document.querySelector('.goal-newphone');
+        if (newLeft === 0) {
+            newRemainEl.innerHTML = '<i class="fas fa-crown"></i> Goal complete — brand new phone earned!';
+            newCard.classList.add('complete');
+        } else {
+            newRemainEl.textContent = `${newLeft} session${newLeft === 1 ? '' : 's'} to go (cells 201–365)`;
+            newCard.classList.remove('complete');
+        }
+
+        if (checkMilestones) checkAndCelebrate(justClicked);
+    }
+
+    /* ------------------------------------------------------------
+       Milestones & celebration
+       ------------------------------------------------------------
+       Cell-based: celebration fires when the specific milestone
+       cell (100, 150, 190, 200, 365) is the one just checked.
+       ------------------------------------------------------------ */
+    function checkAndCelebrate(justClicked) {
+        if (justClicked == null) return;
+        const m = MILESTONES.find(x => x.count === justClicked);
+        if (m && !celebrated.has(m.count)) {
+            celebrated.add(m.count);
+            saveCelebrated();
+            celebrate(m);
+        }
+    }
+
+    function celebrate(m) {
+        const card    = document.getElementById('celebration-card');
+        const iconEl  = document.getElementById('celebration-icon');
+        const titleEl = document.getElementById('celebration-title');
+        const msgEl   = document.getElementById('celebration-message');
+        const subEl   = document.getElementById('celebration-sub');
+
+        iconEl.innerHTML = `<i class="fas ${m.icon}"></i>`;
+        titleEl.textContent = m.title;
+        msgEl.textContent = m.message;
+        subEl.textContent = m.sub;
+
+        card.classList.toggle('gold', !!m.gold);
+        document.getElementById('celebration').classList.add('show');
+
+        launchConfetti(m.big ? 200 : 100, m.gold);
+    }
+
+    function closeCelebration() {
+        document.getElementById('celebration').classList.remove('show');
+    }
+
+    function launchConfetti(count, gold) {
+        const layer = document.getElementById('confetti-layer');
+        const colors = gold
+            ? ['#ffd700', '#ff9500', '#ffffff', '#ffec80', '#ffb347']
+            : ['#00ff88', '#00cc70', '#ffffff', '#a3d8f4', '#ff6b6b', '#0779e4'];
+
+        for (let i = 0; i < count; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + 'vw';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.width = (6 + Math.random() * 8) + 'px';
+            piece.style.height = (10 + Math.random() * 10) + 'px';
+            piece.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+            piece.style.animationDelay = (Math.random() * 0.6) + 's';
+            piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+            piece.style.opacity = String(0.7 + Math.random() * 0.3);
+            layer.appendChild(piece);
+            setTimeout(() => piece.remove(), 5500);
+        }
+    }
+
+    // ESC closes the celebration
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeCelebration();
+    });
+
     loadProgress();
-
-
-    //     function doPost(e) {
-    //   try {
-    //     // Parse the incoming data
-    //     const data = JSON.parse(e.postData.contents);
-    //
-    //     // Get the active spreadsheet
-    //     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    //     const sheet = ss.getActiveSheet();
-    //
-    //     // Save the sessions data
-    //     if (data.action === 'updateProgress') {
-    //       // Clear existing data first
-    //       sheet.getRange('A2:A').clearContent();
-    //
-    //       // Write new data
-    //       if (data.sessions && data.sessions.length > 0) {
-    //         const range = sheet.getRange(2, 1, data.sessions.length, 1);
-    //         range.setValues(data.sessions.map(session => [session]));
-    //       }
-    //
-    //       return ContentService.createTextOutput(JSON.stringify({
-    //         success: true,
-    //         message: 'Progress saved successfully'
-    //       })).setMimeType(ContentService.MimeType.JSON);
-    //     }
-    //
-    //   } catch (error) {
-    //     return ContentService.createTextOutput(JSON.stringify({
-    //       success: false,
-    //       error: error.toString()
-    //     })).setMimeType(ContentService.MimeType.JSON);
-    //   }
-    // }
-    //
-    // function doGet(e) {
-    //   try {
-    //     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    //     const sheet = ss.getActiveSheet();
-    //     const data = sheet.getDataRange().getValues();
-    //
-    //     // Remove header row and flatten data
-    //     const sessions = data.slice(1).map(row => row[0]).filter(Boolean);
-    //
-    //     return ContentService.createTextOutput(JSON.stringify({
-    //       success: true,
-    //       sessions: sessions
-    //     })).setMimeType(ContentService.MimeType.JSON);
-    //
-    //   } catch (error) {
-    //     return ContentService.createTextOutput(JSON.stringify({
-    //       success: false,
-    //       error: error.toString()
-    //     })).setMimeType(ContentService.MimeType.JSON);
-    //   }
-    // }
-
 </script>
 
 </body>
