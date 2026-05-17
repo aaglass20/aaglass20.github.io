@@ -216,6 +216,61 @@
         }
         .gd-roster h3 {
             margin: 0 0 .5rem 0; font-size: 1rem; color: var(--secondary-color);
+            display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+        }
+        .gd-roster-manage {
+            font: inherit; font-size: .75rem; font-weight: 600;
+            padding: .3rem .55rem; border-radius: 999px;
+            border: 1px solid var(--secondary-color); background: #fff;
+            color: var(--secondary-color); cursor: pointer;
+        }
+        .gd-roster-manage:hover { background: var(--secondary-color); color: #fff; }
+
+        /* Roster management modal */
+        .gd-roster-row {
+            display: grid; grid-template-columns: auto 2.5em 1fr auto auto;
+            gap: .5rem; align-items: center;
+            padding: .5rem; border-bottom: 1px solid #edf2f7;
+        }
+        .gd-roster-row:last-child { border-bottom: none; }
+        .gd-roster-row .gd-rr-num {
+            font-weight: 700; color: var(--text-light); text-align: center;
+        }
+        .gd-roster-row .gd-rr-name { font-weight: 600; }
+        .gd-roster-row .gd-rr-prefs {
+            font-size: .75rem; color: var(--text-light);
+        }
+        .gd-roster-row.inactive { opacity: .55; }
+        .gd-roster-row .gd-rr-btn {
+            background: transparent; border: 1px solid #cbd5e0;
+            padding: .25rem .5rem; border-radius: 6px; cursor: pointer;
+            font-size: .8rem;
+        }
+        .gd-roster-row .gd-rr-btn:hover { background: #edf2f7; }
+        .gd-roster-row .gd-rr-btn.danger { color: #c53030; border-color: #fed7d7; }
+        .gd-roster-row .gd-rr-btn.restore { color: #2f855a; border-color: #c6f6d5; }
+        .gd-roster-list-section {
+            margin-top: .75rem; border: 1px solid #e2e8f0; border-radius: 8px;
+            max-height: 320px; overflow-y: auto;
+        }
+        .gd-roster-list-section h4 {
+            margin: 0; padding: .5rem .75rem; background: #f7fafc;
+            font-size: .85rem; color: var(--text-light);
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky; top: 0;
+        }
+        .gd-prefs-checks {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: .35rem; margin-top: .25rem;
+        }
+        .gd-prefs-checks label {
+            display: flex; align-items: center; gap: .35rem;
+            margin: 0; padding: .35rem .5rem; font-weight: 500; font-size: .85rem;
+            border: 1px solid #cbd5e0; border-radius: 6px; cursor: pointer;
+        }
+        .gd-prefs-checks input[type="checkbox"] { width: auto; margin: 0; }
+        .gd-prefs-checks label:has(input:checked) {
+            background: var(--secondary-color); color: #fff; border-color: var(--secondary-color);
         }
         .gd-roster-list {
             display: flex; flex-direction: column; gap: .35rem;
@@ -540,7 +595,12 @@
                 </div>
             </div>
             <div class="gd-roster">
-                <h3>Roster</h3>
+                <h3>
+                    Roster
+                    <button id="gd-manage-roster" class="gd-roster-manage" title="Add / edit / remove players">
+                        <i class="fas fa-user-cog"></i> Manage
+                    </button>
+                </h3>
                 <p style="font-size:.75rem;color:var(--text-light);margin:0 0 .5rem 0;">
                     Drag onto field or subs. Tap a slot to clear. On mobile, tap a player then tap a target.
                 </p>
@@ -727,6 +787,7 @@
             if (e2) throw new Error('Games: ' + e2.message);
 
             state.roster = (rosterData || []).map(r => ({
+                id:     r.id,
                 name:   r.name,
                 number: r.number || '',
                 prefs:  r.preferred_positions
@@ -1058,6 +1119,183 @@
         };
     }
 
+    // ---------- ROSTER MANAGEMENT ----------
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    async function fetchAllRoster() {
+        const { data, error } = await db.from('game_day_roster')
+            .select('*').order('active', { ascending: false }).order('name');
+        if (error) throw new Error('Roster fetch: ' + error.message);
+        return (data || []).map(r => ({
+            id:     r.id,
+            name:   r.name,
+            number: r.number || '',
+            prefs:  r.preferred_positions
+                        ? r.preferred_positions.split(',').map(s => s.trim()).filter(Boolean)
+                        : [],
+            active: r.active !== false,
+        }));
+    }
+
+    function refreshActiveRosterFromList(allPlayers) {
+        state.roster = allPlayers
+            .filter(p => p.active)
+            .map(p => ({ id: p.id, name: p.name, number: p.number, prefs: p.prefs, active: true }));
+        lsSet(LS.roster, state.roster);
+    }
+
+    async function showRosterModal() {
+        openModal(`
+            <h3>Manage Roster</h3>
+            <p style="font-size:.8rem;color:var(--text-light);margin:.25rem 0 .75rem 0;">
+                Add players here so they appear in Lineup and Depth Chart.
+            </p>
+            <div class="gd-modal-buttons" style="justify-content:space-between;margin:0 0 .75rem 0;">
+                <button class="primary" id="rm-add"><i class="fas fa-plus"></i> Add Player</button>
+                <button class="secondary" data-close>Done</button>
+            </div>
+            <div id="rm-list"><div class="gd-empty">Loading…</div></div>
+        `);
+        $('#rm-add').onclick = () => showPlayerEditModal(null);
+        try {
+            const players = await fetchAllRoster();
+            refreshActiveRosterFromList(players);
+            renderRosterModalList(players);
+            renderAll();
+        } catch (err) {
+            $('#rm-list').innerHTML = `<div class="gd-empty" style="color:#c53030;">${escapeHtml(err.message)}</div>`;
+        }
+    }
+
+    function renderRosterModalList(players) {
+        const active = players.filter(p => p.active);
+        const inactive = players.filter(p => !p.active);
+        const row = p => `
+            <div class="gd-roster-row${p.active ? '' : ' inactive'}" data-id="${p.id}">
+                <span class="gd-rr-num">${escapeHtml(p.number)}</span>
+                <span></span>
+                <span>
+                    <div class="gd-rr-name">${escapeHtml(p.name)}</div>
+                    <div class="gd-rr-prefs">${p.prefs.length ? escapeHtml(p.prefs.join(', ')) : '—'}</div>
+                </span>
+                <button class="gd-rr-btn" data-edit="${p.id}" title="Edit"><i class="fas fa-pen"></i></button>
+                ${p.active
+                    ? `<button class="gd-rr-btn danger" data-deactivate="${p.id}" title="Remove from active roster"><i class="fas fa-user-slash"></i></button>`
+                    : `<button class="gd-rr-btn restore" data-restore="${p.id}" title="Restore"><i class="fas fa-undo"></i></button>`}
+            </div>`;
+        let html = '';
+        if (active.length) {
+            html += `<div class="gd-roster-list-section">
+                <h4>Active (${active.length})</h4>
+                ${active.map(row).join('')}
+            </div>`;
+        } else {
+            html += `<div class="gd-empty">No active players yet. Click "Add Player" to get started.</div>`;
+        }
+        if (inactive.length) {
+            html += `<div class="gd-roster-list-section">
+                <h4>Inactive (${inactive.length})</h4>
+                ${inactive.map(row).join('')}
+            </div>`;
+        }
+        const list = $('#rm-list');
+        list.innerHTML = html;
+        const byId = new Map(players.map(p => [String(p.id), p]));
+        $$('button[data-edit]', list).forEach(b => {
+            b.onclick = () => showPlayerEditModal(byId.get(b.dataset.edit));
+        });
+        $$('button[data-deactivate]', list).forEach(b => {
+            b.onclick = async () => {
+                const p = byId.get(b.dataset.deactivate);
+                if (!confirm(`Remove ${p.name} from the active roster?\n\nThey'll be hidden from lineup/depth but their history is preserved. You can restore them later.`)) return;
+                await setRosterPlayerActive(p.id, false);
+            };
+        });
+        $$('button[data-restore]', list).forEach(b => {
+            b.onclick = async () => {
+                await setRosterPlayerActive(b.dataset.restore, true);
+            };
+        });
+    }
+
+    function showPlayerEditModal(player) {
+        const isEdit = !!player;
+        const data = player || { name: '', number: '', prefs: [] };
+        const prefSet = new Set(data.prefs);
+        const checks = POSITIONS.map(pos => `
+            <label><input type="checkbox" value="${pos}"${prefSet.has(pos) ? ' checked' : ''}> ${pos}</label>
+        `).join('');
+        openModal(`
+            <h3>${isEdit ? 'Edit Player' : 'Add Player'}</h3>
+            <label>Name</label>
+            <input id="pe-name" value="${escapeHtml(data.name)}" placeholder="e.g. Ava Smith">
+            <label>Jersey #</label>
+            <input id="pe-num" value="${escapeHtml(data.number)}" placeholder="e.g. 10">
+            <label>Preferred Positions <small style="color:var(--text-light);font-weight:400;">(optional)</small></label>
+            <div class="gd-prefs-checks" id="pe-prefs">${checks}</div>
+            <div class="gd-modal-buttons">
+                <button class="secondary" id="pe-back">${isEdit ? 'Cancel' : 'Back'}</button>
+                <button class="primary" id="pe-save">${isEdit ? 'Save' : 'Add'}</button>
+            </div>
+        `);
+        $('#pe-back').onclick = () => showRosterModal();
+        $('#pe-save').onclick = async () => {
+            const name = $('#pe-name').value.trim();
+            if (!name) { alert('Name is required'); return; }
+            const number = $('#pe-num').value.trim();
+            const prefs = $$('#pe-prefs input:checked').map(i => i.value);
+            const btn = $('#pe-save');
+            btn.disabled = true; btn.textContent = 'Saving…';
+            try {
+                if (isEdit) {
+                    await updateRosterPlayer(player.id, { name, number, prefs });
+                } else {
+                    await addRosterPlayer({ name, number, prefs });
+                }
+                await showRosterModal();
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false; btn.textContent = isEdit ? 'Save' : 'Add';
+            }
+        };
+    }
+
+    async function addRosterPlayer({ name, number, prefs }) {
+        const { error } = await db.from('game_day_roster').insert({
+            name, number: number || '',
+            preferred_positions: (prefs || []).join(','),
+            active: true,
+        });
+        if (error) {
+            if (error.code === '23505') throw new Error(`A player named "${name}" already exists.`);
+            throw new Error('Add failed: ' + error.message);
+        }
+    }
+
+    async function updateRosterPlayer(id, { name, number, prefs }) {
+        const { error } = await db.from('game_day_roster')
+            .update({
+                name, number: number || '',
+                preferred_positions: (prefs || []).join(','),
+            })
+            .eq('id', id);
+        if (error) {
+            if (error.code === '23505') throw new Error(`A player named "${name}" already exists.`);
+            throw new Error('Update failed: ' + error.message);
+        }
+    }
+
+    async function setRosterPlayerActive(id, active) {
+        const { error } = await db.from('game_day_roster')
+            .update({ active }).eq('id', id);
+        if (error) throw new Error('Update failed: ' + error.message);
+        await showRosterModal();
+    }
+
     // ---------- LINEUP ----------
     // Each slot is { s: starterName, subs: [name, ...] }. Old data may be a plain string.
     function normalizeSlot(val) {
@@ -1165,7 +1403,7 @@
         const rosterList = $('#gd-roster-list');
         rosterList.innerHTML = '';
         if (!state.roster.length) {
-            rosterList.innerHTML = '<div class="gd-empty">No roster. Click Pull to load from your Google Sheet.</div>';
+            rosterList.innerHTML = '<div class="gd-empty">No roster yet. Click <strong>Manage</strong> above to add players.</div>';
         } else {
             state.roster.forEach(p => {
                 if (outPlayers.has(p.name)) return;
@@ -2134,6 +2372,7 @@
             renderAll();
         };
         $('#gd-add-game').onclick = showAddGameModal;
+        $('#gd-manage-roster').onclick = showRosterModal;
         $('#gd-refresh').onclick = async () => { await loadFromSupabase(); renderAll(); };
         const saveBtn = $('#gd-save');
         saveBtn.onclick = async () => { await saveToSupabase(); renderAll(); };
