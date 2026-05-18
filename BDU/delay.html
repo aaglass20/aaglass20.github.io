@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Delay</h1>
+    </div>
+</header>
+
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="technical-menu"></div>
+
+<script>
+    fetch('menus/technical-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('technical-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    // Scroll the item into view with smooth behavior
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+
+<div class="container">
+
+
+    <section class="collapsible-section" id="close-defense-tracking-drill">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Close Defense Tracking Drill
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Nice drill for shaddow run
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/closeDefenseTrackingDrill.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="step-of-defending">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Step Of Defending
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Step Of Defending
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/stepOfDefending.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="proper-defending-stance-closing">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Proper Defending Stance & Closing
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Mia breaks down closing on player
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/miaDefStanceClosing.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="loose-your-defender-challenge">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Loose your defender challenge
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Try to feignt and loose your defender challenge.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/loseyourdefenderchallenge.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="small-def-move-work">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Small Def Move Work
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            One on One in a small space
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/smallDefMoveWork.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="delay-and-chase-down">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Delay And Chase Down
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            1v1 with a covering defender. The primary defender delays the attack long enough for the second defender to
+            step in and win the ball — patience, positioning, and team defending over reckless tackles.
+        </p>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="vid/delayAndChaseDown.mp4" type="video/mp4">
+                </video>
+                <b>Setup</b>
+                <ul>
+                    <li>Offense and defense line up across from each other</li>
+                    <li>A second defender starts diagonally behind the primary defender</li>
+                    <li>Primary defender approaches the attacker — the goal is to delay, not immediately steal</li>
+                    <li>Slow the play down long enough for the supporting defender to step in and win possession</li>
+                    <li>Staying in front of the attacker creates chances for both defenders — pressure, control,
+                        and teamwork force mistakes</li>
+                    <li>Once the attacker makes an error, the delaying defender can also look to win the ball</li>
+                </ul>
+                <b>Variations</b>
+                <ul>
+                    <li><b>Approach work</b> — close down quickly with intensity, but learn when to slow down and stop
+                        at the correct defensive distance so you don't get beaten. Builds balance, body control, and
+                        proper spacing.</li>
+                    <li><b>Midfield-line containment</b> — primary defender delays and contains, preventing the attacker
+                        from crossing the midfield line. Teaches angling attackers away from dangerous space.</li>
+                </ul>
+                <b>Goals</b>
+                <ul>
+                    <li><b>Offense:</b> 1v1 moves, ball control, find a way to score</li>
+                    <li><b>Defense:</b> patience, communication, trust, proper defensive angles, defend as a unit
+                        rather than relying on individual tackles</li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="collapsible-section" id="pressing-exercise-1v1">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Pressing Exercise1v1
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Pressing Exercise1v1
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/pressingExercise1v1.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="multi-ball-deception-game">
+        <h2 id="multi-ball-deception-game" class="section-title">
+            <i class="fas fa-futbol"></i> Multi-Ball Deception Game
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            A dynamic one-on-one shooting drill using multiple cones with balls, where attackers use deceptive moves to
+            create scoring opportunities while defenders work to maintain defensive positioning and prevent shots.
+        </p>
+        <ul>
+            <div class="collapsible-content">
+                <h2>Defending tried to stay in Front as Attacker tries to score</h2>
+
+                <div class="video-container">
+                    <video controls>
+                        <source src="vid/shooting_defending_game.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </ul>
+    </section>
+
+    <section class="collapsible-section" id="shooter-vs-defense">
+        <h2 class="section-title">
+            <i class="fas fa-futbol"></i> Shooter Vs Defense
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">
+            Fun drill if we have time, make it a competition
+        </p>
+        <div class="collapsible-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="practice/shooterVsDef.mp4" type="video/mp4">
+                </video>
+                <ul>
+                    <li>5 balls lined up at 18 yard line</li>
+                    <li>Striker on ones side, Defender on other</li>
+                    <li>Defense is only allowed to shuffle and get body in front to stop strike</li>
+                    <li>Sticker runs back and forth and only shoots when finding and opening</li>
+                    <li>D is only trying to block</li>
+                </ul>
+                <b>Why is this important?</b>
+                <ul>
+                    <li>Works on body placement for D</li>
+                    <li>Urgency on closing in for D</li>
+                    <li>Works on quick shot</li>
+                    <br>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
