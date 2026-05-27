@@ -108,6 +108,7 @@ async function startAuthFlow() {
     code_challenge: challenge,
     state,
     scope: SCOPES,
+    show_dialog: "true",
   });
   location.href = `${AUTH_URL}?${params.toString()}`;
 }
@@ -457,8 +458,12 @@ async function getTopTrackUris(artistId, artistName, limit = 5) {
   const data = await api(`/search?q=${q}&type=track&limit=10&market=US`);
   const tracks = (data.tracks?.items || [])
     .filter((t) => t.artists?.some((a) => a.id === artistId))
-    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-  return tracks.slice(0, limit).map((t) => t.uri);
+    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+    .slice(0, limit);
+  return {
+    uris: tracks.map((t) => t.uri),
+    names: tracks.map((t) => t.name),
+  };
 }
 
 // -------- playlist sync --------
@@ -542,10 +547,10 @@ async function syncToSpotify() {
   const resolvedCache = { ...(state.resolved || {}) };
   // Cross-day track cache: reuse previously-resolved trackUris so we skip /search?type=track
   // for any artist already in state (from this or a prior day). Massively cuts API calls on re-runs.
-  const trackUrisCache = {};
+  const trackUrisCache = {}; // { artistId: { uris: string[], names: string[] } }
   for (const d of DAYS) {
     for (const [id, info] of Object.entries(state.days[d].artists || {})) {
-      if (info.trackUris?.length) trackUrisCache[id] = info.trackUris;
+      if (info.trackUris?.length) trackUrisCache[id] = { uris: info.trackUris, names: info.trackNames || [] };
     }
   }
   const resolved = {}; // day → [{ inputName, artistId, name, trackUris }]
@@ -557,15 +562,16 @@ async function syncToSpotify() {
         if (!hit) { log(`✗ Not found: ${input}`, "err"); continue; }
         const exact = normalize(hit.name) === normalize(input);
         log(`${exact ? "✓" : "?"} ${input}${exact ? "" : ` → ${hit.name}`} (${hit.id})`, exact ? "ok" : "warn");
-        let uris = trackUrisCache[hit.id];
-        if (!uris) {
-          uris = await getTopTrackUris(hit.id, hit.name, 5);
-          if (!uris.length) { log(`  no top tracks for ${hit.name}`, "warn"); continue; }
-          trackUrisCache[hit.id] = uris;
+        let cached = trackUrisCache[hit.id];
+        if (!cached) {
+          cached = await getTopTrackUris(hit.id, hit.name, 5);
+          if (!cached.uris.length) { log(`  no top tracks for ${hit.name}`, "warn"); continue; }
+          trackUrisCache[hit.id] = cached;
         } else {
-          log(`  (cached) ${uris.length} tracks`, "muted");
+          log(`  (cached) ${cached.uris.length} tracks`, "muted");
         }
-        resolved[day].push({ inputName: input, artistId: hit.id, name: hit.name, trackUris: uris });
+        for (const name of cached.names) log(`    🎵 ${name}`, "muted");
+        resolved[day].push({ inputName: input, artistId: hit.id, name: hit.name, trackUris: cached.uris, trackNames: cached.names });
       } catch (e) {
         log(`✗ ${input}: ${e.message}`, "err");
       }
@@ -609,7 +615,7 @@ async function syncToSpotify() {
         log(`${day}: adding ${urisToAdd.length} tracks from ${toAdd.length} artists`);
         await addTracksToPlaylist(ds.playlistId, urisToAdd);
       }
-      for (const r of toAdd) ds.artists[r.artistId] = { name: r.name, trackUris: r.trackUris };
+      for (const r of toAdd) ds.artists[r.artistId] = { name: r.name, trackUris: r.trackUris, trackNames: r.trackNames || [] };
     }
   }
 
@@ -733,7 +739,12 @@ function wireUI() {
   $("#sync-btn").addEventListener("click", async () => {
     $("#sync-btn").disabled = true;
     try { await syncToSpotify(); }
-    catch (e) { log(`Sync failed: ${e.message}`, "err"); }
+    catch (e) {
+      log(`Sync failed: ${e.message}`, "err");
+      if (e.message.includes("403")) {
+        log("↳ 403 Forbidden usually means your stored token is missing a playlist scope. Try: Disconnect → Reconnect to get a fresh token with all required permissions.", "warn");
+      }
+    }
     finally { $("#sync-btn").disabled = !isAuthed(); }
   });
   $("#export-btn").addEventListener("click", exportState);
