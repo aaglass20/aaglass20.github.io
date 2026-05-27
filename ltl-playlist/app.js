@@ -768,6 +768,9 @@ async function init() {
   renderAuthStatus();
   if (location.search.includes("code=") || location.search.includes("error=")) {
     await handleRedirect();
+  } else if (isAuthed()) {
+    // Refresh display name on every page load so the pill always shows who's connected.
+    try { await loadMe(); renderAuthStatus(); } catch (_) {}
   }
 }
 
