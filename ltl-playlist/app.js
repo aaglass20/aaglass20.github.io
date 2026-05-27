@@ -196,7 +196,7 @@ async function tokenIfFresh() {
 }
 
 function disconnect() {
-  for (const k of [LS.accessToken, LS.refreshToken, LS.tokenExpiresAt, LS.userId]) {
+  for (const k of [LS.accessToken, LS.refreshToken, LS.tokenExpiresAt, LS.userId, "ltl_display_name", "ltl_user_email"]) {
     localStorage.removeItem(k);
   }
   renderAuthStatus();
@@ -206,6 +206,8 @@ function disconnect() {
 async function loadMe() {
   const me = await api("/me");
   localStorage.setItem(LS.userId, me.id);
+  localStorage.setItem("ltl_display_name", me.display_name || me.id);
+  localStorage.setItem("ltl_user_email", me.email || "");
   return me;
 }
 
@@ -696,7 +698,13 @@ async function importState(file) {
 function renderAuthStatus() {
   const authed = isAuthed();
   const pill = $("#auth-status");
-  pill.textContent = authed ? "Connected" : "Not connected";
+  if (authed) {
+    const name = localStorage.getItem("ltl_display_name") || "";
+    const email = localStorage.getItem("ltl_user_email") || "";
+    pill.textContent = `Connected${name ? ` · ${name}` : ""}${email ? ` (${email})` : ""}`;
+  } else {
+    pill.textContent = "Not connected";
+  }
   pill.classList.toggle("pill-on", authed);
   pill.classList.toggle("pill-off", !authed);
   $("#connect-btn").hidden = authed;
