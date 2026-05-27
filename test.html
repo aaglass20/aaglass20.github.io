@@ -1,52 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Untitled Document</title>
-    <!-- Bootstrap -->
-	<link href="css/bootstrap-4.3.1.css" rel="stylesheet">
-	
-  </head>
-  <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> <a class="navbar-brand" href="#">Glassmation&nbsp;</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent1">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active"> <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a> </li>
-        <li class="nav-item"> <a class="nav-link" href="#">Link</a> </li>
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Dropdown </a></li>
-        <li class="nav-item"> <a class="nav-link active" href="#">Pill 1</a> </li>
-        <li class="nav-item"> <a class="nav-link" href="#">Pill 2</a> </li>
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu"> <a class="dropdown-item" href="#">Action</a> <a class="dropdown-item" href="#">Another action</a> <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a> </div>
-        </li>
-        <li class="nav-item"> <a class="nav-link" href="#">Link</a> </li>
-        <li class="nav-item"> <a class="nav-link disabled" href="#">Disabled</a> </li>
-        <li class="nav-item dropdown">
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown1"> <a class="dropdown-item" href="#">Action</a> <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a> </div>
-        </li>
-        <li class="nav-item"> <a class="nav-link disabled" href="#">Disabled</a> </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Page — Aaron Glass</title>
+  <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">double a</a>
+    <div class="nav-links">
+      <a href="index.html#about">about</a>
+      <a href="index.html#skills">skills</a>
+      <a href="index.html#lab">the lab</a>
+      <a href="docs/Aaron_Glass_Resume.pdf" target="_blank" class="nav-cta">résumé ↗</a>
     </div>
   </nav>
-<!-- body code goes here -->
 
+  <section class="skill-hero">
+    <div class="section-label">dev</div>
+    <h1 class="skill-hero-title">test<br><span>page</span></h1>
+    <p class="skill-hero-sub">Development scratch page.</p>
+  </section>
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-	<script src="js/jquery-3.3.1.min.js"></script>
+  <main>
+    <div class="detail-block">
+      <div class="info-box">This is a scratch/draft page used during development.</div>
+    </div>
+  </main>
 
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="js/popper.min.js"></script> 
-	<script src="js/bootstrap-4.3.1.js"></script>
-  </body>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <a href="index.html" class="footer-brand">double a</a>
+          <p class="footer-tagline">Quality engineering, building apps, coaching soccer. Cleveland area.</p>
+        </div>
+        <nav class="footer-nav">
+          <div class="footer-nav-col">
+            <h4>Skills</h4>
+            <a href="automation.html">Automation</a>
+            <a href="data.html">Data</a>
+            <a href="planning.html">Test Planning</a>
+            <a href="train.html">Training</a>
+            <a href="tools.html">Tooling</a>
+            <a href="communication.html">Communication</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>The Lab</h4>
+            <a href="projects.html">All Projects</a>
+            <a href="mybracketly/index.html">MyBracketly</a>
+            <a href="softball/index.html">Softball</a>
+            <a href="BDU/index.html">BDU</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>Connect</h4>
+            <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn</a>
+            <a href="https://twitter.com/Double_A_QA" target="_blank">Twitter</a>
+            <a href="docs/Aaron_Glass_Resume.pdf" target="_blank">Résumé</a>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 Aaron Glass — Double A</span>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">linkedin</a>
+          <a href="https://twitter.com/Double_A_QA" target="_blank">twitter</a>
+          <a href="index.html">← home</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
 </html>

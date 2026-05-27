@@ -1,96 +1,336 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Glassmation</title>
-<link href="css/multiColumnTemplate.css" rel="stylesheet" type="text/css">
-<link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aaron Glass — Quality Engineer, Builder, Coach. Based in the Cleveland area.">
+  <title>Aaron Glass — Double A</title>
+  <link rel="stylesheet" href="css/portfolio.css">
 </head>
-<body style="padding-top: 70px">
-<div class="container">
-  <header>
-    <div class="primary_header">
+<body>
+
+  <!-- ════════════════════════════════════════════
+       NAV
+  ════════════════════════════════════════════ -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">double a</a>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#lab">the lab</a>
+      <a href="docs/Aaron_Glass_Resume.pdf" target="_blank" class="nav-cta">résumé ↗</a>
     </div>
-	  
-    <nav class="secondary_header" id="menu">
-    </nav>
-	  
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light"> <a class="navbar-brand" href="index.html">Glassmation</a>
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
-	    <div class="collapse navbar-collapse" id="navbarSupportedContent1">
-	      <ul class="navbar-nav mr-auto">        
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Technical</a>
-	          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">				  <a class="dropdown-item" href="automation.html">Automation</a> 
-				  <a class="dropdown-item" href="data.html">Data</a>
-				  <a class="dropdown-item" href="tools.html">Tooling</a></div>
-            </li>		  
-			<li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="planning" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Testing</a>
-	          <div class="dropdown-menu" aria-labelledby="planning"> 
-				  <a class="dropdown-item" href="planning.html">Test Planning</a>
-				  <a class="dropdown-item" href="train.html">Training & Mentoring</a>
-			  </div>
-            </li>		   
-			  
-			  <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="Other" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
-	          <div class="dropdown-menu" aria-labelledby="planning"> 
-				<a class="dropdown-item" href="communication.html">Communication</a>
-  			  </div>
-		    </li>
+  </nav>
 
-			  
-			 <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="aboutMe" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> About Me </a>
-            	<div class="dropdown-menu" aria-labelledby="navbarDropdown1"> <a class="dropdown-item" href="docs/Aaron_Glass_Resume.pdf"  target="_blank" >Resume</a> 
-				<a class="dropdown-item" href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn Profile</a>
-				<a class="dropdown-item" href="https://twitter.com/Double_A_QA"  target="_blank">Twitter</a>
-					<a class="dropdown-item" href="logos.html">Logos</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="random.html">Random</a>
-              <a class="dropdown-item" href="fantasy-baseball/index.html">Fantasy Baseball Tiers</a> </div>
-          	</li>  
-          </ul>
+  <!-- ════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">quality engineer · builder · coach</div>
+      <h1 class="hero-name">
+        aaron<br>
+        <span class="accent">glass</span>
+      </h1>
+      <p class="hero-tagline">
+        Preaching to own quality as a company.<br>
+        Establishing truth along the way.
+      </p>
+      <div class="hero-actions">
+        <a href="#lab" class="btn-primary">see my work</a>
+        <a href="#about" class="btn-outline">about me</a>
       </div>
-    </nav>	  
-  </header>
-	
-  <section>
-    <h2 class="noDisplay">Main Content</h2>
-    <article class="left_article">
-      <h3>AARON GLASS</h3>
-      <p><em><strong>Preaching to own quality as a company. Establishing truth along the way.</strong></em></p>
-      <p>Hi my name is Aaron.&nbsp; My friends call me Double A. Random strangers ask me if I ever heard of <a href="https://www.youtube.com/watch?v=Dd7FixvoKBw" target="_blank">A A Ron</a>?&nbsp; Located on this site is a collection of the things I know and the things I want to know.&nbsp; I also share a little about who I am and what I believe in when it comes to my professional life.&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<br>
-        <br>
-I currently work remotely for StyleSeat which is based out of San Francisco. I worked previously for OnShift for 2 years. My quality journey began working for MRI Software for 10 years.</p>
+    </div>
 
-	  
-
-    </article>
-	  
-    <aside class="right_article"><img src="images/aaronProfile.jpg" alt="" width="400" height="200" class="placeholder"/> </aside>
-
+    <div class="hero-visual">
+      <div class="hero-img-wrap">
+        <img src="images/aaronProfile.png" alt="Aaron Glass — Double A">
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">10+</span>
+          <span class="stat-label">yrs in QA</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">9</span>
+          <span class="stat-label">apps built</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">3</span>
+          <span class="stat-label">companies</span>
+        </div>
+      </div>
+    </div>
   </section>
-	
-<div class="row blockDisplay">
-    <div class="column_half left_half"> </div>
-</div>
-  <div class="social">
-    <p class="social_icon">&nbsp;</p>
-    <p class="social_icon">&nbsp;</p>
-    <p class="social_icon">&nbsp;</p>
-    <p class="social_icon">&nbsp;</p>
+
+  <!-- ════════════════════════════════════════════
+       ABOUT
+  ════════════════════════════════════════════ -->
+  <section class="about-section" id="about">
+    <div class="about-grid">
+
+      <div class="about-text">
+        <div class="section-label">about me</div>
+        <h2 class="section-title">hi, i'm<br><span class="text-green">double a</span></h2>
+
+        <p>
+          My name is Aaron. My friends call me <strong>Double A</strong>. Random strangers ask me
+          if I've ever heard of
+          <a href="https://www.youtube.com/watch?v=Dd7FixvoKBw" target="_blank">A A Ron</a>.
+        </p>
+        <p>
+          I'm passionate about owning quality as a team sport — not just a QA function.
+          I share what I know, build what I need, and keep showing up with honesty about
+          what works and what doesn't.
+        </p>
+        <p>
+          When I'm not breaking software professionally, I'm building it for fun.
+          Soccer coaching, bracket pools, music timelines — <strong>The Lab</strong>
+          is where those projects live.
+        </p>
+
+        <div class="about-links">
+          <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank" class="about-link">LinkedIn ↗</a>
+          <a href="https://twitter.com/Double_A_QA" target="_blank" class="about-link">Twitter ↗</a>
+          <a href="docs/Aaron_Glass_Resume.pdf" target="_blank" class="about-link">Résumé ↗</a>
+        </div>
+      </div>
+
+      <div class="exp-col">
+        <div class="section-label">experience</div>
+        <div class="exp-item">
+          <div class="exp-company">StyleSeat</div>
+          <div class="exp-role">Quality Engineering</div>
+          <div class="exp-period">Current · San Francisco (Remote)</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-company">OnShift</div>
+          <div class="exp-role">Quality Engineering</div>
+          <div class="exp-period">2 Years</div>
+        </div>
+        <div class="exp-item exp-featured">
+          <div class="exp-company">MRI Software</div>
+          <div class="exp-role">Quality Engineering</div>
+          <div class="exp-period">10 Years · Where the journey began</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       SKILLS
+  ════════════════════════════════════════════ -->
+  <section class="skills-section" id="skills">
+    <div class="section-label">what i do</div>
+    <h2 class="section-title">skills &amp; expertise</h2>
+
+    <div class="skills-grid">
+
+      <a href="automation.html" class="skill-card">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-title">test automation</div>
+        <div class="skill-desc">
+          Building frameworks that catch bugs before users do.
+          End-to-end, API, and performance coverage at scale.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Selenium</span>
+          <span class="skill-tag">Cypress</span>
+          <span class="skill-tag">TestCafe</span>
+          <span class="skill-tag">Ruby / Cucumber</span>
+        </div>
+      </a>
+
+      <a href="data.html" class="skill-card">
+        <div class="skill-icon">📊</div>
+        <div class="skill-title">data &amp; analytics</div>
+        <div class="skill-desc">
+          SQL, API testing, and turning raw data into decisions.
+          Quality starts with visibility into what's happening.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">Postman</span>
+          <span class="skill-tag">Newman</span>
+        </div>
+      </a>
+
+      <a href="planning.html" class="skill-card">
+        <div class="skill-icon">🗺️</div>
+        <div class="skill-title">test planning</div>
+        <div class="skill-desc">
+          Strategy first. Risk-based coverage maps and test plans
+          that people actually read and use.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">TestRail</span>
+          <span class="skill-tag">MindMup</span>
+          <span class="skill-tag">Strategy</span>
+        </div>
+      </a>
+
+      <a href="train.html" class="skill-card">
+        <div class="skill-icon">🎓</div>
+        <div class="skill-title">training &amp; mentoring</div>
+        <div class="skill-desc">
+          Growing quality engineers. Sharing what I know so
+          the whole team levels up — not just the QA squad.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Mentoring</span>
+          <span class="skill-tag">Documentation</span>
+          <span class="skill-tag">Culture</span>
+        </div>
+      </a>
+
+      <a href="tools.html" class="skill-card">
+        <div class="skill-icon">🔧</div>
+        <div class="skill-title">tooling</div>
+        <div class="skill-desc">
+          The right tool for the right job. Building internal
+          utilities that make entire teams move faster.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Chrome DevTools</span>
+          <span class="skill-tag">Newman</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Katalon</span>
+        </div>
+      </a>
+
+      <a href="communication.html" class="skill-card">
+        <div class="skill-icon">💬</div>
+        <div class="skill-title">communication</div>
+        <div class="skill-desc">
+          Quality is a conversation. Bridging dev, product, and
+          business through clarity — not just bug reports.
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Stakeholders</span>
+          <span class="skill-tag">Reporting</span>
+          <span class="skill-tag">Rocketbook</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       THE LAB — featured projects
+  ════════════════════════════════════════════ -->
+  <div class="lab-section" id="lab">
+    <div class="lab-inner">
+
+      <div class="lab-header">
+        <div>
+          <div class="section-label">side projects</div>
+          <h2 class="section-title" style="margin-bottom:.75rem">the lab</h2>
+          <p class="lab-subtitle">Apps I build when quality engineering isn't enough.</p>
+        </div>
+        <a href="projects.html" class="btn-primary">all projects →</a>
+      </div>
+
+      <div class="lab-grid">
+
+        <a href="mybracketly/index.html" class="lab-card">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-tag">React · Vanilla JS · Google Sheets</div>
+          <div class="lab-name">mybracketly</div>
+          <div class="lab-desc">
+            NCAA bracket competitions + 100-squares pools with live ESPN scores.
+            Multi-sport, multi-user, real-time.
+          </div>
+        </a>
+
+        <a href="softball/index.html" class="lab-card">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-tag">React · Vite · Konva Canvas</div>
+          <div class="lab-name">softball trainer</div>
+          <div class="lab-desc">
+            Canvas-based animated app to visualize and drill softball situational plays
+            with fielders, runners, and positions.
+          </div>
+        </a>
+
+        <a href="BDU/index.html" class="lab-card">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-tag">HTML · jQuery · Python</div>
+          <div class="lab-name">bdu coaching library</div>
+          <div class="lab-desc">
+            100+ pages covering drills, tactics, fitness, and game management
+            for youth soccer coaching. Fully searchable.
+          </div>
+        </a>
+
+        <a href="soundtrack/index.html" class="lab-card">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-tag">React · Express · MongoDB · Spotify</div>
+          <div class="lab-name">soundtrack</div>
+          <div class="lab-desc">
+            Your musical autobiography. Build a personal song timeline by year,
+            follow friends, and share your soundtrack.
+          </div>
+        </a>
+
+      </div>
+    </div>
   </div>
-  <footer class="secondary_header footer">
+
+  <!-- ════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <div class="footer-top">
+        <div>
+          <a href="index.html" class="footer-brand">double a</a>
+          <p class="footer-tagline">
+            Quality engineering, building apps, coaching soccer.
+            Cleveland area.
+          </p>
+        </div>
+
+        <nav class="footer-nav">
+          <div class="footer-nav-col">
+            <h4>Portfolio</h4>
+            <a href="automation.html">Automation</a>
+            <a href="data.html">Data</a>
+            <a href="planning.html">Test Planning</a>
+            <a href="train.html">Training</a>
+            <a href="tools.html">Tooling</a>
+            <a href="communication.html">Communication</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>The Lab</h4>
+            <a href="projects.html">All Projects</a>
+            <a href="mybracketly/index.html">MyBracketly</a>
+            <a href="softball/index.html">Softball</a>
+            <a href="BDU/index.html">BDU</a>
+            <a href="soundtrack/index.html">Soundtrack</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>Connect</h4>
+            <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn</a>
+            <a href="https://twitter.com/Double_A_QA" target="_blank">Twitter</a>
+            <a href="docs/Aaron_Glass_Resume.pdf" target="_blank">Résumé</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 Aaron Glass — Double A</span>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">linkedin</a>
+          <a href="https://twitter.com/Double_A_QA" target="_blank">twitter</a>
+          <a href="logos.html">logos</a>
+        </div>
+      </div>
+
+    </div>
   </footer>
-</div>
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap-4.3.1.js"></script>
+
 </body>
 </html>

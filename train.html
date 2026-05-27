@@ -1,106 +1,150 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Glassmation</title>
-<link href="css/multiColumnTemplate.css" rel="stylesheet" type="text/css">
-<link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Training & Mentoring — Aaron Glass. Growing quality engineers through automation, test management, and onboarding.">
+  <title>Training & Mentoring — Aaron Glass</title>
+  <link rel="stylesheet" href="css/portfolio.css">
 </head>
 <body>
-<div class="container">
 
-<header>
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">double a</a>
+    <div class="nav-links">
+      <a href="index.html#about">about</a>
+      <a href="index.html#skills">skills</a>
+      <a href="index.html#lab">the lab</a>
+      <a href="docs/Aaron_Glass_Resume.pdf" target="_blank" class="nav-cta">résumé ↗</a>
+    </div>
+  </nav>
 
-    <nav class="secondary_header" id="menu">
+  <div class="breadcrumb-bar">
+    <a href="index.html">home</a>
+    <span class="bc-sep">/</span>
+    <a href="index.html#skills">skills</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-current">training &amp; mentoring</span>
+  </div>
 
-    </nav>
-	  
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light"> <a class="navbar-brand" href="index.html">Training</a>
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
-	    <div class="collapse navbar-collapse" id="navbarSupportedContent1">
-	      <ul class="navbar-nav mr-auto">        
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Technical</a>
-	          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">				  <a class="dropdown-item" href="automation.html">Automation</a> 
-				  <a class="dropdown-item" href="data.html">Data</a>
-				  <a class="dropdown-item" href="tools.html">Tooling</a></div>
-            </li>		  
-			<li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="planning" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Testing</a>
-	          <div class="dropdown-menu" aria-labelledby="planning"> 
-				  <a class="dropdown-item" href="planning.html">Test Planning</a>
-				  <a class="dropdown-item" href="train.html">Training & Mentoring</a>
-				</div>
-            </li>		    			  <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="Other" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
-	          <div class="dropdown-menu" aria-labelledby="planning"> 
-				<a class="dropdown-item" href="communication.html">Communication</a>
-  			  </div>
-				  </li>
-			  
-			 <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="aboutMe" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> About Me </a>
-            	<div class="dropdown-menu" aria-labelledby="navbarDropdown1"> <a class="dropdown-item" href="docs/Aaron_Glass_Resume.pdf"  target="_blank" >Resume</a> 
-				<a class="dropdown-item" href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn Profile</a>
-				<a class="dropdown-item" href="https://twitter.com/Double_A_QA"  target="_blank">Twitter</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="random.html">Random</a> </div>
-          	</li>  
-          </ul>
-      </div>
-    </nav>	  
-  </header>
-		
-  <section>
-    <h2 class="noDisplay">Main Content</h2>
-<aside class="right_article"> </aside>
+  <section class="skill-hero">
+    <div class="section-label">testing skills</div>
+    <h1 class="skill-hero-title">training &amp;<br><span>mentoring</span></h1>
+    <p class="skill-hero-sub">
+      Growing quality engineers from the ground up. I share what I know so the whole
+      team levels up — not just the QA squad. Below are the topics I've taught and the
+      materials I've built along the way.
+    </p>
   </section>
 
-<div id="accordion1" role="tablist">
-     <div class="card">
-	     <div class="card-header" role="tab" id="headingOne1">
-	       <h5 class="mb-0"> <a class="collapsed" data-toggle="collapse" href="#collapseOne1" role="button" aria-expanded="false" aria-controls="collapseOne1">Automation</a> </h5>
-         </div>
-	     <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1" data-parent="#accordion1">
-			 <div class="card-body"><a href="https://github.com/aaglass20/glassmation/blob/master/PDF/Introduction%20to%20TestCafe.pdf">Introduction to TestCafe</a></div>
-			 <div class="card-body">Cypress Tips</div>
-			 <div class="card-body">Selenium Tips</div>
-			 <div class="card-body">Katalon Tips</div>
-			 <div class="card-body">Ruby Tips</div>
-         </div>
+  <section class="skill-content">
+    <div class="section-label">topics &amp; resources</div>
+    <h2 class="section-title" style="margin-bottom:2rem">what i teach</h2>
+
+    <div class="accordion">
+
+      <!-- Automation -->
+      <details class="accordion-item">
+        <summary class="accordion-toggle">
+          <span class="accordion-label">⚡ automation training</span>
+          <span class="accordion-icon">+</span>
+        </summary>
+        <div class="accordion-body">
+          <a href="https://github.com/aaglass20/glassmation/blob/master/PDF/Introduction%20to%20TestCafe.pdf"
+             target="_blank" class="accordion-entry">Introduction to TestCafe (PDF)</a>
+          <a href="testcafe.html" class="accordion-entry">TestCafe tips &amp; patterns</a>
+          <a href="cypress.html" class="accordion-entry">Cypress tips &amp; patterns</a>
+          <a href="selenium.html" class="accordion-entry">Selenium tips &amp; patterns</a>
+          <a href="katalon.html" class="accordion-entry">Katalon tips &amp; patterns</a>
+          <a href="ruby.html" class="accordion-entry">Ruby / Cucumber tips &amp; patterns</a>
+        </div>
+      </details>
+
+      <!-- Test Management -->
+      <details class="accordion-item">
+        <summary class="accordion-toggle">
+          <span class="accordion-label">📋 test management</span>
+          <span class="accordion-icon">+</span>
+        </summary>
+        <div class="accordion-body">
+          <a href="testRail.html" class="accordion-entry">TestRail — case management &amp; reporting</a>
+          <span class="accordion-entry">HipTest — BDD collaboration</span>
+          <span class="accordion-entry">Azure DevOps — test plans &amp; pipelines</span>
+        </div>
+      </details>
+
+      <!-- Onboarding & Mentoring -->
+      <details class="accordion-item">
+        <summary class="accordion-toggle">
+          <span class="accordion-label">🎓 onboarding &amp; mentoring</span>
+          <span class="accordion-icon">+</span>
+        </summary>
+        <div class="accordion-body">
+          <span class="accordion-entry">Onboarding approach — ramp plans, pairing, first-week checklists</span>
+          <span class="accordion-entry">Mentoring approach — 1:1 structure, growth frameworks, honest feedback</span>
+          <span class="accordion-entry">Documentation culture — writing things down so knowledge survives turnover</span>
+        </div>
+      </details>
+
+      <!-- QA Philosophy -->
+      <details class="accordion-item">
+        <summary class="accordion-toggle">
+          <span class="accordion-label">💡 qa philosophy</span>
+          <span class="accordion-icon">+</span>
+        </summary>
+        <div class="accordion-body">
+          <span class="accordion-entry">Quality as a team sport — not just a QA gate</span>
+          <span class="accordion-entry">Shift-left testing — catching defects earlier in the SDLC</span>
+          <span class="accordion-entry">Psychological safety — creating space to say "I found a bug"</span>
+          <span class="accordion-entry">Metrics that matter — coverage isn't a vanity metric if used right</span>
+        </div>
+      </details>
+
     </div>
-	   <div class="card">
-	     <div class="card-header" role="tab" id="headingTwo1">
-	       <h5 class="mb-0"> <a class="collapsed" data-toggle="collapse" href="#collapseTwo1" role="button" aria-expanded="false" aria-controls="collapseTwo1">Test Management</a> </h5>
-         </div>
-	     <div id="collapseTwo1" class="collapse" role="tabpanel" aria-labelledby="headingTwo1" data-parent="#accordion1">
-	       <div class="card-body">TestRail</div>
-		   <div class="card-body">HipTest</div>
-		   <div class="card-body">Azure</div>
-         </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <a href="index.html" class="footer-brand">double a</a>
+          <p class="footer-tagline">Quality engineering, building apps, coaching soccer. Cleveland area.</p>
+        </div>
+        <nav class="footer-nav">
+          <div class="footer-nav-col">
+            <h4>Skills</h4>
+            <a href="automation.html">Automation</a>
+            <a href="data.html">Data</a>
+            <a href="planning.html">Test Planning</a>
+            <a href="train.html">Training</a>
+            <a href="tools.html">Tooling</a>
+            <a href="communication.html">Communication</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>The Lab</h4>
+            <a href="projects.html">All Projects</a>
+            <a href="mybracketly/index.html">MyBracketly</a>
+            <a href="softball/index.html">Softball</a>
+            <a href="BDU/index.html">BDU</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>Connect</h4>
+            <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn</a>
+            <a href="https://twitter.com/Double_A_QA" target="_blank">Twitter</a>
+            <a href="docs/Aaron_Glass_Resume.pdf" target="_blank">Résumé</a>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 Aaron Glass — Double A</span>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">linkedin</a>
+          <a href="https://twitter.com/Double_A_QA" target="_blank">twitter</a>
+          <a href="index.html">← home</a>
+        </div>
+      </div>
     </div>
-	   <div class="card">
-	     <div class="card-header" role="tab" id="headingThree1">
-	       <h5 class="mb-0"> <a class="collapsed" data-toggle="collapse" href="#collapseThree1" role="button" aria-expanded="false" aria-controls="collapseThree1">Onboarding &amp; Mentoring&nbsp;&nbsp;</a> </h5>
-         </div>
-	     <div id="collapseThree1" class="collapse" role="tabpanel" aria-labelledby="headingThree1" data-parent="#accordion1">
-	       <div class="card-body">Onboarding Approach</div>
-		  <div class="card-body">Mentoring Approach</div>
-         </div>
-  </div>
- </div>
-	
-	
-	
-<footer class="secondary_header footer">&nbsp;
-</footer>
-</div>
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap-4.3.1.js"></script>
+  </footer>
+
 </body>
 </html>

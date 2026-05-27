@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Lab — Apps built by Aaron Glass. Brackets, softball, soccer coaching, music timelines, and more.">
+  <title>The Lab — Aaron Glass</title>
+  <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════
+       NAV
+  ════════════════════════════════════════════ -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">double a</a>
+    <div class="nav-links">
+      <a href="index.html#about">about</a>
+      <a href="index.html#skills">skills</a>
+      <a href="index.html#lab">the lab</a>
+      <a href="docs/Aaron_Glass_Resume.pdf" target="_blank" class="nav-cta">résumé ↗</a>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════ -->
+  <section class="projects-hero">
+    <div class="section-label">side projects · apps · tools</div>
+    <h1 class="projects-hero-title">
+      the<br><span>lab</span>
+    </h1>
+    <p class="projects-hero-sub">
+      Apps I build when quality engineering isn't enough. Each project started as
+      a real problem — a missing tool, a better way to run something I cared about.
+    </p>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       PROJECTS GRID
+  ════════════════════════════════════════════ -->
+  <section class="projects-section">
+    <div class="projects-full-grid">
+
+      <!-- ── MyBracketly ── -->
+      <a href="mybracketly/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">React · Vanilla JS · Google Sheets · ESPN API</div>
+        <div class="project-name">mybracketly</div>
+        <div class="project-desc">
+          A combined NCAA bracket competition and 100-squares pool hub. Users can create
+          brackets, own squares, and follow live scores via the ESPN API. Supports multiple
+          tournaments, head-to-head standings, and payout tracking — all backed by Google Sheets.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── Softball Trainer ── -->
+      <a href="softball/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">React 19 · Vite · Konva Canvas</div>
+        <div class="project-name">softball trainer</div>
+        <div class="project-desc">
+          An animated canvas app to visualize and walk through softball situational plays.
+          Fielders, base runners, and play sequences are animated using Konva on an
+          interactive field canvas. Situations are defined as JSON data — easy to extend.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── BDU ── -->
+      <a href="BDU/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">HTML · CSS · jQuery · Python · Apps Script</div>
+        <div class="project-name">bdu coaching library</div>
+        <div class="project-desc">
+          A 100+ page soccer coaching resource library covering drills, tactical concepts,
+          fitness, and game management for youth coaches. Fully searchable via a Python-built
+          index. Game-day features sync lineups and stats to Google Sheets via Apps Script.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── Soundtrack ── -->
+      <a href="soundtrack/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">React 19 · React Router · Express · MongoDB · Spotify API</div>
+        <div class="project-name">soundtrack</div>
+        <div class="project-desc">
+          Your musical autobiography. Build a personal timeline of songs by year, rank
+          your all-time favorites, and follow friends to compare soundtracks. Spotify-powered
+          search, multi-user PIN auth, and a social activity feed. Backend on Render + MongoDB Atlas.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── Fantasy Baseball ── -->
+      <a href="fantasy-baseball/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">Vanilla HTML · JS · JSON</div>
+        <div class="project-name">fantasy baseball tiers</div>
+        <div class="project-desc">
+          A draft prep and player ranking tool for fantasy baseball. Browse tiered
+          player rankings and compare stats across positions. Pure static HTML — no backend,
+          no login, just drop in new JSON and it's ready for draft day.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── NCAA Squares ── -->
+      <a href="ncaa/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">Vanilla HTML · JS · Google Sheets · Apps Script</div>
+        <div class="project-name">ncaa squares</div>
+        <div class="project-desc">
+          A 100-squares pool built for the NCAA tournament. Handles square ownership,
+          game-locked states, score-based payouts, and offline mode via LocalStorage.
+          Complex payout logic including PaidPayouts tracking, all persisted through Apps Script.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── Brackets ── -->
+      <a href="brackets/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">Vanilla HTML · JS · Google Sheets · Apps Script</div>
+        <div class="project-name">brackets</div>
+        <div class="project-desc">
+          Single and double elimination bracket generator and management tool.
+          Create tournaments, track results, and sync everything to Google Sheets.
+          Multi-tournament support via separate sheet tabs.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── LTL Playlist ── -->
+      <a href="ltl-playlist/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">Vanilla HTML · JS · Spotify PKCE</div>
+        <div class="project-name">ltl playlist builder</div>
+        <div class="project-desc">
+          A static SPA that connects to Spotify via PKCE auth flow and syncs an LTL lineup
+          into dated playlists (LTL{year}{Day}). No backend — all client-side using
+          Spotify's Web API with proper OAuth token management.
+        </div>
+        <span class="project-badge live">live</span>
+      </a>
+
+      <!-- ── Signs ── -->
+      <a href="signs/index.html" class="project-card">
+        <span class="project-arrow">↗</span>
+        <div class="project-stack">HTML · Google Apps Script</div>
+        <div class="project-name">signs utility</div>
+        <div class="project-desc">
+          A small form utility that integrates with Google Sheets via Apps Script.
+          Deployed as an Apps Script web app — enter data through the form,
+          it lands directly in the Sheet.
+        </div>
+        <span class="project-badge">apps script</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <div class="footer-top">
+        <div>
+          <a href="index.html" class="footer-brand">double a</a>
+          <p class="footer-tagline">
+            Quality engineering, building apps, coaching soccer.
+            Cleveland area.
+          </p>
+        </div>
+
+        <nav class="footer-nav">
+          <div class="footer-nav-col">
+            <h4>Portfolio</h4>
+            <a href="automation.html">Automation</a>
+            <a href="data.html">Data</a>
+            <a href="planning.html">Test Planning</a>
+            <a href="train.html">Training</a>
+            <a href="tools.html">Tooling</a>
+            <a href="communication.html">Communication</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>The Lab</h4>
+            <a href="projects.html">All Projects</a>
+            <a href="mybracketly/index.html">MyBracketly</a>
+            <a href="softball/index.html">Softball</a>
+            <a href="BDU/index.html">BDU</a>
+            <a href="soundtrack/index.html">Soundtrack</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4>Connect</h4>
+            <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">LinkedIn</a>
+            <a href="https://twitter.com/Double_A_QA" target="_blank">Twitter</a>
+            <a href="docs/Aaron_Glass_Resume.pdf" target="_blank">Résumé</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 Aaron Glass — Double A</span>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/aaron-glass-8b74a48/" target="_blank">linkedin</a>
+          <a href="https://twitter.com/Double_A_QA" target="_blank">twitter</a>
+          <a href="index.html">← back home</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
