@@ -165,6 +165,7 @@ function persistTokens(tok) {
   localStorage.setItem(LS.accessToken, tok.access_token);
   if (tok.refresh_token) localStorage.setItem(LS.refreshToken, tok.refresh_token);
   localStorage.setItem(LS.tokenExpiresAt, String(Date.now() + tok.expires_in * 1000));
+  if (tok.scope) localStorage.setItem("ltl_granted_scopes", tok.scope);
 }
 
 async function refreshAccessToken() {
@@ -525,6 +526,12 @@ async function syncToSpotify() {
 
   clearLog();
   log(`Starting sync for LTL ${year} — days: ${activeDays.join(", ")}${activeDays.length < DAYS.length ? ` (skipping ${DAYS.filter((d) => !activeDays.includes(d)).join(", ")})` : ""}`);
+  const grantedScopes = localStorage.getItem("ltl_granted_scopes") || "(unknown — reconnect to capture)";
+  log(`Token scopes: ${grantedScopes}`, "muted");
+  if (grantedScopes !== "(unknown — reconnect to capture)" && !grantedScopes.includes("playlist-modify")) {
+    log("⚠️ playlist-modify scope is missing from your token! Disconnect → Reconnect to re-authorize.", "err");
+    return;
+  }
 
   // Ensure a playlist exists for each active day that has artists (or had them previously).
   for (const day of activeDays) {
