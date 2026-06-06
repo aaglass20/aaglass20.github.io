@@ -244,7 +244,7 @@
       overflow: hidden;
       background: var(--surface2);
       border: 1px solid var(--border);
-      cursor: col-resize;
+      cursor: pointer;
       user-select: none;
     }
 
@@ -619,6 +619,9 @@ let trimS = 0;
 let trimE = 1;
 let dragTarget = null;  // 'start' | 'end' | null
 
+// Playhead position as 0..1 fraction of full audio duration, null = hidden
+let playheadFrac = null;
+
 // Cached waveform peak data
 let peaks = null;
 
@@ -768,9 +771,10 @@ async function processRecording() {
     const ab  = await blob.arrayBuffer();
     audioBuffer = await audioCtx.decodeAudioData(ab);
 
-    trimS = 0;
-    trimE = 1;
-    playOffset = 0;
+    trimS        = 0;
+    trimE        = 1;
+    playOffset   = 0;
+    playheadFrac = null;
 
     // Default filename with timestamp
     const d = new Date();
@@ -857,6 +861,21 @@ function drawWaveform(ctx, W, H) {
     ctx.fillRect(i, MY - amp, 1, amp * 2 || 1);
   }
 
+  // Playhead (drawn before handles so grips sit on top)
+  if (playheadFrac !== null) {
+    const px = playheadFrac * W;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,.85)';
+    ctx.lineWidth   = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(px, 0);
+    ctx.lineTo(px, H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
   // Trim handles
   drawHandle(ctx, sx, H, 'start');
   drawHandle(ctx, ex, H, 'end');
@@ -907,10 +926,16 @@ function pointerDown(x) {
   const de = Math.abs(x - trimE);
   if (ds < HIT * 2) dragTarget = 'start';
   else if (de < HIT * 2) dragTarget = 'end';
+  else seekTo(x);
 }
 
 function pointerMove(x) {
-  if (!dragTarget) return;
+  if (!dragTarget) {
+    // Update cursor hint based on proximity to handles
+    const nearHandle = Math.abs(x - trimS) < HIT * 2 || Math.abs(x - trimE) < HIT * 2;
+    document.getElementById('waveformWrap').style.cursor = nearHandle ? 'col-resize' : 'pointer';
+    return;
+  }
   if (dragTarget === 'start') trimS = Math.min(x, trimE - 0.02);
   else                        trimE = Math.max(x, trimS + 0.02);
 
@@ -932,6 +957,56 @@ document.addEventListener('mouseup',     () => { dragTarget = null; });
 wCanvas().addEventListener('touchstart', e => { e.preventDefault(); pointerDown(hitFraction(e, wCanvas())); }, { passive: false });
 document.addEventListener('touchmove',   e => { e.preventDefault(); pointerMove(hitFraction(e, wCanvas())); }, { passive: false });
 document.addEventListener('touchend',    () => { dragTarget = null; });
+
+/* ─── Seek ──────────────────────────────────────────────────────────── */
+function seekTo(fraction) {
+  if (!audioBuffer) return;
+
+  // Clamp to within trim region
+  const clamped = Math.max(trimS, Math.min(trimE - 0.001, fraction));
+  playOffset    = (clamped - trimS) * audioBuffer.duration;
+  playheadFrac  = clamped;
+
+  if (isPlaying) {
+    // Tear down current source and restart from the new offset
+    if (sourceNode) {
+      sourceNode.onended = null;
+      try { sourceNode.stop(); } catch (_) {}
+      sourceNode.disconnect();
+    }
+    const seekSec = trimS * audioBuffer.duration + playOffset;
+    const endSec  = trimE * audioBuffer.duration;
+    sourceNode = audioCtx.createBufferSource();
+    sourceNode.buffer = audioBuffer;
+    sourceNode.connect(audioCtx.destination);
+    sourceNode.start(0, seekSec, endSec - seekSec);
+    sourceNode.onended = () => {
+      if (isPlaying) {
+        isPlaying    = false;
+        playOffset   = 0;
+        playheadFrac = null;
+        document.getElementById('playBtn').textContent = '▶';
+        cancelAnimationFrame(animId);
+        redrawWaveform();
+        updateTimeDisplay();
+      }
+    };
+    playStartedAt = audioCtx.currentTime;
+  } else {
+    updateTimeDisplay();
+    redrawWaveform();
+  }
+}
+
+function redrawWaveform() {
+  const c   = wCanvas();
+  const ctx = c.getContext('2d');
+  const dpr = devicePixelRatio || 1;
+  ctx.save();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawWaveform(ctx, c.width / dpr, c.height / dpr);
+  ctx.restore();
+}
 
 /* ─── Stats / display ───────────────────────────────────────────────── */
 function updateStats() {
@@ -979,10 +1054,12 @@ function startPlay() {
 
   sourceNode.onended = () => {
     if (isPlaying) {
-      isPlaying  = false;
-      playOffset = 0;
+      isPlaying    = false;
+      playOffset   = 0;
+      playheadFrac = null;
       document.getElementById('playBtn').textContent = '▶';
       cancelAnimationFrame(animId);
+      redrawWaveform();
       updateTimeDisplay();
     }
   };
@@ -995,8 +1072,9 @@ function startPlay() {
 
 function pausePlay() {
   if (sourceNode) { try { sourceNode.stop(); } catch(_) {} sourceNode.disconnect(); }
-  playOffset += audioCtx.currentTime - playStartedAt;
-  isPlaying   = false;
+  playOffset   += audioCtx.currentTime - playStartedAt;
+  isPlaying     = false;
+  // Keep playheadFrac so the paused position stays visible on the waveform
   document.getElementById('playBtn').textContent = '▶';
   cancelAnimationFrame(animId);
   updateTimeDisplay();
@@ -1012,32 +1090,12 @@ function rafLoop() {
 
   if (pos >= trimDur) return;
 
-  // Update time display
   document.getElementById('timeDisplay').textContent =
     `${fmt(pos)} / ${fmt(trimDur)}`;
 
-  // Draw playhead on waveform
-  const c   = wCanvas();
-  const ctx = c.getContext('2d');
-  const dpr = devicePixelRatio || 1;
-  const cW  = c.width / dpr;
-  const cH  = c.height / dpr;
-
-  ctx.save();
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  drawWaveform(ctx, cW, cH);
-
-  // Playhead line
-  const frac = trimS + (pos / audioBuffer.duration);
-  const px   = frac * cW;
-  ctx.strokeStyle = 'rgba(255,255,255,.85)';
-  ctx.lineWidth   = 2;
-  ctx.setLineDash([5, 4]);
-  ctx.beginPath();
-  ctx.moveTo(px, 0);
-  ctx.lineTo(px, cH);
-  ctx.stroke();
-  ctx.restore();
+  // Update playheadFrac and let drawWaveform render it
+  playheadFrac = trimS + (pos / audioBuffer.duration);
+  redrawWaveform();
 }
 
 /* ─── MP3 export ────────────────────────────────────────────────────── */
@@ -1112,10 +1170,11 @@ async function exportMP3() {
 /* ─── New recording ─────────────────────────────────────────────────── */
 function newRecording() {
   if (isPlaying) pausePlay();
-  playOffset  = 0;
-  audioBuffer = null;
-  peaks       = null;
-  audioChunks = [];
+  playOffset   = 0;
+  playheadFrac = null;
+  audioBuffer  = null;
+  peaks        = null;
+  audioChunks  = [];
   show('idleView');
 }
 
