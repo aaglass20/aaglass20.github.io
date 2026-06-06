@@ -1,0 +1,203 @@
+.td-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.td-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e0e8ff;
+}
+
+.td-close-btn {
+  background: rgba(40, 50, 70, 0.8);
+  color: #d0d8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.td-close-btn:hover {
+  background: rgba(60, 80, 120, 0.9);
+}
+
+.td-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
+}
+
+.td-section {
+  margin-bottom: 12px;
+}
+
+.td-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(200, 210, 230, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 7px;
+}
+
+.td-tool-row {
+  display: flex;
+  gap: 6px;
+}
+
+.td-tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.td-tool-btn {
+  background: rgba(30, 40, 60, 0.9);
+  color: #d0d8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+  flex: 1;
+}
+
+.td-tool-btn:hover {
+  background: rgba(50, 65, 100, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.td-tool-btn.active {
+  background: rgba(37, 99, 235, 0.7);
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.td-tool-icon {
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+
+.td-tool-label {
+  font-size: 11px;
+}
+
+.td-toggle-group {
+  display: flex;
+  gap: 5px;
+}
+
+.td-toggle-btn {
+  flex: 1;
+  background: rgba(30, 40, 60, 0.9);
+  color: rgba(200, 210, 230, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.td-toggle-btn:hover {
+  background: rgba(50, 65, 100, 0.9);
+}
+
+.td-toggle-btn.active {
+  background: rgba(37, 99, 235, 0.6);
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.td-hint {
+  font-size: 10px;
+  color: rgba(200, 210, 230, 0.35);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.td-colors {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.td-color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.td-color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.td-color-swatch.active {
+  border-color: #fff;
+  transform: scale(1.2);
+}
+
+.td-color-preview {
+  margin-top: 7px;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #000;
+  font-weight: 500;
+}
+
+.td-action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.td-action-btn {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.td-btn-warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.td-btn-warn:hover {
+  background: rgba(245, 158, 11, 0.3);
+}
+
+.td-btn-danger {
+  background: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.td-btn-danger:hover {
+  background: rgba(220, 38, 38, 0.3);
+}

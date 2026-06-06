@@ -1,0 +1,258 @@
+.ad-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ad-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e8ff;
+  white-space: nowrap;
+}
+
+.ad-header-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ad-btn {
+  background: rgba(40, 50, 70, 0.9);
+  color: #d0d8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.ad-btn:hover:not(:disabled) {
+  background: rgba(60, 80, 120, 0.9);
+}
+
+.ad-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ad-btn-green {
+  background: rgba(5, 150, 105, 0.6);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+.ad-btn-green:hover:not(:disabled) {
+  background: rgba(5, 150, 105, 0.9);
+}
+
+.ad-btn-capture {
+  font-size: 12px;
+  padding: 6px 14px;
+}
+
+.ad-btn-danger {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.ad-btn-danger:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.4);
+}
+
+.ad-btn-icon {
+  padding: 5px 9px;
+  font-weight: bold;
+}
+
+.ad-body {
+  display: flex;
+  gap: 0;
+  height: calc(100% - 54px);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Timeline */
+.ad-timeline-wrap {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 12px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ad-timeline {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  height: 100%;
+  align-content: flex-start;
+}
+
+.ad-kf-card {
+  background: rgba(25, 35, 55, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  padding: 8px 12px;
+  cursor: pointer;
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.ad-kf-card:hover {
+  background: rgba(40, 55, 85, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ad-kf-card.active {
+  background: rgba(37, 99, 235, 0.3);
+  border-color: #3b82f6;
+}
+
+.ad-kf-time {
+  font-size: 18px;
+  font-weight: 700;
+  color: #93c5fd;
+  line-height: 1;
+}
+
+.ad-kf-label {
+  font-size: 10px;
+  color: rgba(200, 210, 230, 0.6);
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80px;
+}
+
+/* Keyframe editor */
+.ad-kf-editor {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 180px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ad-kf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ad-kf-label-text {
+  font-size: 10px;
+  color: rgba(200, 210, 230, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ad-input {
+  background: rgba(20, 28, 45, 0.9);
+  color: #e0e8ff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  outline: none;
+  width: 100%;
+}
+
+.ad-input:focus {
+  border-color: #3b82f6;
+}
+
+.ad-input-small {
+  width: 80px;
+}
+
+/* Curve section */
+.ad-curve-section {
+  padding: 12px 14px;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ad-curve-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(200, 210, 230, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ad-curve-info {
+  font-size: 11px;
+  color: #93c5fd;
+}
+
+.ad-curve-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ad-curve-end-label {
+  font-size: 10px;
+  color: rgba(200, 210, 230, 0.5);
+  font-weight: bold;
+  min-width: 12px;
+  text-align: center;
+}
+
+.ad-curve-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  outline: none;
+}
+
+.ad-curve-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.ad-curve-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.ad-curve-label {
+  font-size: 11px;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.ad-curve-hint {
+  font-size: 11px;
+  color: rgba(200, 210, 230, 0.4);
+  line-height: 1.4;
+}

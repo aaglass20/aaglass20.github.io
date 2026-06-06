@@ -1,0 +1,140 @@
+.pp-container {
+  background: rgba(18, 24, 38, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  width: 440px;
+  max-height: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.pp-header {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e8ff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(20, 28, 48, 0.8);
+}
+
+.pp-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow-y: auto;
+  max-height: 370px;
+}
+
+.pp-team {
+  padding: 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pp-team:last-child {
+  border-right: none;
+}
+
+.pp-team-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.pp-team-home {
+  background: rgba(37, 99, 235, 0.2);
+  color: #93c5fd;
+}
+
+.pp-team-away {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+}
+
+.pp-player {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.pp-player:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pp-player.focused {
+  background: rgba(59, 130, 246, 0.15);
+  outline: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.pp-player-badge {
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 4px;
+  min-width: 26px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.pp-badge-home {
+  background: rgba(37, 99, 235, 0.35);
+  color: #93c5fd;
+}
+
+.pp-badge-away {
+  background: rgba(220, 38, 38, 0.35);
+  color: #f87171;
+}
+
+.pp-name-input {
+  flex: 1;
+  background: rgba(20, 28, 45, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  color: #d0d8f0;
+  font-size: 10px;
+  padding: 2px 5px;
+  outline: none;
+  min-width: 0;
+}
+
+.pp-name-input:focus {
+  border-color: #3b82f6;
+}
+
+.pp-highlight-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: rgba(200, 210, 230, 0.4);
+  font-size: 12px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.pp-highlight-btn:hover {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.pp-highlight-btn.active {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
