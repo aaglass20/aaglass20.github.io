@@ -79,7 +79,7 @@ export default function ScenarioDrawer({
             >
               <div className="sd-item-top">
                 <span className="sd-item-title">{scenario.title}</span>
-                {hoveredId === scenario.id && scenario.id !== activeScenarioId && (
+                {hoveredId === scenario.id && (
                   <button
                     className="sd-delete-btn"
                     onClick={(e) => {
@@ -88,9 +88,9 @@ export default function ScenarioDrawer({
                         onDeleteScenario(scenario.id);
                       }
                     }}
-                    title="Delete"
+                    title="Delete scenario"
                   >
-                    Del
+                    ✕
                   </button>
                 )}
               </div>

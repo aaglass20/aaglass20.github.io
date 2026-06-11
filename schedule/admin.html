@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div id="gate-view" class="gate" style="display:none;">
+      <h2>Schedule Admin</h2>
+      <p>Enter the PIN to manage availability.</p>
+      <div id="gate-error" class="error" style="display:none;"></div>
+      <input id="pin-input" class="pin-input" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" />
+      <button class="btn btn-primary" id="gate-submit" style="width:100%;">Unlock</button>
+    </div>
+
+    <div id="admin-view" style="display:none;">
+      <div class="header">
+        <div class="title-block">
+          <h1 id="admin-title">Manage Availability</h1>
+          <p>Click a slot to cycle: <strong>Available</strong> → <strong>Maybe</strong> → <strong>Blocked</strong>. Drag to paint.</p>
+        </div>
+        <div class="header-actions">
+          <a class="btn" href="index.html">View public page →</a>
+          <button class="btn" id="logout-btn">Lock</button>
+        </div>
+      </div>
+
+      <div class="weeknav">
+        <button class="btn btn-icon" id="prev-week" aria-label="Previous week">←</button>
+        <div class="week-label" id="week-label">Loading…</div>
+        <button class="btn today-btn" id="today-btn">This Week</button>
+        <button class="btn btn-icon" id="next-week" aria-label="Next week">→</button>
+      </div>
+
+      <div class="admin-toolbar">
+        <div class="state-legend">
+          <span class="state-chip"><span class="swatch available"></span> Available</span>
+          <span class="state-chip"><span class="swatch maybe"></span> Maybe — ask</span>
+          <span class="state-chip"><span class="swatch blocked"></span> Blocked</span>
+        </div>
+        <div class="save-status" id="save-status">Ready</div>
+      </div>
+
+      <div class="grid-wrap">
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <div class="admin-hint">Click to cycle one slot · Click + drag to paint multiple slots</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

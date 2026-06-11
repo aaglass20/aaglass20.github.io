@@ -222,6 +222,34 @@ body {
   z-index: 95;
 }
 
+/* ---- Toast notification ---- */
+
+@keyframes toast-in-out {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
+
+.app-toast {
+  position: fixed;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(5, 150, 105, 0.92);
+  color: #d1fae5;
+  border: 1px solid rgba(16, 185, 129, 0.6);
+  border-radius: 7px;
+  padding: 7px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: toast-in-out 1.8s ease forwards;
+}
+
 /* ---- Scrollbar styling ---- */
 
 ::-webkit-scrollbar {

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jordan's Lesson Availability</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title-block">
+        <h1 id="page-title">Jordan's Availability</h1>
+        <p>Soccer lesson scheduling — pick a time that works</p>
+      </div>
+    </div>
+
+    <div class="weeknav">
+      <button class="btn btn-icon" id="prev-week" aria-label="Previous week">←</button>
+      <div class="week-label" id="week-label">Loading…</div>
+      <button class="btn today-btn" id="today-btn">This Week</button>
+      <button class="btn btn-icon" id="next-week" aria-label="Next week">→</button>
+    </div>
+
+    <div id="content"></div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot available"></span> Available</div>
+      <div class="legend-item"><span class="legend-dot maybe"></span> Could be available — please ask</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/consumer.js"></script>
+</body>
+</html>

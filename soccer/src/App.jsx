@@ -94,6 +94,14 @@ export default function App() {
   // Edit mode & keyframes
   const [editMode, setEditMode] = useState(false);
   const [activeKeyframeIndex, setActiveKeyframeIndex] = useState(0);
+  const [toast, setToast] = useState(null);
+  const toastTimer = useRef(null);
+
+  const showToast = useCallback((msg) => {
+    clearTimeout(toastTimer.current);
+    setToast(msg);
+    toastTimer.current = setTimeout(() => setToast(null), 1800);
+  }, []);
 
   // Animation
   const { snapshot, time, isPlaying, play, pause, reset, scrub, setSpeed, speed } =
@@ -188,13 +196,17 @@ export default function App() {
 
   const handleCaptureFrame = useCallback(() => {
     if (!snapshot) return;
+    const kfs = activeScenario?.keyframes || [];
+    const kf = kfs[activeKeyframeIndex];
+    const label = kf?.label || `Frame ${activeKeyframeIndex + 1}`;
     updateActiveKeyframe(activeKeyframeIndex, (kf) => ({
       ...kf,
       home: deepClone(snapshot.home || {}),
       away: deepClone(snapshot.away || {}),
       ball: deepClone(snapshot.ball || { x: 550, y: 350 }),
     }));
-  }, [snapshot, activeKeyframeIndex, updateActiveKeyframe]);
+    showToast(`✓ "${label}" captured`);
+  }, [snapshot, activeKeyframeIndex, activeScenario, updateActiveKeyframe, showToast]);
 
   const handleAddKeyframe = useCallback(() => {
     const kfs = activeScenario?.keyframes || [];
@@ -524,6 +536,8 @@ export default function App() {
         formation={activeScenario?.formation}
         onApply={handleApplyFormation}
       />
+
+      {toast && <div className="app-toast">{toast}</div>}
     </div>
   );
 }
