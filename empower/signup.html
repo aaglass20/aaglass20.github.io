@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Sign-Up — BDU × iCan Soccer 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">
+      <img src="../BDU/images/INDEPENDENCE%20BDU_SHIELD_WHITE.png" class="nav-logo" alt="BDU Shield">
+      <span>BDU × Empower Sports<br><small>iCan Soccer 2026</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">🏠 <span class="link-label">Home</span></a>
+      <a href="signup.html" class="active">📋 <span class="link-label">Sign Up</span></a>
+      <a href="practice.html">⚽ <span class="link-label">Practice Plans</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO (compact) -->
+  <section class="hero" style="padding: 2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">📋 Team Sign-Up</div>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);">Choose Your <span>Saturday</span></h1>
+    <p style="font-size:.97rem;">Each week has two team slots. Click an open slot to register your team.</p>
+  </section>
+
+  <!-- SIGNUP GRID -->
+  <div class="container" style="max-width:760px;">
+
+    <div id="weeks-container">
+      <div class="loading-spinner"><div class="spinner"></div> Loading signups…</div>
+    </div>
+
+    <div class="alert-banner">
+      <span>ℹ️</span>
+      <div>Questions or need to change your slot? Reach out to <strong>Aaron Glass</strong> at <a href="tel:4407969861" style="color:inherit;">440-796-9861</a>.</div>
+    </div>
+
+  </div>
+
+  <!-- SIGNUP MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-heading">Sign Up Your Team</h2>
+          <div class="modal-date" id="modal-date-label"></div>
+        </div>
+        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <form id="signup-form" novalidate>
+        <input type="hidden" id="form-session-date">
+        <input type="hidden" id="form-slot">
+        <input type="hidden" id="form-mode" value="insert">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="team-name">Team Name <span style="color:var(--red)">*</span></label>
+            <input type="text" id="team-name" placeholder="e.g. BDU 12U Girls" required maxlength="80">
+          </div>
+          <div class="form-group">
+            <label for="coach-name">Head Coach Name <span style="color:var(--red)">*</span></label>
+            <input type="text" id="coach-name" placeholder="e.g. Coach Smith" required maxlength="80">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="player-count">Approx. Number of Players Attending</label>
+          <input type="number" id="player-count" placeholder="e.g. 14" min="1" max="30">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Attendees <span style="color:var(--gray-400); font-weight:400">(optional)</span></label>
+          <textarea id="notes" placeholder="e.g. John, Sarah, Marcus, Lily…"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="form-cancel" style="color:var(--gray-700); border-color:var(--gray-100);">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="form-submit">
+            <span id="submit-text">Confirm Sign-Up ✓</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <footer class="page-footer">
+    <strong>Blue Devil United</strong> × Empower Sports — iCan Soccer Program · Fall 2026
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script>
+  (function () {
+    const cfg = window.EMPOWER_CONFIG;
+    const sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+
+    const SESSIONS = [
+      { date: '2026-08-22', label: 'Saturday, August 22', short: 'Aug 22', week: 1, theme: '⚽ Ball Basics' },
+      { date: '2026-08-29', label: 'Saturday, August 29', short: 'Aug 29', week: 2, theme: '🌀 Dribbling' },
+      { date: '2026-09-05', label: 'Saturday, September 5', short: 'Sep 5',  week: 3, theme: '🎯 Shooting' },
+      { date: '2026-09-12', label: 'Saturday, September 12', short: 'Sep 12', week: 4, theme: '🤝 Teamwork' },
+      { date: '2026-09-26', label: 'Saturday, September 26', short: 'Sep 26', week: 5, theme: '🏆 All-Stars!' },
+    ];
+
+    let allSignups = [];
+    let pendingDate = null;
+    let pendingSlot = null;
+    let pendingMode = 'insert';
+
+    // ── Fetch all signups ──────────────────────────────────────────────────────
+    async function loadSignups() {
+      try {
+        const { data, error } = await sb
+          .from('empower_signups')
+          .select('session_date, slot, team_name, coach_name, player_count, notes')
+          .order('session_date', { ascending: true });
+        if (error) throw error;
+        allSignups = data || [];
+        renderWeeks();
+      } catch (e) {
+        console.error(e);
+        document.getElementById('weeks-container').innerHTML =
+          '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load signups. Check your connection and try refreshing.</p></div>';
+      }
+    }
+
+    // ── Render weeks ───────────────────────────────────────────────────────────
+    function signupFor(date, slot) {
+      return allSignups.find(s => s.session_date === date && s.slot === slot) || null;
+    }
+
+    function renderSlot(session, slotNum) {
+      const signup = signupFor(session.date, slotNum);
+      const today = new Date().toISOString().slice(0, 10);
+      const isPast = session.date < today;
+
+      if (signup) {
+        const encodedSignup = encodeURIComponent(JSON.stringify(signup));
+        return `
+          <div class="slot filled">
+            <div class="slot-label">Team ${slotNum}</div>
+            <div class="slot-team">${escHtml(signup.team_name)}</div>
+            <div class="slot-coach">Coach ${escHtml(signup.coach_name)}</div>
+            ${signup.player_count ? `<div class="slot-coach">${signup.player_count} players</div>` : ''}
+            <div><span class="slot-badge filled">✓ Signed Up</span></div>
+            ${!isPast ? `
+            <div class="slot-actions">
+              <button class="slot-action-btn edit-btn"
+                data-date="${session.date}" data-slot="${slotNum}"
+                data-label="${session.label}" data-signup="${encodedSignup}">✏️ Edit</button>
+              <button class="slot-action-btn remove-btn"
+                data-date="${session.date}" data-slot="${slotNum}"
+                data-team="${escHtml(signup.team_name)}">🗑 Remove</button>
+            </div>` : ''}
+          </div>`;
+      }
+
+      if (isPast) {
+        return `
+          <div class="slot" style="border-color:var(--gray-100); background:var(--gray-50); opacity:.6;">
+            <div class="slot-label">Team ${slotNum}</div>
+            <div style="font-size:.85rem; color:var(--gray-400);">Session passed</div>
+          </div>`;
+      }
+
+      return `
+        <div class="slot open" role="button" tabindex="0"
+          data-date="${session.date}" data-slot="${slotNum}"
+          data-label="${session.label}"
+          aria-label="Sign up for ${session.label} — Team slot ${slotNum}">
+          <div class="slot-label">Team ${slotNum}</div>
+          <div style="font-size:1.6rem;">+</div>
+          <div><span class="slot-badge open">Open · Click to Sign Up</span></div>
+        </div>`;
+    }
+
+    function renderWeeks() {
+      const today = new Date().toISOString().slice(0, 10);
+      const html = SESSIONS.map(s => {
+        const slot1 = signupFor(s.date, 1);
+        const slot2 = signupFor(s.date, 2);
+        const filledCount = [slot1, slot2].filter(Boolean).length;
+        const isFull = filledCount === 2;
+        const isPast = s.date < today;
+
+        return `
+          <div class="week-card">
+            <div class="week-header">
+              <div>
+                <div class="week-num">Week ${s.week}</div>
+                <div class="week-date">${s.label}</div>
+                <div class="week-time">10:00 – 11:15 AM · Independence Field House Fields</div>
+              </div>
+              <div class="week-theme">${s.theme}</div>
+            </div>
+            <div class="week-body">
+              <div class="slots-container">
+                ${renderSlot(s, 1)}
+                ${renderSlot(s, 2)}
+              </div>
+              ${isFull && !isPast ? '<div class="all-full-banner">✅ Both slots filled — this week is all set!</div>' : ''}
+            </div>
+            <div class="week-footer">
+              <div class="slots-status">
+                ${isPast
+                  ? '⏰ Session has passed'
+                  : `${filledCount === 0 ? '🟡 2 open slots' : filledCount === 1 ? '🟢 1 open slot remaining' : '✅ Full'}`}
+              </div>
+              <a href="practice.html#week${s.week}" class="btn btn-sm btn-blue" style="font-size:.78rem; padding:.35rem .85rem;">
+                See Practice Plan →
+              </a>
+            </div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('weeks-container').innerHTML =
+        `<div class="weeks-grid">${html}</div>`;
+
+      document.querySelectorAll('.slot.open').forEach(el => {
+        el.addEventListener('click', () => openModal(el.dataset.date, +el.dataset.slot, el.dataset.label));
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') openModal(el.dataset.date, +el.dataset.slot, el.dataset.label);
+        });
+      });
+
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const signup = JSON.parse(decodeURIComponent(btn.dataset.signup));
+          openEditModal(btn.dataset.date, +btn.dataset.slot, btn.dataset.label, signup);
+        });
+      });
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          confirmDelete(btn.dataset.date, +btn.dataset.slot, btn.dataset.team);
+        });
+      });
+    }
+
+    // ── Modal ─────────────────────────────────────────────────────────────────
+    const overlay  = document.getElementById('modal-overlay');
+    const closeBtn = document.getElementById('modal-close');
+    const cancelBtn = document.getElementById('form-cancel');
+    const form     = document.getElementById('signup-form');
+
+    function openModal(date, slot, label) {
+      pendingDate = date;
+      pendingSlot = slot;
+      pendingMode = 'insert';
+      document.getElementById('form-session-date').value = date;
+      document.getElementById('form-slot').value = slot;
+      document.getElementById('form-mode').value = 'insert';
+      document.getElementById('modal-heading').textContent = 'Sign Up Your Team';
+      document.getElementById('modal-date-label').textContent = `${label} · Slot ${slot}`;
+      document.getElementById('submit-text').textContent = 'Confirm Sign-Up ✓';
+      form.querySelectorAll('input:not([type=hidden]), textarea').forEach(i => i.value = '');
+      overlay.classList.add('open');
+      document.getElementById('team-name').focus();
+    }
+
+    function openEditModal(date, slot, label, existing) {
+      pendingDate = date;
+      pendingSlot = slot;
+      pendingMode = 'update';
+      document.getElementById('form-session-date').value = date;
+      document.getElementById('form-slot').value = slot;
+      document.getElementById('form-mode').value = 'update';
+      document.getElementById('modal-heading').textContent = 'Edit Your Sign-Up';
+      document.getElementById('modal-date-label').textContent = `${label} · Slot ${slot}`;
+      document.getElementById('submit-text').textContent = 'Save Changes ✓';
+      document.getElementById('team-name').value = existing.team_name || '';
+      document.getElementById('coach-name').value = existing.coach_name || '';
+      document.getElementById('player-count').value = existing.player_count || '';
+      document.getElementById('notes').value = existing.notes || '';
+      overlay.classList.add('open');
+      document.getElementById('team-name').focus();
+    }
+
+    async function confirmDelete(date, slot, teamName) {
+      if (!confirm(`Remove "${teamName}" from this slot? This cannot be undone.`)) return;
+      try {
+        const { error } = await sb
+          .from('empower_signups')
+          .delete()
+          .eq('session_date', date)
+          .eq('slot', slot);
+        if (error) throw error;
+        showToast(`✅ "${teamName}" has been removed.`, 'success');
+        await loadSignups();
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Could not remove signup. Please try again.', 'error');
+      }
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      pendingDate = null;
+      pendingSlot = null;
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ── Submit ────────────────────────────────────────────────────────────────
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const teamName  = document.getElementById('team-name').value.trim();
+      const coachName = document.getElementById('coach-name').value.trim();
+      if (!teamName || !coachName) {
+        showToast('⚠️ Team name and coach name are required.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('form-submit');
+      const submitTxt = document.getElementById('submit-text');
+      submitBtn.disabled = true;
+      submitTxt.textContent = 'Saving…';
+
+      const mode    = document.getElementById('form-mode').value;
+      const payload = {
+        team_name:    teamName,
+        coach_name:   coachName,
+        player_count: parseInt(document.getElementById('player-count').value) || null,
+        notes:        document.getElementById('notes').value.trim() || null,
+      };
+
+      try {
+        let error;
+        if (mode === 'update') {
+          ({ error } = await sb
+            .from('empower_signups')
+            .update(payload)
+            .eq('session_date', document.getElementById('form-session-date').value)
+            .eq('slot', +document.getElementById('form-slot').value));
+        } else {
+          ({ error } = await sb.from('empower_signups').insert({
+            session_date: document.getElementById('form-session-date').value,
+            slot:         +document.getElementById('form-slot').value,
+            ...payload,
+          }));
+        }
+
+        if (error) {
+          if (error.code === '23505') {
+            showToast('⚠️ That slot was just taken! Please choose another.', 'error');
+          } else {
+            throw error;
+          }
+        } else {
+          closeModal();
+          showToast(mode === 'update' ? `✅ Updated!` : `🎉 ${teamName} is signed up!`, 'success');
+          await loadSignups();
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Something went wrong. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitTxt.textContent = 'Confirm Sign-Up ✓';
+      }
+    });
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show${type ? ' ' + type : ''}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    loadSignups();
+  })();
+  </script>
+</body>
+</html>

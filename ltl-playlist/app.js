@@ -10,6 +10,7 @@ const SCOPES = [
   "playlist-modify-private",
   "playlist-read-private",
   "user-read-private",
+  "user-read-email",
 ].join(" ");
 const AUTH_URL = "https://accounts.spotify.com/authorize";
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -31,7 +32,7 @@ const LS = {
 // -------- utilities --------
 
 const $ = (sel) => document.querySelector(sel);
-const redirectUri = () => location.origin + location.pathname;
+const redirectUri = () => location.origin + location.pathname.replace(/index\.html$/, "");
 const getActiveDays = () => DAYS.filter((d) => $(`.day-enabled[data-day="${d}"]`)?.checked);
 
 function log(msg, level = "") {
@@ -258,9 +259,9 @@ async function api(path, opts = {}) {
 // -------- fetch lineup from louderthanlifefestival.com --------
 
 // The festival site is behind Cloudflare, so browsers can't fetch it directly (CORS + WAF).
-// codetabs' public proxy passes the Cloudflare check where corsproxy.io / allorigins do not.
+// Proxy lottery: codetabs is currently 400-ing everything, allorigins times out, corsproxy.io works.
 const LTL_URL = "https://louderthanlifefestival.com/lineup/";
-const CORS_PROXY = "https://api.codetabs.com/v1/proxy?quest=";
+const CORS_PROXY = "https://corsproxy.io/?url=";
 
 // Parse the lineup page HTML and return:
 //   { lineup: { Thursday: [name,...], ... }, resolved: { normalizedName: {id,name,popularity} } }
