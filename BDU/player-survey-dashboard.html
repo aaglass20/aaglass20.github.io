@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer — Survey Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .dash-wrap {
+            max-width: 1200px;
+            margin: 24px auto 80px;
+            padding: 0 20px;
+        }
+
+        /* PIN gate */
+        .gate {
+            background: #fff;
+            max-width: 380px;
+            margin: 60px auto;
+            padding: 32px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .gate h2 { margin-bottom: 8px; color: #1a1a2e; }
+        .gate p { color: #4a5568; margin-bottom: 20px; font-size: 0.95rem; }
+        .pin-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 8px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        .pin-input:focus {
+            outline: none;
+            border-color: #0779e4;
+            box-shadow: 0 0 0 3px rgba(7,121,228,0.15);
+        }
+        .gate-err {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .gate-err.visible { display: block; }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-primary { background: #0779e4; color: #fff; }
+        .btn-primary:hover { background: #0568c8; }
+        .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+        .btn-secondary { background: #edf2f7; color: #2d3748; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-danger { background: #e53e3e; color: #fff; }
+        .btn-danger:hover { background: #c53030; }
+        .btn-block { width: 100%; }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .toolbar h2 { color: #1a1a2e; }
+        .toolbar-actions { display: flex; gap: 8px; }
+
+        /* KPI row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .kpi {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+        .kpi .lbl {
+            font-size: 0.8rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .kpi .val {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+        .kpi .sub {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 6px;
+        }
+
+        /* Grid of cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 780px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+        .card h3 {
+            color: #1a1a2e;
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+        }
+
+        /* Horizontal bar chart */
+        .bar-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .bar-item {
+            display: grid;
+            grid-template-columns: 150px 1fr 40px;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .bar-item .name { color: #2d3748; font-weight: 700; }
+        .bar-item .track {
+            background: #edf2f7;
+            border-radius: 4px;
+            height: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bar-item .fill {
+            background: #0779e4;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .bar-item .fill.secondary { background: #38b2ac; }
+        .bar-item .fill.avoid { background: #e53e3e; }
+        .bar-item .count {
+            text-align: right;
+            color: #4a5568;
+            font-weight: 700;
+        }
+
+        /* Confidence histogram */
+        .histo {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            align-items: end;
+            height: 140px;
+            padding: 0 4px;
+        }
+        .histo-bar {
+            background: #0779e4;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 4px;
+            transition: height 0.3s ease;
+        }
+        .histo-bar .n {
+            position: absolute;
+            top: -18px;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #4a5568;
+            font-weight: 700;
+        }
+        .histo-labels {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            padding: 4px 4px 0;
+            font-size: 0.75rem;
+            color: #718096;
+            text-align: center;
+        }
+
+        /* Feedback text panels */
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .feedback-item {
+            border-left: 3px solid #0779e4;
+            padding: 6px 12px;
+            background: #f7fafc;
+            border-radius: 0 6px 6px 0;
+        }
+        .feedback-item .who {
+            font-weight: 700;
+            color: #1a1a2e;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .feedback-item .what {
+            color: #2d3748;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+        .feedback-item.empty { display: none; }
+
+        /* Response table */
+        .table-card { margin-top: 0; }
+        .search-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .search-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        .search-row input:focus {
+            outline: none;
+            border-color: #0779e4;
+        }
+        table.responses {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.responses th {
+            text-align: left;
+            padding: 10px 8px;
+            background: #edf2f7;
+            font-weight: 700;
+            color: #2d3748;
+            border-bottom: 2px solid #cbd5e0;
+            position: sticky;
+            top: 0;
+        }
+        table.responses td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+            vertical-align: top;
+        }
+        table.responses tr.expandable { cursor: pointer; }
+        table.responses tr.expandable:hover td { background: #f7fafc; }
+        table.responses tr.detail td {
+            background: #f7fafc;
+            padding: 16px 20px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 8px 16px;
+        }
+        .detail-grid .k {
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 0.85rem;
+        }
+        .detail-grid .v {
+            color: #2d3748;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 0.9rem;
+        }
+        .detail-grid .v.empty { color: #a0aec0; font-style: italic; }
+
+        .empty-state {
+            text-align: center;
+            color: #718096;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+        .loading i { font-size: 2rem; margin-bottom: 10px; }
+
+        .chip-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: #edf2f7;
+            color: #2d3748;
+            margin-right: 4px;
+        }
+        .chip-pill.goalie-yes { background: #c6f6d5; color: #22543d; }
+        .chip-pill.goalie-open { background: #feebc8; color: #7b341e; }
+        .chip-pill.goalie-no { background: #fed7d7; color: #742a2a; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Player Survey — Coach Dashboard</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+
+<div class="dash-wrap">
+
+    <!-- PIN GATE -->
+    <div id="gate" class="gate">
+        <h2><i class="fas fa-lock"></i> Coach Only</h2>
+        <p>Enter the PIN to view survey responses.</p>
+        <div id="gateErr" class="gate-err"></div>
+        <input id="pinInput" class="pin-input" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" maxlength="8">
+        <button id="gateSubmit" class="btn btn-primary btn-block">Unlock</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dash" style="display:none;">
+
+        <div class="toolbar">
+            <h2>2026 Season Responses</h2>
+            <div class="toolbar-actions">
+                <button class="btn btn-secondary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
+                <button class="btn btn-secondary" id="csvBtn"><i class="fas fa-download"></i> CSV</button>
+                <button class="btn btn-secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Lock</button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">
+            <div><i class="fas fa-spinner fa-spin"></i></div>
+            Loading responses…
+        </div>
+
+        <div id="content" style="display:none;">
+
+            <!-- KPI row -->
+            <div class="kpi-row" id="kpiRow"></div>
+
+            <!-- Position charts -->
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Position preference (Primary + Secondary)</h3>
+                    <div class="bar-list" id="posChart"></div>
+                </div>
+                <div class="card">
+                    <h3>Positions players want to avoid</h3>
+                    <div class="bar-list" id="avoidChart"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Goalie interest</h3>
+                    <div class="bar-list" id="goalieChart"></div>
+                </div>
+                <div class="card">
+                    <h3>Confidence distribution (1–10)</h3>
+                    <div class="histo" id="confHisto"></div>
+                    <div class="histo-labels" id="confLabels"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Feedback style preference</h3>
+                    <div class="bar-list" id="feedbackChart"></div>
+                </div>
+                <div class="card">
+                    <h3>Competitive contest interest</h3>
+                    <div class="bar-list" id="compChart"></div>
+                </div>
+            </div>
+
+            <!-- Text read-through -->
+            <div class="grid-2">
+                <div class="card">
+                    <h3><i class="fas fa-bullseye"></i> Season goals</h3>
+                    <div class="feedback-list" id="goalsList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-tools"></i> Skill they want to improve</h3>
+                    <div class="feedback-list" id="skillsList"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3><i class="fas fa-heart"></i> What they enjoy MOST</h3>
+                    <div class="feedback-list" id="favoriteList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-frown"></i> What they don't like</h3>
+                    <div class="feedback-list" id="dislikesList"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3><i class="fas fa-comment-dots"></i> One thing coach should know</h3>
+                    <div class="feedback-list" id="shouldKnowList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-first-aid"></i> Injury / medical notes</h3>
+                    <div class="feedback-list" id="injuryList"></div>
+                </div>
+            </div>
+
+            <!-- Songs -->
+            <div class="card" style="margin-bottom:24px;">
+                <h3><i class="fas fa-music"></i> Team playlist candidates</h3>
+                <div class="feedback-list" id="songsList" style="max-height:none;"></div>
+            </div>
+
+            <!-- Full response table -->
+            <div class="card table-card">
+                <h3>All responses</h3>
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="Search by name, position, song…">
+                </div>
+                <div style="overflow-x:auto; max-height:600px;">
+                    <table class="responses" id="respTable">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Primary</th>
+                                <th>Secondary</th>
+                                <th>Goalie?</th>
+                                <th>Conf</th>
+                                <th>Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody id="respBody"></tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state" style="display:none;">No responses yet.</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="scripts/scripts.js"></script>
+<script>
+    // ---------- Config ----------
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const SURVEY_TABLE = 'bdu_player_survey';
+    const SURVEY_SEASON = '2026';
+    const COACH_PIN = '1234';        // change to whatever you want
+    const SESSION_KEY = 'bdu.survey.dash.unlocked';
+
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ---------- Gate ----------
+    const gate = document.getElementById('gate');
+    const dash = document.getElementById('dash');
+    const pinInput = document.getElementById('pinInput');
+    const gateSubmit = document.getElementById('gateSubmit');
+    const gateErr = document.getElementById('gateErr');
+
+    function showDash() {
+        gate.style.display = 'none';
+        dash.style.display = '';
+        loadData();
+    }
+    function attemptUnlock() {
+        if (pinInput.value === COACH_PIN) {
+            sessionStorage.setItem(SESSION_KEY, '1');
+            gateErr.classList.remove('visible');
+            showDash();
+        } else {
+            gateErr.textContent = 'Incorrect PIN.';
+            gateErr.classList.add('visible');
+            pinInput.value = '';
+            pinInput.focus();
+        }
+    }
+    gateSubmit.addEventListener('click', attemptUnlock);
+    pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptUnlock(); });
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        sessionStorage.removeItem(SESSION_KEY);
+        location.reload();
+    });
+
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+        showDash();
+    } else {
+        setTimeout(() => pinInput.focus(), 50);
+    }
+
+    // ---------- Data ----------
+    let rows = [];
+
+    async function loadData() {
+        document.getElementById('loading').style.display = '';
+        document.getElementById('content').style.display = 'none';
+
+        const { data, error } = await db
+            .from(SURVEY_TABLE)
+            .select('*')
+            .eq('season', SURVEY_SEASON)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            document.getElementById('loading').innerHTML =
+                `<div style="color:#e53e3e;"><i class="fas fa-exclamation-triangle"></i> Load failed: ${escapeHtml(error.message)}</div>`;
+            return;
+        }
+
+        rows = data || [];
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = '';
+
+        renderAll();
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+    // ---------- Render ----------
+    function renderAll() {
+        renderKPIs();
+        renderPosChart();
+        renderAvoidChart();
+        renderGoalieChart();
+        renderConfHisto();
+        renderFeedbackChart();
+        renderCompChart();
+        renderTextLists();
+        renderSongs();
+        renderTable(rows);
+    }
+
+    function count(field) {
+        const c = {};
+        rows.forEach(r => {
+            const v = r[field];
+            if (!v) return;
+            c[v] = (c[v] || 0) + 1;
+        });
+        return c;
+    }
+
+    function renderKPIs() {
+        const total = rows.length;
+        const goalieYes = rows.filter(r =>
+            r.goalie_interest === 'Yes, would love to' ||
+            r.goalie_interest === 'Sometimes / open to it'
+        ).length;
+        const confVals = rows.map(r => r.confidence).filter(v => v != null);
+        const avgConf = confVals.length
+            ? (confVals.reduce((a,b) => a+b, 0) / confVals.length).toFixed(1)
+            : '—';
+        const compYes = rows.filter(r =>
+            r.competitive_interest && r.competitive_interest.startsWith('Yes')
+        ).length;
+        const compPct = total ? Math.round(compYes * 100 / total) : 0;
+
+        document.getElementById('kpiRow').innerHTML = `
+            <div class="kpi"><div class="lbl">Responses</div><div class="val">${total}</div></div>
+            <div class="kpi"><div class="lbl">Goalie interest</div><div class="val">${goalieYes}</div><div class="sub">Yes + open</div></div>
+            <div class="kpi"><div class="lbl">Avg confidence</div><div class="val">${avgConf}</div><div class="sub">out of 10</div></div>
+            <div class="kpi"><div class="lbl">Competitive</div><div class="val">${compPct}%</div><div class="sub">love it</div></div>
+        `;
+    }
+
+    function drawBars(elId, entries, cls='') {
+        const max = Math.max(1, ...entries.map(e => e[1]));
+        const html = entries.map(([label, n]) => `
+            <div class="bar-item">
+                <div class="name">${escapeHtml(label)}</div>
+                <div class="track"><div class="fill ${cls}" style="width:${n/max*100}%"></div></div>
+                <div class="count">${n}</div>
+            </div>
+        `).join('');
+        document.getElementById(elId).innerHTML = html || '<div class="empty-state">No data.</div>';
+    }
+
+    function renderPosChart() {
+        const combined = {};
+        rows.forEach(r => {
+            if (r.pos_primary) combined[r.pos_primary] = (combined[r.pos_primary] || 0) + 2;
+            if (r.pos_secondary) combined[r.pos_secondary] = (combined[r.pos_secondary] || 0) + 1;
+        });
+        const entries = Object.entries(combined).sort((a,b) => b[1] - a[1]);
+        drawBars('posChart', entries);
+    }
+
+    function renderAvoidChart() {
+        const c = {};
+        rows.forEach(r => {
+            (r.pos_avoid || []).forEach(p => { c[p] = (c[p] || 0) + 1; });
+        });
+        const entries = Object.entries(c).sort((a,b) => b[1] - a[1]);
+        drawBars('avoidChart', entries, 'avoid');
+    }
+
+    function renderGoalieChart() {
+        const entries = Object.entries(count('goalie_interest')).sort((a,b) => b[1] - a[1]);
+        drawBars('goalieChart', entries);
+    }
+
+    function renderConfHisto() {
+        const buckets = new Array(10).fill(0);
+        rows.forEach(r => {
+            if (r.confidence >= 1 && r.confidence <= 10) buckets[r.confidence - 1]++;
+        });
+        const max = Math.max(1, ...buckets);
+        document.getElementById('confHisto').innerHTML = buckets.map(n => `
+            <div class="histo-bar" style="height:${n/max*100}%">
+                ${n ? `<span class="n">${n}</span>` : ''}
+            </div>
+        `).join('');
+        document.getElementById('confLabels').innerHTML =
+            [1,2,3,4,5,6,7,8,9,10].map(i => `<div>${i}</div>`).join('');
+    }
+
+    function renderFeedbackChart() {
+        const entries = Object.entries(count('feedback_style')).sort((a,b) => b[1] - a[1]);
+        drawBars('feedbackChart', entries);
+    }
+
+    function renderCompChart() {
+        const entries = Object.entries(count('competitive_interest')).sort((a,b) => b[1] - a[1]);
+        drawBars('compChart', entries);
+    }
+
+    function renderTextLists() {
+        const cfg = [
+            ['goalsList', 'season_goals'],
+            ['skillsList', 'skill_to_improve'],
+            ['favoriteList', 'favorite_thing'],
+            ['dislikesList', 'dislikes'],
+            ['shouldKnowList', 'coach_should_know'],
+            ['injuryList', 'injury_notes'],
+        ];
+        cfg.forEach(([elId, field]) => {
+            const items = rows
+                .filter(r => r[field] && r[field].trim())
+                .map(r => `
+                    <div class="feedback-item">
+                        <div class="who">${escapeHtml(r.full_name)}</div>
+                        <div class="what">${escapeHtml(r[field])}</div>
+                    </div>
+                `).join('');
+            document.getElementById(elId).innerHTML =
+                items || '<div class="empty-state">No entries yet.</div>';
+        });
+    }
+
+    function renderSongs() {
+        const items = [];
+        rows.forEach(r => {
+            [1,2,3].forEach(i => {
+                const t = r[`song${i}_title`], a = r[`song${i}_artist`];
+                if (t || a) {
+                    items.push(`
+                        <div class="feedback-item">
+                            <div class="who">${escapeHtml(r.full_name)}</div>
+                            <div class="what">${escapeHtml(t || '(untitled)')}${a ? ' — ' + escapeHtml(a) : ''}</div>
+                        </div>
+                    `);
+                }
+            });
+        });
+        document.getElementById('songsList').innerHTML =
+            items.join('') || '<div class="empty-state">No songs submitted yet.</div>';
+    }
+
+    // ---------- Response table ----------
+    function goalieChipClass(v) {
+        if (!v) return '';
+        if (v.startsWith('Yes')) return 'goalie-yes';
+        if (v.startsWith('Sometimes') || v.startsWith('Emergency')) return 'goalie-open';
+        return 'goalie-no';
+    }
+
+    function renderTable(list) {
+        const body = document.getElementById('respBody');
+        const empty = document.getElementById('emptyState');
+
+        if (!list.length) {
+            body.innerHTML = '';
+            empty.style.display = '';
+            return;
+        }
+        empty.style.display = 'none';
+
+        body.innerHTML = list.map((r, i) => `
+            <tr class="expandable" data-idx="${i}">
+                <td><strong>${escapeHtml(r.full_name)}</strong></td>
+                <td>${escapeHtml(r.pos_primary || '—')}</td>
+                <td>${escapeHtml(r.pos_secondary || '—')}</td>
+                <td><span class="chip-pill ${goalieChipClass(r.goalie_interest)}">${escapeHtml(r.goalie_interest || '—')}</span></td>
+                <td>${r.confidence != null ? r.confidence : '—'}</td>
+                <td>${formatDate(r.created_at)}</td>
+            </tr>
+            <tr class="detail" data-detail="${i}" style="display:none;">
+                <td colspan="6">${renderDetail(r)}</td>
+            </tr>
+        `).join('');
+
+        body.querySelectorAll('tr.expandable').forEach(tr => {
+            tr.addEventListener('click', () => {
+                const idx = tr.dataset.idx;
+                const detail = body.querySelector(`tr.detail[data-detail="${idx}"]`);
+                detail.style.display = detail.style.display === 'none' ? '' : 'none';
+            });
+        });
+
+        body.querySelectorAll('[data-delete-id]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.dataset.deleteId;
+                const row = list.find(r => String(r.id) === String(id));
+                deleteResponse(id, row ? row.full_name : 'this player');
+            });
+        });
+    }
+
+    function renderDetail(r) {
+        const songs = [1,2,3].map(i => {
+            const t = r[`song${i}_title`], a = r[`song${i}_artist`];
+            if (!t && !a) return null;
+            return `${t || '(untitled)'}${a ? ' — ' + a : ''}`;
+        }).filter(Boolean).join('; ');
+
+        const kv = [
+            ['Positions to avoid', (r.pos_avoid || []).join(', ')],
+            ['Season goals', r.season_goals],
+            ['Skill to improve', r.skill_to_improve],
+            ['Competitive contests', r.competitive_interest],
+            ['Top 3 songs', songs],
+            ['Favorite pro/team', r.favorite_pro],
+            ['Plays outside team', (r.plays_outside || []).join(', ')],
+            ['Enjoys MOST', r.favorite_thing],
+            ['Dislikes', r.dislikes],
+            ['Feedback style', r.feedback_style],
+            ['Injury / notes', r.injury_notes],
+            ['Coach should know', r.coach_should_know],
+        ];
+        return `<div class="detail-grid">${
+            kv.map(([k, v]) => `
+                <div class="k">${k}</div>
+                <div class="v ${!v ? 'empty' : ''}">${v ? escapeHtml(v) : '—'}</div>
+            `).join('')
+        }</div>
+        <div style="text-align:right; margin-top:14px;">
+            <button class="btn btn-danger" data-delete-id="${r.id}">
+                <i class="fas fa-trash"></i> Delete this response
+            </button>
+        </div>`;
+    }
+
+    async function deleteResponse(id, name) {
+        if (!confirm(`Delete ${name}'s response? This cannot be undone.`)) return;
+        const { error } = await db.from(SURVEY_TABLE).delete().eq('id', id);
+        if (error) {
+            alert('Delete failed: ' + error.message);
+            return;
+        }
+        rows = rows.filter(r => r.id !== id);
+        renderAll();
+    }
+
+    // ---------- Search ----------
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) { renderTable(rows); return; }
+        const filtered = rows.filter(r => {
+            const hay = [
+                r.full_name, r.pos_primary, r.pos_secondary,
+                (r.pos_avoid || []).join(' '),
+                (r.plays_outside || []).join(' '),
+                r.season_goals, r.skill_to_improve, r.dislikes,
+                r.favorite_thing, r.coach_should_know, r.injury_notes,
+                r.favorite_pro,
+                r.song1_title, r.song1_artist,
+                r.song2_title, r.song2_artist,
+                r.song3_title, r.song3_artist,
+            ].filter(Boolean).join(' ').toLowerCase();
+            return hay.includes(q);
+        });
+        renderTable(filtered);
+    });
+
+    // ---------- CSV export ----------
+    document.getElementById('csvBtn').addEventListener('click', () => {
+        if (!rows.length) { alert('No data to export.'); return; }
+        const cols = Object.keys(rows[0]);
+        const csv = [
+            cols.join(','),
+            ...rows.map(r => cols.map(c => csvCell(r[c])).join(','))
+        ].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bdu-player-survey-${SURVEY_SEASON}-${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    function csvCell(v) {
+        if (v == null) return '';
+        const s = Array.isArray(v) ? v.join('; ') : String(v);
+        if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+        return s;
+    }
+
+    // ---------- utils ----------
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        }[c]));
+    }
+    function formatDate(iso) {
+        if (!iso) return '—';
+        const d = new Date(iso);
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+               ' ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    }
+</script>
+
+</body>
+</html>

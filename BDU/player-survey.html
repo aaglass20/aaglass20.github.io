@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer — Player Survey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .survey-wrap {
+            max-width: 780px;
+            margin: 30px auto 80px;
+            padding: 0 20px;
+        }
+
+        .survey-intro {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .survey-intro h2 { margin-bottom: 8px; color: #1a1a2e; }
+        .survey-intro p { color: #4a5568; margin: 6px 0; }
+
+        .progress-bar {
+            display: flex;
+            gap: 6px;
+            margin: 20px 0 24px;
+        }
+        .progress-bar .seg {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            transition: background 0.25s ease;
+        }
+        .progress-bar .seg.active { background: #0779e4; }
+        .progress-bar .seg.done { background: #00c07a; }
+
+        .step {
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .step.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step h3 {
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            font-size: 1.5rem;
+        }
+        .step-sub {
+            color: #718096;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+        .field label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        .field .hint {
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 400;
+            margin-left: 6px;
+        }
+        .field .required { color: #e53e3e; }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0779e4;
+            box-shadow: 0 0 0 3px rgba(7,121,228,0.15);
+        }
+        textarea { min-height: 90px; resize: vertical; }
+
+        .radio-row, .check-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 14px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #fff;
+            font-size: 0.95rem;
+            user-select: none;
+        }
+        .chip input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .chip:hover { border-color: #0779e4; }
+        .chip.selected {
+            background: #0779e4;
+            border-color: #0779e4;
+            color: #fff;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .slider-row input[type="range"] { flex: 1; }
+        .slider-val {
+            font-weight: 700;
+            color: #0779e4;
+            font-size: 1.4rem;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .song-row {
+            display: grid;
+            grid-template-columns: 32px 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .song-row .n {
+            font-weight: 700;
+            color: #718096;
+            text-align: center;
+        }
+        .song-row input { padding: 8px 10px; }
+
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px 26px;
+            border-radius: 8px;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-primary {
+            background: #0779e4;
+            color: #fff;
+        }
+        .btn-primary:hover { background: #0568c8; }
+        .btn-primary:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-success {
+            background: #00c07a;
+            color: #fff;
+        }
+        .btn-success:hover { background: #00a366; }
+        .btn-danger-link {
+            background: transparent;
+            color: #e53e3e;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-decoration: underline;
+        }
+
+        .review-block {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+        }
+        .review-block h4 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        .review-item {
+            display: flex;
+            padding: 6px 0;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-item .k {
+            font-weight: 700;
+            color: #4a5568;
+            min-width: 220px;
+        }
+        .review-item .v {
+            color: #2d3748;
+            flex: 1;
+            word-break: break-word;
+        }
+        .review-item .v.empty { color: #a0aec0; font-style: italic; }
+
+        .error {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: none;
+        }
+        .error.visible { display: block; }
+
+        .success-panel {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .success-panel .icon {
+            font-size: 4rem;
+            color: #00c07a;
+            margin-bottom: 16px;
+        }
+        .success-panel h3 { font-size: 1.8rem; margin-bottom: 12px; }
+        .success-panel p { color: #4a5568; margin-bottom: 20px; }
+
+        .save-indicator {
+            font-size: 0.85rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+        .save-indicator.saved { color: #00c07a; }
+
+        @media (max-width: 640px) {
+            .step { padding: 20px; }
+            .song-row { grid-template-columns: 24px 1fr; }
+            .song-row .song-artist { grid-column: 2; }
+            .review-item { flex-direction: column; }
+            .review-item .k { min-width: 0; margin-bottom: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Player Survey — 2026 Season</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+
+<div class="survey-wrap">
+
+    <div class="survey-intro">
+        <h2>Hey! Thanks for filling this out.</h2>
+        <p>This helps me build a team that fits everyone — positions, goals, and what makes soccer fun for you. Your answers are private and only Coach sees them.</p>
+        <p><strong>Takes about 5–7 minutes.</strong> You can stop and come back — your answers save automatically on this device.</p>
+    </div>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- STEP 1: Player Info -->
+    <div class="step active" data-step="1">
+        <h3>1. About You</h3>
+        <p class="step-sub">The basics so Coach knows who this is from.</p>
+
+        <div class="field">
+            <label for="fullName">Full name <span class="required">*</span></label>
+            <input type="text" id="fullName" data-key="fullName" placeholder="e.g. Ava Johnson" required>
+            <div class="error" data-error="fullName">Please enter your full name.</div>
+        </div>
+
+    </div>
+
+    <!-- STEP 2: Positions -->
+    <div class="step" data-step="2">
+        <h3>2. Positions</h3>
+        <p class="step-sub">Moving to 11 v 11 this year — where do you feel best?</p>
+
+        <div class="field">
+            <label for="posPrimary">Preferred position <span class="required">*</span></label>
+            <select id="posPrimary" data-key="posPrimary">
+                <option value="">Select…</option>
+                <option>Goalkeeper</option>
+                <option>Center Back</option>
+                <option>Fullback (Left/Right Back)</option>
+                <option>Defensive Midfielder (#6)</option>
+                <option>Central Midfielder (#8)</option>
+                <option>Attacking Midfielder (#10)</option>
+                <option>Winger (Left/Right)</option>
+                <option>Striker / Forward</option>
+                <option>Anywhere — I'm open</option>
+            </select>
+            <div class="error" data-error="posPrimary">Pick your top position.</div>
+        </div>
+
+        <div class="field">
+            <label for="posSecondary">Secondary position</label>
+            <select id="posSecondary" data-key="posSecondary">
+                <option value="">Select…</option>
+                <option>Goalkeeper</option>
+                <option>Center Back</option>
+                <option>Fullback (Left/Right Back)</option>
+                <option>Defensive Midfielder (#6)</option>
+                <option>Central Midfielder (#8)</option>
+                <option>Attacking Midfielder (#10)</option>
+                <option>Winger (Left/Right)</option>
+                <option>Striker / Forward</option>
+                <option>Anywhere — I'm open</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Positions you'd rather NOT play <span class="hint">(tap all that apply)</span></label>
+            <div class="check-row" data-check-group="posAvoid">
+                <label class="chip"><input type="checkbox" value="Goalkeeper">Goalkeeper</label>
+                <label class="chip"><input type="checkbox" value="Center Back">Center Back</label>
+                <label class="chip"><input type="checkbox" value="Fullback">Fullback</label>
+                <label class="chip"><input type="checkbox" value="Defensive Mid">Defensive Mid</label>
+                <label class="chip"><input type="checkbox" value="Central Mid">Central Mid</label>
+                <label class="chip"><input type="checkbox" value="Attacking Mid">Attacking Mid</label>
+                <label class="chip"><input type="checkbox" value="Winger">Winger</label>
+                <label class="chip"><input type="checkbox" value="Striker">Striker</label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Interested in playing goalie this year?</label>
+            <div class="radio-row" data-radio-group="goalieInterest">
+                <label class="chip"><input type="radio" name="goalieInterest" value="Yes, would love to">Yes, love to</label>
+                <label class="chip"><input type="radio" name="goalieInterest" value="Sometimes / open to it">Sometimes / open</label>
+                <label class="chip"><input type="radio" name="goalieInterest" value="Emergency only">Emergency only</label>
+                <label class="chip"><input type="radio" name="goalieInterest" value="No thanks">No thanks</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: Goals & Mindset -->
+    <div class="step" data-step="3">
+        <h3>3. Goals & Mindset</h3>
+        <p class="step-sub">What you want out of this season.</p>
+
+        <div class="field">
+            <label for="seasonGoals">What are your goals for the season?</label>
+            <textarea id="seasonGoals" data-key="seasonGoals" placeholder="e.g. Get better at heading, win state cup, become a starter…"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="skillToImprove">One skill you want to improve most</label>
+            <input type="text" id="skillToImprove" data-key="skillToImprove" placeholder="e.g. Left foot, first touch under pressure, 1v1 defending">
+        </div>
+
+        <div class="field">
+            <label>Confidence on the field right now (1 = shaky, 10 = fearless)</label>
+            <div class="slider-row">
+                <input type="range" min="1" max="10" value="5" data-key="confidence" id="confidenceSlider">
+                <span class="slider-val" id="confidenceVal">5</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Interested in competitive contests? <span class="hint">(juggling, 1 v 1 competition, fitness challenges)</span></label>
+            <div class="radio-row" data-radio-group="competitiveInterest">
+                <label class="chip"><input type="radio" name="competitiveInterest" value="Yes, love competing">Yes, love it</label>
+                <label class="chip"><input type="radio" name="competitiveInterest" value="Sometimes">Sometimes</label>
+                <label class="chip"><input type="radio" name="competitiveInterest" value="Prefer team-only">Team-only</label>
+                <label class="chip"><input type="radio" name="competitiveInterest" value="No">Not really</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 4: Fun & Personal -->
+    <div class="step" data-step="4">
+        <h3>4. Fun Stuff</h3>
+        <p class="step-sub">Helps Coach make a team playlist and pick warm-up music.</p>
+
+        <div class="field">
+            <label>Top 3 favorite songs this year</label>
+            <div class="song-row">
+                <span class="n">1</span>
+                <input type="text" data-key="song1Title" placeholder="Song title">
+                <input type="text" data-key="song1Artist" placeholder="Artist" class="song-artist">
+            </div>
+            <div class="song-row">
+                <span class="n">2</span>
+                <input type="text" data-key="song2Title" placeholder="Song title">
+                <input type="text" data-key="song2Artist" placeholder="Artist" class="song-artist">
+            </div>
+            <div class="song-row">
+                <span class="n">3</span>
+                <input type="text" data-key="song3Title" placeholder="Song title">
+                <input type="text" data-key="song3Artist" placeholder="Artist" class="song-artist">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="favoritePro">Favorite pro player or team</label>
+            <input type="text" id="favoritePro" data-key="favoritePro" placeholder="e.g. Sophia Smith, Barcelona, USWNT">
+        </div>
+
+        <div class="field">
+            <label>Do you play soccer outside of this team? <span class="hint">(tap all that apply)</span></label>
+            <div class="check-row" data-check-group="playsOutside">
+                <label class="chip"><input type="checkbox" value="Club/academy">Club/academy</label>
+                <label class="chip"><input type="checkbox" value="Futsal">Futsal</label>
+                <label class="chip"><input type="checkbox" value="Pickup with friends/family">Pickup</label>
+                <label class="chip"><input type="checkbox" value="School team">School team</label>
+                <label class="chip"><input type="checkbox" value="No, just this team">No, just this team</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 5: Coaching & Feedback -->
+    <div class="step" data-step="5">
+        <h3>5. Coaching & Feedback</h3>
+        <p class="step-sub">Honest answers here make me a better coach for you.</p>
+
+        <div class="field">
+            <label for="favoriteThing">What do you enjoy MOST about soccer?</label>
+            <textarea id="favoriteThing" data-key="favoriteThing" placeholder="Scoring, teammates, competition, being outside…"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="dislikes">What don't you like about soccer?</label>
+            <textarea id="dislikes" data-key="dislikes" placeholder="Say it honestly — I won't be offended. This is how I improve."></textarea>
+        </div>
+
+        <div class="field">
+            <label>How do you want feedback after a mistake?</label>
+            <div class="radio-row" data-radio-group="feedbackStyle">
+                <label class="chip"><input type="radio" name="feedbackStyle" value="Loud reset in the moment">Loud reset now</label>
+                <label class="chip"><input type="radio" name="feedbackStyle" value="Quiet aside on the sideline">Quiet aside</label>
+                <label class="chip"><input type="radio" name="feedbackStyle" value="Wait til after the game">After the game</label>
+                <label class="chip"><input type="radio" name="feedbackStyle" value="Text/message after practice">Text after</label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="injuryNotes">Any injuries or physical stuff Coach should know?</label>
+            <textarea id="injuryNotes" data-key="injuryNotes" placeholder="Chronic knee, recent concussion, growing pains — anything I should track."></textarea>
+        </div>
+
+        <div class="field">
+            <label for="coachShouldKnow">One thing you want Coach to know that he might not already</label>
+            <textarea id="coachShouldKnow" data-key="coachShouldKnow" placeholder="Anything — big or small."></textarea>
+        </div>
+    </div>
+
+    <!-- STEP 6: Review & Submit -->
+    <div class="step" data-step="6">
+        <h3>6. Review & Submit</h3>
+        <p class="step-sub">One quick look, then hit submit.</p>
+        <div id="reviewArea"></div>
+    </div>
+
+    <!-- STEP 7: Success -->
+    <div class="step" data-step="7">
+        <div class="success-panel">
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+            <h3>Thanks — got it!</h3>
+            <p>Your answers are in. See you at the next practice.</p>
+        </div>
+    </div>
+
+    <div class="nav-row" id="navRow">
+        <button class="btn btn-secondary" id="btnBack" onclick="prevStep()">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button class="btn btn-primary" id="btnNext" onclick="nextStep()">
+            Next <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="btn btn-success" id="btnSubmit" onclick="submitSurvey()" style="display:none;">
+            <i class="fas fa-paper-plane"></i> Submit
+        </button>
+    </div>
+
+    <div class="save-indicator" id="saveIndicator"></div>
+
+    <div style="text-align:center; margin-top:12px;">
+        <button class="btn-danger-link" onclick="clearDraft()">Clear this draft and start over</button>
+    </div>
+</div>
+
+<script src="scripts/scripts.js"></script>
+<script>
+    const TOTAL_STEPS = 6;
+    const SUCCESS_STEP = 7;
+    const STORAGE_KEY = 'bdu.playerSurvey.draft.v1';
+
+    let currentStep = 1;
+    let state = {};
+
+    // ---------- persistence ----------
+    function loadDraft() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) state = JSON.parse(raw);
+        } catch (e) { state = {}; }
+    }
+
+    function saveDraft() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            const el = document.getElementById('saveIndicator');
+            el.textContent = 'Draft saved ✓';
+            el.classList.add('saved');
+            clearTimeout(saveDraft._t);
+            saveDraft._t = setTimeout(() => {
+                el.textContent = '';
+                el.classList.remove('saved');
+            }, 1500);
+        } catch (e) { /* quota — ignore */ }
+    }
+
+    function clearDraft() {
+        if (!confirm('Clear all answers and start over?')) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = {};
+        location.reload();
+    }
+
+    // ---------- state <-> DOM ----------
+    function readInputsIntoState() {
+        document.querySelectorAll('[data-key]').forEach(el => {
+            const k = el.dataset.key;
+            state[k] = el.value;
+        });
+        document.querySelectorAll('[data-radio-group]').forEach(group => {
+            const name = group.dataset.radioGroup;
+            const checked = group.querySelector('input[type="radio"]:checked');
+            state[name] = checked ? checked.value : '';
+        });
+        document.querySelectorAll('[data-check-group]').forEach(group => {
+            const name = group.dataset.checkGroup;
+            state[name] = Array.from(group.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(c => c.value);
+        });
+    }
+
+    function hydrateInputsFromState() {
+        document.querySelectorAll('[data-key]').forEach(el => {
+            const k = el.dataset.key;
+            if (state[k] !== undefined && state[k] !== null) el.value = state[k];
+        });
+        document.querySelectorAll('[data-radio-group]').forEach(group => {
+            const name = group.dataset.radioGroup;
+            const val = state[name];
+            if (!val) return;
+            const target = group.querySelector(`input[value="${CSS.escape(val)}"]`);
+            if (target) {
+                target.checked = true;
+                target.closest('.chip').classList.add('selected');
+            }
+        });
+        document.querySelectorAll('[data-check-group]').forEach(group => {
+            const name = group.dataset.checkGroup;
+            const vals = state[name] || [];
+            vals.forEach(v => {
+                const target = group.querySelector(`input[value="${CSS.escape(v)}"]`);
+                if (target) {
+                    target.checked = true;
+                    target.closest('.chip').classList.add('selected');
+                }
+            });
+        });
+        // slider label sync
+        const slider = document.getElementById('confidenceSlider');
+        if (slider && state.confidence) slider.value = state.confidence;
+        document.getElementById('confidenceVal').textContent = slider.value;
+    }
+
+    // ---------- navigation ----------
+    function buildProgress() {
+        const bar = document.getElementById('progressBar');
+        bar.innerHTML = '';
+        for (let i = 1; i <= TOTAL_STEPS; i++) {
+            const seg = document.createElement('div');
+            seg.className = 'seg';
+            bar.appendChild(seg);
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const segs = document.querySelectorAll('#progressBar .seg');
+        segs.forEach((seg, i) => {
+            seg.classList.remove('active', 'done');
+            if (i + 1 < currentStep) seg.classList.add('done');
+            else if (i + 1 === currentStep) seg.classList.add('active');
+        });
+    }
+
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        const target = document.querySelector(`.step[data-step="${n}"]`);
+        if (target) target.classList.add('active');
+        currentStep = n;
+
+        const intro = document.querySelector('.survey-intro');
+        if (intro) intro.style.display = n === 1 ? 'block' : 'none';
+
+        const isSuccess = n === SUCCESS_STEP;
+        document.getElementById('navRow').style.display = isSuccess ? 'none' : 'flex';
+        document.getElementById('btnBack').style.visibility = (n === 1 || isSuccess) ? 'hidden' : 'visible';
+        document.getElementById('btnNext').style.display = (n < TOTAL_STEPS) ? 'inline-block' : 'none';
+        document.getElementById('btnSubmit').style.display = (n === TOTAL_STEPS) ? 'inline-block' : 'none';
+
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (n === TOTAL_STEPS) renderReview();
+    }
+
+    function validateStep(n) {
+        // clear all errors first
+        document.querySelectorAll('.error').forEach(e => e.classList.remove('visible'));
+        let ok = true;
+        if (n === 1) {
+            const name = document.getElementById('fullName').value.trim();
+            if (!name) {
+                document.querySelector('[data-error="fullName"]').classList.add('visible');
+                ok = false;
+            }
+        }
+        if (n === 2) {
+            const pos = document.getElementById('posPrimary').value;
+            if (!pos) {
+                document.querySelector('[data-error="posPrimary"]').classList.add('visible');
+                ok = false;
+            }
+        }
+        return ok;
+    }
+
+    function nextStep() {
+        readInputsIntoState();
+        if (!validateStep(currentStep)) return;
+        saveDraft();
+        if (currentStep < TOTAL_STEPS) showStep(currentStep + 1);
+    }
+
+    function prevStep() {
+        readInputsIntoState();
+        saveDraft();
+        if (currentStep > 1) showStep(currentStep - 1);
+    }
+
+    // ---------- review render ----------
+    function renderReview() {
+        readInputsIntoState();
+        const area = document.getElementById('reviewArea');
+        const rows = (rows) => rows.map(([k, v]) => {
+            const empty = !v || (Array.isArray(v) && v.length === 0);
+            const display = Array.isArray(v) ? v.join(', ') : (v || '—');
+            return `<div class="review-item"><div class="k">${k}</div><div class="v ${empty ? 'empty' : ''}">${escapeHtml(display)}</div></div>`;
+        }).join('');
+
+        const songs = [1,2,3].map(i => {
+            const t = state[`song${i}Title`], a = state[`song${i}Artist`];
+            if (!t && !a) return null;
+            return `${t || '(untitled)'}${a ? ' — ' + a : ''}`;
+        }).filter(Boolean).join('; ');
+
+        area.innerHTML = `
+            <div class="review-block">
+                <h4>About You</h4>
+                ${rows([
+                    ['Full name', state.fullName]
+                ])}
+            </div>
+            <div class="review-block">
+                <h4>Positions</h4>
+                ${rows([
+                    ['Preferred', state.posPrimary],
+                    ['Secondary', state.posSecondary],
+                    ['Avoid', state.posAvoid],
+                    ['Goalie interest', state.goalieInterest]
+                ])}
+            </div>
+            <div class="review-block">
+                <h4>Goals & Mindset</h4>
+                ${rows([
+                    ['Season goals', state.seasonGoals],
+                    ['Skill to improve', state.skillToImprove],
+                    ['Confidence (1–10)', state.confidence],
+                    ['Competitive contests', state.competitiveInterest]
+                ])}
+            </div>
+            <div class="review-block">
+                <h4>Fun</h4>
+                ${rows([
+                    ['Top 3 songs', songs],
+                    ['Favorite pro/team', state.favoritePro],
+                    ['Plays outside team', state.playsOutside]
+                ])}
+            </div>
+            <div class="review-block">
+                <h4>Coaching & Feedback</h4>
+                ${rows([
+                    ['Enjoys most', state.favoriteThing],
+                    ['Dislikes', state.dislikes],
+                    ['Feedback style', state.feedbackStyle],
+                    ['Injuries/notes', state.injuryNotes],
+                    ['One thing to know', state.coachShouldKnow]
+                ])}
+            </div>
+        `;
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        }[c]));
+    }
+
+    // ---------- Supabase ----------
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const SURVEY_TABLE = 'bdu_player_survey';
+    const SURVEY_SEASON = '2026';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Map camelCase form state to snake_case DB columns.
+    function toDbRow(s) {
+        return {
+            season: SURVEY_SEASON,
+            full_name: (s.fullName || '').trim(),
+            pos_primary: s.posPrimary || null,
+            pos_secondary: s.posSecondary || null,
+            pos_avoid: Array.isArray(s.posAvoid) ? s.posAvoid : [],
+            goalie_interest: s.goalieInterest || null,
+            season_goals: s.seasonGoals || null,
+            skill_to_improve: s.skillToImprove || null,
+            confidence: s.confidence ? parseInt(s.confidence, 10) : null,
+            competitive_interest: s.competitiveInterest || null,
+            song1_title: s.song1Title || null,
+            song1_artist: s.song1Artist || null,
+            song2_title: s.song2Title || null,
+            song2_artist: s.song2Artist || null,
+            song3_title: s.song3Title || null,
+            song3_artist: s.song3Artist || null,
+            favorite_pro: s.favoritePro || null,
+            plays_outside: Array.isArray(s.playsOutside) ? s.playsOutside : [],
+            favorite_thing: s.favoriteThing || null,
+            dislikes: s.dislikes || null,
+            feedback_style: s.feedbackStyle || null,
+            injury_notes: s.injuryNotes || null,
+            coach_should_know: s.coachShouldKnow || null,
+        };
+    }
+
+    async function submitSurvey() {
+        readInputsIntoState();
+
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        const originalLabel = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+        try {
+            const row = toDbRow(state);
+            const { error } = await db
+                .from(SURVEY_TABLE)
+                .insert(row);
+
+            if (error) throw error;
+
+            localStorage.removeItem(STORAGE_KEY);
+            showStep(SUCCESS_STEP);
+        } catch (err) {
+            console.error('[BDU survey submit failed]', err);
+            alert('Couldn\'t save your answers: ' + (err.message || err) +
+                  '\n\nYour draft is still saved on this device — try again in a minute.');
+            btn.disabled = false;
+            btn.innerHTML = originalLabel;
+        }
+    }
+
+    // ---------- chip UI wiring ----------
+    function wireChips() {
+        document.querySelectorAll('.chip').forEach(chip => {
+            const input = chip.querySelector('input');
+            if (!input) return;
+            chip.addEventListener('click', () => {
+                setTimeout(() => {
+                    if (input.type === 'radio') {
+                        // clear siblings
+                        const name = input.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(sib => {
+                            sib.closest('.chip').classList.remove('selected');
+                        });
+                        if (input.checked) chip.classList.add('selected');
+                    } else if (input.type === 'checkbox') {
+                        chip.classList.toggle('selected', input.checked);
+                    }
+                }, 0);
+            });
+        });
+    }
+
+    function wireSlider() {
+        const slider = document.getElementById('confidenceSlider');
+        const val = document.getElementById('confidenceVal');
+        slider.addEventListener('input', () => {
+            val.textContent = slider.value;
+        });
+    }
+
+    function wireAutosave() {
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.addEventListener('change', () => {
+                readInputsIntoState();
+                saveDraft();
+            });
+        });
+    }
+
+    // ---------- init ----------
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDraft();
+        buildProgress();
+        hydrateInputsFromState();
+        wireChips();
+        wireSlider();
+        wireAutosave();
+        showStep(1);
+    });
+</script>
+
+</body>
+</html>

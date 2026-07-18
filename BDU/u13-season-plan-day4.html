@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - U13 Season Plan - Day 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drill-card h3 i { color: var(--primary-color); }
+        .drill-meta { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .drill-meta span i { margin-right: 5px; color: var(--primary-color); }
+        .drill-description { color: var(--text-dark); line-height: 1.7; margin-bottom: 1rem; }
+        .drill-points { list-style: none; padding: 0; }
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: #0779e4; transform: translateY(-2px); }
+        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>U13 Season Plan - Day 4</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="u13-season-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to U13 Season Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-futbol"></i> Day 4: Finishing &amp; Aerial Control</h2>
+        <p>Technical precision in front of goal and in the air</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Volley Circuit</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 10 min</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            Players pair up. Feeder tosses ball at various heights — chest, waist, knee. Striker volleys back to the feeder. Rotate after 8 strikes. Progress to half-volleys and driven volleys.
+        </p>
+        <ul class="drill-points">
+            <li>Plant foot points at target</li>
+            <li>Non-kicking leg provides balance</li>
+            <li>Strike through the center of the ball</li>
+            <li>Keep head steady — don't look at the goal until after contact</li>
+            <li>Follow through toward target</li>
+        </ul>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Cross &amp; Finish — Near / Far Post Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Groups of 5-6</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Winger dribbles to the byline and crosses. One attacker attacks the near post, one attacks the far post. Third runner checks to the penalty spot for a cut-back. Rotate roles every 3 crosses.
+        </p>
+        <ul class="drill-points">
+            <li>Near-post runner attacks the near post hard — get to the ball first</li>
+            <li>Far-post runner holds run until cross leaves the foot</li>
+            <li>Penalty-spot runner stays central — adjust to where ball drops</li>
+            <li>Goalkeeper challenges: must decide to come or stay</li>
+        </ul>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Aerial Control — Chest, Thigh, Head</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Individual/Pairs</span>
+            <span><i class="fas fa-signal"></i> Beginner-Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Feeder serves balls in the air. Receiver controls with chest (to feet), thigh (kill the bounce), or head (redirect to a target). Station rotation — 5 touches each then switch.
+        </p>
+        <ul class="drill-points">
+            <li>Chest: create a platform — lean back slightly to cushion</li>
+            <li>Thigh: cushion, don't knee</li>
+            <li>Head: neck firm, eyes open, forehead contact not top of head</li>
+            <li>After control — immediately set up next touch</li>
+            <li>Don't freeze after controlling — move</li>
+        </ul>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Finishing Scenarios Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 min</span>
+            <span><i class="fas fa-users"></i> Full group</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            Set up 4 finishing stations around the box — cutback finish, 1v1 with keeper, volley from cross, header from corner delivery. Rotate in groups of 3. Keeper in goal the whole time — create match-realistic finishing pressure.
+        </p>
+        <ul class="drill-points">
+            <li>Composure — slow down your thought, fast with your feet</li>
+            <li>Pick a corner before the ball arrives</li>
+            <li>Attack the ball — don't wait for it to come to you</li>
+            <li>One-touch finish preferred when possible</li>
+            <li>Miss → reset → next rep — no dwelling</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section" id="key-coaching-points">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Composure:</strong> The moment of finishing is not the time to think. Decide early and commit.</li>
+                <li><strong>Body Shape:</strong> Open hips and plant foot determine where the ball goes. Fix the shape, fix the finish.</li>
+                <li><strong>Aerial Timing:</strong> For headers and volleys — be early, not late. Let the ball come to you only on a chest trap.</li>
+                <li><strong>Cross Delivery:</strong> Wingers — aim for the 6-yard box at near-post height. Let the striker redirect.</li>
+                <li><strong>Repetition:</strong> Finishing is a skill built through volume. Each player should get 15+ attempts per session.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="u13-season-plan-day3.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 3
+        </a>
+        <a href="u13-season-plan-day5.html" class="nav-btn">
+            Day 5 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

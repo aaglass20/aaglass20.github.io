@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - U13 Season Plan - Day 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drill-card h3 i { color: var(--primary-color); }
+        .drill-meta { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .drill-meta span i { margin-right: 5px; color: var(--primary-color); }
+        .drill-description { color: var(--text-dark); line-height: 1.7; margin-bottom: 1rem; }
+        .drill-points { list-style: none; padding: 0; }
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: #0779e4; transform: translateY(-2px); }
+        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>U13 Season Plan - Day 3</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="u13-season-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to U13 Season Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-compress-arrows-alt"></i> Day 3: Off-Ball Movement &amp; Pressing</h2>
+        <p>Create space. Win it back. Control the tempo.</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Movement Patterns — Checking &amp; Third-Man Runs</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Groups of 5</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Set up a pattern: A passes to B, B checks back to receive, plays to C. As B receives, D makes a third-man run behind the defensive line. Rotate positions. Teaches coordinated off-ball movement.
+        </p>
+        <ul class="drill-points">
+            <li>Third-man runner times run with B's touch — not before</li>
+            <li>B checks back at an angle — creates space behind</li>
+            <li>Runner calls 'yes!' to signal the run is on</li>
+            <li>Pattern must become automatic — no thinking</li>
+        </ul>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: Pressing Triggers — Recognition Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> 6v4</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            6 attackers build possession against 4 defenders. Defenders are not allowed to press until a trigger occurs: a bad first touch, a back pass to the GK, or a pass going square. When a trigger fires, all 4 press together immediately.
+        </p>
+        <ul class="drill-points">
+            <li>All 4 press on the trigger — not just the nearest player</li>
+            <li>Press with cover — don't leave the central lane open</li>
+            <li>Nearest player goes hard; second player cuts the passing lane</li>
+            <li>Back to defensive shape if press fails</li>
+        </ul>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: 6v6 Pressing Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> 6v6</span>
+            <span><i class="fas fa-signal"></i> Intermediate-Advanced</span>
+        </div>
+        <p class="drill-description">
+            6v6 in a 40x30 grid. Defending team scores a point by winning the ball and making 3 consecutive passes. Attacking team scores by making 10 consecutive passes. Encourages structured pressing from the whole team.
+        </p>
+        <ul class="drill-points">
+            <li>Press as a team — leave nobody isolated</li>
+            <li>Nearest defender presses; others cut angles</li>
+            <li>Communication is the press trigger — 'Now!' or 'Press!'</li>
+            <li>If ball escapes press, reset to shape before pressing again</li>
+        </ul>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Full Game with Pressing Cue Words</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 min</span>
+            <span><i class="fas fa-users"></i> Full team</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            Full game. Coach or captain calls 'PRESS!' and the whole team shifts into a high press immediately. Coach calls 'SHAPE!' to reset. Players learn to flip between modes. Switch the cue caller to build leadership.
+        </p>
+        <ul class="drill-points">
+            <li>React in under 2 seconds on the call</li>
+            <li>Press goes OFF if opponent plays through — don't chase</li>
+            <li>Use cue words in games — build the habit now</li>
+            <li>Reward the team that presses successfully with a bonus point</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section" id="key-coaching-points">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Off-Ball = On Duty:</strong> If you don't have the ball, you're still working. Make a run or create space.</li>
+                <li><strong>Third-Man Concept:</strong> The ball goes to B so C can run. Understand you might be the enabler, not the scorer.</li>
+                <li><strong>Trigger Recognition:</strong> Press on bad touch, back pass, or square ball — not randomly. Random pressing is energy waste.</li>
+                <li><strong>Collective Press:</strong> One player pressing alone = pointless. It must be simultaneous.</li>
+                <li><strong>Reset:</strong> A failed press must be followed by immediate shape reset. Chasing after a failed press creates gaps.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="u13-season-plan-day2.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 2
+        </a>
+        <a href="u13-season-plan-day4.html" class="nav-btn">
+            Day 4 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

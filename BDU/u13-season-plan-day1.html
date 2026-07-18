@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - U13 Season Plan - Day 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drill-card h3 i { color: var(--primary-color); }
+        .drill-meta { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .drill-meta span i { margin-right: 5px; color: var(--primary-color); }
+        .drill-description { color: var(--text-dark); line-height: 1.7; margin-bottom: 1rem; }
+        .drill-points { list-style: none; padding: 0; }
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: #0779e4; transform: translateY(-2px); }
+        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>U13 Season Plan - Day 1</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="u13-season-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to U13 Season Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-shoe-prints"></i> Day 1: Passing &amp; First Touch Direction</h2>
+        <p>Crisp passes, intentional first touch — the foundation of positional play</p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Rondo 4v2</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 12 min</span>
+            <span><i class="fas fa-users"></i> Groups of 6</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Four players maintain possession against two defenders in a 10x10 grid. Emphasis is on weight of pass and first-touch direction — always receive away from the defender.
+        </p>
+        <ul class="drill-points">
+            <li>Play quickly — no more than 2 touches</li>
+            <li>Weight the pass to the receiver's front foot</li>
+            <li>First touch opens body toward your next pass</li>
+            <li>Communication: call "man on" or "turn"</li>
+            <li>Rotate defenders every 90 seconds</li>
+        </ul>
+        <a href="rondo-4v2-animation.html"
+           style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;
+                  padding:9px 20px;background:#003366;color:white;text-decoration:none;
+                  border-radius:8px;font-weight:600;font-size:0.875rem;transition:background 0.2s;"
+           onmouseover="this.style.background='#0779e4'"
+           onmouseout="this.style.background='#003366'">
+            <i class="fas fa-play-circle"></i> View Animated Drill
+        </a>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: First-Touch Gate Drill</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> Beginner-Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Set up small gates (2 cones, 1 yard apart) at angles around a player. A feeder passes from various directions; the receiver must direct their first touch through a specific gate. Develops intentional touch direction.
+        </p>
+        <ul class="drill-points">
+            <li>Scan before the ball arrives — know which gate you're hitting</li>
+            <li>Use inside/outside of foot to redirect</li>
+            <li>Soft touch — don't kill the pace</li>
+            <li>Progress: feeder calls the gate just as they pass</li>
+        </ul>
+        <a href="gate-drill-animation.html"
+           style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;
+                  padding:9px 20px;background:#003366;color:white;text-decoration:none;
+                  border-radius:8px;font-weight:600;font-size:0.875rem;transition:background 0.2s;"
+           onmouseover="this.style.background='#0779e4'"
+           onmouseout="this.style.background='#003366'">
+            <i class="fas fa-play-circle"></i> View Animated Drill
+        </a>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Combination Passing Pattern (1-2 &amp; Overlap)</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Groups of 4-5</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            Set up a passing pattern using cones: Player A passes to B, receives a 1-2 back, then lays off to C who overlaps. Rotate positions each round. Teaches automatic combination play.
+        </p>
+        <ul class="drill-points">
+            <li>Pass and immediately move — don't freeze</li>
+            <li>Overlap runner must time the run to arrive as the ball does</li>
+            <li>Weight the lay-off — it's not a shot</li>
+            <li>Call the overlap early so the runner knows to go</li>
+        </ul>
+        <a href="combination-pattern-animation.html"
+           style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;
+                  padding:9px 20px;background:#003366;color:white;text-decoration:none;
+                  border-radius:8px;font-weight:600;font-size:0.875rem;transition:background 0.2s;"
+           onmouseover="this.style.background='#0779e4'"
+           onmouseout="this.style.background='#003366'">
+            <i class="fas fa-play-circle"></i> View Animated Drill
+        </a>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: 2-Touch Possession Game (5v5+2)</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 min</span>
+            <span><i class="fas fa-users"></i> 5v5 + 2 neutrals</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            5v5 in a 30x20 grid with two permanent neutral players always playing for the team in possession. Max 2 touches enforced. Team scores a point for 6 consecutive passes without losing possession.
+        </p>
+        <ul class="drill-points">
+            <li>Move into passing lanes before receiving</li>
+            <li>Neutrals play fast — reward them with good service</li>
+            <li>Lose ball → press immediately, don't stand</li>
+            <li>2-touch rule forces quick thinking</li>
+        </ul>
+        <a href="possession-5v5-animation.html"
+           style="display:inline-flex;align-items:center;gap:8px;margin-top:1rem;
+                  padding:9px 20px;background:#003366;color:white;text-decoration:none;
+                  border-radius:8px;font-weight:600;font-size:0.875rem;transition:background 0.2s;"
+           onmouseover="this.style.background='#0779e4'"
+           onmouseout="this.style.background='#003366'">
+            <i class="fas fa-play-circle"></i> View Animated Drill
+        </a>
+    </div>
+
+    <section class="collapsible-section" id="key-coaching-points">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Weight of Pass:</strong> Too hard = uncontrollable. Too soft = intercepted. Find the pace that lets the receiver play quickly.</li>
+                <li><strong>First-Touch Direction:</strong> The first touch is a pass decision. Know where you're going before the ball arrives.</li>
+                <li><strong>Body Shape:</strong> Open your hips so your first touch opens you toward the center of the pitch.</li>
+                <li><strong>Scanning:</strong> Eyes should scan once before the ball comes. Freeze = problem. Move = solution.</li>
+                <li><strong>Communication:</strong> Quiet teams lose possession. "Man on", "turn", "give" must be automatic.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <span class="nav-btn disabled">
+            <i class="fas fa-arrow-left"></i> No Previous Day
+        </span>
+        <a href="u13-season-plan-day2.html" class="nav-btn">
+            Day 2 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

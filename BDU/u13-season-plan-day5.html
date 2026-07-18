@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - U13 Season Plan - Day 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .day-header h2 { margin: 0; font-size: 2rem; }
+        .day-header p { margin: 0.5rem 0 0; opacity: 0.9; }
+        .drill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+        .drill-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drill-card h3 i { color: var(--primary-color); }
+        .drill-meta { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .drill-meta span i { margin-right: 5px; color: var(--primary-color); }
+        .drill-description { color: var(--text-dark); line-height: 1.7; margin-bottom: 1rem; }
+        .drill-points { list-style: none; padding: 0; }
+        .drill-points li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+        .drill-points li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: #0779e4; transform: translateY(-2px); }
+        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>U13 Season Plan - Day 5</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+        });
+</script>
+
+<div class="container">
+    <a href="u13-season-plan.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to U13 Season Plan
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-shield-alt"></i> Day 5: Defensive Aggression Revisited</h2>
+        <p>New players learn the standard. Veterans reinforce it.</p>
+    </div>
+
+    <div class="plan-intro">
+        <p>
+            This session is designed for the full team but with extra attention for players who are new to our program. Our defensive identity — tackle hard, win 50/50s, press as a unit — was built last season. Today we make sure every player understands and owns these principles before the season starts. Veterans: you set the standard.
+        </p>
+    </div>
+
+    <!-- Drill 1 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 1: Defensive Stance &amp; 1v1 Fundamentals</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            New players focus on getting the stance right. Veterans model and then challenge. One attacker dribbles toward a cone goal (2 yards wide). Defender must stop them using correct technique: side-on, balanced, patient. No lunging.
+        </p>
+        <ul class="drill-points">
+            <li>Side-on stance — never face the attacker square</li>
+            <li>Weight on balls of feet — ready to go either direction</li>
+            <li>Don't dive in — wait for the attacker's heavy touch</li>
+            <li>If beaten, sprint to recover goal-side — don't give up</li>
+            <li>Veterans: model the stance for new players</li>
+        </ul>
+    </div>
+
+    <!-- Drill 2 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 2: 50/50 Contests</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Pairs</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            Coach plays a ball between two players equidistant from it. Both sprint to win possession. Emphasize contact before ball — establish ground position, then go for the ball. Progress to 2v2 contested balls.
+        </p>
+        <ul class="drill-points">
+            <li>Want it more — desire wins 50/50s</li>
+            <li>Sprint to the ball — arrive first and the contest is already over</li>
+            <li>Body contact is legal and necessary — use your shoulder, your body</li>
+            <li>After winning, play quickly — the contest isn't over until you've made a decision</li>
+            <li>No celebrating a won ball — the game keeps going</li>
+        </ul>
+    </div>
+
+    <!-- Drill 3 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 3: Team Defensive Shape Under Pressure</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 15 min</span>
+            <span><i class="fas fa-users"></i> Full team</span>
+            <span><i class="fas fa-signal"></i> Intermediate</span>
+        </div>
+        <p class="drill-description">
+            5 attackers build against the full defensive team (11 players). Defenders must maintain their compact block while under pressure. Emphasis: lines don't break, communication constant, pressure is collective. Rotate attackers every 5 minutes.
+        </p>
+        <ul class="drill-points">
+            <li>Line of 4 stays together — no individual heroics</li>
+            <li>Call 'hold' when shape is right; call 'press' when a trigger fires</li>
+            <li>Midfield line screens in front of the defense — don't drop off</li>
+            <li>1 center back can step to press if the other covers</li>
+        </ul>
+    </div>
+
+    <!-- Drill 4 -->
+    <div class="drill-card">
+        <h3><i class="fas fa-futbol"></i> Drill 4: Defend &amp; Transition Game</h3>
+        <div class="drill-meta">
+            <span><i class="fas fa-clock"></i> 20 min</span>
+            <span><i class="fas fa-users"></i> 7v7</span>
+            <span><i class="fas fa-signal"></i> All levels</span>
+        </div>
+        <p class="drill-description">
+            7v7 on a half pitch with full-size goal and keeper. Defending team works to win the ball and transition to attack immediately — first pass forward on winning possession. Teaches the connection between defensive work and attacking reward.
+        </p>
+        <ul class="drill-points">
+            <li>Win ball → play forward immediately — reward the press</li>
+            <li>Attackers: put the defending team under pressure when they transition</li>
+            <li>Defenders: after winning, the winger and forward are already making runs — find them</li>
+            <li>Count transitions — the team with most successful defend-and-score wins</li>
+        </ul>
+    </div>
+
+    <section class="collapsible-section" id="key-coaching-points">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Coaching Points
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <ul>
+                <li><strong>Identity Reminder:</strong> This is not just about physical play. A defensive mentality is a mindset — focus, accountability, and commitment.</li>
+                <li><strong>New Players:</strong> You don't need to know everything today. You need to understand one thing: compete for every ball.</li>
+                <li><strong>Tackle Hard:</strong> A heavy, committed tackle is a skill. Practice it correctly and you'll win every ball.</li>
+                <li><strong>Pressing:</strong> Pressing is non-negotiable in our system. If you see a trigger, you press. Every player. Every time.</li>
+                <li><strong>Accountability:</strong> If you get beaten, you recover. No standing. No heads down. React and recover.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="u13-season-plan-day4.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Day 4
+        </a>
+        <span class="nav-btn disabled">
+            No Next Day <i class="fas fa-arrow-right"></i>
+        </span>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>

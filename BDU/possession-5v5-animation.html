@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer – 5v5+2 Possession Game Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link { display:inline-flex;align-items:center;gap:8px;color:var(--primary-color);text-decoration:none;font-weight:600;margin-bottom:1.5rem;transition:all 0.3s ease; }
+        .back-link:hover { transform:translateX(-5px); }
+        .day-header { background:linear-gradient(135deg,#003366 0%,#0779e4 100%);border-radius:15px;padding:1.5rem 2rem;margin-bottom:1.5rem;color:white;text-align:center; }
+        .day-header h2 { margin:0;font-size:1.7rem; }
+        .day-header p  { margin:0.4rem 0 0;opacity:0.85; }
+        .drill-meta { display:flex;gap:0.75rem;margin:1rem 0 1.5rem;flex-wrap:wrap; }
+        .drill-meta span { background:#f0f0f0;padding:5px 14px;border-radius:20px;font-size:0.85rem;color:var(--text-dark); }
+        .drill-meta span i { margin-right:5px;color:var(--primary-color); }
+        .anim-wrapper { background:#0d1b2a;border-radius:15px;padding:1.25rem 1rem 1rem;margin-bottom:1.5rem; }
+        .canvas-scroll { overflow-x:auto;-webkit-overflow-scrolling:touch; }
+        #possCanvas { display:block;margin:0 auto; }
+        .cue-panel { background:rgba(7,121,228,0.12);border-left:4px solid #0779e4;border-radius:0 8px 8px 0;padding:0.75rem 1.25rem;margin-top:0.9rem;min-height:60px; }
+        .cue-label { font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.45);font-family:'Roboto',sans-serif; }
+        .cue-text  { font-family:'Roboto',sans-serif;font-weight:700;font-size:0.95rem;color:#ddeeff;margin-top:0.2rem;transition:opacity 0.25s; }
+        .controls  { display:flex;justify-content:center;align-items:center;gap:0.75rem;margin-top:0.9rem;flex-wrap:wrap; }
+        .ctrl-btn  { padding:8px 22px;background:#0779e4;color:white;border:none;border-radius:8px;cursor:pointer;font-family:'Roboto',sans-serif;font-weight:700;font-size:0.875rem;transition:background 0.2s,transform 0.1s; }
+        .ctrl-btn:hover  { background:#003366; }
+        .ctrl-btn:active { transform:scale(0.97); }
+        .speed-ctrl { display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.6);font-family:'Roboto',sans-serif;font-size:0.85rem; }
+        .speed-ctrl input { width:80px;accent-color:#0779e4; }
+        .legend { display:flex;gap:1rem;justify-content:center;margin-top:0.8rem;flex-wrap:wrap; }
+        .legend-item { display:flex;align-items:center;gap:5px;color:rgba(255,255,255,0.55);font-family:'Roboto',sans-serif;font-size:0.8rem; }
+        .ldot { width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:inline-block; }
+        .tip-box { background:#f0f7ff;border-left:5px solid var(--primary-color);border-radius:0 12px 12px 0;padding:1rem 1.25rem;margin-top:0.5rem; }
+        .tip-box h4 { color:#003366;margin:0 0 0.5rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px; }
+        .tip-box ul { margin:0;padding-left:1.25rem; }
+        .tip-box li { color:#333;line-height:1.9;font-size:0.9rem; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>5v5+2 Possession Game — Animation</h1>
+    </div>
+</header>
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()"><span></span><span></span><span></span></div>
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+<script>fetch('menus/training-menu.html').then(r=>r.text()).then(d=>{document.getElementById('training-menu').innerHTML=d;});</script>
+
+<div class="container">
+    <a href="u13-season-plan-day1.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Day 1</a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-th"></i> 5v5+2 Possession Game — Live Animation</h2>
+        <p>6 consecutive passes = 1 point. 2 neutrals always play for the team in possession.</p>
+    </div>
+
+    <div class="drill-meta">
+        <span><i class="fas fa-clock"></i> 20 min</span>
+        <span><i class="fas fa-users"></i> 5v5 + 2 neutrals</span>
+        <span><i class="fas fa-signal"></i> Intermediate</span>
+        <span><i class="fas fa-expand-arrows-alt"></i> 30×20 yard grid</span>
+    </div>
+
+    <div class="anim-wrapper">
+        <div class="canvas-scroll">
+            <canvas id="possCanvas" width="560" height="460"></canvas>
+        </div>
+        <div class="cue-panel">
+            <div class="cue-label">Coaching Cue</div>
+            <div class="cue-text" id="cueText">Press Play to start...</div>
+        </div>
+        <div class="controls">
+            <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">
+                <i class="fas fa-play" id="playIcon"></i>&nbsp;<span id="playLabel">Play</span>
+            </button>
+            <button class="ctrl-btn" onclick="resetAnim()"><i class="fas fa-redo"></i>&nbsp;Reset</button>
+            <div class="speed-ctrl">
+                <i class="fas fa-tachometer-alt"></i>
+                <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.25" value="1" oninput="updateSpeed(this.value)">
+                <span id="speedLabel">1×</span>
+            </div>
+        </div>
+        <div class="legend">
+            <div class="legend-item"><span class="ldot" style="background:#4a9eff"></span> Team A (possession)</div>
+            <div class="legend-item"><span class="ldot" style="background:#e84c4c"></span> Team B (pressing)</div>
+            <div class="legend-item"><span class="ldot" style="background:#f5c518"></span> Neutrals + Ball</div>
+        </div>
+    </div>
+
+    <div class="tip-box">
+        <h4><i class="fas fa-lightbulb" style="color:#f5c518;margin-right:6px"></i>Key Coaching Points</h4>
+        <ul>
+            <li><strong>Move into passing lanes</strong> before receiving — be available early</li>
+            <li><strong>Use the neutrals</strong> — they're always free; don't ignore the safe option</li>
+            <li><strong>Neutrals: 1 touch only</strong> — reward good service, play fast</li>
+            <li><strong>Lose ball → press immediately</strong>, don't stand and watch</li>
+            <li><strong>2-touch rule</strong> forces quick decisions — think before you receive</li>
+        </ul>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+<script>fetch('menus/shared-footer.html').then(r=>r.text()).then(d=>{document.getElementById('shared-footer').innerHTML=d;});</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+(function(){
+    const canvas=document.getElementById('possCanvas');
+    const ctx=canvas.getContext('2d');
+    const W=560, H=460;
+
+    // ── Field (30×20 yard grid) ───────────────────────────────
+    const GX=38, GY=45, GW=484, GH=362;
+    // GW/30 ≈ 16.1px per yard horizontal
+    // GH/20 ≈ 18.1px per yard vertical
+
+    // ── Fixed player positions ────────────────────────────────
+    // Team A (blue, possessing)
+    const A1={x:138,y:226};  // left center
+    const A2={x:210,y:148};  // left forward
+    const A3={x:292,y:226};  // center
+    const A4={x:210,y:308};  // left back mid
+    const A5={x:385,y:210};  // right mid
+
+    // Team B (red, pressing) — starting positions
+    const B1s={x:218,y:192}; // pressing A2
+    const B2s={x:285,y:182}; // covering center
+    const B3s={x:365,y:222}; // pressing A5
+    const B4={x:262,y:295};  // static (not animated)
+    const B5={x:398,y:298};  // static
+
+    // Neutrals (yellow, touchlines)
+    const N1={x:60,y:218};   // left touchline
+    const N2={x:480,y:306};  // right touchline
+
+    // ── Keyframes ─────────────────────────────────────────────
+    // Track: ball, b1, b2, b3 positions; passCount overlay
+    const FRAMES=[
+        // 0 — Setup
+        { dur:2200, ball:{...A1}, b1:{...B1s}, b2:{...B2s}, b3:{...B3s},
+          passCount:0, showPoint:false, showPress:false, passLine:false,
+          cue:'5v5+2. Max 2 touches. Score a POINT for 6 consecutive passes. Neutrals always play for the team in possession.' },
+
+        // 1 — A1 → A4
+        { dur:700, ball:{...A4}, b1:{x:222,y:258}, b2:{x:280,y:258}, b3:{...B3s},
+          passCount:1, showPoint:false, showPress:false, passLine:true,
+          cue:'Pass 1: A1 drops to A4. B1 shifts. Receive and look up immediately.' },
+
+        // 2 — A4 → N1 (find left neutral)
+        { dur:700, ball:{...N1}, b1:{x:155,y:278}, b2:{x:275,y:262}, b3:{...B3s},
+          passCount:2, showPoint:false, showPress:false, passLine:true,
+          cue:'Pass 2: A4 finds neutral N1. Safe option — never ignore the free player.' },
+
+        // 3 — N1 → A2
+        { dur:700, ball:{...A2}, b1:{x:170,y:175}, b2:{x:248,y:182}, b3:{...B3s},
+          passCount:3, showPoint:false, showPress:false, passLine:true,
+          cue:'Pass 3: N1 one-touch to A2! Neutrals play FAST — 1 touch, reward clean service.' },
+
+        // 4 — A2 → A3
+        { dur:700, ball:{...A3}, b1:{x:226,y:196}, b2:{x:268,y:206}, b3:{x:340,y:230},
+          passCount:4, showPoint:false, showPress:false, passLine:true,
+          cue:'Pass 4: A2 under B1\'s pressure — 2-touch quick. B2 closes center.' },
+
+        // 5 — A3 → A5
+        { dur:700, ball:{...A5}, b1:{x:295,y:218}, b2:{x:328,y:212}, b3:{x:392,y:218},
+          passCount:5, showPoint:false, showPress:false, passLine:true,
+          cue:'Pass 5: A3 switches to A5. Ball moves faster than defenders — use it.' },
+
+        // 6 — A5 → N2 (6th pass = POINT)
+        { dur:700, ball:{...N2}, b1:{x:390,y:258}, b2:{x:418,y:245}, b3:{x:425,y:240},
+          passCount:6, showPoint:true, showPress:false, passLine:true,
+          cue:'Pass 6: A5 finds N2! SIX PASSES — POINT SCORED!' },
+
+        // 7 — Ball lost to B3 area
+        { dur:650, ball:{x:418,y:245}, b1:{x:405,y:244}, b2:{x:420,y:242}, b3:{x:420,y:242},
+          passCount:6, showPoint:false, showPress:true, passLine:false,
+          cue:'Ball lost to B! Press in 3 seconds — every single player moves NOW.' },
+
+        // 8 — A team presses
+        { dur:850, ball:{x:418,y:245}, b1:{x:400,y:242}, b2:{x:415,y:240}, b3:{x:415,y:240},
+          passCount:0, showPoint:false, showPress:true, passLine:false,
+          cue:'Lose it → press it. No rest. Regain your shape immediately. That\'s the standard.' },
+
+        // 9 — Reset
+        { dur:500, ball:{...A1}, b1:{...B1s}, b2:{...B2s}, b3:{...B3s},
+          passCount:0, showPoint:false, showPress:false, passLine:false,
+          cue:'Rotate teams every 4 minutes. Neutrals stay. Keep the tempo high.' },
+    ];
+
+    // ── State ─────────────────────────────────────────────────
+    let playing=false, speed=1.0, frameIdx=0, frameStart=null, rafId=null;
+    function makeStart(f){return{ball:{...f.ball},b1:{...f.b1},b2:{...f.b2},b3:{...f.b3}};}
+    let startState=makeStart(FRAMES[0]);
+    let cur=makeStart(FRAMES[0]);
+
+    // ── Helpers ───────────────────────────────────────────────
+    function ease(t){return t<0.5?2*t*t:-1+(4-2*t)*t;}
+    function lerp(a,b,t){return a+(b-a)*t;}
+    function lerpPt(a,b,t){return{x:lerp(a.x,b.x,t),y:lerp(a.y,b.y,t)};}
+    function setCue(txt){
+        const el=document.getElementById('cueText');
+        el.style.opacity='0';
+        setTimeout(()=>{el.textContent=txt;el.style.opacity='1';},180);
+    }
+
+    // ── Drawing ───────────────────────────────────────────────
+    function drawField(){
+        ctx.fillStyle='#0d1b2a';ctx.fillRect(0,0,W,H);
+        // grass
+        ctx.fillStyle='#2e6b28';ctx.fillRect(GX,GY,GW,GH);
+        // stripes
+        for(let i=0;i<5;i++){
+            if(i%2===0){ctx.fillStyle='rgba(0,0,0,0.055)';ctx.fillRect(GX,GY+i*(GH/5),GW,GH/5);}
+        }
+        // center circle (subtle)
+        ctx.save();
+        ctx.globalAlpha=0.12;ctx.strokeStyle='white';ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.arc(GX+GW/2,GY+GH/2,45,0,Math.PI*2);ctx.stroke();
+        ctx.restore();
+        // center line
+        ctx.save();ctx.globalAlpha=0.12;ctx.strokeStyle='white';ctx.lineWidth=1;
+        ctx.setLineDash([5,5]);
+        ctx.beginPath();ctx.moveTo(GX+GW/2,GY);ctx.lineTo(GX+GW/2,GY+GH);ctx.stroke();
+        ctx.setLineDash([]);ctx.restore();
+        // border
+        ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=2;ctx.strokeRect(GX,GY,GW,GH);
+        // labels
+        ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='11px Roboto,sans-serif';
+        ctx.textAlign='left';ctx.textBaseline='alphabetic';
+        ctx.fillText('5v5+2 Possession — 30×20 yd',GX,GY-14);
+        ctx.textAlign='right';
+        ctx.fillText(`Phase ${frameIdx+1}/${FRAMES.length}`,GX+GW,GY-14);
+        // dimension labels
+        ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='10px Roboto,sans-serif';
+        ctx.textAlign='center';
+        ctx.fillText('30 yards',GX+GW/2,GY+GH+20);
+    }
+
+    function drawPressLine(dx,dy,bx,by){
+        const dist=Math.hypot(dx-bx,dy-by);
+        if(dist<140){
+            const alpha=(1-dist/140)*0.45;
+            ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#ff5555';ctx.lineWidth=2;
+            ctx.setLineDash([4,5]);
+            ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(bx,by);ctx.stroke();
+            ctx.setLineDash([]);ctx.restore();
+        }
+    }
+
+    function drawPassLine(from,to,t){
+        const ex=from.x+(to.x-from.x)*t,ey=from.y+(to.y-from.y)*t;
+        ctx.save();
+        ctx.globalAlpha=0.6;ctx.strokeStyle='#f5c518';ctx.lineWidth=2.5;
+        ctx.setLineDash([8,6]);ctx.lineDashOffset=-(t*40);
+        ctx.beginPath();ctx.moveTo(from.x,from.y);ctx.lineTo(ex,ey);ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawPlayer(x,y,label,color,border){
+        const R=18;
+        const hasBall=Math.hypot(x-cur.ball.x,y-cur.ball.y)<R+12;
+        if(hasBall&&color==='#1a6fce'){
+            ctx.beginPath();ctx.arc(x,y,R+7,0,Math.PI*2);
+            ctx.fillStyle='rgba(245,197,24,0.22)';ctx.fill();
+        }
+        ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);
+        ctx.fillStyle=color;ctx.fill();
+        ctx.strokeStyle=border;ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle='white';ctx.font='bold 10px Roboto,sans-serif';
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(label,x,y);
+    }
+
+    function drawNeutral(pos,label){
+        const R=18;
+        const hasBall=Math.hypot(pos.x-cur.ball.x,pos.y-cur.ball.y)<R+12;
+        if(hasBall){
+            ctx.beginPath();ctx.arc(pos.x,pos.y,R+7,0,Math.PI*2);
+            ctx.fillStyle='rgba(245,197,24,0.25)';ctx.fill();
+        }
+        ctx.beginPath();ctx.arc(pos.x,pos.y,R,0,Math.PI*2);
+        ctx.fillStyle='#c5a600';ctx.fill();
+        ctx.strokeStyle='#ffe566';ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle='#0d1b2a';ctx.font='bold 10px Roboto,sans-serif';
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(label,pos.x,pos.y);
+    }
+
+    function drawBall(x,y){
+        ctx.beginPath();ctx.arc(x+2,y+3,10,0,Math.PI*2);
+        ctx.fillStyle='rgba(0,0,0,0.25)';ctx.fill();
+        ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);
+        ctx.fillStyle='#f5c518';ctx.fill();
+        ctx.strokeStyle='#b89010';ctx.lineWidth=2;ctx.stroke();
+        ctx.beginPath();ctx.arc(x-3,y-3,4,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,255,0.45)';ctx.fill();
+    }
+
+    function drawPassCount(count,showPoint,showPress){
+        const f=FRAMES[frameIdx];
+        // Pass counter
+        if(count>0||showPoint){
+            const txt=showPoint?'✓ POINT!':count+' / 6';
+            const bg=showPoint?'rgba(39,174,96,0.9)':'rgba(7,121,228,0.8)';
+            ctx.fillStyle=bg;
+            ctx.beginPath();
+            // rounded rect
+            const rx=GX+GW-120,ry=GY+8,rw=110,rh=30;
+            ctx.roundRect(rx,ry,rw,rh,8);
+            ctx.fill();
+            ctx.fillStyle='white';ctx.font=`bold ${showPoint?14:13}px Roboto,sans-serif`;
+            ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText(showPoint?txt:`Passes: ${txt}`,rx+rw/2,ry+rh/2);
+        }
+        // PRESS indicator
+        if(showPress){
+            ctx.fillStyle='rgba(192,57,43,0.85)';
+            const rx=GX+8,ry=GY+8,rw=100,rh=30;
+            ctx.beginPath();
+            ctx.roundRect(rx,ry,rw,rh,8);
+            ctx.fill();
+            ctx.fillStyle='white';ctx.font='bold 13px Roboto,sans-serif';
+            ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText('PRESS!',rx+rw/2,ry+rh/2);
+        }
+    }
+
+    function render(et){
+        ctx.clearRect(0,0,W,H);
+        drawField();
+        const frame=FRAMES[frameIdx];
+
+        // Pressure lines from active defenders
+        drawPressLine(cur.b1.x,cur.b1.y,cur.ball.x,cur.ball.y);
+        drawPressLine(cur.b2.x,cur.b2.y,cur.ball.x,cur.ball.y);
+        drawPressLine(cur.b3.x,cur.b3.y,cur.ball.x,cur.ball.y);
+
+        // Pass line
+        if(frame.passLine){drawPassLine(startState.ball,frame.ball,et);}
+
+        // Static Team B players
+        drawPlayer(B4.x,B4.y,'B4','#c0392b','#ff8888');
+        drawPlayer(B5.x,B5.y,'B5','#c0392b','#ff8888');
+
+        // Active Team B (pressing, moving)
+        drawPlayer(cur.b1.x,cur.b1.y,'B1','#c0392b','#ff8888');
+        drawPlayer(cur.b2.x,cur.b2.y,'B2','#c0392b','#ff8888');
+        drawPlayer(cur.b3.x,cur.b3.y,'B3','#c0392b','#ff8888');
+
+        // Team A (static positions, ball holder glows)
+        drawPlayer(A1.x,A1.y,'A1','#1a6fce','#88ccff');
+        drawPlayer(A2.x,A2.y,'A2','#1a6fce','#88ccff');
+        drawPlayer(A3.x,A3.y,'A3','#1a6fce','#88ccff');
+        drawPlayer(A4.x,A4.y,'A4','#1a6fce','#88ccff');
+        drawPlayer(A5.x,A5.y,'A5','#1a6fce','#88ccff');
+
+        // Neutrals (yellow)
+        drawNeutral(N1,'N1');
+        drawNeutral(N2,'N2');
+
+        // Ball on top
+        drawBall(cur.ball.x,cur.ball.y);
+
+        // Pass counter / point / press overlay
+        drawPassCount(frame.passCount,frame.showPoint,frame.showPress);
+    }
+
+    function tick(ts){
+        if(!playing)return;
+        if(frameStart===null)frameStart=ts;
+        const frame=FRAMES[frameIdx];
+        const t=Math.min((ts-frameStart)*speed/frame.dur,1);
+        const et=ease(t);
+        cur.ball=lerpPt(startState.ball,frame.ball,et);
+        cur.b1  =lerpPt(startState.b1,  frame.b1,  et);
+        cur.b2  =lerpPt(startState.b2,  frame.b2,  et);
+        cur.b3  =lerpPt(startState.b3,  frame.b3,  et);
+        render(et);
+        if(t>=1){
+            startState=makeStart(FRAMES[frameIdx]);
+            frameIdx=(frameIdx+1<FRAMES.length)?frameIdx+1:1;
+            frameStart=null;
+            setCue(FRAMES[frameIdx].cue);
+        }
+        rafId=requestAnimationFrame(tick);
+    }
+
+    window.togglePlay=function(){
+        playing=!playing;
+        document.getElementById('playIcon').className   =playing?'fas fa-pause':'fas fa-play';
+        document.getElementById('playLabel').textContent=playing?'Pause':'Play';
+        if(playing){setCue(FRAMES[frameIdx].cue);rafId=requestAnimationFrame(tick);}
+        else if(rafId){cancelAnimationFrame(rafId);}
+    };
+    window.resetAnim=function(){
+        playing=false;if(rafId)cancelAnimationFrame(rafId);
+        frameIdx=0;frameStart=null;
+        startState=makeStart(FRAMES[0]);cur=makeStart(FRAMES[0]);
+        document.getElementById('playIcon').className   ='fas fa-play';
+        document.getElementById('playLabel').textContent='Play';
+        document.getElementById('cueText').textContent  ='Press Play to start...';
+        render(1);
+    };
+    window.updateSpeed=function(v){
+        speed=parseFloat(v);
+        document.getElementById('speedLabel').textContent=v+'×';
+    };
+
+    render(1);
+})();
+</script>
+</body>
+</html>

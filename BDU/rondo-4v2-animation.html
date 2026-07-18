@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer – Rondo 4v2 Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+
+        .day-header {
+            background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+        .day-header h2 { margin: 0; font-size: 1.7rem; }
+        .day-header p  { margin: 0.4rem 0 0; opacity: 0.85; }
+
+        .drill-meta { display: flex; gap: 0.75rem; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+        .drill-meta span {
+            background: #f0f0f0;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .drill-meta span i { margin-right: 5px; color: var(--primary-color); }
+
+        /* ── Animation wrapper ─────────────────────────────── */
+        .anim-wrapper {
+            background: #0d1b2a;
+            border-radius: 15px;
+            padding: 1.25rem 1rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .canvas-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        #rondoCanvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* ── Cue panel ─────────────────────────────────────── */
+        .cue-panel {
+            background: rgba(7,121,228,0.12);
+            border-left: 4px solid #0779e4;
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1.25rem;
+            margin-top: 0.9rem;
+            min-height: 60px;
+        }
+        .cue-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.45);
+            font-family: 'Roboto', sans-serif;
+        }
+        .cue-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #ddeeff;
+            margin-top: 0.2rem;
+            transition: opacity 0.25s;
+        }
+
+        /* ── Controls ──────────────────────────────────────── */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            padding: 8px 22px;
+            background: #0779e4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .ctrl-btn:hover  { background: #003366; }
+        .ctrl-btn:active { transform: scale(0.97); }
+        .speed-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.6);
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.85rem;
+        }
+        .speed-ctrl input { width: 80px; accent-color: #0779e4; }
+
+        /* ── Legend ─────────────────────────────────────────── */
+        .legend {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: rgba(255,255,255,0.55);
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.8rem;
+        }
+        .ldot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.25);
+            display: inline-block;
+        }
+
+        /* ── Key points box ─────────────────────────────────── */
+        .tip-box {
+            background: #f0f7ff;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 0 12px 12px 0;
+            padding: 1rem 1.25rem;
+            margin-top: 0.5rem;
+        }
+        .tip-box h4 {
+            color: #003366;
+            margin: 0 0 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tip-box ul { margin: 0; padding-left: 1.25rem; }
+        .tip-box li { color: #333; line-height: 1.9; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Rondo 4v2 — Animated Drill</h1>
+    </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<div id="training-menu"></div>
+<script>
+    fetch('menus/training-menu.html').then(r=>r.text()).then(d=>{
+        document.getElementById('training-menu').innerHTML = d;
+    });
+</script>
+
+<div class="container">
+    <a href="u13-season-plan-day1.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Day 1
+    </a>
+
+    <div class="day-header">
+        <h2><i class="fas fa-futbol"></i> Rondo 4v2 — Live Animation</h2>
+        <p>Top-down view of a 10×10 yard grid. Press Play — coaching cues update in real time.</p>
+    </div>
+
+    <div class="drill-meta">
+        <span><i class="fas fa-clock"></i> 12 min</span>
+        <span><i class="fas fa-users"></i> Groups of 6</span>
+        <span><i class="fas fa-signal"></i> Intermediate</span>
+        <span><i class="fas fa-expand-arrows-alt"></i> 10×10 yard grid</span>
+    </div>
+
+    <!-- ANIMATION -->
+    <div class="anim-wrapper">
+        <div class="canvas-scroll">
+            <canvas id="rondoCanvas" width="560" height="480"></canvas>
+        </div>
+
+        <div class="cue-panel">
+            <div class="cue-label">Coaching Cue</div>
+            <div class="cue-text" id="cueText">Press Play to start the animation...</div>
+        </div>
+
+        <div class="controls">
+            <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">
+                <i class="fas fa-play" id="playIcon"></i>&nbsp;<span id="playLabel">Play</span>
+            </button>
+            <button class="ctrl-btn" onclick="resetAnim()">
+                <i class="fas fa-redo"></i>&nbsp;Reset
+            </button>
+            <div class="speed-ctrl">
+                <i class="fas fa-tachometer-alt"></i>
+                <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.25" value="1"
+                       oninput="updateSpeed(this.value)">
+                <span id="speedLabel">1×</span>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <span class="ldot" style="background:#4a9eff"></span> Attacker (A1–A4)
+            </div>
+            <div class="legend-item">
+                <span class="ldot" style="background:#e84c4c"></span> Defender (D1–D2)
+            </div>
+            <div class="legend-item">
+                <span class="ldot" style="background:#f5c518"></span> Ball
+            </div>
+        </div>
+    </div>
+
+    <div class="tip-box">
+        <h4><i class="fas fa-lightbulb" style="color:#f5c518;margin-right:6px"></i>Key Coaching Points</h4>
+        <ul>
+            <li><strong>Max 2 touches</strong> — no dwelling on the ball; think ahead</li>
+            <li><strong>Weight the pass</strong> to the receiver's front foot</li>
+            <li><strong>First touch opens</strong> the body toward your next pass</li>
+            <li><strong>Call it:</strong> "man on" means turn away; "turn" means space behind</li>
+            <li><strong>Rotate defenders</strong> every 90 seconds — everyone experiences pressure</li>
+        </ul>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+    fetch('menus/shared-footer.html').then(r=>r.text()).then(d=>{
+        document.getElementById('shared-footer').innerHTML = d;
+    });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<!-- ============================================================
+     RONDO 4v2 CANVAS ANIMATION
+     ============================================================ -->
+<script>
+(function () {
+    const canvas = document.getElementById('rondoCanvas');
+    const ctx    = canvas.getContext('2d');
+    const W = 560, H = 480;
+
+    // ── Grid ────────────────────────────────────────────────────
+    const GX = 90, GY = 50, GS = 380;  // origin + size
+    const CX = GX + GS / 2;            // grid center x
+    const CY = GY + GS / 2;            // grid center y
+    const R_PLAYER = 20;                // player circle radius
+    const R_BALL   = 10;                // ball radius
+
+    // ── Fixed attacker positions (on the perimeter) ─────────────
+    const POS = {
+        A1: { x: CX,          y: GY + 18        }, // top
+        A2: { x: GX + GS - 18, y: CY            }, // right
+        A3: { x: CX,          y: GY + GS - 18   }, // bottom
+        A4: { x: GX + 18,     y: CY             }, // left
+    };
+
+    // ── Helper ──────────────────────────────────────────────────
+    function p(key) { return { ...POS[key] }; }
+
+    // ── Keyframes ────────────────────────────────────────────────
+    // Each frame defines end-state for ball, d1, d2, and coaching cue.
+    // Frames with passFrom/passTo draw an animated pass line.
+    const FRAMES = [
+        {   // 0 — static setup view
+            dur: 2200,
+            ball: p('A1'),
+            d1:  { x: CX - 58, y: CY - 8  },
+            d2:  { x: CX + 58, y: CY + 10 },
+            cue: 'Setup: 4 attackers hold the square. 2 defenders hunt together as a unit.',
+        },
+        {   // 1 — A1 → A2
+            dur: 850,
+            ball: p('A2'),
+            d1:  { x: CX + 95,  y: CY - 52 },
+            d2:  { x: CX + 20,  y: CY + 15 },
+            cue: 'A1 → A2: Weight the pass to A2\'s front foot. D1 closes immediately!',
+            passFrom: 'A1', passTo: 'A2',
+        },
+        {   // 2 — A2 first touch
+            dur: 720,
+            ball: { x: POS.A2.x - 22, y: POS.A2.y + 12 },
+            d1:  { x: CX + 118, y: CY - 36 },
+            d2:  { x: CX + 48,  y: CY + 12 },
+            cue: 'A2 first touch AWAY from D1 — body turns toward the center of the grid.',
+        },
+        {   // 3 — A2 → A4 (long switch)
+            dur: 1100,
+            ball: p('A4'),
+            d1:  { x: CX - 10,  y: CY - 12 },
+            d2:  { x: CX - 88,  y: CY - 5  },
+            cue: 'Switch play! A2 finds A4 — skips both defenders. D2 scrambles.',
+            passFrom: 'A2', passTo: 'A4',
+        },
+        {   // 4 — A4 first touch
+            dur: 700,
+            ball: { x: POS.A4.x + 22, y: POS.A4.y - 10 },
+            d1:  { x: CX - 40,  y: CY + 5  },
+            d2:  { x: CX - 105, y: CY + 5  },
+            cue: 'A4 under pressure — 2 touches MAX. Scan BEFORE the ball arrives.',
+        },
+        {   // 5 — A4 → A3
+            dur: 900,
+            ball: p('A3'),
+            d1:  { x: CX - 62,  y: CY + 88 },
+            d2:  { x: CX + 22,  y: CY + 65 },
+            cue: 'A4 → A3: Simple. Short. Fast. Play to feet — not into space.',
+            passFrom: 'A4', passTo: 'A3',
+        },
+        {   // 6 — A3 first touch
+            dur: 700,
+            ball: { x: POS.A3.x + 18, y: POS.A3.y - 18 },
+            d1:  { x: CX - 48,  y: CY + 118 },
+            d2:  { x: CX + 42,  y: CY + 100 },
+            cue: 'Both defenders converge on A3. Call it — "man on" or "turn"!',
+        },
+        {   // 7 — A3 → A1 (reset)
+            dur: 1000,
+            ball: p('A1'),
+            d1:  { x: CX - 60,  y: CY - 5  },
+            d2:  { x: CX + 60,  y: CY + 12 },
+            cue: 'A3 → A1: Reset possession. Sequence complete. Defenders recover.',
+            passFrom: 'A3', passTo: 'A1',
+        },
+        {   // 8 — brief hold before loop
+            dur: 1400,
+            ball: p('A1'),
+            d1:  { x: CX - 60,  y: CY - 8  },
+            d2:  { x: CX + 60,  y: CY + 8  },
+            cue: 'Rotate defenders every 90 seconds. Every player must feel the pressure.',
+        },
+    ];
+
+    // ── State ────────────────────────────────────────────────────
+    let playing    = false;
+    let speed      = 1.0;
+    let frameIdx   = 0;
+    let frameStart = null;
+    let rafId      = null;
+
+    // Interpolation start snapshot (updated each time a frame completes)
+    let startState = {
+        ball: { ...FRAMES[0].ball },
+        d1:   { ...FRAMES[0].d1  },
+        d2:   { ...FRAMES[0].d2  },
+    };
+
+    // Current rendered state (updated each tick)
+    let cur = {
+        ball: { ...FRAMES[0].ball },
+        d1:   { ...FRAMES[0].d1  },
+        d2:   { ...FRAMES[0].d2  },
+    };
+
+    // ── Easing ──────────────────────────────────────────────────
+    function ease(t) { return t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t; }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function lerpPt(a, b, t) { return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }; }
+
+    // ── Cue text ─────────────────────────────────────────────────
+    function setCue(text) {
+        const el = document.getElementById('cueText');
+        el.style.opacity = '0';
+        setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 180);
+    }
+
+    // ── Drawing helpers ─────────────────────────────────────────
+    function drawField() {
+        // Dark surround
+        ctx.fillStyle = '#0d1b2a';
+        ctx.fillRect(0, 0, W, H);
+
+        // Grass
+        ctx.fillStyle = '#2e6b28';
+        ctx.fillRect(GX, GY, GS, GS);
+
+        // Alternating grass stripes
+        for (let i = 0; i < 4; i++) {
+            if (i % 2 === 0) {
+                ctx.fillStyle = 'rgba(0,0,0,0.07)';
+                ctx.fillRect(GX, GY + i * (GS / 4), GS, GS / 4);
+            }
+        }
+
+        // Grid lines (dashed, representing the 10-yard divisions)
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth   = 1;
+        ctx.setLineDash([5, 6]);
+        for (let i = 1; i < 4; i++) {
+            ctx.beginPath();
+            ctx.moveTo(GX + i * (GS / 4), GY);
+            ctx.lineTo(GX + i * (GS / 4), GY + GS);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(GX, GY + i * (GS / 4));
+            ctx.lineTo(GX + GS, GY + i * (GS / 4));
+            ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        // Grid border
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth   = 2;
+        ctx.strokeRect(GX, GY, GS, GS);
+
+        // Corner markers
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        [[GX, GY], [GX+GS, GY], [GX, GY+GS], [GX+GS, GY+GS]].forEach(([cx,cy]) => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Dimension labels
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '11px Roboto, sans-serif';
+        ctx.textAlign   = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText('10 yards', CX, GY + GS + 22);
+        ctx.save();
+        ctx.translate(GX - 22, CY);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('10 yards', 0, 0);
+        ctx.restore();
+
+        // Title
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.textAlign   = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '11px Roboto, sans-serif';
+        ctx.fillText('Rondo 4v2 — top-down view', GX, GY - 14);
+        ctx.textAlign = 'right';
+        ctx.fillText(`Phase ${frameIdx + 1} / ${FRAMES.length}`, GX + GS, GY - 14);
+    }
+
+    function drawPassLine(fromKey, toKey, t) {
+        const a = POS[fromKey], b = POS[toKey];
+        const ex = a.x + (b.x - a.x) * t;
+        const ey = a.y + (b.y - a.y) * t;
+        ctx.save();
+        ctx.globalAlpha  = 0.6;
+        ctx.strokeStyle  = '#f5c518';
+        ctx.lineWidth    = 2.5;
+        ctx.setLineDash([9, 6]);
+        ctx.lineDashOffset = -(t * 40);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawPressureLine(dx, dy) {
+        // Show a faint red line from defender toward ball if close
+        const dist = Math.hypot(dx - cur.ball.x, dy - cur.ball.y);
+        if (dist < 130) {
+            const alpha = (1 - dist / 130) * 0.45;
+            ctx.save();
+            ctx.globalAlpha  = alpha;
+            ctx.strokeStyle  = '#ff5555';
+            ctx.lineWidth    = 2;
+            ctx.setLineDash([4, 5]);
+            ctx.beginPath();
+            ctx.moveTo(dx, dy);
+            ctx.lineTo(cur.ball.x, cur.ball.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+    }
+
+    function drawPlayer(x, y, label, isDefender) {
+        const color  = isDefender ? '#c0392b' : '#1a6fce';
+        const border = isDefender ? '#ff8888' : '#88ccff';
+        const hasBall = Math.hypot(x - cur.ball.x, y - cur.ball.y) < R_PLAYER + R_BALL + 6;
+
+        if (!isDefender && hasBall) {
+            // Glow ring around ball carrier
+            ctx.beginPath();
+            ctx.arc(x, y, R_PLAYER + 7, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(245,197,24,0.25)';
+            ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, R_PLAYER, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = border;
+        ctx.lineWidth   = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle    = 'white';
+        ctx.font         = 'bold 12px Roboto, sans-serif';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, x, y);
+    }
+
+    function drawBall(x, y) {
+        // Shadow
+        ctx.beginPath();
+        ctx.arc(x + 3, y + 4, R_BALL, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.28)';
+        ctx.fill();
+
+        // Ball body
+        ctx.beginPath();
+        ctx.arc(x, y, R_BALL, 0, Math.PI * 2);
+        ctx.fillStyle   = '#f5c518';
+        ctx.fill();
+        ctx.strokeStyle = '#b89010';
+        ctx.lineWidth   = 2;
+        ctx.stroke();
+
+        // Shine
+        ctx.beginPath();
+        ctx.arc(x - 3, y - 3, 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.fill();
+    }
+
+    // ── Full render pass ────────────────────────────────────────
+    function render(passProgress) {
+        ctx.clearRect(0, 0, W, H);
+        drawField();
+
+        const frame = FRAMES[frameIdx];
+
+        // Pass line (drawn under players)
+        if (frame.passFrom && frame.passTo) {
+            drawPassLine(frame.passFrom, frame.passTo, passProgress);
+        }
+
+        // Pressure lines (defenders → ball)
+        drawPressureLine(cur.d1.x, cur.d1.y);
+        drawPressureLine(cur.d2.x, cur.d2.y);
+
+        // Attackers
+        drawPlayer(POS.A1.x, POS.A1.y, 'A1', false);
+        drawPlayer(POS.A2.x, POS.A2.y, 'A2', false);
+        drawPlayer(POS.A3.x, POS.A3.y, 'A3', false);
+        drawPlayer(POS.A4.x, POS.A4.y, 'A4', false);
+
+        // Defenders
+        drawPlayer(cur.d1.x, cur.d1.y, 'D1', true);
+        drawPlayer(cur.d2.x, cur.d2.y, 'D2', true);
+
+        // Ball on top
+        drawBall(cur.ball.x, cur.ball.y);
+    }
+
+    // ── Animation tick ───────────────────────────────────────────
+    function tick(ts) {
+        if (!playing) return;
+
+        if (frameStart === null) frameStart = ts;
+
+        const frame   = FRAMES[frameIdx];
+        const elapsed = (ts - frameStart) * speed;
+        const t       = Math.min(elapsed / frame.dur, 1);
+        const et      = ease(t);
+
+        cur.ball = lerpPt(startState.ball, frame.ball, et);
+        cur.d1   = lerpPt(startState.d1,   frame.d1,   et);
+        cur.d2   = lerpPt(startState.d2,   frame.d2,   et);
+
+        render(et);
+
+        if (t >= 1) {
+            // Snapshot current state as next frame's start
+            startState = {
+                ball: { ...cur.ball },
+                d1:   { ...cur.d1   },
+                d2:   { ...cur.d2   },
+            };
+
+            // Advance frame index (loop after last)
+            frameIdx   = (frameIdx + 1 < FRAMES.length) ? frameIdx + 1 : 1;
+            frameStart = null;
+            setCue(FRAMES[frameIdx].cue);
+        }
+
+        rafId = requestAnimationFrame(tick);
+    }
+
+    // ── Public controls ─────────────────────────────────────────
+    window.togglePlay = function () {
+        playing = !playing;
+        document.getElementById('playIcon').className    = playing ? 'fas fa-pause' : 'fas fa-play';
+        document.getElementById('playLabel').textContent = playing ? 'Pause' : 'Play';
+        if (playing) {
+            setCue(FRAMES[frameIdx].cue);
+            rafId = requestAnimationFrame(tick);
+        } else {
+            if (rafId) cancelAnimationFrame(rafId);
+        }
+    };
+
+    window.resetAnim = function () {
+        playing = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        frameIdx   = 0;
+        frameStart = null;
+        startState = { ball: { ...FRAMES[0].ball }, d1: { ...FRAMES[0].d1 }, d2: { ...FRAMES[0].d2 } };
+        cur        = { ball: { ...FRAMES[0].ball }, d1: { ...FRAMES[0].d1 }, d2: { ...FRAMES[0].d2 } };
+        document.getElementById('playIcon').className    = 'fas fa-play';
+        document.getElementById('playLabel').textContent = 'Play';
+        document.getElementById('cueText').textContent   = 'Press Play to start the animation...';
+        render(1);
+    };
+
+    window.updateSpeed = function (val) {
+        speed = parseFloat(val);
+        document.getElementById('speedLabel').textContent = speed + '×';
+    };
+
+    // ── Initial draw ─────────────────────────────────────────────
+    render(1);
+})();
+</script>
+
+</body>
+</html>

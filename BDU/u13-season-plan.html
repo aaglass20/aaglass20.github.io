@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer - U13 Season Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>U13 Season Plan</h1>
+    </div>
+</header>
+
+<!-- Add the waffle menu toggle button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="training-menu"></div>
+
+<script>
+    fetch('menus/training-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('training-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+    <div class="plan-intro">
+        <h3><i class="fas fa-chess"></i> About This Plan</h3>
+        <p>
+            This season plan transitions our U13 group into full 11v11 positional play. The theme is Positional Play and Tactical Identity — crisp passing, intentional movement, and a coherent team shape. We carry forward the defensive aggression built last season while introducing new players to those principles. Training split: 40% Technical | 60% Tactical.
+        </p>
+    </div>
+
+    <!-- Season Theme: Positional Play -->
+    <div class="defensive-attitude-section">
+        <div class="attitude-header">
+            <i class="fas fa-chess"></i>
+            <h2>Season Theme: Positional Play</h2>
+            <p class="attitude-motto">"Move the Ball. Move Yourself."</p>
+        </div>
+
+        <div class="attitude-mindset-banner">
+            <div class="attitude-quote">
+                <i class="fas fa-quote-left"></i>
+                <h3>"Soccer is a team sport played with individual excellence."</h3>
+            </div>
+            <div class="attitude-principles">
+                <div class="attitude-principle">
+                    <i class="fas fa-arrows-alt"></i>
+                    <span><strong>Width &amp; Depth.</strong> Use the full pitch — stretch the opponent horizontally and vertically to create gaps.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-route"></i>
+                    <span><strong>Third-Man Runs.</strong> The player who passes is never done — move to create the next option.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-layer-group"></i>
+                    <span><strong>Shape First.</strong> Before you receive, know where you're passing. Shape is collective, not individual.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tactical Identity -->
+    <div class="defensive-attitude-section">
+        <div class="attitude-header">
+            <i class="fas fa-bullseye"></i>
+            <h2>Tactical Identity</h2>
+            <p class="attitude-motto">"Know Your Role. Execute Together."</p>
+        </div>
+
+        <div class="attitude-mindset-banner">
+            <div class="attitude-quote">
+                <i class="fas fa-quote-left"></i>
+                <h3>"A team without an identity is eleven individuals. An identity turns them into a unit."</h3>
+            </div>
+            <div class="attitude-principles">
+                <div class="attitude-principle">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    <span><strong>Compact Without Ball.</strong> When we lose possession, the team presses as a unit within 3 seconds.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                    <span><strong>Expansive With Ball.</strong> When we have possession, we spread the play to open lanes.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span><strong>Quick Transitions.</strong> The moments of transition — gain or loss of ball — are when games are won.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Defensive Aggression — Carried Forward -->
+    <div class="defensive-attitude-section">
+        <div class="attitude-header">
+            <i class="fas fa-shield-alt"></i>
+            <h2>Defensive Aggression — Carried Forward</h2>
+            <p class="attitude-motto">"New Season. Same Standards."</p>
+        </div>
+
+        <div class="attitude-mindset-banner">
+            <div class="attitude-quote">
+                <i class="fas fa-quote-left"></i>
+                <h3>"The new players learn what we already know: you win the ball by wanting it more."</h3>
+            </div>
+            <div class="attitude-principles">
+                <div class="attitude-principle">
+                    <i class="fas fa-fist-raised"></i>
+                    <span><strong>50/50 Mindset.</strong> Make every 50/50 a 100/0. Desire determines the outcome.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-crosshairs"></i>
+                    <span><strong>Press With Intent.</strong> Press is always the right call. Apply pressure, disrupt rhythm, force mistakes.</span>
+                </div>
+                <div class="attitude-principle">
+                    <i class="fas fa-user-shield"></i>
+                    <span><strong>Individual Defending.</strong> Side-on stance, patience, body contact first — the fundamentals never change.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2><i class="fas fa-calendar-alt"></i> Training Days</h2>
+    <div class="day-grid" id="day-grid">
+        <a href="u13-season-plan-day1.html" class="day-card">
+            <i class="fas fa-shoe-prints"></i>
+            <span>Day 1</span>
+            <small>Passing &amp; First Touch</small>
+        </a>
+        <a href="u13-season-plan-day2.html" class="day-card">
+            <i class="fas fa-users"></i>
+            <span>Day 2</span>
+            <small>11v11 Shape &amp; Compactness</small>
+        </a>
+        <a href="u13-season-plan-day3.html" class="day-card">
+            <i class="fas fa-compress-arrows-alt"></i>
+            <span>Day 3</span>
+            <small>Off-Ball Movement &amp; Pressing</small>
+        </a>
+        <a href="u13-season-plan-day4.html" class="day-card">
+            <i class="fas fa-futbol"></i>
+            <span>Day 4</span>
+            <small>Finishing &amp; Aerial Control</small>
+        </a>
+        <a href="u13-season-plan-day5.html" class="day-card">
+            <i class="fas fa-shield-alt"></i>
+            <span>Day 5</span>
+            <small>Defensive Aggression Revisited</small>
+        </a>
+    </div>
+
+    <div class="collapsible-section">
+        <h2 class="section-title">
+            <i class="fas fa-plus-circle"></i> Add New Day
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div class="collapsible-content">
+            <p style="padding: 1rem; color: var(--text-light);">
+                To add a new training day:
+            </p>
+            <ol style="padding: 1rem 2rem; color: var(--text-dark);">
+                <li>Create a new HTML file in the BDU folder (e.g., <code>u13-season-plan-day6.html</code>)</li>
+                <li>Copy the structure from an existing day file</li>
+                <li>Add the drills for that day</li>
+                <li>Add a new card link above in the day-grid section</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    // Load the shared footer
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
