@@ -130,10 +130,21 @@ score_page() {
     echo "$score"
 }
 
-# ── Find insertion line (before first collapsible-section) ──
+# ── Find insertion line (before first collapsible-section, or container closing tag) ──
 find_insert_line() {
     local page="$1"
-    grep -n '<section class="collapsible-section"' "$page" | head -1 | cut -d: -f1
+    local line
+    line=$(grep -n '<section class="collapsible-section"' "$page" | head -1 | cut -d: -f1)
+    if [[ -n "$line" ]]; then
+        echo "$line"
+        return
+    fi
+    # No existing sections — find container's closing </div> before shared-footer
+    local footer_line
+    footer_line=$(grep -n '<div id="shared-footer">' "$page" | head -1 | cut -d: -f1)
+    if [[ -n "$footer_line" ]]; then
+        awk -v fl="$footer_line" 'NR < fl && /^<\/div>/ {last=NR} END {if(last) print last}' "$page"
+    fi
 }
 
 # ── Generate HTML section block ──
@@ -197,6 +208,27 @@ for v in "${videos[@]}"; do
 done
 echo ""
 
+# ── Session routing ──
+SESSION_PAGE=""
+if [[ "$AUTO" == false ]]; then
+    echo -n "Add all videos this session to igs-takeaways.html? [Y/n]: "
+    read igs_confirm
+    if [[ ! "$igs_confirm" =~ ^[Nn] ]]; then
+        SESSION_PAGE="igs-takeaways.html"
+        echo "  → Session target: igs-takeaways.html"
+    else
+        echo -n "Add all videos this session to a specific page? (Enter to skip): "
+        read session_page_input
+        if [[ -n "$session_page_input" ]]; then
+            SESSION_PAGE="$session_page_input"
+            echo "  → Session target: $SESSION_PAGE"
+        else
+            echo "  → Normal matching will be used."
+        fi
+    fi
+    echo ""
+fi
+
 # Collect HTML pages with collapsible sections
 pages=()
 local raw_pages=$(grep -rl 'collapsible-section' *.html 2>/dev/null | sort)
@@ -214,40 +246,47 @@ for video in "${videos[@]}"; do
     echo "  Keywords: $keywords"
     echo "  Title:    $title"
 
-    # Score all pages
-    best_page=""
-    best_score=0
-
-    for page in "${pages[@]}"; do
-        s=$(score_page "$keywords" "$page")
-        if [[ $s -gt 0 ]]; then
-            echo "    $page: $s pts"
-        fi
-        if [[ $s -gt $best_score ]]; then
-            best_score=$s
-            best_page=$page
-        fi
-    done
-
-    if [[ $best_score -eq 0 ]]; then
+    if [[ -n "$SESSION_PAGE" ]]; then
+        best_page="$SESSION_PAGE"
+        best_score=99
+        echo "  >> Session target: $best_page"
         echo ""
-        echo "  WARNING: No matching page found."
-        if [[ "$AUTO" == true ]]; then
-            echo "  Skipping (no match in auto mode)."
-            continue
-        fi
-        printf '    %s\n' "${pages[@]}"
-        echo -n "  Enter page name manually (or Enter to skip): "
-        read manual_page
-        if [[ -z "$manual_page" ]]; then
-            continue
-        fi
-        best_page="$manual_page"
-    fi
+    else
+        # Score all pages
+        best_page=""
+        best_score=0
 
-    echo ""
-    echo "  >> Best match: $best_page (score: $best_score)"
-    echo ""
+        for page in "${pages[@]}"; do
+            s=$(score_page "$keywords" "$page")
+            if [[ $s -gt 0 ]]; then
+                echo "    $page: $s pts"
+            fi
+            if [[ $s -gt $best_score ]]; then
+                best_score=$s
+                best_page=$page
+            fi
+        done
+
+        if [[ $best_score -eq 0 ]]; then
+            echo ""
+            echo "  WARNING: No matching page found."
+            if [[ "$AUTO" == true ]]; then
+                echo "  Skipping (no match in auto mode)."
+                continue
+            fi
+            printf '    %s\n' "${pages[@]}"
+            echo -n "  Enter page name manually (or Enter to skip): "
+            read manual_page
+            if [[ -z "$manual_page" ]]; then
+                continue
+            fi
+            best_page="$manual_page"
+        fi
+
+        echo ""
+        echo "  >> Best match: $best_page (score: $best_score)"
+        echo ""
+    fi
 
     default_summary="$title"
 
@@ -260,9 +299,11 @@ for video in "${videos[@]}"; do
         read custom_summary
         [[ -n "$custom_summary" ]] && default_summary="$custom_summary"
 
-        echo -n "  Target page [$best_page]: "
-        read custom_page
-        [[ -n "$custom_page" ]] && best_page="$custom_page"
+        if [[ -z "$SESSION_PAGE" ]]; then
+            echo -n "  Target page [$best_page]: "
+            read custom_page
+            [[ -n "$custom_page" ]] && best_page="$custom_page"
+        fi
     fi
 
     section_html=$(generate_section "$video" "$title" "$id" "$default_summary")
