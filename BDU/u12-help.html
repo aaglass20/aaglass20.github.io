@@ -347,7 +347,8 @@
     <div class="intro-card">
         <h2><i class="fas fa-hands-helping"></i> Help the U12 Team This Season</h2>
         <p>Our U13 team is loaning <strong>2–3 players</strong> to the U12 team for each of their games. Check the games below and tap the players who are available to play. Hit <strong>Save</strong> when you're done with a game. Coach will pick who plays and post it in the "Playing" section.</p>
-        <a href="u12-help-admin.html" class="admin-link"><i class="fas fa-user-shield"></i> Coach admin →</a>
+        <!-- Coach admin link hidden from players — access u12-help-admin.html directly -->
+        <a href="u12-help-admin.html" class="admin-link" style="display:none;"><i class="fas fa-user-shield"></i> Coach admin →</a>
     </div>
 
     <div id="games-container">
@@ -429,7 +430,7 @@ function render(selectedMap) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-calendar-plus"></i>
-                <p>No U12 games scheduled yet.<br>Coach can add games on the <a href="u12-help-admin.html" style="color:#0779e4;font-weight:600;">admin page</a>.</p>
+                <p>No U12 games scheduled yet.<br>Check back soon.</p>
             </div>`;
         return;
     }
