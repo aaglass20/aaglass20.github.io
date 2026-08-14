@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU U13 → U12 Help — Coach Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 5rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #16213e 100%);
+            color: #00ff88;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f7fafc;
+            color: var(--text-dark);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .panel-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .panel-card h2 {
+            margin: 0 0 1rem;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: white;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #0779e4;
+        }
+
+        .btn-primary {
+            padding: 0.7rem 1.4rem;
+            background: linear-gradient(135deg, #0779e4, #00ff88);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 3px 10px rgba(7, 121, 228, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(7, 121, 228, 0.4);
+        }
+
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .btn-danger {
+            padding: 0.4rem 0.8rem;
+            background: #fff5f5;
+            color: var(--accent-color);
+            border: 2px solid #fed7d7;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-danger:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .list-row .row-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .list-row .row-title {
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .list-row .row-sub {
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .form-msg {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-msg.success { color: #0779e4; }
+        .form-msg.error   { color: var(--accent-color); }
+
+        /* Game admin card */
+        .game-admin-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+
+        .game-admin-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #16213e 100%);
+            color: white;
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .game-admin-title { font-weight: 700; font-size: 1.05rem; }
+        .game-admin-sub   { font-size: 0.82rem; color: #cbd5e0; margin-top: 0.15rem; }
+
+        .game-admin-body { padding: 1rem 1.25rem; }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .avail-list, .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .avail-player {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.75rem;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+        }
+
+        .avail-player.available { border-color: #48bb78; background: #f0fff4; }
+        .avail-player .badge {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .avail-player.available .badge { background: #48bb78; color: white; }
+        .avail-player.unavailable .badge { background: #e2e8f0; color: var(--text-light); }
+
+        .select-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f7fafc;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            user-select: none;
+        }
+
+        .select-toggle:hover { background: #edf2f7; }
+
+        .select-toggle.checked {
+            background: linear-gradient(135deg, #00ff88, #0779e4);
+            border-color: #0779e4;
+            color: white;
+        }
+
+        .select-toggle .fa-star { opacity: 0.35; }
+        .select-toggle.checked .fa-star { opacity: 1; }
+
+        .select-toggle .avail-flag {
+            font-size: 0.65rem;
+            padding: 0.05rem 0.35rem;
+            border-radius: 3px;
+            font-weight: 700;
+            background: rgba(72, 187, 120, 0.2);
+            color: #22543d;
+        }
+
+        .select-toggle.checked .avail-flag { background: rgba(255,255,255,0.25); color: white; }
+
+        .divider { border: 0; border-top: 1px solid #e2e8f0; margin: 1rem 0; }
+
+        .game-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .btn-ghost {
+            padding: 0.4rem 0.8rem;
+            background: transparent;
+            color: #cbd5e0;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); color: white; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: #0779e4;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .empty-inline {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+        }
+
+        @media (max-width: 600px) {
+            .list-row { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Waffle Menu Toggle Button-->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Soccer Shield">
+        <h1>U13 → U12 Help</h1>
+        <h2>Coach Admin</h2>
+    </div>
+</header>
+
+<div class="admin-wrap">
+
+    <a href="u12-help.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to player signup</a>
+
+    <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="games"><i class="fas fa-calendar-alt"></i> Games & Selections</button>
+        <button class="tab-btn" data-tab="players"><i class="fas fa-users"></i> Roster</button>
+    </div>
+
+    <!-- ================= GAMES TAB ================= -->
+    <div class="tab-panel active" id="tab-games">
+
+        <div class="panel-card">
+            <h2><i class="fas fa-plus-circle"></i> Add a U12 Game</h2>
+            <form id="add-game-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="g-number">Game #</label>
+                        <input type="text" id="g-number" placeholder="e.g. 8401" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="g-date">Date *</label>
+                        <input type="date" id="g-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="g-day">Day</label>
+                        <input type="text" id="g-day" placeholder="Thu / Sun / …" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="g-time">Time</label>
+                        <input type="text" id="g-time" placeholder="e.g. 6:30 PM">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="g-home">Home Team *</label>
+                        <input type="text" id="g-home" placeholder="e.g. Independence" required maxlength="80">
+                    </div>
+                    <div class="form-group">
+                        <label for="g-visitor">Visitor Team *</label>
+                        <input type="text" id="g-visitor" placeholder="e.g. Twinsburg Blue" required maxlength="80">
+                    </div>
+                    <div class="form-group">
+                        <label for="g-ha">We Are…</label>
+                        <select id="g-ha">
+                            <option value="">— auto —</option>
+                            <option value="Home">Home</option>
+                            <option value="Away">Away</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="g-needed"># Players Needed</label>
+                        <input type="number" id="g-needed" value="3" min="1" max="10">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="g-location">Location</label>
+                        <input type="text" id="g-location" placeholder="e.g. Elmwood Park (Field 4)" maxlength="200">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="g-notes">Notes</label>
+                        <input type="text" id="g-notes" placeholder="Optional details" maxlength="200">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> Add Game</button>
+                <div id="add-game-msg" class="form-msg"></div>
+            </form>
+        </div>
+
+        <h2 style="color:var(--secondary-color); font-size:1.1rem; margin:1.5rem 0 0.75rem;">
+            <i class="fas fa-list"></i> All Games
+        </h2>
+        <div id="games-list">
+            <div class="empty-inline">Loading…</div>
+        </div>
+    </div>
+
+    <!-- ================= PLAYERS TAB ================= -->
+    <div class="tab-panel" id="tab-players">
+
+        <div class="panel-card">
+            <h2><i class="fas fa-user-plus"></i> Add a Player</h2>
+            <form id="add-player-form">
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="p-name">Player Name *</label>
+                        <input type="text" id="p-name" placeholder="e.g. Ava Smith" required maxlength="80">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> Add Player</button>
+                <div id="add-player-msg" class="form-msg"></div>
+            </form>
+        </div>
+
+        <div class="panel-card">
+            <h2><i class="fas fa-users"></i> Roster</h2>
+            <div id="players-list">
+                <div class="empty-inline">Loading…</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="scripts/scripts.js"></script>
+<script>
+// ============================================================
+//  Supabase
+// ============================================================
+const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ============================================================
+//  State
+// ============================================================
+let players       = [];
+let games         = [];
+let availability  = {};   // { gameId: Set<playerId> }
+let selected      = {};   // { gameId: Set<playerId> } — persisted
+let pendingSel    = {};   // { gameId: Set<playerId> } — local edits
+
+// ============================================================
+//  Tabs
+// ============================================================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+    });
+});
+
+// ============================================================
+//  Load
+// ============================================================
+async function loadAll() {
+    try {
+        const [pRes, gRes, aRes, sRes] = await Promise.all([
+            db.from('u12_help_players').select('*').order('name'),
+            db.from('u12_help_games').select('*').order('game_date'),
+            db.from('u12_help_availability').select('game_id, player_id'),
+            db.from('u12_help_selected').select('game_id, player_id')
+        ]);
+
+        if (pRes.error) throw pRes.error;
+        if (gRes.error) throw gRes.error;
+        if (aRes.error) throw aRes.error;
+        if (sRes.error) throw sRes.error;
+
+        players = pRes.data || [];
+        games   = gRes.data || [];
+
+        availability = {};
+        (aRes.data || []).forEach(r => {
+            if (!availability[r.game_id]) availability[r.game_id] = new Set();
+            availability[r.game_id].add(r.player_id);
+        });
+
+        selected = {};
+        (sRes.data || []).forEach(r => {
+            if (!selected[r.game_id]) selected[r.game_id] = new Set();
+            selected[r.game_id].add(r.player_id);
+        });
+
+        pendingSel = {};
+        Object.keys(selected).forEach(gid => { pendingSel[gid] = new Set(selected[gid]); });
+
+        renderPlayers();
+        renderGames();
+    } catch (err) {
+        console.error(err);
+        document.getElementById('games-list').innerHTML =
+            '<div class="empty-inline" style="color:var(--accent-color);">Could not load data. Refresh the page.</div>';
+    }
+}
+
+// ============================================================
+//  Players
+// ============================================================
+function renderPlayers() {
+    const el = document.getElementById('players-list');
+    if (!players.length) {
+        el.innerHTML = '<div class="empty-inline">No players yet — add one above.</div>';
+        return;
+    }
+    el.innerHTML = players.map(p => `
+        <div class="list-row">
+            <div class="row-main">
+                <i class="fas fa-user" style="color:${p.active ? '#0779e4' : '#cbd5e0'};"></i>
+                <div>
+                    <div class="row-title">${escHtml(p.name)}</div>
+                    <div class="row-sub">${p.active ? 'Active' : 'Inactive'}</div>
+                </div>
+            </div>
+            <button class="btn-danger" onclick="deletePlayer(${p.id}, '${escHtml(p.name).replace(/'/g,"&#39;")}')">
+                <i class="fas fa-trash"></i> Remove
+            </button>
+        </div>
+    `).join('');
+}
+
+document.getElementById('add-player-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nameEl = document.getElementById('p-name');
+    const msg = document.getElementById('add-player-msg');
+    const name = nameEl.value.trim();
+    if (!name) return;
+
+    msg.textContent = ''; msg.className = 'form-msg';
+    try {
+        const { error } = await db.from('u12_help_players').insert({ name });
+        if (error) {
+            if (error.code === '23505') {
+                msg.textContent = `"${name}" is already on the roster.`;
+                msg.className = 'form-msg error';
+            } else throw error;
+            return;
+        }
+        nameEl.value = '';
+        msg.textContent = `✓ Added ${name}`;
+        msg.className = 'form-msg success';
+        await loadAll();
+    } catch (err) {
+        console.error(err);
+        msg.textContent = 'Could not add player. Try again.';
+        msg.className = 'form-msg error';
+    }
+});
+
+async function deletePlayer(id, name) {
+    if (!confirm(`Remove ${name} from the roster? Their availability and selections for all games will also be removed.`)) return;
+    try {
+        const { error } = await db.from('u12_help_players').delete().eq('id', id);
+        if (error) throw error;
+        await loadAll();
+    } catch (err) {
+        console.error(err);
+        alert('Could not remove player. Try again.');
+    }
+}
+
+// ============================================================
+//  Games
+// ============================================================
+document.getElementById('add-game-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = document.getElementById('add-game-msg');
+    msg.textContent = ''; msg.className = 'form-msg';
+
+    const home    = document.getElementById('g-home').value.trim();
+    const visitor = document.getElementById('g-visitor').value.trim();
+    let   homeAway = document.getElementById('g-ha').value;
+
+    // Auto-derive We-Are field if left blank
+    if (!homeAway) {
+        if (/independence/i.test(home)) homeAway = 'Home';
+        else if (/independence/i.test(visitor)) homeAway = 'Away';
+    }
+    // Derive opponent (the not-us team) for convenience
+    const opponent = homeAway === 'Home' ? visitor
+                   : homeAway === 'Away' ? home
+                   : visitor;
+
+    // Auto-derive day of week if blank
+    let day = document.getElementById('g-day').value.trim();
+    const dateVal = document.getElementById('g-date').value;
+    if (!day && dateVal) {
+        const [y, m, d] = dateVal.split('-').map(Number);
+        day = new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short' });
+    }
+
+    const payload = {
+        game_number:  document.getElementById('g-number').value.trim(),
+        game_date:    dateVal,
+        game_day:     day,
+        game_time:    document.getElementById('g-time').value.trim(),
+        home_team:    home,
+        visitor_team: visitor,
+        opponent:     opponent,
+        home_away:    homeAway,
+        location:     document.getElementById('g-location').value.trim(),
+        needed_count: parseInt(document.getElementById('g-needed').value) || 3,
+        notes:        document.getElementById('g-notes').value.trim()
+    };
+
+    if (!payload.game_date || !payload.home_team || !payload.visitor_team) {
+        msg.textContent = 'Date, home team, and visitor team are required.';
+        msg.className = 'form-msg error';
+        return;
+    }
+
+    try {
+        const { error } = await db.from('u12_help_games').insert(payload);
+        if (error) throw error;
+        e.target.reset();
+        document.getElementById('g-needed').value = 3;
+        msg.textContent = `✓ Game added`;
+        msg.className = 'form-msg success';
+        await loadAll();
+    } catch (err) {
+        console.error(err);
+        msg.textContent = 'Could not add game. Try again.';
+        msg.className = 'form-msg error';
+    }
+});
+
+function renderGames() {
+    const el = document.getElementById('games-list');
+    if (!games.length) {
+        el.innerHTML = '<div class="empty-inline">No games yet — add one above.</div>';
+        return;
+    }
+
+    el.innerHTML = games.map(g => {
+        const gameAvail = availability[g.id] || new Set();
+        const gameSel   = pendingSel[g.id]  || new Set();
+        const persisted = selected[g.id]    || new Set();
+        const dirty     = !setsEqual(gameSel, persisted);
+
+        // Available players first, then rest — so coach can pick from available quickly
+        const availPlayers   = players.filter(p => gameAvail.has(p.id));
+        const otherPlayers   = players.filter(p => !gameAvail.has(p.id));
+        const orderedPlayers = [...availPlayers, ...otherPlayers];
+
+        const homeAway = (g.home_away || '').toLowerCase();
+        const badgeStyle = 'font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;';
+        const haBadge = homeAway === 'home' ? `<span style="background:#00ff88;color:var(--secondary-color);${badgeStyle}">Home</span>`
+                       : homeAway === 'away' ? `<span style="background:#ff6b6b;color:white;${badgeStyle}">Away</span>`
+                       : '';
+        const numBadge = g.game_number ? `<span style="background:rgba(255,255,255,0.08);color:#cbd5e0;font-family:monospace;${badgeStyle}">#${escHtml(g.game_number)}</span>` : '';
+
+        const homeTeam    = g.home_team    || (homeAway === 'home' ? 'Independence' : (g.opponent || 'TBD'));
+        const visitorTeam = g.visitor_team || (homeAway === 'away' ? 'Independence' : (g.opponent || 'TBD'));
+        const isUsHome    = /independence/i.test(homeTeam);
+        const isUsVisitor = /independence/i.test(visitorTeam);
+        const usStyle     = 'color:#00ff88;font-weight:800;';
+
+        return `
+            <div class="game-admin-card">
+                <div class="game-admin-header">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;margin-bottom:0.4rem;">
+                            ${haBadge}${numBadge}
+                        </div>
+                        <div class="game-admin-title" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+                            <span style="${isUsHome ? usStyle : ''}">${escHtml(homeTeam)}</span>
+                            <span style="color:#0779e4;font-weight:800;letter-spacing:0.05em;">VS</span>
+                            <span style="${isUsVisitor ? usStyle : ''}">${escHtml(visitorTeam)}</span>
+                        </div>
+                        <div class="game-admin-sub" style="margin-top:0.35rem;">
+                            <i class="fas fa-calendar" style="margin-right:0.25rem;"></i>${formatDate(g.game_date, g.game_day)}${g.game_time ? ' · <i class="fas fa-clock" style="margin:0 0.25rem;"></i>' + escHtml(g.game_time) : ''}${g.location ? ' · <i class="fas fa-map-marker-alt" style="margin:0 0.25rem;"></i>' + escHtml(g.location) : ''} · Need ${g.needed_count || 3}
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <button class="btn-ghost" onclick="deleteGame(${g.id}, '${escHtml(g.opponent || g.home_team || g.visitor_team).replace(/'/g,"&#39;")}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                <div class="game-admin-body">
+
+                    <div class="section-label">
+                        <i class="fas fa-user-check"></i> Available (${availPlayers.length})
+                    </div>
+                    ${availPlayers.length
+                        ? `<div class="avail-list">
+                            ${availPlayers.map(p => `
+                                <div class="avail-player available">
+                                    <i class="fas fa-check-circle" style="color:#48bb78;"></i>
+                                    <span>${escHtml(p.name)}</span>
+                                </div>
+                            `).join('')}
+                          </div>`
+                        : '<div class="empty-inline">No players have signed up yet.</div>'
+                    }
+
+                    <hr class="divider">
+
+                    <div class="section-label" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span><i class="fas fa-star"></i> Who's Playing (${gameSel.size}${g.needed_count ? ` / ${g.needed_count}` : ''})</span>
+                        <span style="font-size:0.72rem;color:${dirty ? '#e53e3e' : '#0779e4'};text-transform:none;letter-spacing:0;">
+                            ${dirty ? '● Unsaved' : '✓ Saved'}
+                        </span>
+                    </div>
+                    ${players.length
+                        ? `<div class="players-grid">
+                            ${orderedPlayers.map(p => {
+                                const on = gameSel.has(p.id);
+                                const isAvail = gameAvail.has(p.id);
+                                return `
+                                    <div class="select-toggle ${on ? 'checked' : ''}"
+                                         onclick="toggleSelected(${g.id}, ${p.id})">
+                                        <i class="fas fa-star"></i>
+                                        <span>${escHtml(p.name)}</span>
+                                        ${isAvail ? '<span class="avail-flag">Avail</span>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                          </div>
+                          <div style="display:flex;justify-content:flex-end;margin-top:0.75rem;">
+                            <button class="btn-primary" onclick="saveSelected(${g.id})" ${dirty ? '' : 'disabled'}>
+                                <i class="fas fa-save"></i> Save Selection
+                            </button>
+                          </div>`
+                        : '<div class="empty-inline">Add players to the roster first.</div>'
+                    }
+                </div>
+            </div>`;
+    }).join('');
+}
+
+async function deleteGame(id, opponent) {
+    if (!confirm(`Delete the game vs ${opponent}? All availability and selections for this game will be removed.`)) return;
+    try {
+        const { error } = await db.from('u12_help_games').delete().eq('id', id);
+        if (error) throw error;
+        await loadAll();
+    } catch (err) {
+        console.error(err);
+        alert('Could not delete game. Try again.');
+    }
+}
+
+function toggleSelected(gameId, playerId) {
+    if (!pendingSel[gameId]) pendingSel[gameId] = new Set();
+    if (pendingSel[gameId].has(playerId)) {
+        pendingSel[gameId].delete(playerId);
+    } else {
+        pendingSel[gameId].add(playerId);
+    }
+    renderGames();
+}
+
+async function saveSelected(gameId) {
+    try {
+        const { error: delErr } = await db
+            .from('u12_help_selected')
+            .delete()
+            .eq('game_id', gameId);
+        if (delErr) throw delErr;
+
+        const rows = Array.from(pendingSel[gameId] || []).map(pid => ({
+            game_id: gameId,
+            player_id: pid
+        }));
+
+        if (rows.length) {
+            const { error: insErr } = await db.from('u12_help_selected').insert(rows);
+            if (insErr) throw insErr;
+        }
+
+        selected[gameId] = new Set(pendingSel[gameId] || []);
+        renderGames();
+    } catch (err) {
+        console.error(err);
+        alert('Could not save selection. Try again.');
+    }
+}
+
+// ============================================================
+//  Utilities
+// ============================================================
+function escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function setsEqual(a, b) {
+    if (a.size !== b.size) return false;
+    for (const v of a) if (!b.has(v)) return false;
+    return true;
+}
+
+function formatDate(iso, dayOverride) {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const base = dt.toLocaleDateString('en-US', {
+        weekday: dayOverride ? undefined : 'short',
+        month: 'short', day: 'numeric', year: 'numeric'
+    });
+    return dayOverride ? `${dayOverride}, ${base}` : base;
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
