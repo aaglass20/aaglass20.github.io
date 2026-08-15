@@ -1,0 +1,1058 @@
+/* ============================================================
+   Empower Sports — Program Playbook
+   Colors: Navy #003B8E | Orange #F97316 | White #FFFFFF
+   ============================================================ */
+
+:root {
+  --blue:         #003B8E;
+  --blue-mid:     #1a5cc4;
+  --blue-light:   #e8effc;
+  --orange:       #F97316;
+  --orange-dark:  #ea6200;
+  --orange-light: #fff4ed;
+  --white:        #ffffff;
+  --gray-50:      #f8f9fa;
+  --gray-100:     #eef0f4;
+  --gray-400:     #9ba3b0;
+  --gray-600:     #606878;
+  --gray-700:     #444c5c;
+  --green:        #22c55e;
+  --green-light:  #dcfce7;
+  --red:          #ef4444;
+  --purple:       #7c3aed;
+  --purple-light: #ede9fe;
+  --teal:         #0d9488;
+  --teal-light:   #ccfbf1;
+  --shadow-sm:    0 2px 8px rgba(0,59,142,.10);
+  --shadow-md:    0 6px 24px rgba(0,59,142,.14);
+  --shadow-lg:    0 12px 40px rgba(0,59,142,.18);
+  --radius:       14px;
+  --radius-sm:    8px;
+  --radius-xs:    6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-700);
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+.nav {
+  background: var(--blue);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 62px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav-brand-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.nav-brand span {
+  color: var(--white);
+  font-weight: 700;
+  font-size: .95rem;
+  line-height: 1.25;
+}
+
+.nav-brand span small {
+  font-size: .72rem;
+  font-weight: 500;
+  opacity: .75;
+  display: block;
+  color: var(--orange);
+}
+
+.nav-links {
+  display: flex;
+  gap: .25rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: rgba(255,255,255,.8);
+  text-decoration: none;
+  padding: .45rem .8rem;
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  font-weight: 500;
+  transition: background .15s, color .15s;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: rgba(249,115,22,.2);
+  color: var(--orange);
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--blue) 0%, #1a4fa0 60%, #1a5cc4 100%);
+  color: var(--white);
+  padding: 4rem 1.5rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(249,115,22,.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(249,115,22,.2);
+  border: 1.5px solid var(--orange);
+  color: var(--orange);
+  padding: .35rem 1rem;
+  border-radius: 99px;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+
+.hero-sport-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: .75rem;
+}
+
+.hero h1 span { color: var(--orange); }
+
+.hero p {
+  font-size: 1.1rem;
+  opacity: .88;
+  max-width: 580px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.hero-cta {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .7rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: transform .12s, box-shadow .12s, background .12s;
+}
+
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: var(--orange);
+  color: var(--white);
+  border-color: var(--orange);
+}
+
+.btn-primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  border-color: rgba(255,255,255,.55);
+}
+
+.btn-outline:hover { background: rgba(255,255,255,.12); border-color: var(--white); }
+
+.btn-blue {
+  background: var(--blue);
+  color: var(--white);
+  border-color: var(--blue);
+}
+
+.btn-blue:hover { background: #002a6e; }
+.btn-sm { padding: .45rem 1rem; font-size: .85rem; }
+.btn-lg { padding: .9rem 2rem; font-size: 1.05rem; }
+
+/* ── CONTAINERS ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.container-wide {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: .4rem;
+}
+
+.section-header p {
+  color: var(--gray-400);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.section-divider {
+  width: 56px;
+  height: 4px;
+  background: var(--orange);
+  border-radius: 99px;
+  margin: .75rem auto 1rem;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.75rem;
+  border: 1.5px solid var(--gray-100);
+}
+
+.card-orange { border-left: 5px solid var(--orange); }
+.card-blue   { border-left: 5px solid var(--blue); }
+.card-green  { border-left: 5px solid var(--green); }
+
+/* ── SPORT GRID (index page) ── */
+.sport-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sport-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--gray-100);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .15s, box-shadow .15s;
+  display: flex;
+  flex-direction: column;
+}
+
+.sport-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+.sport-card-header {
+  background: linear-gradient(135deg, var(--blue), #1a4fa0);
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.sport-card-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, rgba(249,115,22,.2) 0%, transparent 60%);
+}
+
+.sport-card-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: .75rem;
+  position: relative;
+}
+
+.sport-card-header h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  position: relative;
+}
+
+.sport-card-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.sport-card-body p {
+  font-size: .9rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+}
+
+.sport-meta {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.sport-tag {
+  background: var(--orange-light);
+  color: var(--orange-dark);
+  border: 1px solid rgba(249,115,22,.3);
+  border-radius: 99px;
+  padding: .2rem .6rem;
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.sport-tag.blue {
+  background: var(--blue-light);
+  color: var(--blue);
+  border-color: rgba(0,59,142,.2);
+}
+
+/* ── PROGRAM TIER CARDS ── */
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.tier-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--gray-100);
+}
+
+.tier-card.youngs { border-top: 5px solid var(--orange); }
+.tier-card.advanced { border-top: 5px solid var(--blue); }
+.tier-card.combined { border-top: 5px solid var(--green); }
+
+.tier-card .tier-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: var(--orange-light);
+  color: var(--orange-dark);
+  border: 1px solid rgba(249,115,22,.3);
+  padding: .2rem .6rem;
+  border-radius: 99px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .75rem;
+}
+
+.tier-card.advanced .tier-label {
+  background: var(--blue-light);
+  color: var(--blue);
+  border-color: rgba(0,59,142,.2);
+}
+
+.tier-card.combined .tier-label {
+  background: var(--green-light);
+  color: #166534;
+  border-color: rgba(34,197,94,.3);
+}
+
+.tier-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: .5rem;
+}
+
+.tier-card p {
+  font-size: .9rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+}
+
+.tier-card ul {
+  margin-top: .6rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+
+.tier-card ul li {
+  font-size: .88rem;
+  color: var(--gray-700);
+  padding-left: 1.1rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.tier-card ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--orange);
+  font-weight: 700;
+}
+
+/* ── TABS (drills / practice plan) ── */
+.tab-bar {
+  display: flex;
+  gap: .5rem;
+  overflow-x: auto;
+  padding-bottom: .25rem;
+  margin-bottom: 2rem;
+  scrollbar-width: none;
+}
+
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: .6rem 1.2rem;
+  border-radius: 99px;
+  border: 2px solid var(--gray-100);
+  background: var(--white);
+  color: var(--gray-700);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+.tab-btn.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── DRILL CARDS ── */
+.drill-category-label {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 2rem 0 1rem;
+}
+
+.drill-category-label h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.drill-category-line {
+  flex: 1;
+  height: 2px;
+  background: var(--gray-100);
+  border-radius: 1px;
+}
+
+.drill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.drill-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--gray-100);
+}
+
+.drill-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-bottom: .65rem;
+}
+
+.drill-card-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.drill-card h4 {
+  font-size: .97rem;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1.3;
+}
+
+.drill-description {
+  font-size: .87rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+  margin-bottom: .6rem;
+}
+
+.drill-purpose {
+  font-size: .82rem;
+  color: var(--gray-400);
+  font-style: italic;
+  margin-bottom: .6rem;
+}
+
+.drill-meta {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.drill-tag {
+  display: inline-block;
+  padding: .15rem .5rem;
+  border-radius: 99px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.drill-tag.skill   { background: var(--blue-light); color: var(--blue); }
+.drill-tag.fun     { background: var(--orange-light); color: var(--orange-dark); }
+.drill-tag.team    { background: var(--purple-light); color: var(--purple); }
+.drill-tag.agility { background: var(--teal-light); color: var(--teal); }
+.drill-tag.game    { background: var(--green-light); color: #166534; }
+
+.equip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  font-size: .72rem;
+  color: var(--gray-400);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  padding: .15rem .5rem;
+  border-radius: 99px;
+}
+
+/* ── PRACTICE PLAN SECTION ── */
+.plan-meta-strip {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--blue);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  color: var(--white);
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.plan-meta-strip .meta-item {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .88rem;
+}
+
+.plan-meta-strip .meta-item strong {
+  color: var(--orange);
+}
+
+.plan-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.plan-column-header {
+  background: linear-gradient(135deg, var(--blue), #1a4fa0);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 1rem 1.25rem;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.plan-column-header.advanced-col {
+  background: linear-gradient(135deg, #1a3a6e, var(--blue));
+}
+
+.plan-column-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.plan-column-body {
+  background: var(--white);
+  border: 1.5px solid var(--gray-100);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  overflow: hidden;
+}
+
+.plan-row {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.plan-row:last-child { border-bottom: none; }
+
+.plan-row.water-break {
+  background: var(--blue-light);
+}
+
+.plan-row.scrimmage-block {
+  background: var(--green-light);
+}
+
+.plan-time {
+  width: 52px;
+  flex-shrink: 0;
+  padding: .65rem .5rem;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-align: right;
+  border-right: 2px solid var(--gray-100);
+}
+
+.plan-duration {
+  width: 40px;
+  flex-shrink: 0;
+  padding: .65rem .4rem;
+  font-size: .7rem;
+  color: var(--orange);
+  font-weight: 700;
+  text-align: center;
+  border-right: 2px solid var(--gray-100);
+}
+
+.plan-activity {
+  flex: 1;
+  padding: .65rem .75rem;
+}
+
+.plan-activity-name {
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: .15rem;
+}
+
+.plan-activity-desc {
+  font-size: .78rem;
+  color: var(--gray-400);
+  line-height: 1.4;
+}
+
+/* ── EQUIPMENT CHECKLIST ── */
+.equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .75rem;
+  margin-top: 1.5rem;
+}
+
+.equipment-item {
+  background: var(--white);
+  border: 1.5px solid var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: .85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .9rem;
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+.equipment-item .eq-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ── VOLUNTEER PAGE ── */
+.vol-hero-band {
+  background: linear-gradient(135deg, #1a3a6e 0%, var(--blue) 60%, #1a5cc4 100%);
+  color: var(--white);
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.vol-hero-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 70%, rgba(249,115,22,.2) 0%, transparent 55%);
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.principle-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--gray-100);
+  border-top: 4px solid var(--orange);
+  transition: transform .15s, box-shadow .15s;
+}
+
+.principle-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+.principle-icon {
+  font-size: 2.2rem;
+  margin-bottom: .65rem;
+  display: block;
+}
+
+.principle-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: .4rem;
+}
+
+.principle-card p {
+  font-size: .88rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+}
+
+.dos-donts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.dos-box, .donts-box {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--gray-100);
+}
+
+.dos-box { border-top: 4px solid var(--green); }
+.donts-box { border-top: 4px solid var(--red); }
+
+.dos-box h3 { color: #166534; font-size: 1.05rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
+.donts-box h3 { color: #991b1b; font-size: 1.05rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
+
+.dos-list, .donts-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+}
+
+.dos-list li, .donts-list li {
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--gray-700);
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.dos-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.donts-list li::before {
+  content: '✗';
+  position: absolute;
+  left: 0;
+  color: var(--red);
+  font-weight: 700;
+}
+
+.disability-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-top: 1.5rem;
+}
+
+.accordion-item {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--gray-100);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.accordion-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background .12s;
+}
+
+.accordion-trigger:hover { background: var(--gray-50); }
+
+.accordion-trigger.open { background: var(--blue-light); }
+
+.accordion-trigger-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+.accordion-trigger-text {
+  flex: 1;
+}
+
+.accordion-trigger-text strong {
+  display: block;
+  font-size: .97rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.accordion-trigger-text span {
+  font-size: .82rem;
+  color: var(--gray-400);
+}
+
+.accordion-arrow {
+  font-size: .9rem;
+  color: var(--gray-400);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+
+.accordion-trigger.open .accordion-arrow { transform: rotate(180deg); }
+
+.accordion-body {
+  display: none;
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.accordion-body.open { display: block; }
+
+.accordion-tips {
+  margin-top: .85rem;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+.accordion-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--gray-700);
+  padding: .5rem .75rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+}
+
+.accordion-tip .tip-icon { flex-shrink: 0; }
+
+/* ── COACH TIP BOX ── */
+.coach-tip {
+  background: var(--orange-light);
+  border-left: 4px solid var(--orange);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: .75rem 1rem;
+  margin-top: .75rem;
+  font-size: .88rem;
+  color: #7a3800;
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  line-height: 1.5;
+}
+
+.info-tip {
+  background: var(--blue-light);
+  border-left: 4px solid var(--blue-mid);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: .75rem 1rem;
+  margin-top: .75rem;
+  font-size: .88rem;
+  color: var(--blue);
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  line-height: 1.5;
+}
+
+/* ── PHILOSOPHY BANNER ── */
+.philosophy-banner {
+  background: linear-gradient(135deg, var(--blue), #1a5cc4);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  color: var(--white);
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, rgba(249,115,22,.2) 0%, transparent 55%);
+}
+
+.philosophy-banner blockquote {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.5;
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.philosophy-banner blockquote::before {
+  content: '\201C';
+  font-size: 4rem;
+  color: var(--orange);
+  line-height: 0;
+  vertical-align: -.5em;
+  margin-right: .15em;
+  font-family: Georgia, serif;
+}
+
+/* ── ALERT / INFO BANNERS ── */
+.alert {
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  margin: 1rem 0;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.alert-orange {
+  background: var(--orange-light);
+  border: 1.5px solid rgba(249,115,22,.4);
+  color: #7a3800;
+}
+
+.alert-blue {
+  background: var(--blue-light);
+  border: 1.5px solid rgba(0,59,142,.2);
+  color: var(--blue);
+}
+
+.alert-green {
+  background: var(--green-light);
+  border: 1.5px solid rgba(34,197,94,.4);
+  color: #166534;
+}
+
+/* ── SCRIMMAGE INFO ── */
+.scrimmage-card {
+  background: linear-gradient(135deg, #166534, #15803d);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  color: var(--white);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.scrimmage-card .sc-icon { font-size: 2rem; flex-shrink: 0; }
+.scrimmage-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: .3rem; }
+.scrimmage-card p { font-size: .88rem; opacity: .9; line-height: 1.5; }
+
+/* ── FOOTER ── */
+.page-footer {
+  background: var(--blue);
+  color: rgba(255,255,255,.65);
+  text-align: center;
+  padding: 1.5rem;
+  font-size: .82rem;
+}
+
+.page-footer strong { color: var(--orange); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .plan-columns { grid-template-columns: 1fr; }
+  .dos-donts { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .nav-links a .link-label { display: none; }
+  .hero { padding: 2.5rem 1.25rem 3.5rem; }
+  .drill-grid { grid-template-columns: 1fr; }
+  .tier-grid { grid-template-columns: 1fr; }
+}
