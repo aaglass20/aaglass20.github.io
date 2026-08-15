@@ -27,6 +27,9 @@
       <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
       <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
     </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- HERO -->
@@ -839,5 +842,24 @@
   })();
   </script>
 
+  <script>
+  (function() {
+    var btn = document.getElementById('navHamburger');
+    var links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function() {
+      var open = links.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
