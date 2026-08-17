@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice Plans (Print) — BDU × iCan Soccer 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:  #003366;
+      --gold:  #b8860b;
+      --gray:  #444c5c;
+      --line:  #d5d9e0;
+      --soft:  #f6f7fa;
+      --gold-soft: #fff8dc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      color: var(--gray);
+      background: #eceff3;
+      line-height: 1.45;
+      font-size: 11pt;
+    }
+
+    /* Screen-only toolbar */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: .75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .toolbar h1 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .toolbar-actions { display: flex; gap: .5rem; }
+    .toolbar button, .toolbar a {
+      background: #fff;
+      color: var(--blue);
+      border: none;
+      font: inherit;
+      font-weight: 600;
+      padding: .45rem .9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: .85rem;
+    }
+    .toolbar button:hover, .toolbar a:hover { background: #ffe57a; }
+    .toolbar a.ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.4);
+    }
+
+    /* Page container */
+    .sheet {
+      width: 8.5in;
+      min-height: 11in;
+      background: #fff;
+      margin: 1rem auto;
+      padding: .55in .6in;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      page-break-after: always;
+    }
+    .sheet:last-child { page-break-after: auto; }
+
+    /* Cover sheet */
+    .cover-header {
+      text-align: center;
+      border-bottom: 3px solid var(--blue);
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .cover-header .eyebrow {
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: .12em;
+      font-size: .75rem;
+      text-transform: uppercase;
+    }
+    .cover-header h1 {
+      color: var(--blue);
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin: .3rem 0 .1rem;
+    }
+    .cover-header p {
+      color: var(--gray);
+      font-size: .95rem;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: .5rem;
+      margin: 1.25rem 0 1.5rem;
+    }
+    .schedule-cell {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: .55rem .45rem;
+      text-align: center;
+    }
+    .schedule-cell .wk {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: .8rem;
+    }
+    .schedule-cell .date {
+      color: var(--gray);
+      font-size: .72rem;
+      margin: .15rem 0;
+    }
+    .schedule-cell .theme {
+      font-size: .72rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .cover-section-title {
+      color: var(--blue);
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1rem 0 .5rem;
+      padding-bottom: .25rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .55rem;
+    }
+    .tip-card {
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      padding: .5rem .7rem;
+    }
+    .tip-card h3 {
+      color: var(--blue);
+      font-size: .82rem;
+      font-weight: 700;
+      margin-bottom: .15rem;
+    }
+    .tip-card p {
+      font-size: .78rem;
+      color: var(--gray);
+    }
+
+    .cover-footer {
+      margin-top: 1.25rem;
+      padding: .75rem;
+      background: var(--soft);
+      border-radius: 6px;
+      font-size: .78rem;
+      color: var(--gray);
+    }
+    .cover-footer strong { color: var(--blue); }
+    .cover-footer ul { margin: .35rem 0 0 1.1rem; }
+    .cover-footer li { margin-bottom: .15rem; }
+
+    /* Week sheets */
+    .week-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 3px solid var(--blue);
+      padding-bottom: .6rem;
+      margin-bottom: 1rem;
+    }
+    .week-header .meta {
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: .1em;
+      font-size: .72rem;
+      text-transform: uppercase;
+    }
+    .week-header h2 {
+      color: var(--blue);
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin: .1rem 0;
+    }
+    .week-header .sub {
+      color: var(--gray);
+      font-size: .85rem;
+    }
+    .week-header .right {
+      text-align: right;
+      color: var(--blue);
+      font-weight: 700;
+      font-size: .82rem;
+    }
+    .week-header .right .total {
+      font-size: 1.05rem;
+      color: var(--gold);
+    }
+
+    /* Timeline blocks */
+    .block {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: .75rem;
+      padding: .55rem 0;
+      border-bottom: 1px dashed var(--line);
+      page-break-inside: avoid;
+    }
+    .block:last-child { border-bottom: none; }
+    .block-time {
+      text-align: right;
+      padding-top: .1rem;
+    }
+    .block-time .clock {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: .95rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .block-time .dur {
+      display: inline-block;
+      margin-top: .2rem;
+      font-size: .7rem;
+      color: var(--gray);
+      background: var(--soft);
+      padding: .1rem .4rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .block-time .dur.game {
+      background: var(--gold-soft);
+      color: #7a5a00;
+      font-weight: 600;
+    }
+    .block-body h3 {
+      color: var(--blue);
+      font-size: .98rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+    .block-body ul {
+      list-style: none;
+      margin-left: 0;
+    }
+    .block-body li {
+      position: relative;
+      padding-left: .9rem;
+      margin-bottom: .18rem;
+      font-size: .82rem;
+    }
+    .block-body li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .5em;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+    .block-body li strong { color: var(--blue); }
+
+    .tag {
+      display: inline-block;
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: .05rem .35rem;
+      border-radius: 3px;
+      margin-left: .25rem;
+      vertical-align: 1px;
+    }
+    .tag.skill { background: #e0ebff; color: #0044aa; }
+    .tag.fun   { background: #ffe9b3; color: #7a5a00; }
+    .tag.team  { background: #d9f5e2; color: #036b3a; }
+
+    .coach-tip {
+      margin-top: .35rem;
+      background: var(--gold-soft);
+      border-left: 3px solid var(--gold);
+      padding: .35rem .55rem;
+      border-radius: 3px;
+      font-size: .76rem;
+      color: #6b4e00;
+    }
+    .coach-tip strong { color: #7a5a00; }
+
+    .finale-banner {
+      background: var(--gold-soft);
+      border: 1px solid var(--gold);
+      border-radius: 5px;
+      padding: .55rem .75rem;
+      margin-bottom: .75rem;
+      font-size: .82rem;
+      color: #6b4e00;
+    }
+    .finale-banner strong { color: var(--blue); }
+
+    .page-num {
+      position: absolute;
+      bottom: .35in;
+      right: .6in;
+      font-size: .7rem;
+      color: var(--gray);
+    }
+    .sheet { position: relative; }
+
+    /* PRINT */
+    @media print {
+      body { background: #fff; font-size: 10pt; }
+      .toolbar { display: none; }
+      .sheet {
+        box-shadow: none;
+        margin: 0;
+        padding: .4in .5in;
+        width: auto;
+        min-height: auto;
+      }
+      @page { size: letter; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen-only toolbar -->
+  <div class="toolbar">
+    <h1>iCan Soccer 2026 · Practice Plans (Print View)</h1>
+    <div class="toolbar-actions">
+      <a href="practice.html" class="ghost">← Back to interactive plans</a>
+      <button onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+
+  <!-- ═════════════ COVER SHEET ═════════════ -->
+  <div class="sheet">
+    <div class="cover-header">
+      <div class="eyebrow">Blue Devil United × Empower Sports</div>
+      <h1>iCan Soccer 2026 — Session Plans</h1>
+      <p>75-minute Saturday sessions · August 22 – September 26, 2026</p>
+    </div>
+
+    <div class="cover-section-title">Program Schedule</div>
+    <div class="schedule-grid">
+      <div class="schedule-cell"><div class="wk">Week 1</div><div class="date">Aug 22</div><div class="theme">Ball & Passing</div></div>
+      <div class="schedule-cell"><div class="wk">Week 2</div><div class="date">Aug 29</div><div class="theme">Dribbling</div></div>
+      <div class="schedule-cell"><div class="wk">Week 3</div><div class="date">Sep 5</div><div class="theme">Shooting</div></div>
+      <div class="schedule-cell"><div class="wk">Week 4</div><div class="date">Sep 12</div><div class="theme">Teamwork</div></div>
+      <div class="schedule-cell"><div class="wk">Week 5</div><div class="date">Sep 26</div><div class="theme">All-Star!</div></div>
+    </div>
+
+    <div class="cover-section-title">Volunteer Quick-Guide</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <h3>😊 Patience First</h3>
+        <p>Celebrate every small win loudly. A smile and "great job!" means the world.</p>
+      </div>
+      <div class="tip-card">
+        <h3>🤲 Follow Their Lead</h3>
+        <p>Let participants set the pace. Your job is to encourage, not to coach perfectly.</p>
+      </div>
+      <div class="tip-card">
+        <h3>🗣️ Simple Language</h3>
+        <p>Short, clear instructions. Demonstrate more than you explain.</p>
+      </div>
+      <div class="tip-card">
+        <h3>🎉 Make It Fun</h3>
+        <p>Energy is contagious. Bring enthusiasm and creativity every session.</p>
+      </div>
+    </div>
+
+    <div class="cover-section-title">Standard Session Structure (75 min)</div>
+    <div class="cover-footer">
+      <ul>
+        <li><strong>10:00 – 10:10</strong> · Welcome & Warm-Up (10 min)</li>
+        <li><strong>10:10 – 10:25</strong> · Skill Building Block A (15 min)</li>
+        <li><strong>10:25 – 10:45</strong> · Skill Building Block B (20 min)</li>
+        <li><strong>10:45 – 11:15</strong> · Small-Sided Game / Showcase (30 min)</li>
+      </ul>
+      <p style="margin-top:.4rem;"><strong>Tag key:</strong>
+        <span class="tag skill">Skill</span> technique focus ·
+        <span class="tag fun">Fun</span> game / silly energy ·
+        <span class="tag team">Team</span> partner or group play
+      </p>
+    </div>
+
+    <div class="page-num">Cover</div>
+  </div>
+
+  <!-- ═════════════ WEEK 1 ═════════════ -->
+  <div class="sheet">
+    <div class="week-header">
+      <div>
+        <div class="meta">Week 1 · August 22, 2026</div>
+        <h2>⚽ Ball Familiarization & Passing</h2>
+        <div class="sub">First session — focus on FUN and making participants feel welcome</div>
+      </div>
+      <div class="right"><div>Session Total</div><div class="total">75 min</div></div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:00</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🌟 Welcome & Warm-Up</h3>
+        <ul>
+          <li>Greet every participant by name — high-fives all around</li>
+          <li><strong>Ball Roll Tag</strong> — everyone rolls the ball with their foot around a circle. No competition, just touch <span class="tag fun">Fun</span></li>
+          <li>Seated or standing stretches with the ball (toe taps, ankle rolls, arm circles)</li>
+          <li>BDU players pair up 1:1 with each participant right away</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Set the tone — energy, smiles, and patience. Many participants may be meeting BDU players for the first time.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-body">
+        <h3>🦶 Ball Touch Station</h3>
+        <ul>
+          <li><strong>Sole Taps</strong> — tap the top of the ball alternating feet while stationary <span class="tag skill">Skill</span></li>
+          <li><strong>Side-to-Side Rolls</strong> — roll ball left and right with sole of foot</li>
+          <li><strong>Toe-Ball-Toe</strong> — push ball forward with toe, pull back with sole, repeat in place</li>
+          <li>BDU players demo first, then guide their partner through each move</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Celebrate any ball contact as a win. For wheelchair participants, use hands or a ramp assist — any interaction counts.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
+      <div class="block-body">
+        <h3>🎯 Partner Passing</h3>
+        <ul>
+          <li><strong>Close Passes</strong> — 3–4 feet apart, inside-of-foot passes. Focus on stopping the ball <span class="tag skill">Skill</span></li>
+          <li><strong>Step Back</strong> — after 3 successful passes, each pair takes one step back. How far can you go?</li>
+          <li><strong>Passing to Music</strong> — pass on the beat, freeze when it stops <span class="tag fun">Fun</span></li>
+          <li>Encourage cheering between pairs — "Great pass!", "You've got this!"</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Adjust distance based on each participant's ability. Closer is always fine — the goal is connection, not distance.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-body">
+        <h3>🏆 Small-Sided Games</h3>
+        <ul>
+          <li><strong>3v3 "Everybody Scores"</strong> — small goals, no keeper; every player must score before the team can win <span class="tag team">Team</span></li>
+          <li>BDU players celebrate every goal (for either team!) with maximum energy</li>
+          <li>Rotate BDU players onto both teams to keep numbers even and energy high</li>
+          <li>Short 5-min games with water breaks — keep it moving and upbeat</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Nobody keeps score in a way that "loses." Celebrate all goals, all efforts. End with a big group celebration.</div>
+      </div>
+    </div>
+
+    <div class="page-num">Week 1</div>
+  </div>
+
+  <!-- ═════════════ WEEK 2 ═════════════ -->
+  <div class="sheet">
+    <div class="week-header">
+      <div>
+        <div class="meta">Week 2 · August 29, 2026</div>
+        <h2>🌀 Dribbling & Ball Control</h2>
+        <div class="sub">Move with the ball — creative, fun, and confidence-building</div>
+      </div>
+      <div class="right"><div>Session Total</div><div class="total">75 min</div></div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:00</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🌟 Welcome Back & Warm-Up</h3>
+        <ul>
+          <li>Reunite with last week's partner — familiar faces matter</li>
+          <li><strong>Dribble Parade</strong> — everyone dribbles freely in a big area, BDU players make it silly <span class="tag fun">Fun</span></li>
+          <li>Leg swings and hip circles to loosen up</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Returning participants will be more comfortable. Build on those connections from Week 1.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-body">
+        <h3>🌀 Cone Dribbling Course</h3>
+        <ul>
+          <li>Set up a simple weave of 5 cones per pair — BDU player dribbles first to demo <span class="tag skill">Skill</span></li>
+          <li>Participants dribble through at their own pace — BDU player walks alongside</li>
+          <li><strong>Crazy Cones</strong> — add silly challenges (dribble while humming, stop on clap, change direction on whistle) <span class="tag fun">Fun</span></li>
+          <li>Cheer loudly when they reach the end</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
+      <div class="block-body">
+        <h3>🚦 Red Light / Green Light</h3>
+        <ul>
+          <li><strong>Green Light</strong> — dribble forward <span class="tag skill">Skill</span></li>
+          <li><strong>Red Light</strong> — stop the ball with your sole (no hands)</li>
+          <li><strong>Yellow Light</strong> — dribble in tiny circles</li>
+          <li><strong>Blue Light</strong> (bonus BDU round) — dribble backwards</li>
+          <li>BDU players play too — make it a shared experience <span class="tag team">Team</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Call colors loudly and with energy. Stopping is the key skill — give extra praise for clean stops.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-body">
+        <h3>🏆 Dribble King/Queen Games</h3>
+        <ul>
+          <li><strong>Square Wars</strong> — everyone dribbles in a square, try to kick other balls out while keeping yours in <span class="tag fun">Fun</span></li>
+          <li><strong>3v3 with Dribble Bonus</strong> — a goal counts double if scored after dribbling past a defender</li>
+          <li>BDU players guide and protect their partners during possession <span class="tag team">Team</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Keep Square Wars low-pressure — join in yourself and let them knock YOUR ball out for cheers.</div>
+      </div>
+    </div>
+
+    <div class="page-num">Week 2</div>
+  </div>
+
+  <!-- ═════════════ WEEK 3 ═════════════ -->
+  <div class="sheet">
+    <div class="week-header">
+      <div>
+        <div class="meta">Week 3 · September 5, 2026</div>
+        <h2>🎯 Shooting & Finishing</h2>
+        <div class="sub">Every player loves scoring a goal — make this one memorable</div>
+      </div>
+      <div class="right"><div>Session Total</div><div class="total">75 min</div></div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:00</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🌟 Welcome & Warm-Up</h3>
+        <ul>
+          <li>High-energy greetings — BDU players are hype squad from the moment participants arrive</li>
+          <li><strong>Goal Parade</strong> — each player dribbles to the goal and shoots freely to warm up <span class="tag fun">Fun</span></li>
+          <li>Kick-swings and ankle circles for shooting preparation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-body">
+        <h3>🎯 Shooting Technique</h3>
+        <ul>
+          <li><strong>Stationary Kicks</strong> — ball on the ground, practice laces-kick with BDU player holding the ball still <span class="tag skill">Skill</span></li>
+          <li>Start 5 ft from goal, move back one step for every goal scored</li>
+          <li>BDU players celebrate EVERY shot, even misses — "So close! Try again!"</li>
+          <li><strong>Target Shooting</strong> — use cones or discs to mark corners of the goal as targets <span class="tag skill">Skill</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> For participants who can't kick, try hand-throw into the goal or a ramp. A goal is a goal — celebrate it all.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
+      <div class="block-body">
+        <h3>⚽ "Score a Goal" Challenge</h3>
+        <ul>
+          <li>Simple dribble → shoot sequence — BDU player sets the ball up, participant finishes <span class="tag skill">Skill</span></li>
+          <li>Group celebrates every goal with a chant: "1… 2… 3… BDU!" <span class="tag team">Team</span></li>
+          <li><strong>Goal Counter</strong> — keep a running team total on a whiteboard or cones. Can we hit 50 goals today? <span class="tag fun">Fun</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Keep the line moving — short bursts, quick celebrations, next player up. Energy stays high when everyone is active.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-body">
+        <h3>🏆 Shootout Tournament</h3>
+        <ul>
+          <li>Bracket-style penalty shootout — 3 shots each, BDU player and participant shoot together as a team <span class="tag team">Team</span></li>
+          <li><strong>Everyone gets a trophy round</strong> — final round is all-makes-count. No one leaves without scoring</li>
+          <li>3v3 games alongside shootout for participants who want more time on the ball</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> The shootout is the highlight — load it with drama and hype even for the simplest shots. "And the crowd goes WILD!"</div>
+      </div>
+    </div>
+
+    <div class="page-num">Week 3</div>
+  </div>
+
+  <!-- ═════════════ WEEK 4 ═════════════ -->
+  <div class="sheet">
+    <div class="week-header">
+      <div>
+        <div class="meta">Week 4 · September 12, 2026</div>
+        <h2>🤝 Teamwork & Playing Together</h2>
+        <div class="sub">Building bonds through the game — the best part of soccer</div>
+      </div>
+      <div class="right"><div>Session Total</div><div class="total">75 min</div></div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:00</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🌟 Team Intro & Warm-Up</h3>
+        <ul>
+          <li>Form teams of 4 (2 BDU + 2 participants) — name your team <span class="tag fun">Fun</span></li>
+          <li><strong>Juggle Relay</strong> — team sees how many total touches they can get (thigh, foot, head) without the ball dropping</li>
+          <li>Team cheer/chant — give each team 2 minutes to invent one</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-body">
+        <h3>🤝 Passing Combinations</h3>
+        <ul>
+          <li><strong>Triangle Passing</strong> — 3-person triangles, pass and move to the open cone <span class="tag skill">Skill</span></li>
+          <li>Call name before passing — "Sarah!" then kick</li>
+          <li><strong>1-2 Combo</strong> — pass to BDU player, get it back (wall pass), then shoot. Simple but empowering <span class="tag skill">Skill</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Calling names builds connection. Participants light up when their name is called before a pass.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
+      <div class="block-body">
+        <h3>🎮 Team Challenges</h3>
+        <ul>
+          <li><strong>Relay Race</strong> — dribble to cone and back, tag next teammate. Silly rules: weak foot only, hop, etc. <span class="tag fun">Fun</span></li>
+          <li><strong>Team Target Practice</strong> — team combines passes before shooting; each touch adds a multiplier to the goal <span class="tag team">Team</span></li>
+          <li>Encourage BDU players to cheer for other teams too — model good sportsmanship</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-body">
+        <h3>🏆 Team Tournament</h3>
+        <ul>
+          <li>4v4 small-sided with teams from warm-up — BDU players play ON the participant teams <span class="tag team">Team</span></li>
+          <li><strong>Fair-Play Points</strong> — extra points for encouraging opponents, helping someone up, and team celebrations</li>
+          <li>End with all teams in a circle — each player shares one word about their experience: "fun", "happy", "awesome" <span class="tag fun">Fun</span></li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Fair-play points matter more than the score. Reward sportsmanship loudly so everyone sees it.</div>
+      </div>
+    </div>
+
+    <div class="page-num">Week 4</div>
+  </div>
+
+  <!-- ═════════════ WEEK 5 ═════════════ -->
+  <div class="sheet">
+    <div class="week-header">
+      <div>
+        <div class="meta">Week 5 · September 26, 2026 · FINAL SESSION</div>
+        <h2>🏆 All-Star Celebration!</h2>
+        <div class="sub">The grand finale — showcase everything they've learned and celebrate together</div>
+      </div>
+      <div class="right"><div>Session Total</div><div class="total">75 min</div></div>
+    </div>
+
+    <div class="finale-banner">
+      🎉 <strong>Final Session!</strong> Go all-out on celebration, energy, and making each participant feel like a superstar. Consider bringing extra snacks or small tokens of appreciation.
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:00</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🌟 Red Carpet Welcome</h3>
+        <ul>
+          <li>BDU players form a tunnel/line and cheer every participant in by name as they arrive</li>
+          <li>Each participant gets a "All-Star" ribbon or sticker when they arrive <span class="tag fun">Fun</span></li>
+          <li>Free-touch warm-up — just play freely and soak in the atmosphere</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> Start the energy at 11 from minute one. This is THEIR day.</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">20 min</div></div>
+      <div class="block-body">
+        <h3>🎪 Skills Showcase Stations</h3>
+        <ul>
+          <li><strong>Station 1 — Touch Challenge</strong>: how many sole taps in 30 seconds? Beat your personal best from Week 1 <span class="tag skill">Skill</span></li>
+          <li><strong>Station 2 — Dribble Course</strong>: timed cone weave — everyone cheers <span class="tag skill">Skill</span></li>
+          <li><strong>Station 3 — Long Shot</strong>: shoot from the farthest distance they're comfortable with <span class="tag skill">Skill</span></li>
+          <li>BDU players act as commentators for each station <span class="tag fun">Fun</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:30</div><div class="dur">15 min</div></div>
+      <div class="block-body">
+        <h3>⚽ "Best of" Favorites</h3>
+        <ul>
+          <li>Let participants vote on their favorite game from the program</li>
+          <li>Play the top voted activity one last time — full energy <span class="tag fun">Fun</span></li>
+          <li>BDU players share what they'll remember most from the season</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">10:45</div><div class="dur game">20 min</div></div>
+      <div class="block-body">
+        <h3>🏆 All-Star Championship Game</h3>
+        <ul>
+          <li>Big mixed game — ALL participants and ALL BDU players together on one field <span class="tag team">Team</span></li>
+          <li><strong>No sides</strong> — a "pass-around" where everyone tries to score on any goal, celebrate every touch</li>
+          <li>Count goals out loud as a group — "FIFTY! FIFTY-ONE!" <span class="tag fun">Fun</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-time"><div class="clock">11:05</div><div class="dur">10 min</div></div>
+      <div class="block-body">
+        <h3>🎗️ Closing Ceremony</h3>
+        <ul>
+          <li>Recognition for every participant — say each name aloud and have BDU players clap <span class="tag team">Team</span></li>
+          <li>Group photo opportunity — everyone together</li>
+          <li>BDU coaches/players share closing words about what the experience meant to them</li>
+          <li>Final cheer: "1… 2… 3… iCan!" → "1… 2… 3… BDU!"</li>
+        </ul>
+        <div class="coach-tip"><strong>Coach tip:</strong> End on the highest possible note. Send participants home feeling celebrated, seen, and loved by the BDU family.</div>
+      </div>
+    </div>
+
+    <div class="page-num">Week 5</div>
+  </div>
+
+</body>
+</html>
