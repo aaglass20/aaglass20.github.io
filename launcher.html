@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repo Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:     #003366;
+      --blue-mid: #0779e4;
+      --gold:     #e6b800;
+      --gold-bg:  #fff9cc;
+      --green:    #16a34a;
+      --green-bg: #dcfce7;
+      --gray:     #444c5c;
+      --gray-100: #eef0f4;
+      --gray-50:  #f8f9fa;
+      --white:    #fff;
+      --radius:   12px;
+      --mono:     'JetBrains Mono', 'Fira Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--blue);
+      color: #fff;
+      padding: 2rem 1.5rem 2.25rem;
+      text-align: center;
+    }
+    header .eyebrow {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .4rem;
+    }
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+    }
+    header p {
+      margin-top: .5rem;
+      opacity: .75;
+      font-size: .9rem;
+    }
+
+    /* ── Quick-run banner ── */
+    .quick-run {
+      background: #001a33;
+      color: #a8c8ff;
+      text-align: center;
+      padding: .65rem 1rem;
+      font-size: .8rem;
+    }
+    .quick-run code {
+      font-family: var(--mono);
+      background: rgba(255,255,255,.1);
+      padding: .15rem .5rem;
+      border-radius: 4px;
+      color: #ffe57a;
+    }
+
+    /* ── Grid ── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── Tool card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid #dde1ea;
+      border-radius: var(--radius);
+      padding: 1.4rem 1.35rem 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,51,102,.07);
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+    .card-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .card-desc {
+      font-size: .83rem;
+      line-height: 1.55;
+      color: var(--gray);
+      flex: 1;
+    }
+
+    /* ── Command block ── */
+    .cmd-block {
+      background: #0f172a;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .cmd-label {
+      background: #1e293b;
+      color: #64748b;
+      font-family: var(--mono);
+      font-size: .67rem;
+      padding: .3rem .65rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .cmd-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .65rem;
+    }
+    .cmd-text {
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: #a5f3a0;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      font-size: .7rem;
+      padding: .25rem .55rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: var(--mono);
+      flex-shrink: 0;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .copy-btn:hover { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+    .copy-btn.copied { background: #14532d; color: #86efac; border-color: #16a34a; }
+
+    /* ── Tags ── */
+    .tags { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .tag {
+      font-size: .66rem;
+      font-weight: 600;
+      padding: .15rem .5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .tag.web    { background: #dbeafe; color: #1d4ed8; }
+    .tag.term   { background: #f3e8ff; color: #6b21a8; }
+    .tag.bdu    { background: #fef9c3; color: #854d0e; }
+    .tag.auto   { background: var(--green-bg); color: var(--green); }
+
+    /* ── Web UI link ── */
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--blue-mid);
+      text-decoration: none;
+      margin-top: .1rem;
+    }
+    .open-link:hover { text-decoration: underline; }
+    .open-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: .35rem;
+      margin-bottom: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="eyebrow">aaglass20.github.io</div>
+    <h1>🛠️ Repo Launcher</h1>
+    <p>Quick reference for running local tools and scripts</p>
+  </header>
+
+  <div class="quick-run">
+    Run everything from the terminal menu: <code>bash ~/git/aaglass20.github.io/run.sh</code>
+  </div>
+
+  <div class="container">
+
+    <div class="section-label">Available Tools</div>
+
+    <div class="grid">
+
+      <!-- Video Downloader -->
+      <div class="card">
+        <div class="card-icon">🎬</div>
+        <div>
+          <div class="card-title">Video Downloader</div>
+          <div class="tags" style="margin-top:.35rem;">
+            <span class="tag web">Web UI</span>
+            <span class="tag auto">Auto-install</span>
+          </div>
+        </div>
+        <div class="card-desc">
+          Downloads videos from any yt-dlp-supported site (YouTube, Twitter/X, etc.). Starts a local server and opens a browser UI. Files land in <code style="font-family:var(--mono);font-size:.8em;">video-downloader/downloads/</code>.
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Terminal</div>
+          <div class="cmd-row">
+            <span class="cmd-text" id="cmd-1">bash ~/git/aaglass20.github.io/video-downloader/start.sh</span>
+            <button class="copy-btn" onclick="copyCmd('cmd-1', this)">copy</button>
+          </div>
+        </div>
+        <a class="open-link" href="http://localhost:8765" target="_blank">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 1.5a1 1 0 0 0 0 2H10V7a1 1 0 0 0 2 0V3a1 1 0 0 0-1-1H6.5zM1 9a1 1 0 0 1 2 0v3.5h3.5a1 1 0 0 1 0 2H2a1 1 0 0 1-1-1V9z"/></svg>
+          Open UI (localhost:8765) — server must be running
+        </a>
+      </div>
+
+      <!-- Add Videos to BDU -->
+      <div class="card">
+        <div class="card-icon">📹</div>
+        <div>
+          <div class="card-title">Add Videos to BDU</div>
+          <div class="tags" style="margin-top:.35rem;">
+            <span class="tag term">Interactive</span>
+            <span class="tag bdu">BDU</span>
+          </div>
+        </div>
+        <div class="card-desc">
+          Scans <code style="font-family:var(--mono);font-size:.8em;">BDU/vid/</code> for new untracked <code style="font-family:var(--mono);font-size:.8em;">.mp4</code> files and adds them to the best-matching HTML drill page. Prompts for title, summary, and target page. Use <code style="font-family:var(--mono);font-size:.8em;">--auto</code> to skip prompts.
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Terminal — interactive</div>
+          <div class="cmd-row">
+            <span class="cmd-text" id="cmd-2">cd ~/git/aaglass20.github.io/BDU && zsh add-videos.sh</span>
+            <button class="copy-btn" onclick="copyCmd('cmd-2', this)">copy</button>
+          </div>
+        </div>
+        <div class="cmd-block" style="margin-top:.5rem;">
+          <div class="cmd-label">Terminal — auto mode</div>
+          <div class="cmd-row">
+            <span class="cmd-text" id="cmd-2b">cd ~/git/aaglass20.github.io/BDU && zsh add-videos.sh --auto</span>
+            <button class="copy-btn" onclick="copyCmd('cmd-2b', this)">copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Update BDU Index -->
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <div>
+          <div class="card-title">Update BDU Search Index</div>
+          <div class="tags" style="margin-top:.35rem;">
+            <span class="tag auto">One-shot</span>
+            <span class="tag bdu">BDU</span>
+          </div>
+        </div>
+        <div class="card-desc">
+          Regenerates <code style="font-family:var(--mono);font-size:.8em;">BDU/search-index.json</code> by crawling all BDU HTML pages. Run this after adding or editing any BDU drill pages. Shows a git diff of changed files on completion.
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Terminal</div>
+          <div class="cmd-row">
+            <span class="cmd-text" id="cmd-3">bash ~/git/aaglass20.github.io/BDU/UPDATE-INDEX.sh</span>
+            <button class="copy-btn" onclick="copyCmd('cmd-3', this)">copy</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function copyCmd(id, btn) {
+      const text = document.getElementById(id).textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    }
+  </script>
+</body>
+</html>
