@@ -904,6 +904,61 @@ body {
 
 .coach-tip .tip-icon { flex-shrink: 0; }
 
+/* ── WHY-TIP (participant-facing explanation for volunteers to share) ── */
+.why-tip {
+  background: var(--blue-light);
+  border-left: 4px solid var(--blue-mid);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: .65rem .9rem;
+  margin-top: .75rem;
+  font-size: .85rem;
+  color: var(--blue);
+  display: flex;
+  align-items: flex-start;
+  gap: .4rem;
+}
+
+.why-tip .tip-icon { flex-shrink: 0; }
+.why-tip strong { color: var(--blue); font-weight: 700; }
+
+/* ── ROTATION / STATION CARDS ── */
+.rotation-note {
+  background: var(--blue-light);
+  border: 2px dashed var(--blue-mid);
+  border-radius: var(--radius-sm);
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: .88rem;
+  color: var(--blue);
+}
+.rotation-note strong { color: var(--blue); }
+
+.station-card,
+.split-card {
+  background: var(--gray-50);
+  border: 2px solid var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem 1rem;
+  margin-top: .9rem;
+}
+.station-card:first-of-type,
+.split-card:first-of-type { margin-top: 0; }
+
+.station-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 0 0 .5rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px dashed var(--gray-100);
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.station-card .drill-list,
+.split-card .drill-list { margin-top: .25rem; margin-bottom: 0; }
+
 /* ── MISC ── */
 .loading-spinner {
   display: flex;

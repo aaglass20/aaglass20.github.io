@@ -45,7 +45,7 @@
       font-size: 1rem;
       font-weight: 700;
     }
-    .toolbar-actions { display: flex; gap: .5rem; }
+    .toolbar-actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
     .toolbar button, .toolbar a {
       background: #fff;
       color: var(--blue);
@@ -64,6 +64,35 @@
       color: #fff;
       border: 1px solid rgba(255,255,255,.4);
     }
+    .toolbar label {
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-right: .3rem;
+    }
+    .toolbar select {
+      background: #fff;
+      color: var(--blue);
+      border: none;
+      font: inherit;
+      font-weight: 600;
+      padding: .45rem .7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .85rem;
+    }
+
+    /* Filter: hide non-matching sheets on screen and in print */
+    body[data-filter="cover"] .sheet:not([data-sheet="cover"]),
+    body[data-filter="week-1"] .sheet:not([data-sheet="week-1"]),
+    body[data-filter="week-2"] .sheet:not([data-sheet="week-2"]),
+    body[data-filter="week-3"] .sheet:not([data-sheet="week-3"]),
+    body[data-filter="week-4"] .sheet:not([data-sheet="week-4"]),
+    body[data-filter="week-5"] .sheet:not([data-sheet="week-5"]) {
+      display: none;
+    }
+    /* When a single sheet is selected, remove its trailing page break so it prints as one document */
+    body[data-filter] .sheet { page-break-after: auto; }
 
     /* Page container */
     .sheet {
@@ -299,6 +328,49 @@
     }
     .coach-tip strong { color: #7a5a00; }
 
+    .why-tip {
+      margin-top: .35rem;
+      background: #eaf1fa;
+      border-left: 3px solid var(--blue);
+      padding: .35rem .55rem;
+      border-radius: 3px;
+      font-size: .76rem;
+      color: var(--blue);
+    }
+    .why-tip strong { color: var(--blue); }
+
+    .rotation-note {
+      background: #eaf1fa;
+      border: 1px dashed var(--blue);
+      border-radius: 4px;
+      padding: .4rem .6rem;
+      margin: .35rem 0 .55rem;
+      font-size: .76rem;
+      color: var(--blue);
+    }
+    .rotation-note strong { color: var(--blue); }
+
+    .station-card,
+    .split-card {
+      background: #fafbfc;
+      border: 1px solid #dfe3ea;
+      border-radius: 4px;
+      padding: .45rem .65rem .55rem;
+      margin-top: .5rem;
+    }
+    .station-card:first-of-type,
+    .split-card:first-of-type { margin-top: 0; }
+    .station-title {
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin: 0 0 .3rem;
+      padding-bottom: .25rem;
+      border-bottom: 1px dashed #dfe3ea;
+    }
+    .station-card ul,
+    .split-card ul { margin: .2rem 0 0; }
+
     .finale-banner {
       background: var(--gold-soft);
       border: 1px solid var(--gold);
@@ -340,13 +412,49 @@
   <div class="toolbar">
     <h1>iCan Soccer 2026 · Practice Plans (Print View)</h1>
     <div class="toolbar-actions">
+      <label for="week-filter">Print:</label>
+      <select id="week-filter">
+        <option value="all">All Weeks (Cover + 5 sessions)</option>
+        <option value="cover">Volunteer Guide (Cover only)</option>
+        <option value="week-1">Week 1 · Aug 22 — Ball & Passing</option>
+        <option value="week-2">Week 2 · Aug 29 — Dribbling</option>
+        <option value="week-3">Week 3 · Sep 5 — Shooting</option>
+        <option value="week-4">Week 4 · Sep 12 — Teamwork</option>
+        <option value="week-5">Week 5 · Sep 26 — All-Star!</option>
+      </select>
       <a href="practice.html" class="ghost">← Back to interactive plans</a>
       <button onclick="window.print()">🖨️ Print / Save PDF</button>
     </div>
   </div>
 
+  <script>
+    (function () {
+      const select = document.getElementById('week-filter');
+      const body = document.body;
+      function applyFilter(value) {
+        if (value === 'all') body.removeAttribute('data-filter');
+        else body.setAttribute('data-filter', value);
+      }
+      select.addEventListener('change', (e) => applyFilter(e.target.value));
+
+      // Support ?week=1 / ?week=all / ?week=cover deep links from the interactive page
+      const params = new URLSearchParams(location.search);
+      const wk = params.get('week');
+      if (wk === 'all') {
+        select.value = 'all';
+        applyFilter('all');
+      } else if (wk === 'cover' || wk === 'volunteer') {
+        select.value = 'cover';
+        applyFilter('cover');
+      } else if (wk && /^[1-5]$/.test(wk)) {
+        select.value = 'week-' + wk;
+        applyFilter('week-' + wk);
+      }
+    })();
+  </script>
+
   <!-- ═════════════ COVER SHEET ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="cover">
     <div class="cover-header">
       <div class="eyebrow">Blue Devil United × Empower Sports</div>
       <h1>iCan Soccer 2026 — Session Plans</h1>
@@ -401,7 +509,7 @@
   </div>
 
   <!-- ═════════════ WEEK 1 ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="week-1">
     <div class="week-header">
       <div>
         <div class="meta">Week 1 · August 22, 2026</div>
@@ -421,49 +529,79 @@
           <li>Seated or standing stretches with the ball (toe taps, ankle rolls, arm circles)</li>
           <li>BDU players pair up 1:1 with each participant right away</li>
         </ul>
+        <div class="why-tip"><strong>Why we do this</strong> — tell your players: "We warm up so our bodies are ready to run and kick. It wakes us up and gets us excited to play!"</div>
         <div class="coach-tip"><strong>Coach tip:</strong> Set the tone — energy, smiles, and patience. Many participants may be meeting BDU players for the first time.</div>
       </div>
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">48 min · 4 × 12</div></div>
       <div class="block-body">
-        <h3>🦶 Ball Touch Station</h3>
-        <ul>
-          <li><strong>Sole Taps</strong> — tap the top of the ball alternating feet while stationary <span class="tag skill">Skill</span></li>
-          <li><strong>Side-to-Side Rolls</strong> — roll ball left and right with sole of foot</li>
-          <li><strong>Toe-Ball-Toe</strong> — push ball forward with toe, pull back with sole, repeat in place</li>
-          <li>BDU players demo first, then guide their partner through each move</li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Celebrate any ball contact as a win. For wheelchair participants, use hands or a ramp assist — any interaction counts.</div>
+        <h3>🔄 Rotation Stations</h3>
+        <div class="rotation-note"><strong>Setup:</strong> Split into 4 groups. Each group spends <strong>12 minutes</strong> at one station, then rotates. Every group hits every station.</div>
+
+        <div class="station-card">
+          <div class="station-title">🦶 Ball Touch Station</div>
+          <ul>
+            <li><strong>Sole Taps</strong> — tap the top of the ball alternating feet while stationary <span class="tag skill">Skill</span></li>
+            <li><strong>Side-to-Side Rolls</strong> — roll ball left and right with sole of foot</li>
+            <li><strong>Toe-Ball-Toe</strong> — push ball forward with toe, pull back with sole, repeat</li>
+            <li><strong>Tick Tocks</strong> — tap the ball back and forth between insides of both feet <span class="tag skill">Skill</span></li>
+            <li>BDU players demo first, then guide their partner through each move</li>
+          </ul>
+          <div class="why-tip"><strong>Why we do this</strong> — tell your players: "The more we touch the ball with our feet, the better our feet learn it. Lots of touches make soccer easier!"</div>
+          <div class="coach-tip"><strong>Coach tip:</strong> Celebrate any ball contact as a win. For wheelchair participants, use hands or a ramp assist — any interaction counts.</div>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">🎯 Partner Passing</div>
+          <ul>
+            <li><strong>Close Passes</strong> — 3–4 feet apart, inside-of-foot passes. Focus on stopping the ball <span class="tag skill">Skill</span></li>
+            <li><strong>Step Back</strong> — after 3 successful passes, each pair takes one step back. How far can you go?</li>
+            <li>Encourage cheering between pairs — "Great pass!", "You've got this!"</li>
+          </ul>
+          <div class="why-tip"><strong>Why we do this</strong> — tell your players: "Soccer is a team sport. Passing is how we share the ball and help our friends score!"</div>
+          <div class="coach-tip"><strong>Coach tip:</strong> Adjust distance based on each participant's ability. Closer is always fine — the goal is connection, not distance.</div>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">🎵 Dribble to Music</div>
+          <ul>
+            <li><strong>Dribble on the Beat</strong> — dribble the ball around the space while music plays <span class="tag fun">Fun</span></li>
+            <li><strong>Freeze!</strong> — when the music stops, freeze your body AND stop the ball with your foot</li>
+            <li>Mix it up — slow songs = slow dribble, fast songs = quick feet</li>
+            <li>BDU players dribble too and freeze big and silly</li>
+          </ul>
+          <div class="why-tip"><strong>Why we do this</strong> — tell your players: "Music makes soccer fun! Freezing helps us learn to stop the ball fast — like when a coach yells STOP!"</div>
+          <div class="coach-tip"><strong>Coach tip:</strong> Have a speaker ready with 3–4 upbeat songs. Pause without warning so the freeze is a surprise.</div>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">🥅 Dribble, Pass, Score!</div>
+          <ul>
+            <li>Player dribbles from a start cone to a middle cone <span class="tag skill">Skill</span></li>
+            <li>At the middle cone, pass across to a BDU partner waiting on the side</li>
+            <li>Partner sets the ball — player runs onto it and shoots into a small goal <span class="tag skill">Skill</span></li>
+            <li>Every player gets several turns — rotate quickly, cheer every shot</li>
+          </ul>
+          <div class="why-tip"><strong>Why we do this</strong> — tell your players: "Real soccer is dribble, then pass, then shoot — all together! This is how goals happen in a real game."</div>
+          <div class="coach-tip"><strong>Coach tip:</strong> Keep the goal close and the pass short. Narrate it: "Great dribble! Nice pass! What a shot!"</div>
+        </div>
       </div>
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
-      <div class="block-body">
-        <h3>🎯 Partner Passing</h3>
-        <ul>
-          <li><strong>Close Passes</strong> — 3–4 feet apart, inside-of-foot passes. Focus on stopping the ball <span class="tag skill">Skill</span></li>
-          <li><strong>Step Back</strong> — after 3 successful passes, each pair takes one step back. How far can you go?</li>
-          <li><strong>Passing to Music</strong> — pass on the beat, freeze when it stops <span class="tag fun">Fun</span></li>
-          <li>Encourage cheering between pairs — "Great pass!", "You've got this!"</li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Adjust distance based on each participant's ability. Closer is always fine — the goal is connection, not distance.</div>
-      </div>
-    </div>
-
-    <div class="block">
-      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-time"><div class="clock">10:58</div><div class="dur game">17 min</div></div>
       <div class="block-body">
         <h3>🏆 Small-Sided Games</h3>
         <ul>
-          <li><strong>3v3 "Everybody Scores"</strong> — small goals, no keeper; every player must score before the team can win <span class="tag team">Team</span></li>
+          <li><strong>"Everybody Scores"</strong> — pick a size based on numbers (3v3, 5v5, or 7v7). Small goals, no keeper; every player must score before the team can win <span class="tag team">Team</span></li>
           <li>BDU players celebrate every goal (for either team!) with maximum energy</li>
           <li>Rotate BDU players onto both teams to keep numbers even and energy high</li>
-          <li>Short 5-min games with water breaks — keep it moving and upbeat</li>
+          <li>Short games with quick restarts — keep it moving and upbeat</li>
         </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Nobody keeps score in a way that "loses." Celebrate all goals, all efforts. End with a big group celebration.</div>
+        <div class="why-tip"><strong>Why we do this</strong> — tell your players: "Games are the fun part of soccer! We use everything we learned — touching, dribbling, passing, and scoring — and we cheer for our team!"</div>
+        <div class="coach-tip"><strong>Coach tip:</strong> Celebrate all goals, all efforts. Nobody "loses" here — end with a big group celebration.</div>
       </div>
     </div>
 
@@ -471,7 +609,7 @@
   </div>
 
   <!-- ═════════════ WEEK 2 ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="week-2">
     <div class="week-header">
       <div>
         <div class="meta">Week 2 · August 29, 2026</div>
@@ -539,7 +677,7 @@
   </div>
 
   <!-- ═════════════ WEEK 3 ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="week-3">
     <div class="week-header">
       <div>
         <div class="meta">Week 3 · September 5, 2026</div>
@@ -605,7 +743,7 @@
   </div>
 
   <!-- ═════════════ WEEK 4 ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="week-4">
     <div class="week-header">
       <div>
         <div class="meta">Week 4 · September 12, 2026</div>
@@ -669,7 +807,7 @@
   </div>
 
   <!-- ═════════════ WEEK 5 ═════════════ -->
-  <div class="sheet">
+  <div class="sheet" data-sheet="week-5">
     <div class="week-header">
       <div>
         <div class="meta">Week 5 · September 26, 2026 · FINAL SESSION</div>
