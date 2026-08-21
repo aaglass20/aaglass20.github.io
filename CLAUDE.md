@@ -42,6 +42,14 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 - **Deploy:** Static HTML; Apps Script deployment required
 - **Conventions:** Complex payout logic; locked games; PaidPayouts tracking; see `ncaa-squares-setup.md`
 
+### /empower — BDU × Empower Sports iCan Soccer
+- **What:** 3-page site for BDU's iCan Soccer volunteer program — intro letter, team signup, weekly practice plans
+- **Stack:** Vanilla HTML/CSS/JS; Supabase backend (reuses `/schedule/` project: `fpnmnlrwhwnuefbnehuf.supabase.co`)
+- **Key files:** `index.html`, `signup.html`, `practice.html`, `practice-print.html`
+- **Sync rule:** `practice-print.html` is the print-optimized mirror of `practice.html`. **Any content change to `practice.html` (session blocks, times, station cards, drill text) MUST be applied to `practice-print.html` as well.** The two files share the same session data but use different HTML structures — practice.html uses `.timeline-item` / `.timeline-content`, practice-print.html uses `.block` / `.block-body`.
+- **Toggle practice plans live:** In `practice.html`, set `const PLANS_LIVE = true` (~line 553 in the script block) to publish; `false` to hide
+- **Conventions:** BDU colors — `#003366` (blue) + `#FFD700` (gold); no build step; sessions are 75 min (10:00–11:15)
+
 ### /signs — Google Sheets Form Utility
 - **What:** Small utility/form that integrates with Google Sheets
 - **Stack:** HTML + Google Apps Script (`Code.gs`)
