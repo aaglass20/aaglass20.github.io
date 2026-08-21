@@ -246,7 +246,6 @@
       gap: .75rem;
       padding: .55rem 0;
       border-bottom: 1px dashed var(--line);
-      page-break-inside: avoid;
     }
     .block:last-child { border-bottom: none; }
     .block-time {
@@ -347,6 +346,8 @@
       margin: .35rem 0 .55rem;
       font-size: .76rem;
       color: var(--blue);
+      break-after: avoid;
+      page-break-after: avoid;
     }
     .rotation-note strong { color: var(--blue); }
 
@@ -357,6 +358,8 @@
       border-radius: 4px;
       padding: .45rem .65rem .55rem;
       margin-top: .5rem;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
     .station-card:first-of-type,
     .split-card:first-of-type { margin-top: 0; }
@@ -393,7 +396,7 @@
 
     /* PRINT */
     @media print {
-      body { background: #fff; font-size: 10pt; }
+      body { background: #fff; font-size: 9pt; }
       .toolbar { display: none; }
       .sheet {
         box-shadow: none;
@@ -494,9 +497,8 @@
     <div class="cover-footer">
       <ul>
         <li><strong>10:00 – 10:10</strong> · Welcome & Warm-Up (10 min)</li>
-        <li><strong>10:10 – 10:25</strong> · Skill Building Block A (15 min)</li>
-        <li><strong>10:25 – 10:45</strong> · Skill Building Block B (20 min)</li>
-        <li><strong>10:45 – 11:15</strong> · Small-Sided Game / Showcase (30 min)</li>
+        <li><strong>10:10 – 10:58</strong> · Rotation Stations (48 min)</li>
+        <li><strong>10:58 – 11:15</strong> · Small-Sided Game / Showcase (17 min)</li>
       </ul>
       <p style="margin-top:.4rem;"><strong>Tag key:</strong>
         <span class="tag skill">Skill</span> technique focus ·
@@ -633,35 +635,37 @@
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">48 min · 2 × 24</div></div>
       <div class="block-body">
-        <h3>🌀 Cone Dribbling Course</h3>
-        <ul>
-          <li>Set up a simple weave of 5 cones per pair — BDU player dribbles first to demo <span class="tag skill">Skill</span></li>
-          <li>Participants dribble through at their own pace — BDU player walks alongside</li>
-          <li><strong>Crazy Cones</strong> — add silly challenges (dribble while humming, stop on clap, change direction on whistle) <span class="tag fun">Fun</span></li>
-          <li>Cheer loudly when they reach the end</li>
-        </ul>
+        <h3>🔄 Rotation Stations</h3>
+        <div class="rotation-note"><strong>Setup:</strong> Split into 2 groups. Each group spends <strong>24 minutes</strong> at one station, then rotates. Both groups hit both stations.</div>
+
+        <div class="station-card">
+          <div class="station-title">🌀 Cone Dribbling Course</div>
+          <ul>
+            <li>Set up a simple weave of 5 cones per pair — BDU player dribbles first to demo <span class="tag skill">Skill</span></li>
+            <li>Participants dribble through at their own pace — BDU player walks alongside</li>
+            <li><strong>Crazy Cones</strong> — add silly challenges (dribble while humming, stop on clap, change direction on whistle) <span class="tag fun">Fun</span></li>
+            <li>Cheer loudly when they reach the end</li>
+          </ul>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">🚦 Red Light / Green Light</div>
+          <ul>
+            <li><strong>Green Light</strong> — dribble forward <span class="tag skill">Skill</span></li>
+            <li><strong>Red Light</strong> — stop the ball with your sole (no hands)</li>
+            <li><strong>Yellow Light</strong> — dribble in tiny circles</li>
+            <li><strong>Blue Light</strong> (bonus BDU round) — dribble backwards</li>
+            <li>BDU players play too — make it a shared experience <span class="tag team">Team</span></li>
+          </ul>
+          <div class="coach-tip"><strong>Coach tip:</strong> Call colors loudly and with energy. Stopping is the key skill — give extra praise for clean stops.</div>
+        </div>
       </div>
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
-      <div class="block-body">
-        <h3>🚦 Red Light / Green Light</h3>
-        <ul>
-          <li><strong>Green Light</strong> — dribble forward <span class="tag skill">Skill</span></li>
-          <li><strong>Red Light</strong> — stop the ball with your sole (no hands)</li>
-          <li><strong>Yellow Light</strong> — dribble in tiny circles</li>
-          <li><strong>Blue Light</strong> (bonus BDU round) — dribble backwards</li>
-          <li>BDU players play too — make it a shared experience <span class="tag team">Team</span></li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Call colors loudly and with energy. Stopping is the key skill — give extra praise for clean stops.</div>
-      </div>
-    </div>
-
-    <div class="block">
-      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-time"><div class="clock">10:58</div><div class="dur game">17 min</div></div>
       <div class="block-body">
         <h3>🏆 Dribble King/Queen Games</h3>
         <ul>
@@ -700,34 +704,36 @@
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">48 min · 2 × 24</div></div>
       <div class="block-body">
-        <h3>🎯 Shooting Technique</h3>
-        <ul>
-          <li><strong>Stationary Kicks</strong> — ball on the ground, practice laces-kick with BDU player holding the ball still <span class="tag skill">Skill</span></li>
-          <li>Start 5 ft from goal, move back one step for every goal scored</li>
-          <li>BDU players celebrate EVERY shot, even misses — "So close! Try again!"</li>
-          <li><strong>Target Shooting</strong> — use cones or discs to mark corners of the goal as targets <span class="tag skill">Skill</span></li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> For participants who can't kick, try hand-throw into the goal or a ramp. A goal is a goal — celebrate it all.</div>
+        <h3>🔄 Rotation Stations</h3>
+        <div class="rotation-note"><strong>Setup:</strong> Split into 2 groups. Each group spends <strong>24 minutes</strong> at one station, then rotates. Both groups hit both stations.</div>
+
+        <div class="station-card">
+          <div class="station-title">🎯 Shooting Technique</div>
+          <ul>
+            <li><strong>Stationary Kicks</strong> — ball on the ground, practice laces-kick with BDU player holding the ball still <span class="tag skill">Skill</span></li>
+            <li>Start 5 ft from goal, move back one step for every goal scored</li>
+            <li>BDU players celebrate EVERY shot, even misses — "So close! Try again!"</li>
+            <li><strong>Target Shooting</strong> — use cones or discs to mark corners of the goal as targets <span class="tag skill">Skill</span></li>
+          </ul>
+          <div class="coach-tip"><strong>Coach tip:</strong> For participants who can't kick, try hand-throw into the goal or a ramp. A goal is a goal — celebrate it all.</div>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">⚽ "Score a Goal" Challenge</div>
+          <ul>
+            <li>Simple dribble → shoot sequence — BDU player sets the ball up, participant finishes <span class="tag skill">Skill</span></li>
+            <li>Group celebrates every goal with a chant: "1… 2… 3… BDU!" <span class="tag team">Team</span></li>
+            <li><strong>Goal Counter</strong> — keep a running team total on a whiteboard or cones. Can we hit 50 goals today? <span class="tag fun">Fun</span></li>
+          </ul>
+          <div class="coach-tip"><strong>Coach tip:</strong> Keep the line moving — short bursts, quick celebrations, next player up. Energy stays high when everyone is active.</div>
+        </div>
       </div>
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
-      <div class="block-body">
-        <h3>⚽ "Score a Goal" Challenge</h3>
-        <ul>
-          <li>Simple dribble → shoot sequence — BDU player sets the ball up, participant finishes <span class="tag skill">Skill</span></li>
-          <li>Group celebrates every goal with a chant: "1… 2… 3… BDU!" <span class="tag team">Team</span></li>
-          <li><strong>Goal Counter</strong> — keep a running team total on a whiteboard or cones. Can we hit 50 goals today? <span class="tag fun">Fun</span></li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Keep the line moving — short bursts, quick celebrations, next player up. Energy stays high when everyone is active.</div>
-      </div>
-    </div>
-
-    <div class="block">
-      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-time"><div class="clock">10:58</div><div class="dur game">17 min</div></div>
       <div class="block-body">
         <h3>🏆 Shootout Tournament</h3>
         <ul>
@@ -766,32 +772,34 @@
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:10</div><div class="dur">15 min</div></div>
+      <div class="block-time"><div class="clock">10:10</div><div class="dur">48 min · 2 × 24</div></div>
       <div class="block-body">
-        <h3>🤝 Passing Combinations</h3>
-        <ul>
-          <li><strong>Triangle Passing</strong> — 3-person triangles, pass and move to the open cone <span class="tag skill">Skill</span></li>
-          <li>Call name before passing — "Sarah!" then kick</li>
-          <li><strong>1-2 Combo</strong> — pass to BDU player, get it back (wall pass), then shoot. Simple but empowering <span class="tag skill">Skill</span></li>
-        </ul>
-        <div class="coach-tip"><strong>Coach tip:</strong> Calling names builds connection. Participants light up when their name is called before a pass.</div>
+        <h3>🔄 Rotation Stations</h3>
+        <div class="rotation-note"><strong>Setup:</strong> Split into 2 groups. Each group spends <strong>24 minutes</strong> at one station, then rotates. Both groups hit both stations.</div>
+
+        <div class="station-card">
+          <div class="station-title">🤝 Passing Combinations</div>
+          <ul>
+            <li><strong>Triangle Passing</strong> — 3-person triangles, pass and move to the open cone <span class="tag skill">Skill</span></li>
+            <li>Call name before passing — "Sarah!" then kick</li>
+            <li><strong>1-2 Combo</strong> — pass to BDU player, get it back (wall pass), then shoot. Simple but empowering <span class="tag skill">Skill</span></li>
+          </ul>
+          <div class="coach-tip"><strong>Coach tip:</strong> Calling names builds connection. Participants light up when their name is called before a pass.</div>
+        </div>
+
+        <div class="station-card">
+          <div class="station-title">🎮 Team Challenges</div>
+          <ul>
+            <li><strong>Relay Race</strong> — dribble to cone and back, tag next teammate. Silly rules: weak foot only, hop, etc. <span class="tag fun">Fun</span></li>
+            <li><strong>Team Target Practice</strong> — team combines passes before shooting; each touch adds a multiplier to the goal <span class="tag team">Team</span></li>
+            <li>Encourage BDU players to cheer for other teams too — model good sportsmanship</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <div class="block">
-      <div class="block-time"><div class="clock">10:25</div><div class="dur">20 min</div></div>
-      <div class="block-body">
-        <h3>🎮 Team Challenges</h3>
-        <ul>
-          <li><strong>Relay Race</strong> — dribble to cone and back, tag next teammate. Silly rules: weak foot only, hop, etc. <span class="tag fun">Fun</span></li>
-          <li><strong>Team Target Practice</strong> — team combines passes before shooting; each touch adds a multiplier to the goal <span class="tag team">Team</span></li>
-          <li>Encourage BDU players to cheer for other teams too — model good sportsmanship</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="block">
-      <div class="block-time"><div class="clock">10:45</div><div class="dur game">30 min</div></div>
+      <div class="block-time"><div class="clock">10:58</div><div class="dur game">17 min</div></div>
       <div class="block-body">
         <h3>🏆 Team Tournament</h3>
         <ul>
