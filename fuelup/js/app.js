@@ -998,9 +998,14 @@ async function init() {
     new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
 
   // Generate / load persistent user ID
-  let uid = localStorage.getItem('fuelup_uid');
-  if (!uid) { uid = (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)+Date.now()); localStorage.setItem('fuelup_uid', uid); }
+  // If ?uid= is in the URL, adopt that ID (cross-device sync link)
+  const urlUid = new URLSearchParams(window.location.search).get('uid');
+  let uid = urlUid || localStorage.getItem('fuelup_uid');
+  if (!uid) { uid = (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)+Date.now()); }
+  localStorage.setItem('fuelup_uid', uid);
   state.userId = uid;
+  // Strip uid param from URL bar without reloading
+  if (urlUid) { const u = new URL(window.location); u.searchParams.delete('uid'); history.replaceState(null, '', u); }
 
   loadSettings();
   loadFavorites();
@@ -1059,6 +1064,12 @@ async function init() {
     if (confirm("Clear all items from today's plan?")) {
       state.schedule = {}; save(); renderWeekNav(); renderTimeline(); renderDaySummary(); evalAndRender();
     }
+  });
+
+  // Sync link button
+  document.getElementById('syncLinkBtn').addEventListener('click', () => {
+    const url = `${window.location.origin}${window.location.pathname}?uid=${state.userId}`;
+    navigator.clipboard.writeText(url).then(() => showToast('📋 Sync link copied! Open it on your other device.'));
   });
 
   // Help modal

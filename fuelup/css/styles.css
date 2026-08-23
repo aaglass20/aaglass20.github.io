@@ -181,6 +181,23 @@ body {
   color: var(--red);
 }
 
+.btn-sync {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 5px 13px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-sync:hover {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
 /* ── Main Layout ────────────────────────────────── */
 .main-layout {
   display: grid;
@@ -1023,7 +1040,7 @@ body {
   .setting-group { font-size: 12px; }
   .setting-group input[type="time"] { font-size: 12px; }
   .setting-toggle { font-size: 12px; }
-  .btn-copy, .btn-clear { padding: 5px 10px; font-size: 11px; }
+  .btn-copy, .btn-clear, .btn-sync { padding: 5px 10px; font-size: 11px; }
 
   /* ── Week nav — hide label, shrink everything to fit 7 days ── */
   .week-nav    { gap: 2px; padding: 4px 6px; overflow-x: hidden; }

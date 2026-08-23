@@ -39,12 +39,19 @@ const MEALS = [
     fg: { protein: 2 } },
   { id: 'ham',            name: 'Ham',                       emoji: '🍖', mealType: 'breakfast', allDay: true, protein: true,  carbs: false,
     fg: { protein: 2 } },
+  { id: 'muffin',         name: 'Muffin',                    emoji: '🧁', mealType: 'breakfast', allDay: true, protein: false, carbs: true,
+    fg: { grains: 2 } },
+  { id: 'cinnamon-roll',  name: 'Cinnamon Roll',             emoji: '🌀', mealType: 'breakfast', allDay: true, protein: false, carbs: true,
+    fg: { grains: 2 } },
 
   // ── Lunch ──────────────────────────────────────────────────────────────────
   { id: 'chicken-rice',   name: 'Chicken + Rice',            emoji: '🍚', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false,
     fg: { grains: 2, protein: 3 } },
-  { id: 'turkey-sand',    name: 'Turkey Sandwich',           emoji: '🥪', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false,
+  { id: 'turkey-sand',    name: 'Turkey Sandwich',           emoji: '🥪', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,
     fg: { grains: 2, protein: 3 } },
+  { id: 'turkey-hoagie',  name: 'Hoagie Roll Turkey Sandwich', emoji: '🥖', mealType: 'lunch', protein: true,  carbs: true,  veggie: true,  dairy: true,
+    note: 'With cheese and lettuce',
+    fg: { grains: 3, protein: 3, dairy: 0.67, veggies: 0.25 } },
   { id: 'pasta-lunch',    name: 'Pasta + Marinara',          emoji: '🍝', mealType: 'lunch',  protein: false, carbs: true,  veggie: false,
     fg: { grains: 2.5, veggies: 0.5 } },
   { id: 'burrito-bowl',   name: 'Burrito Bowl',              emoji: '🌯', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,
@@ -151,6 +158,8 @@ const SNACKS = [
     fg: { dairy: 1, protein: 1 } },
   { id: 'cheese-slice',  name: 'Cheese Slice',               emoji: '🧀', treat: false, protein: true,  carbs: false, postWorkout: false, preGame: false, dairy: true,
     fg: { dairy: 0.67, protein: 1 } },
+  { id: 'protein-ball',  name: 'Protein Ball',               emoji: '⚽', treat: false, protein: true,  carbs: true,  postWorkout: true,  preGame: false, note: 'Homemade or store-bought — great post-workout',
+    fg: { grains: 0.5, protein: 1 } },
   { id: 'edamame',       name: 'Edamame',                    emoji: '🫘', treat: false, protein: true,  carbs: false, postWorkout: false, preGame: false,
     fg: { veggies: 0.5, protein: 2 } },
 
@@ -176,7 +185,7 @@ const SIDES = [
   { id: 'side-melon',      name: 'Melon / Watermelon',   emoji: '🍉', fruit: true,  fg: { fruit: 1    } },
   { id: 'side-peach',      name: 'Peach',                emoji: '🍑', fruit: true,  fg: { fruit: 0.5  } },
   { id: 'side-oj',         name: 'Orange Juice',         emoji: '🍊', fruit: true,  fg: { fruit: 1    } },
-  { id: 'side-applesauce', name: 'Applesauce',           emoji: '🍏', fruit: true,  fg: { fruit: 0.5  } },
+  { id: 'side-applesauce', name: 'Applesauce Pouch',      emoji: '🍏', fruit: true,  fg: { fruit: 0.5  } },
   // ── Vegetables ─────────────────────────────────────────────────────────────
   { id: 'side-carrots',    name: 'Carrot Sticks',        emoji: '🥕', veggie: true, fg: { veggies: 0.5  } },
   { id: 'side-cucumber',   name: 'Cucumber Slices',      emoji: '🥒', veggie: true, fg: { veggies: 0.25 } },
