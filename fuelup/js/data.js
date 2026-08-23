@@ -225,4 +225,5 @@ const WORKOUTS = [
   { id: 'strength-l',    name: 'Strength (long)',       emoji: '🏋️', duration: 60,  halftime: false, intensity: 'high',   sport: false },
   { id: 'yoga',          name: 'Yoga / Stretching',     emoji: '🧘', duration: 45,  halftime: false, intensity: 'low',    sport: false },
   { id: 'cheer',         name: 'Cheer / Pom',           emoji: '📣', duration: 90,  halftime: false, intensity: 'medium', sport: false },
+  { id: 'drama',         name: 'Drama Club Practice',   emoji: '🎭', duration: 60,  halftime: false, intensity: 'low',    sport: false },
 ];
