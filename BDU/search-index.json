@@ -1295,6 +1295,10 @@
       ],
       "sections": [
         {
+          "title": "3v2 Transition",
+          "anchor": "#3v2-transition"
+        },
+        {
           "title": "3 Team Keep Away",
           "anchor": "#3-team-keep-away"
         },
@@ -2095,6 +2099,37 @@
         {
           "title": "First Touch Receive",
           "anchor": "#first-touch-receive"
+        }
+      ]
+    },
+    {
+      "title": "Rotations",
+      "url": "rotations.html",
+      "keywords": [
+        "rotations",
+        "drills",
+        "training"
+      ],
+      "sections": [
+        {
+          "title": "U12 — 9v9 or Transition to 11v11 / 30-min halves",
+          "anchor": "#u12-rotations"
+        },
+        {
+          "title": "U13 – U14 — 11v11 / 35-min halves",
+          "anchor": "#u13-u14-rotations"
+        },
+        {
+          "title": "U15 – U16 — 11v11 / 40-min halves",
+          "anchor": "#u15-u16-rotations"
+        },
+        {
+          "title": "U17 – U19 / High School — 11v11 / 40–45-min halves",
+          "anchor": "#u17-u19-rotations"
+        },
+        {
+          "title": "Key Takeaways Across Ages",
+          "anchor": "#rotations-takeaways"
         }
       ]
     },

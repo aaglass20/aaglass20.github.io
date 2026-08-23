@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDU Soccer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <div class="highlight-banner">
+        <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="Company Logo">
+        <h1>Rotations</h1>
+    </div>
+</header>
+
+<!-- Waffle Menu Toggle Button -->
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Add this line to load the waffle menu -->
+<div id="waffleMenuContainer"></div>
+
+<!-- Include the menu using JavaScript -->
+<div id="education-menu"></div>
+
+<script>
+    fetch('menus/education-menu.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('education-menu').innerHTML = data;
+
+            // Highlight current page in menu and scroll to it
+            const currentPage = window.location.pathname.split('/').pop();
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                    setTimeout(() => {
+                        item.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        });
+</script>
+
+<div class="container">
+
+    <!-- U12 -->
+    <section class="collapsible-section" id="u12-rotations">
+        <h2 class="section-title">
+            <i class="fas fa-sync-alt"></i> U12 — 9v9 or Transition to 11v11 / 30-min halves
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">Development focus: Equal playing time, high energy, technical touches over endurance.</p>
+        <ul>
+            <div class="collapsible-content">
+                <table class="lineup-table">
+                    <thead>
+                        <tr>
+                            <th>Position Group</th>
+                            <th>Shift Length</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wingers / Wide Mids</td>
+                            <td>8 – 10 mins</td>
+                            <td>Small aerobic tanks; sprinting drops off quickly.</td>
+                        </tr>
+                        <tr>
+                            <td>Attacking Mid / Forwards</td>
+                            <td>10 – 12 mins</td>
+                            <td>Keeps energy and high pressing aggressive.</td>
+                        </tr>
+                        <tr>
+                            <td>Defensive Mid / Fullbacks</td>
+                            <td>12 – 15 mins</td>
+                            <td>Rotate at roughly the quarter mark.</td>
+                        </tr>
+                        <tr>
+                            <td>Center Backs / GK</td>
+                            <td>15 – 30 mins</td>
+                            <td>Subbing halfway through the half or at halftime.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ul>
+    </section>
+
+    <!-- U13–U14 -->
+    <section class="collapsible-section" id="u13-u14-rotations">
+        <h2 class="section-title">
+            <i class="fas fa-sync-alt"></i> U13 – U14 — 11v11 / 35-min halves
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">Growth spurts &amp; field size jump: Full pitch demands high stamina, but pacing skills are still developing.</p>
+        <ul>
+            <div class="collapsible-content">
+                <table class="lineup-table">
+                    <thead>
+                        <tr>
+                            <th>Position Group</th>
+                            <th>Shift Length</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wide Midfielders (LM / RM)</td>
+                            <td>10 – 14 mins</td>
+                            <td>Full 11v11 field creates heavy two-way running.</td>
+                        </tr>
+                        <tr>
+                            <td>Attacking Mid (OCM) / Forwards</td>
+                            <td>12 – 15 mins</td>
+                            <td>Quick bursts exhaust players around minute 15.</td>
+                        </tr>
+                        <tr>
+                            <td>Defensive Mid (DCM) / Fullbacks</td>
+                            <td>15 – 18 mins</td>
+                            <td>Often subbed once per half around the midway mark.</td>
+                        </tr>
+                        <tr>
+                            <td>Center Backs</td>
+                            <td>35 mins (Full Half)</td>
+                            <td>Stabilizes the defensive line and offside trap.</td>
+                        </tr>
+                        <tr>
+                            <td>Goalkeeper</td>
+                            <td>35 – 70 mins</td>
+                            <td>Half or full game.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ul>
+    </section>
+
+    <!-- U15–U16 -->
+    <section class="collapsible-section" id="u15-u16-rotations">
+        <h2 class="section-title">
+            <i class="fas fa-sync-alt"></i> U15 – U16 — 11v11 / 40-min halves
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">Tactical maturity: Players know how to pace runs, manage energy, and play through mild fatigue.</p>
+        <ul>
+            <div class="collapsible-content">
+                <table class="lineup-table">
+                    <thead>
+                        <tr>
+                            <th>Position Group</th>
+                            <th>Shift Length</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wide Midfielders / Wingers</td>
+                            <td>15 – 20 mins</td>
+                            <td>Fast-paced, but players have better aerobic bases.</td>
+                        </tr>
+                        <tr>
+                            <td>Attacking Mid / Forwards</td>
+                            <td>18 – 22 mins</td>
+                            <td>Rotated once per half or adjusted based on game state.</td>
+                        </tr>
+                        <tr>
+                            <td>Central Midfield (DCM / CM)</td>
+                            <td>20 – 40 mins</td>
+                            <td>Many coaches prefer leaving the central spine intact for full halves.</td>
+                        </tr>
+                        <tr>
+                            <td>Fullbacks</td>
+                            <td>20 – 40 mins</td>
+                            <td>Full halves unless overlapping heavily.</td>
+                        </tr>
+                        <tr>
+                            <td>Center Backs / GK</td>
+                            <td>40 – 80 mins</td>
+                            <td>Rarely subbed mid-half; mostly full halves or full games.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ul>
+    </section>
+
+    <!-- U17–U19 -->
+    <section class="collapsible-section" id="u17-u19-rotations">
+        <h2 class="section-title">
+            <i class="fas fa-sync-alt"></i> U17 – U19 / High School — 11v11 / 40–45-min halves
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <p class="drill-summary">Competitive/College Prep focus: Longer minutes, tactical substitutions, and managing card/match tempo.</p>
+        <ul>
+            <div class="collapsible-content">
+                <table class="lineup-table">
+                    <thead>
+                        <tr>
+                            <th>Position Group</th>
+                            <th>Shift Length</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wide Midfielders / Wingers</td>
+                            <td>20 – 25 mins (or full halves)</td>
+                            <td>Rotated primarily for fresh legs against tired fullbacks.</td>
+                        </tr>
+                        <tr>
+                            <td>Forwards / #10s</td>
+                            <td>20 – 30 mins (or full halves)</td>
+                            <td>Subbed tactically (e.g., chasing a goal, holding a lead).</td>
+                        </tr>
+                        <tr>
+                            <td>Defensive Mid / Fullbacks</td>
+                            <td>40 – 45 mins (Full Half)</td>
+                            <td>Swapped mostly at halftime or late-game adjustments.</td>
+                        </tr>
+                        <tr>
+                            <td>Center Backs / GK</td>
+                            <td>Full 80 – 90 mins</td>
+                            <td>Almost never rotated unless injured, fatigued, or on a yellow card.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ul>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section class="collapsible-section" id="rotations-takeaways">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Key Takeaways Across Ages
+            <button class="toggle-button" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <ul>
+            <div class="collapsible-content">
+                <ul style="padding: 0 1rem 1rem;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>The "Flank Rule" stays constant:</strong> From U12 to U19, wide players run the most distance at the highest speed, making them the most frequently rotated position on the pitch.
+                    </li>
+                    <li>
+                        <strong>The "Spine" stabilizes with age:</strong> At U12/U13, rotating central players helps player development; by U16+, coaches leave the GK–CB–DCM spine intact to preserve tactical organization.
+                    </li>
+                </ul>
+            </div>
+        </ul>
+    </section>
+
+</div>
+
+<div id="shared-footer"></div>
+
+<script>
+    fetch('menus/shared-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('shared-footer').innerHTML = data;
+        });
+</script>
+
+<script src="scripts/scripts.js"></script>
+
+</body>
+</html>
