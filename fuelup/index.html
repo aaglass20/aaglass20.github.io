@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FuelUp — Athlete Nutrition Planner</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">⚡ FuelUp</div>
+        <div class="subtitle">Athlete Nutrition Planner</div>
+      </div>
+      <div class="day-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-label" id="statusLabel">Plan your day</span>
+      </div>
+      <div class="header-right">
+        <span class="sync-indicator" id="syncIndicator" title="Sync status"></span>
+        <span class="current-date" id="currentDate"></span>
+        <button class="help-btn" id="helpBtn" title="How to use FuelUp">?</button>
+      </div>
+    </header>
+
+    <!-- Settings Bar -->
+    <div class="settings-bar">
+      <div class="setting-group">
+        <label for="wakeTime">🌅 Wake Up</label>
+        <input type="time" id="wakeTime" value="07:00">
+      </div>
+      <div class="setting-group">
+        <label for="bedTime">🌙 Bedtime</label>
+        <input type="time" id="bedTime" value="21:30">
+      </div>
+      <label class="setting-group setting-toggle">
+        <input type="checkbox" id="trackHydration" checked>
+        <span>💧 Track hydration</span>
+      </label>
+      <button class="btn-copy" id="copyDay">📋 Copy Day</button>
+      <button class="btn-clear" id="clearDay">Clear Day</button>
+    </div>
+
+    <!-- Week Navigator -->
+    <div class="week-nav" id="weekNav"></div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+
+      <!-- Palette Sidebar -->
+      <aside class="palette" id="palette">
+        <div class="palette-tabs">
+          <button class="tab active" data-tab="meals">🍽 Meals</button>
+          <button class="tab" data-tab="snacks">🍎 Snacks</button>
+          <button class="tab" data-tab="workouts">💪 Workouts</button>
+        </div>
+        <div class="palette-search">
+          <input type="text" id="paletteSearch" placeholder="Search…" autocomplete="off" spellcheck="false">
+          <button class="palette-search-clear" id="paletteSearchClear" title="Clear search">×</button>
+        </div>
+        <div class="palette-content" id="paletteContent"></div>
+        <div class="palette-hint" id="paletteHint">↔ Drag to timeline · ♥ to fav · tap to select</div>
+      </aside>
+
+      <!-- Timeline -->
+      <main class="timeline-wrapper">
+        <div class="timeline-header">
+          <span class="tl-time-col">Time</span>
+          <span id="tlHeaderLabel">Your Day — drag or tap to add</span>
+        </div>
+        <div class="day-summary" id="daySummary"></div>
+        <div class="timeline" id="timeline"></div>
+      </main>
+
+      <!-- Compliance Panel -->
+      <aside class="compliance-panel" id="compliancePanel">
+        <div class="panel-section">
+          <div class="panel-title">
+            Day Check
+            <button class="panel-close-btn mobile-only" id="compliancePanelClose">×</button>
+          </div>
+          <div id="complianceRules"><div class="empty-state">Add items to your timeline to see your daily check</div></div>
+        </div>
+        <div class="panel-section food-groups-section">
+          <div class="panel-title">🥗 Food Groups</div>
+          <div id="foodGroups"><div class="empty-state">Add meals to track food group goals</div></div>
+        </div>
+        <div class="panel-section suggestions-section">
+          <div class="panel-title">💡 Suggestions</div>
+          <div id="suggestions"><div class="empty-state">Personalized tips will appear here</div></div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Day preview popover -->
+  <div id="dayPreview" class="day-preview"></div>
+
+  <!-- Mobile FAB -->
+  <button class="mobile-fab" id="mobileFab" title="Add items">＋</button>
+  <button class="mobile-check-fab" id="mobileCheckFab" title="Day Check">✓</button>
+
+  <!-- Copy Day Modal -->
+  <div class="modal-overlay" id="copyModal">
+    <div class="modal-box">
+      <div class="modal-title">📋 Copy Plan To Another Day</div>
+      <div class="modal-subtitle">Select one or more days to copy this plan to</div>
+      <div class="copy-day-grid" id="copyDayGrid"></div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="copyCancel">Cancel</button>
+        <button class="modal-btn confirm" id="copyConfirm">Copy to Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal-box help-modal-box">
+      <div class="help-modal-header">
+        <div class="help-modal-title">⚡ How to use FuelUp</div>
+        <button class="help-modal-close" id="helpModalClose">×</button>
+      </div>
+      <div class="help-grid">
+        <div class="help-card">
+          <div class="help-card-icon">↔</div>
+          <div class="help-card-title">Drag &amp; Drop</div>
+          <div class="help-card-desc">Drag any item from the left palette onto a time slot on your timeline.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">👆</div>
+          <div class="help-card-title">Tap to Add</div>
+          <div class="help-card-desc">On mobile, tap a palette item to select it (it highlights green), then tap any time slot to place it.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">🔍</div>
+          <div class="help-card-title">Search by Category</div>
+          <div class="help-card-desc">Type <strong>fruit</strong>, <strong>protein</strong>, <strong>dairy</strong>, <strong>veggie</strong>, <strong>treat</strong>, <strong>pregame</strong>, <strong>recovery</strong>, or <strong>breakfast</strong> to filter all items at once.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">🥗</div>
+          <div class="help-card-title">Sides</div>
+          <div class="help-card-desc">Drop a <em>Side</em> onto the same time slot as a meal to balance it — adds fruit, veg, dairy, or protein without counting as a snack.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">♥</div>
+          <div class="help-card-title">Favorites</div>
+          <div class="help-card-desc">Hover any palette item and click ♥ to pin it to the top of the list so your go-to foods are always first.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">📋</div>
+          <div class="help-card-title">Copy Day</div>
+          <div class="help-card-desc">Click <em>Copy Day</em> in the top bar to copy your full plan to one or more other days this week.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">🌅</div>
+          <div class="help-card-title">Breakfast for Dinner</div>
+          <div class="help-card-desc">Breakfast foods work at any meal time! The app figures out if it's breakfast, lunch, or dinner by <em>when</em> you place it — not what it is.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">⚽</div>
+          <div class="help-card-title">Game Day Rules</div>
+          <div class="help-card-desc">Add a sport event (game, meet, match) to unlock extra checks: pre-game meal timing, light pre-game snack, and halftime fuel.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">🥗</div>
+          <div class="help-card-title">Food Groups</div>
+          <div class="help-card-desc">The right panel tracks your daily USDA MyPlate progress — grains, veggies, fruit, dairy, and protein — with live progress bars.</div>
+        </div>
+        <div class="help-card">
+          <div class="help-card-icon">🌟</div>
+          <div class="help-card-title">Green Day</div>
+          <div class="help-card-desc">Pass all Day Check rules and the status dot turns green. Check the dot on each day in the week bar to see your whole week at a glance.</div>
+        </div>
+      </div>
+      <div class="help-modal-footer">Press Esc or click outside to close</div>
+    </div>
+  </div>
+
+  <!-- SortableJS (drag + touch support) -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -817,6 +817,7 @@ body {
 
 .timeline-content {
   flex: 1;
+  min-width: 0; /* prevent flex child from overflowing its container */
   background: var(--white);
   border-radius: var(--radius);
   padding: 1.1rem 1.25rem;
@@ -1079,10 +1080,68 @@ body {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
+  /* General */
   .intro-letter { padding: 1.5rem; }
   .form-row { grid-template-columns: 1fr; }
   .slots-container { grid-template-columns: 1fr; }
   .nav-links a span.link-label { display: none; }
-  .timeline::before { left: 50px; }
-  .practice-title-block { flex-direction: column; }
+  .container-wide { padding: 1.5rem .85rem 3rem; }
+  .section-header h2 { font-size: 1.45rem; }
+  .week-tab { padding: .5rem .85rem; font-size: .82rem; }
+
+  /* Practice title block: stack vertically, hide big emoji */
+  .practice-title-block { flex-direction: column; gap: .5rem; padding: 1.25rem; }
+  .practice-title-block .theme-emoji { display: none; }
+
+  /* ── Timeline: full-width stacked cards on mobile ── */
+  /* Remove the vertical connector line and dot */
+  .timeline::before { display: none; }
+  .timeline-dot    { display: none; }
+
+  /* Each item becomes a label + full-width card stack */
+  .timeline-item {
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Time col: become a full-width row, show as blue pill label */
+  .timeline-time {
+    width: 100%;
+    text-align: left;
+    padding-top: 0;
+  }
+  .timeline-time span {
+    display: inline-flex;
+    align-items: center;
+    background: var(--blue);
+    color: var(--white);
+    padding: .2rem .7rem;
+    border-radius: 99px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+  }
+
+  /* Content card: full-width, critically min-width:0 so it doesn't overflow */
+  .timeline-content {
+    width: 100%;
+    flex: none;
+    min-width: 0;
+    padding: .85rem .9rem;
+  }
+
+  /* Station cards: a bit less padding, text wraps safely */
+  .station-card,
+  .split-card {
+    padding: .65rem .75rem .75rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Rotation note: let it wrap */
+  .rotation-note { font-size: .83rem; }
+
+  /* Drill list items: tighter on mobile */
+  .drill-list li { font-size: .85rem; }
 }

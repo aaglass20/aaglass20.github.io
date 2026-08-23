@@ -50,6 +50,79 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 - **Toggle practice plans live:** In `practice.html`, set `const PLANS_LIVE = true` (~line 553 in the script block) to publish; `false` to hide
 - **Conventions:** BDU colors — `#003366` (blue) + `#FFD700` (gold); no build step; sessions are 75 min (10:00–11:15)
 
+### /fuelup — Athlete Nutrition Meal Planner
+- **What:** Drag-and-drop daily nutrition planner with compliance engine, food group tracking (USDA MyPlate), and Supabase sync
+- **Stack:** Vanilla HTML/CSS/JS; SortableJS (CDN); Supabase (`fpnmnlrwhwnuefbnehuf.supabase.co`, same project as `/empower/` and `/schedule/`)
+- **Key files:** `index.html`, `css/styles.css`, `js/app.js`, `js/data.js`, `js/config.js`, `setup.sql`
+- **Run setup.sql once** in Supabase SQL editor to create `fuelup_plans` and `fuelup_user_settings` tables
+- **No build step** — open `index.html` directly or `npx serve fuelup/`
+
+#### Data conventions — adding new food items to `js/data.js`
+
+**Item types:**
+- `MEALS` — breakfast/lunch/dinner; shown in Meals palette tab; drive meal-balance compliance rules
+- `SNACKS` — shown in Snacks palette tab; includes hydration, pre-game picks, healthy snacks, treats
+- `SIDES` — attach to a meal slot without counting as a snack; shown at bottom of Meals tab; contribute to meal balance check
+
+**MEALS flags:**
+| Field | Rule |
+|---|---|
+| `mealType` | `'breakfast'` / `'lunch'` / `'dinner'` — pick whichever meal it's primarily eaten at |
+| `allDay: true` | Add to breakfast items that are reasonable at any time of day (eggs, pancakes, yogurt, etc.) — shows "works at lunch or dinner too!" hint in palette |
+| `protein: true` | Contains ≥ 7g protein (≈ 1 egg, 1 oz meat/fish/cheese, 2 tbsp PB) |
+| `carbs: true` | Has a meaningful starchy/grain carb source (bread, rice, pasta, potato, tortilla) — not just added sugar |
+| `veggie: true` | Dish **inherently** contains ≥ 0.5 cup vegetables — not just a garnish or optional topping |
+| `fg` | USDA MyPlate serving estimates (see below) — required on every MEAL |
+
+**SNACKS flags:**
+| Field | Rule |
+|---|---|
+| `treat: true` | High added sugar/fat, low nutrients — no `fg` credit; shown in Treats section |
+| `water: true` | Counts toward hydration goal; shown in Hydration section |
+| `preGame: true` | Light, carb-forward, easy to digest — safe 20–60 min before activity |
+| `postWorkout: true` | Has meaningful protein + carbs — good for 30-min recovery window |
+| `protein` / `carbs` | Same thresholds as meals |
+| `fg` | Required on non-treat, non-water snacks |
+
+**SIDES flags:**
+| Field | Rule |
+|---|---|
+| `fruit: true` | It's a fruit or 100% fruit juice |
+| `veggie: true` | It's a vegetable |
+| `dairy: true` | It's a dairy product |
+| `carbs: true` | Grain/starchy carb not covered above (bread, rice, fries) |
+| `protein: true` | Add when the side meaningfully contributes protein (e.g. Glass of Milk) |
+| `fg` | Required on all sides |
+
+**`fg` serving estimates (USDA oz-equivalents / cups):**
+```
+fg: { grains, veggies, fruit, dairy, protein }
+```
+- `grains` (oz-eq): 1 slice bread = 1 · ½ cup cooked rice/pasta = 1 · 1 bagel = 3 · 1 tortilla (8") = 2
+- `protein` (oz-eq): 1 egg = 1 · 1 oz cooked meat/fish = 1 · 2 tbsp PB = 2 · ¼ cup beans = 1
+- `dairy` (cups): 1 cup milk or yogurt = 1 · 1.5 oz hard cheese = 1 · 1 oz cheese slice ≈ 0.67
+- `veggies` (cups): 1 cup cooked = 1 · 2 cups raw leafy greens = 1 · ½ cup chopped = 0.5
+- `fruit` (cups): 1 medium banana = 1 · 1 cup berries = 1 · ½ cup sliced = 0.5
+- Omit keys with 0 value to keep lines short; summing code handles missing keys as 0
+- Treats and plain water get no `fg` property
+
+**Daily goals (USDA MyPlate, ~2,000 cal / active 12-yr-old):**
+`DAILY_GOALS = { grains: 6, veggies: 2.5, fruit: 2, dairy: 3, protein: 5.5 }` — defined in `js/app.js`
+
+#### Compliance engine rules (in `evaluate()` in `js/app.js`)
+1. Breakfast present + within 60 min of wake time
+2. 3 meals per day
+3. No 4+ hour gap between fuel items
+4. Hydration goal (opt-outable via toggle)
+5. Per-slot meal balance: breakfast needs protein + carbs; lunch/dinner needs protein + carbs + fruit/veg (via meal flags or sides)
+6. Pre-fuel within 90 min before any workout
+7. Pre-game meal 1.5–3.5 hrs before sport events
+8. Pre-game snack 20–60 min before sport events
+9. Post-workout fuel within 30 min of workout end
+10. Halftime snack for sports with `halftime: true`
+
+When adding a new compliance rule: add to `evaluate()`, return it in the `rules` array with `{ pass, label, desc }`, optionally push a tip to `tips`. The engine auto-calculates pass ratio and status (green/yellow/red).
+
 ### /signs — Google Sheets Form Utility
 - **What:** Small utility/form that integrates with Google Sheets
 - **Stack:** HTML + Google Apps Script (`Code.gs`)
