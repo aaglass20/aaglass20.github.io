@@ -165,8 +165,6 @@ const SNACKS = [
     fg: { grains: 0.5, protein: 1 } },
   { id: 'edamame',       name: 'Edamame',                    emoji: '🫘', treat: false, protein: true,  carbs: false, postWorkout: false, preGame: false,
     fg: { veggies: 0.5, protein: 2 } },
-  { id: 'guac-chips',    name: 'Guacamole + Chips',          emoji: '🥑', treat: false, protein: false, carbs: true,  postWorkout: false, preGame: false,
-    fg: { grains: 1, veggies: 0.5 } },
 
   // ── Treats — no food group contribution (discretionary calories) ────────────
   { id: 'ice-cream',     name: 'Ice Cream',                  emoji: '🍦', treat: true,  protein: false, carbs: true,  dairy: true, fg: { dairy: 0.5 } },
@@ -209,6 +207,7 @@ const SIDES = [
   { id: 'side-beans',      name: 'Black Beans',          emoji: '🫘', protein: true, carbs: true, fg: { protein: 2, veggies: 0.5 } },
   { id: 'side-egg',        name: 'Hard Boiled Egg',      emoji: '🥚', protein: true, fg: { protein: 1 } },
   // ── Carb sides ─────────────────────────────────────────────────────────────
+  { id: 'guac-chips',      name: 'Guacamole + Chips',    emoji: '🥑', carbs: true, veggie: true, fg: { grains: 1, veggies: 0.5 } },
   { id: 'side-fries',      name: 'French Fries',         emoji: '🍟', carbs: true,  fg: { veggies: 0.5 } },
   { id: 'side-bread',      name: 'Dinner Roll / Bread',  emoji: '🍞', carbs: true,  fg: { grains: 1   } },
   { id: 'side-rice',       name: 'Side of Rice',         emoji: '🍚', carbs: true,  fg: { grains: 1.5 } },
