@@ -29,6 +29,7 @@ let state = {
 
 let sbClient = null;
 let paletteQuery = '';
+let syncDebounceTimer = null;
 const slotSortables = new Map();
 
 /* ────────────────────────────────────────────────
@@ -45,10 +46,23 @@ function initSupabase() {
 
 function getSyncStatus() { return document.getElementById('syncIndicator'); }
 function setSyncStatus(s) {
-  const el = getSyncStatus();
+  const el  = document.getElementById('syncIndicator');
+  const lbl = document.getElementById('syncLabel');
   if (!el) return;
   el.className = `sync-indicator ${s}`;
-  el.title = { idle: 'Cloud sync ready', syncing: 'Saving to cloud…', ok: 'Saved to cloud', error: 'Cloud unavailable — saved locally' }[s] || '';
+  el.title = { idle: 'Cloud sync ready', syncing: 'Saving to cloud…', ok: 'Saved to cloud ✓', error: 'Cloud unavailable — saved locally' }[s] || '';
+  if (!lbl) return;
+  if (s === 'ok') {
+    lbl.textContent = 'Saved ✓';
+    lbl.classList.add('visible');
+    clearTimeout(lbl._hide);
+    lbl._hide = setTimeout(() => lbl.classList.remove('visible'), 3000);
+  } else if (s === 'syncing') {
+    lbl.textContent = 'Saving…';
+    lbl.classList.add('visible');
+  } else {
+    lbl.classList.remove('visible');
+  }
 }
 
 async function syncDayToSupabase() {
@@ -60,7 +74,15 @@ async function syncDayToSupabase() {
       { onConflict: 'user_id,plan_date' }
     );
     setSyncStatus('ok');
-  } catch { setSyncStatus('error'); }
+  } catch {
+    setSyncStatus('error');
+    showToast('⚠️ Cloud save failed — data saved locally');
+  }
+}
+
+function scheduleSyncDay() {
+  clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(syncDayToSupabase, 1500);
 }
 
 async function syncSettingsToSupabase() {
@@ -165,7 +187,7 @@ function saveFavorites(){ localStorage.setItem('fuelup_favorites', JSON.stringif
 
 function save() {
   saveSettings(); saveDay();
-  syncDayToSupabase(); // async, non-blocking
+  scheduleSyncDay(); // debounced cloud sync
 }
 
 function loadSettings() {

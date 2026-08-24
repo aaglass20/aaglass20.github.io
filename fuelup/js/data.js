@@ -84,6 +84,9 @@ const MEALS = [
     fg: { protein: 3, veggies: 0.5 } },
   { id: 'tuna-wrap',     name: 'Tuna Wrap',                 emoji: '🌯', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false,
     fg: { grains: 2, protein: 3 } },
+  { id: 'chipotle-bowl', name: 'Chipotle Bowl',             emoji: '🍗', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false, dairy: true, allDay: true,
+    note: 'Chicken, rice, and cheese',
+    fg: { grains: 2.5, protein: 4, dairy: 0.5 } },
 
   // ── Dinner ─────────────────────────────────────────────────────────────────
   { id: 'salmon',         name: 'Salmon + Veggies',          emoji: '🐟', mealType: 'dinner', protein: true,  carbs: false, veggie: true,
@@ -162,6 +165,8 @@ const SNACKS = [
     fg: { grains: 0.5, protein: 1 } },
   { id: 'edamame',       name: 'Edamame',                    emoji: '🫘', treat: false, protein: true,  carbs: false, postWorkout: false, preGame: false,
     fg: { veggies: 0.5, protein: 2 } },
+  { id: 'guac-chips',    name: 'Guacamole + Chips',          emoji: '🥑', treat: false, protein: false, carbs: true,  postWorkout: false, preGame: false,
+    fg: { grains: 1, veggies: 0.5 } },
 
   // ── Treats — no food group contribution (discretionary calories) ────────────
   { id: 'ice-cream',     name: 'Ice Cream',                  emoji: '🍦', treat: true,  protein: false, carbs: true,  dairy: true, fg: { dairy: 0.5 } },
