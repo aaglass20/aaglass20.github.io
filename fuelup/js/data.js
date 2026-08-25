@@ -103,8 +103,8 @@ const MEALS = [
     fg: { grains: 2, protein: 3, veggies: 1 } },
   { id: 'burger',         name: 'Burger',                    emoji: '🍔', mealType: 'dinner', protein: true,  carbs: true,  veggie: false,
     fg: { grains: 2, protein: 4 } },
-  { id: 'mashed-potato',  name: 'Mashed Potatoes',           emoji: '🥔', mealType: 'dinner', protein: false, carbs: true,  veggie: false,
-    fg: { veggies: 1 } },
+  { id: 'mashed-potato',  name: 'Mashed Potatoes',           emoji: '🥔', mealType: 'dinner', protein: true,  carbs: true,  veggie: false,
+    fg: { veggies: 1, dairy: 0.25, protein: 0.5 } },
   { id: 'perogies',       name: 'Perogies',                  emoji: '🥟', mealType: 'dinner', protein: true,  carbs: true,  veggie: false,
     fg: { grains: 2, dairy: 0.5, protein: 1 } },
   { id: 'bacon-pizza',    name: 'Bacon Pizza',               emoji: '🍕', mealType: 'dinner', protein: true,  carbs: true,  veggie: false,
@@ -209,6 +209,8 @@ const SIDES = [
   // ── Carb sides ─────────────────────────────────────────────────────────────
   { id: 'guac-chips',      name: 'Guacamole + Chips',    emoji: '🥑', carbs: true, veggie: true, fg: { grains: 1, veggies: 0.5 } },
   { id: 'side-fries',      name: 'French Fries',         emoji: '🍟', carbs: true,  fg: { veggies: 0.5 } },
+  { id: 'side-potato',     name: 'Baked Potato',         emoji: '🥔', carbs: true, veggie: true, protein: true, fg: { veggies: 1, protein: 0.5 } },
+  { id: 'side-grilled-potato', name: 'Grilled Sliced Potatoes', emoji: '🥔', carbs: true, veggie: true, protein: true, fg: { veggies: 1, protein: 0.5 } },
   { id: 'side-bread',      name: 'Dinner Roll / Bread',  emoji: '🍞', carbs: true,  fg: { grains: 1   } },
   { id: 'side-rice',       name: 'Side of Rice',         emoji: '🍚', carbs: true,  fg: { grains: 1.5 } },
 ];
