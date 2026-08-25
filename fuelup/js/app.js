@@ -164,6 +164,22 @@ function weekRangeLabel() {
 
 function dateStr(d) { return d.toISOString().split('T')[0]; }
 
+// Schedule keys are HH:MM time slots. Non-time keys (e.g. `schoolDay`) hold
+// per-day metadata and must be filtered out of item iteration.
+const TIME_KEY_RE = /^\d{2}:\d{2}$/;
+function scheduleTimeKeys(sched) {
+  return Object.keys(sched || {}).filter(k => TIME_KEY_RE.test(k)).sort();
+}
+function allItems(sched) {
+  return scheduleTimeKeys(sched).flatMap(t => sched[t] || []);
+}
+
+function isWeekday(dateKey) {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  const dow = new Date(y, m - 1, d).getDay();
+  return dow >= 1 && dow <= 5;
+}
+
 /* ────────────────────────────────────────────────
    Time helpers
 ──────────────────────────────────────────────── */
@@ -277,7 +293,7 @@ function addSelectedToSlot(slot) {
    Week navigator + day preview
 ──────────────────────────────────────────────── */
 function quickStatus(schedule) {
-  const all = Object.values(schedule || {}).flat();
+  const all = allItems(schedule);
   if (!all.length) return '';
   const meals = all.filter(i => i.type === 'meal').length;
   if (meals >= 3) return 'green';
@@ -289,7 +305,7 @@ let _previewTimer;
 function showDayPreview(date, key, btn) {
   clearTimeout(_previewTimer);
   const sched    = key === state.currentDate ? state.schedule : JSON.parse(localStorage.getItem(`fuelup_day_${key}`) || '{}');
-  const all      = Object.values(sched).flat();
+  const all      = allItems(sched);
   const meals    = all.filter(i => i.type === 'meal').length;
   const snacks   = all.filter(i => i.type === 'snack' && !i.item?.water && !i.item?.treat).length;
   const treats   = all.filter(i => i.item?.treat).length;
@@ -365,14 +381,25 @@ function renderWeekNav() {
 function switchDay(key) {
   saveDay();
   loadDay(key);
-  renderWeekNav(); renderTimeline(); renderDaySummary(); evalAndRender(); scrollToNow();
+  renderWeekNav(); renderTimeline(); renderDaySummary(); renderSchoolDayToggle(); evalAndRender(); scrollToNow();
   // Load from cloud for this day
   if (sbClient && state.userId) {
     sbClient.from('fuelup_plans').select('schedule').eq('user_id', state.userId).eq('plan_date', key).maybeSingle()
       .then(({ data }) => {
-        if (data?.schedule) { state.schedule = data.schedule; saveDay(); renderTimeline(); renderDaySummary(); evalAndRender(); }
+        if (data?.schedule) { state.schedule = data.schedule; saveDay(); renderTimeline(); renderDaySummary(); renderSchoolDayToggle(); evalAndRender(); }
       }).catch(() => {});
   }
+}
+
+// Show the school-day toggle Mon-Fri, or any day where the flag is already
+// set (so users can uncheck it after a Copy Day carried the flag over).
+function renderSchoolDayToggle() {
+  const wrap = document.getElementById('schoolDayToggle');
+  const cb   = document.getElementById('schoolDay');
+  if (!wrap || !cb) return;
+  const active = !!state.schedule.schoolDay;
+  cb.checked = active;
+  wrap.style.display = (isWeekday(state.currentDate) || active) ? '' : 'none';
 }
 
 /* ────────────────────────────────────────────────
@@ -424,7 +451,7 @@ function confirmCopy() {
 ──────────────────────────────────────────────── */
 function renderDaySummary() {
   const el = document.getElementById('daySummary');
-  const all = Object.values(state.schedule).flat();
+  const all = allItems(state.schedule);
   if (!all.length) { el.innerHTML = '<span class="ds-pill empty-day">Drag or tap items to plan your day</span>'; return; }
   const meals    = all.filter(i => i.type === 'meal').length;
   const snacks   = all.filter(i => i.type === 'snack' && !i.item.treat && !i.item.water).length;
@@ -726,7 +753,7 @@ function scrollToNow() {
 ──────────────────────────────────────────────── */
 function calcFoodGroups() {
   const totals = { grains: 0, veggies: 0, fruit: 0, dairy: 0, protein: 0 };
-  Object.values(state.schedule).flat().forEach(placed => {
+  allItems(state.schedule).forEach(placed => {
     const fg = placed.item?.fg;
     if (!fg) return;
     Object.keys(totals).forEach(k => { totals[k] = Math.round((totals[k] + (fg[k] || 0)) * 100) / 100; });
@@ -780,7 +807,7 @@ function mealPeriod(slotTime) {
    Compliance engine
 ──────────────────────────────────────────────── */
 function getAllItems() {
-  return Object.keys(state.schedule).sort().flatMap(t => (state.schedule[t] || []).map(p => ({ time: t, ...p })));
+  return scheduleTimeKeys(state.schedule).flatMap(t => (state.schedule[t] || []).map(p => ({ time: t, ...p })));
 }
 
 function evaluate() {
@@ -811,14 +838,21 @@ function evaluate() {
   if (mc > 0 && mc < 3) tips.push(`Add ${3-mc} more meal${3-mc>1?'s':''} — consistent protein is key for muscle`);
 
   // ── No 4 hr gap ────────────────────────────────
+  // School days: forgive the AM gap between breakfast and lunch (no snacks
+  // allowed at school). Other gaps (lunch→dinner, etc.) still enforced.
+  const isSchoolDay = !!state.schedule.schoolDay;
   if (fuel.length >= 2) {
     let worst = 0, from = null, to = null;
     for (let i = 1; i < fuel.length; i++) {
+      const prevPeriod = mealPeriod(fuel[i-1].time);
+      const currPeriod = mealPeriod(fuel[i].time);
+      if (isSchoolDay && prevPeriod === 'breakfast' && currPeriod === 'lunch') continue;
       const g = toMin(fuel[i].time) - toMin(fuel[i-1].time);
       if (g > worst) { worst = g; from = fuel[i-1].time; to = fuel[i].time; }
     }
     const pass = worst <= 240;
-    rules.push({ pass, label: 'No 4+ hour gap', desc: pass ? 'Consistent fueling ✓' : `Gap ${fmt(from)} → ${fmt(to)} — add a snack` });
+    const label = isSchoolDay ? 'No 4+ hour gap (school day — AM snack skipped)' : 'No 4+ hour gap';
+    rules.push({ pass, label, desc: pass ? 'Consistent fueling ✓' : `Gap ${fmt(from)} → ${fmt(to)} — add a snack` });
     if (!pass) tips.push(`Long gap ${fmt(from)}–${fmt(to)} — add a snack around ${fmt(fromMin(Math.round((toMin(from)+toMin(to))/2)))}`);
   }
 
@@ -838,7 +872,7 @@ function evaluate() {
   // ── Meal balance (per slot) ────────────────────
   // Combine ALL meals + sides in a slot so mixing items (e.g. Pancakes + Eggs)
   // is evaluated as a whole rather than just the first meal found.
-  Object.keys(state.schedule).sort().forEach(slot => {
+  scheduleTimeKeys(state.schedule).forEach(slot => {
     const slotItems = state.schedule[slot] || [];
     const slotMeals = slotItems.filter(i => i.type === 'meal');
     if (!slotMeals.length) return;
@@ -1059,6 +1093,13 @@ async function init() {
     state.trackHydration = e.target.checked; saveSettings(); evalAndRender();
   });
 
+  // School day toggle — forgives the breakfast → lunch gap on school days
+  document.getElementById('schoolDay').addEventListener('change', e => {
+    if (e.target.checked) state.schedule.schoolDay = true;
+    else                  delete state.schedule.schoolDay;
+    save(); evalAndRender();
+  });
+
   // Palette search
   const searchInput = document.getElementById('paletteSearch');
   const searchClear = document.getElementById('paletteSearchClear');
@@ -1111,11 +1152,12 @@ async function init() {
   renderPalette();
   renderTimeline();
   renderDaySummary();
+  renderSchoolDayToggle();
   evalAndRender();
   setTimeout(scrollToNow, 100);
 
   // Load cloud data in background, refresh if newer
-  if (sbClient) await loadFromSupabase().then(() => { renderTimeline(); renderDaySummary(); renderWeekNav(); evalAndRender(); }).catch(() => {});
+  if (sbClient) await loadFromSupabase().then(() => { renderTimeline(); renderDaySummary(); renderWeekNav(); renderSchoolDayToggle(); evalAndRender(); }).catch(() => {});
 }
 
 document.addEventListener('DOMContentLoaded', init);
