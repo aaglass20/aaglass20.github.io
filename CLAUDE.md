@@ -106,6 +106,21 @@ fg: { grains, veggies, fruit, dairy, protein }
 - Omit keys with 0 value to keep lines short; summing code handles missing keys as 0
 - Treats and plain water get no `fg` property
 
+**Fractional / "mini" portion items:**
+When a food is a smaller-than-standard portion (e.g. mini muffin, mini bagel, cocktail meatballs), add it as a separate item — do **not** overload the full-size item's `fg` values. Convention:
+- Set `fg` to the actual fractional value (½ of the full-size item's grains/protein/etc.)
+- Add a `note` that tells the athlete how many to grab for a full serving — e.g. `note: '½ serving each — grab 2 for a full serving'`
+- Keep flags (`protein`, `carbs`, etc.) honest based on the fractional portion — a mini bagel alone doesn't clear the 7g protein bar, so `protein: false` even if the full bagel + cream cheese entry has `protein: true`
+- Compliance engine and totals sum linearly, so dropping 2 minis produces the same food-group credit as 1 full item — no special-case code needed
+
+Examples: `mini-muffin` (`grains: 1`, half of `muffin`'s 2), `mini-bagel` (`grains: 1.5`, half of `bagel-cream`'s 3), `side-cream-cheese` (`dairy: 0.25`, a solo cream-cheese schmear for any bagel).
+
+**SDET note — test coverage for fractional items:**
+- **P0 positive:** dropping 2 mini muffins onto breakfast totals grains = 2 (matches 1 full muffin), and 1 mini bagel + 1 side-cream-cheese totals grains = 1.5, dairy = 0.25
+- **P1 edge:** the `note` field renders in the palette card so the "grab 2" cue is visible — regression watch on any palette-render refactor
+- **Boundary:** the fractional item alone should NOT satisfy a compliance rule that a full-size item would (e.g. breakfast-balance still needs a protein source; 1 mini muffin alone shouldn't fool the meal-balance check into passing)
+- **Negative:** removing one of a paired mini item (e.g. deleting 1 of 2 mini muffins) should halve the food-group total without triggering any other rule flip
+
 **Daily goals (USDA MyPlate, ~2,000 cal / active 12-yr-old):**
 `DAILY_GOALS = { grains: 6, veggies: 2.5, fruit: 2, dairy: 3, protein: 5.5 }` — defined in `js/app.js`
 
