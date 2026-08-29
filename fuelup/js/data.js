@@ -97,6 +97,13 @@ const MEALS = [
     fg: { grains: 2, protein: 2, fruit: 0.25 } },
   { id: 'chicken-noodle', name: 'Chicken Noodle Soup',     emoji: '🍲', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,  allDay: true,
     fg: { grains: 1, protein: 2, veggies: 0.5 } },
+  { id: 'rice-bowl',      name: 'Rice Bowl',               emoji: '🍚', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,  allDay: true,
+    fg: { grains: 2, protein: 2, veggies: 0.5 } },
+  { id: 'ham-trky-wrap',  name: 'Ham & Turkey Wrap',       emoji: '🌯', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,  allDay: true,
+    note: 'Ham, turkey, cheese & lettuce in a tortilla',
+    fg: { grains: 2, protein: 3, dairy: 0.67, veggies: 0.25 } },
+  { id: 'cheesy-pasta',   name: 'Cheesy Pasta',            emoji: '🍝', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false, dairy: true,  allDay: true,
+    fg: { grains: 2.5, dairy: 1.5 } },
 
   // ── Dinner ─────────────────────────────────────────────────────────────────
   { id: 'salmon',         name: 'Salmon + Veggies',          emoji: '🐟', mealType: 'dinner', protein: true,  carbs: false, veggie: true,
@@ -123,6 +130,27 @@ const MEALS = [
     fg: { grains: 2, dairy: 1.5, protein: 3 } },
   { id: 'chicken-nugg',  name: 'Chicken Nuggets',           emoji: '🍗', mealType: 'dinner', protein: true,  carbs: true,  veggie: false,
     fg: { grains: 1, protein: 3 } },
+  { id: 'steak',         name: 'Steak',                     emoji: '🥩', mealType: 'dinner', protein: true,  carbs: false, veggie: false, allDay: true,
+    fg: { protein: 5 } },
+  { id: 'hotdog',        name: 'Hotdog',                    emoji: '🌭', mealType: 'dinner', protein: true,  carbs: true,  veggie: false, allDay: true,
+    fg: { grains: 1, protein: 2 } },
+  // ── Soups ────────────────────────────────────────────────────────────────────
+  { id: 'chkn-paprikash', name: 'Chicken Paprikash Soup',  emoji: '🍲', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
+    fg: { protein: 3, veggies: 1, dairy: 0.5 } },
+  { id: 'beef-stew',     name: 'Beef Stew',                 emoji: '🍲', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
+    fg: { protein: 3, veggies: 1 } },
+  { id: 'minestrone',    name: 'Minestrone Soup',           emoji: '🍲', mealType: 'dinner', protein: false, carbs: true,  veggie: true,  allDay: true,
+    fg: { grains: 1, veggies: 1.5 } },
+  { id: 'lentil-soup',   name: 'Lentil Soup',               emoji: '🍲', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
+    fg: { protein: 3, veggies: 1 } },
+  { id: 'broccoli-cheddar', name: 'Broccoli Cheddar Soup', emoji: '🥦', mealType: 'dinner', protein: true,  carbs: false, veggie: true,  allDay: true, dairy: true,
+    fg: { veggies: 1, dairy: 1 } },
+  { id: 'french-onion',  name: 'French Onion Soup',         emoji: '🧅', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true, dairy: true,
+    fg: { grains: 1, veggies: 1, dairy: 0.5 } },
+  { id: 'clam-chowder',  name: 'Clam Chowder',              emoji: '🦪', mealType: 'dinner', protein: true,  carbs: true,  veggie: false, allDay: true, dairy: true,
+    fg: { protein: 2, veggies: 0.5, dairy: 0.5 } },
+  { id: 'split-pea',     name: 'Split Pea Soup',            emoji: '🫛', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
+    fg: { protein: 2, veggies: 1 } },
 ];
 
 const SNACKS = [
@@ -195,6 +223,13 @@ const SNACKS = [
   { id: 'chips',         name: 'Chips',                      emoji: '🥨', treat: true,  protein: false, carbs: true  },
   { id: 'soda',          name: 'Soda (small)',                emoji: '🥤', treat: true,  protein: false, carbs: true  },
   { id: 'brownie',       name: 'Brownie',                    emoji: '🍫', treat: true,  protein: false, carbs: true  },
+  { id: 'brigadeiro',    name: 'Brigadeiro',                 emoji: '🍫', treat: true,  protein: false, carbs: true, note: 'Brazilian chocolate truffle' },
+  { id: 'shirley-temple', name: 'Shirley Temple',            emoji: '🍹', treat: true,  protein: false, carbs: true  },
+  { id: 'macarons',      name: 'Macarons',                   emoji: '🌸', treat: true,  protein: false, carbs: true  },
+  { id: 'birthday-cake', name: 'Birthday Cake',              emoji: '🎂', treat: true,  protein: false, carbs: true  },
+  { id: 'ice-cream-cake', name: 'Ice Cream Cake',            emoji: '🍰', treat: true,  protein: false, carbs: true  },
+  { id: 'smores',        name: "S'mores",                    emoji: '🏕️', treat: true,  protein: false, carbs: true  },
+  { id: 'slushie',       name: 'Slushie',                    emoji: '🧊', treat: true,  protein: false, carbs: true  },
 ];
 
 // Sides attach to a meal slot — don't count as snacks, contribute to meal balance.
@@ -244,6 +279,10 @@ const SIDES = [
   { id: 'side-grilled-potato', name: 'Grilled Sliced Potatoes', emoji: '🥔', carbs: true, veggie: true, protein: true, fg: { veggies: 1, protein: 0.5 } },
   { id: 'side-bread',      name: 'Dinner Roll / Bread',  emoji: '🍞', carbs: true,  fg: { grains: 1   } },
   { id: 'side-rice',       name: 'Side of Rice',         emoji: '🍚', carbs: true,  fg: { grains: 1.5 } },
+  { id: 'side-tater-tots', name: 'Tater Tots',           emoji: '🥔', carbs: true,  fg: { veggies: 0.5 } },
+  { id: 'side-hash-browns', name: 'Hash Browns',         emoji: '🥔', carbs: true,  fg: { veggies: 0.5 } },
+  { id: 'side-garbanzo',   name: 'Garbanzo Beans',       emoji: '🫘', veggie: true, protein: true, fg: { protein: 2, veggies: 0.5 } },
+  { id: 'side-ketchup',    name: 'Ketchup',              emoji: '🍅', fg: { veggies: 0.1 } },
 ];
 
 const WORKOUTS = [
