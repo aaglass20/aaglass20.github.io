@@ -1041,17 +1041,20 @@ body {
   .current-date { display: none; }
   .header-right { gap: 6px; }
 
-  /* ── Settings bar ── */
+  /* ── Settings bar: single scrollable row ── */
   .settings-bar {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 7px 12px;
-    row-gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    padding: 6px 12px;
   }
-  .setting-group { font-size: 12px; }
+  .settings-bar::-webkit-scrollbar { display: none; }
+  .setting-group { font-size: 12px; flex-shrink: 0; }
   .setting-group input[type="time"] { font-size: 12px; }
-  .setting-toggle { font-size: 12px; }
-  .btn-copy, .btn-clear, .btn-sync { padding: 5px 10px; font-size: 11px; }
+  .setting-toggle { font-size: 12px; flex-shrink: 0; }
+  .btn-copy, .btn-clear, .btn-sync { padding: 5px 10px; font-size: 11px; flex-shrink: 0; }
 
   /* ── Week nav — hide label, shrink everything to fit 7 days ── */
   .week-nav    { gap: 2px; padding: 4px 6px; overflow-x: hidden; }
@@ -1090,7 +1093,7 @@ body {
 
   /* ── Timeline ── */
   .timeline-wrapper { overflow: visible; min-height: 60dvh; }
-  .timeline         { overflow: visible; max-height: none; }
+  .timeline         { overflow: visible; max-height: none; padding-bottom: 108px; }
   .time-slot        { min-height: 56px; }
 
   /* ── Compliance panel — bottom sheet ── */
@@ -1117,7 +1120,7 @@ body {
   /* ── Slot items — bigger touch targets ── */
   .slot-item { padding: 6px 10px; font-size: 13px; }
   .si-emoji  { font-size: 16px; }
-  .si-name   { max-width: 130px; }
+  .si-name   { max-width: 150px; }
 
   /* ── Day summary ── */
   .day-summary { padding: 4px 8px; }
@@ -1131,5 +1134,31 @@ body {
   .help-modal-header { padding: 14px 16px 10px; }
   .help-grid { padding: 10px 16px; }
   .help-modal-footer { padding: 8px 16px 12px; }
+
+  /* ── Drag handles on bottom sheets ── */
+  .palette.mobile-open::before,
+  .compliance-panel.mobile-open::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+  }
+  .palette.mobile-open::before          { background: rgba(255,255,255,0.22); }
+  .compliance-panel.mobile-open::before { background: rgba(0,0,0,0.12); }
+
+  /* ── Mobile backdrop ── */
+  .mobile-backdrop.active { display: block; }
+}
+
+/* ── Mobile backdrop (hidden by default everywhere) ── */
+.mobile-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 110;
 }
 

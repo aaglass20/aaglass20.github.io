@@ -16,7 +16,7 @@ const FG_DEFS = [
 ──────────────────────────────────────────────── */
 let state = {
   currentDate:    todayKey(),
-  weekStart:      sundayOf(new Date()),  // Date — Sunday of the displayed week
+  weekStart:      yesterdayDate(),  // Date — start of displayed 7-day window (yesterday → +6)
   wakeTime:       '07:00',
   bedTime:        '21:30',
   trackHydration: true,
@@ -29,6 +29,7 @@ let state = {
 
 let sbClient = null;
 let paletteQuery = '';
+let pendingSlot  = null;   // slot-first flow: which slot the palette was opened for
 let syncDebounceTimer = null;
 const slotSortables = new Map();
 
@@ -137,6 +138,13 @@ function sundayOf(d) {
   s.setHours(0, 0, 0, 0);
   s.setDate(s.getDate() - s.getDay());
   return s;
+}
+
+function yesterdayDate() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 function getWeekDates() {
@@ -261,6 +269,13 @@ function showToast(msg, dur = 2800) {
    Tap-to-add mode
 ──────────────────────────────────────────────── */
 function selectItem(type, item, el) {
+  if (pendingSlot) {
+    // Slot-first flow: palette was opened by tapping a slot — add directly
+    state.selectedItem = { type, item };
+    addSelectedToSlot(pendingSlot);
+    closeMobilePanels();
+    return;
+  }
   if (state.selectedItem?.item.id === item.id && state.selectedItem?.type === type) {
     clearSelection(); return;
   }
@@ -269,10 +284,13 @@ function selectItem(type, item, el) {
   el.classList.add('selected-for-add');
   document.getElementById('tlHeaderLabel').textContent = `Tap a time slot to add "${item.name}"`;
   showToast(`Tap a time slot to add ${item.name}`, 5000);
+  // On mobile close the palette so the timeline is visible for the slot tap
+  if (window.innerWidth <= 768) closeMobilePanels();
 }
 
 function clearSelection() {
   state.selectedItem = null;
+  pendingSlot = null;
   document.querySelectorAll('.palette-item.selected-for-add').forEach(e => e.classList.remove('selected-for-add'));
   document.getElementById('tlHeaderLabel').textContent = 'Your Day — drag or tap to add';
 }
@@ -429,7 +447,8 @@ function renderCopyGrid() {
 }
 
 function confirmCopy() {
-  if (!copySelections.size) { closeCopyModal(); return; }
+  const n = copySelections.size;
+  if (!n) { closeCopyModal(); return; }
   const snap = JSON.parse(JSON.stringify(state.schedule));
   copySelections.forEach(key => {
     localStorage.setItem(`fuelup_day_${key}`, JSON.stringify(snap));
@@ -441,8 +460,8 @@ function confirmCopy() {
       ).catch(() => {});
     }
   });
-  closeCopyModal(); renderWeekNav();
-  const n = copySelections.size;
+  closeCopyModal();
+  renderWeekNav();
   showToast(`✅ Copied to ${n} day${n!==1?'s':''}!`);
 }
 
@@ -711,8 +730,15 @@ function renderTimeline() {
       zone.appendChild(chip);
     });
 
-    // Tap-to-add (click on zone when an item is selected)
-    zone.addEventListener('click', () => { if (state.selectedItem) addSelectedToSlot(slot); });
+    // Tap a slot: add selected item (item-first) or open palette for this slot (slot-first on mobile)
+    zone.addEventListener('click', () => {
+      if (state.selectedItem) { addSelectedToSlot(slot); return; }
+      if (window.innerWidth <= 768) {
+        pendingSlot = slot;
+        document.getElementById('tlHeaderLabel').textContent = `Pick food for ${fmt(slot)}`;
+        openMobilePanel(document.getElementById('palette'));
+      }
+    });
 
     // HTML5 DnD fallback (when SortableJS not available)
     if (typeof Sortable === 'undefined') {
@@ -1026,23 +1052,47 @@ function evalAndRender() {
 }
 
 /* ────────────────────────────────────────────────
-   Mobile panel toggles
+   Mobile panel helpers (module-scope so slot
+   click handlers can call them too)
 ──────────────────────────────────────────────── */
+function openMobilePanel(panel) {
+  ['palette', 'compliancePanel'].forEach(id =>
+    document.getElementById(id).classList.remove('mobile-open')
+  );
+  panel.classList.add('mobile-open');
+  document.getElementById('mobileBackdrop').classList.add('active');
+}
+
+function closeMobilePanels() {
+  document.getElementById('palette').classList.remove('mobile-open');
+  document.getElementById('compliancePanel').classList.remove('mobile-open');
+  document.getElementById('mobileBackdrop').classList.remove('active');
+  if (pendingSlot) {
+    pendingSlot = null;
+    document.getElementById('tlHeaderLabel').textContent = 'Your Day — drag or tap to add';
+  }
+}
+
 function initMobileToggles() {
-  // FAB opens palette
+  const palette   = document.getElementById('palette');
+  const compPanel = document.getElementById('compliancePanel');
+
   document.getElementById('mobileFab').addEventListener('click', () => {
-    const p = document.getElementById('palette');
-    p.classList.toggle('mobile-open');
-    if (p.classList.contains('mobile-open')) showToast('Tap an item, then tap a time slot to add it', 4000);
+    if (palette.classList.contains('mobile-open')) { closeMobilePanels(); clearSelection(); return; }
+    pendingSlot = null; // FAB-opened palette is item-first, not slot-first
+    openMobilePanel(palette);
+    showToast('Tap a food to select it, then tap a time slot', 4000);
   });
 
-  // Check FAB opens compliance panel
   document.getElementById('mobileCheckFab').addEventListener('click', () => {
-    document.getElementById('compliancePanel').classList.toggle('mobile-open');
+    if (compPanel.classList.contains('mobile-open')) { closeMobilePanels(); return; }
+    openMobilePanel(compPanel);
   });
 
-  document.getElementById('compliancePanelClose').addEventListener('click', () => {
-    document.getElementById('compliancePanel').classList.remove('mobile-open');
+  document.getElementById('compliancePanelClose').addEventListener('click', closeMobilePanels);
+  document.getElementById('mobileBackdrop').addEventListener('click', () => {
+    closeMobilePanels();
+    clearSelection();
   });
 }
 
