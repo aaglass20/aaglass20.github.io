@@ -230,6 +230,17 @@ function loadDay(key) {
   state.currentDate = key;
   try { state.schedule = JSON.parse(localStorage.getItem(`fuelup_day_${key}`) || '{}'); }
   catch { state.schedule = {}; }
+  applyDayTimes();
+}
+
+// Apply per-day wake/bed times if stored, otherwise keep current global defaults.
+function applyDayTimes() {
+  const wt = state.schedule.wakeTime || state.wakeTime;
+  const bt = state.schedule.bedTime  || state.bedTime;
+  state.wakeTime = wt;
+  state.bedTime  = bt;
+  document.getElementById('wakeTime').value = wt;
+  document.getElementById('bedTime').value  = bt;
 }
 
 function loadFavorites() {
@@ -404,7 +415,7 @@ function switchDay(key) {
   if (sbClient && state.userId) {
     sbClient.from('fuelup_plans').select('schedule').eq('user_id', state.userId).eq('plan_date', key).maybeSingle()
       .then(({ data }) => {
-        if (data?.schedule) { state.schedule = data.schedule; saveDay(); renderTimeline(); renderDaySummary(); renderSchoolDayToggle(); evalAndRender(); }
+        if (data?.schedule) { state.schedule = data.schedule; applyDayTimes(); saveDay(); renderTimeline(); renderDaySummary(); renderSchoolDayToggle(); evalAndRender(); }
       }).catch(() => {});
   }
 }
@@ -1130,12 +1141,16 @@ async function init() {
     });
   });
 
-  // Wake / bed time
+  // Wake / bed time — saved per-day in schedule; global settings act as default for unset days
   document.getElementById('wakeTime').addEventListener('change', e => {
-    state.wakeTime = e.target.value; save(); syncSettingsToSupabase(); renderTimeline(); evalAndRender();
+    state.wakeTime = e.target.value;
+    state.schedule.wakeTime = e.target.value;
+    save(); renderTimeline(); evalAndRender();
   });
   document.getElementById('bedTime').addEventListener('change', e => {
-    state.bedTime = e.target.value; save(); syncSettingsToSupabase(); renderTimeline(); evalAndRender();
+    state.bedTime = e.target.value;
+    state.schedule.bedTime = e.target.value;
+    save(); renderTimeline(); evalAndRender();
   });
 
   // Hydration toggle
