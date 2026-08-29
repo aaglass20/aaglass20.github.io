@@ -1,0 +1,326 @@
+{
+  "lastUpdated": "2026 — NBC Sports Draft Kit v6",
+  "leagueType": "PPR Points League",
+  "scoringType": "PPR",
+  "notes": [
+    "Rankings sourced from NBC Sports / Rotoworld 2026 Fantasy Football Draft Kit.",
+    "Scoring: Pass TD 4pts | Rush+Rec TD 6pts | Reception 1pt (PPR) | Rush+Rec yd 0.1pt | Int -2pt",
+    "Rookie flags are for players in their first NFL season.",
+    "Player object flags: rookie, bust, injuryRisk, tag:'sleeper'"
+  ],
+  "positions": {
+    "QB": {
+      "title": "Quarterback",
+      "icon": "🏈",
+      "note": "QB is deep — wait until rounds 4–6 unless Allen/Jackson/Daniels fall to you.",
+      "sleepers": ["Drake Maye", "Caleb Williams", "Jaxson Dart"],
+      "tiers": {
+        "Tier 1 — The Untouchables": [
+          "Josh Allen",
+          "Lamar Jackson"
+        ],
+        "Tier 2 — The Stars": [
+          "Jayden Daniels",
+          "Joe Burrow",
+          { "name": "Drake Maye", "tag": "sleeper" }
+        ],
+        "Tier 3 — The Strong Starters": [
+          "Jalen Hurts",
+          "Dak Prescott",
+          "Justin Herbert",
+          "Patrick Mahomes"
+        ],
+        "Tier 4 — The Mid-Range QBs": [
+          { "name": "Caleb Williams", "tag": "sleeper" },
+          "Brock Purdy",
+          "Trevor Lawrence",
+          "Jordan Love",
+          "Bo Nix"
+        ],
+        "Tier 5 — The Streamers": [
+          "Matthew Stafford",
+          "Kyler Murray",
+          "Baker Mayfield",
+          "Tyler Shough",
+          { "name": "Jaxson Dart", "tag": "sleeper", "rookie": true },
+          { "name": "Cam Ward", "rookie": true }
+        ],
+        "Tier 6 — Deep / Two-QB Leagues": [
+          "Jared Goff",
+          "C.J. Stroud",
+          "Sam Darnold",
+          "Daniel Jones",
+          "Fernando Mendoza",
+          { "name": "Bryce Young", "tag": "sleeper" }
+        ]
+      }
+    },
+    "RB": {
+      "title": "Running Back",
+      "icon": "🏃",
+      "note": "RB is thin at the top — lock in Tier 1–2 backs early. Rookie depth is exceptional in 2026.",
+      "sleepers": ["TreVeyon Henderson", "Jadarian Price", "Bhayshul Tuten"],
+      "tiers": {
+        "Tier 1 — The Workhorses": [
+          "Jahmyr Gibbs",
+          "Bijan Robinson",
+          "Christian McCaffrey"
+        ],
+        "Tier 2 — The Near-Elite": [
+          "Jonathan Taylor",
+          "James Cook",
+          "Kenneth Walker III",
+          "Omarion Hampton",
+          { "name": "Ashton Jeanty", "rookie": true }
+        ],
+        "Tier 3 — The RB2 Studs": [
+          "Saquon Barkley",
+          "De'Von Achane",
+          "Derrick Henry",
+          "Chase Brown",
+          { "name": "Jeremiyah Love", "tag": "sleeper", "rookie": true }
+        ],
+        "Tier 4 — The Solid RB2s": [
+          "Breece Hall",
+          "Kyren Williams",
+          "Travis Etienne",
+          "Josh Jacobs",
+          "Javonte Williams",
+          "D'Andre Swift",
+          "Bucky Irving"
+        ],
+        "Tier 5 — The RB3s / Handcuffs": [
+          "David Montgomery",
+          { "name": "Bhayshul Tuten", "tag": "sleeper", "rookie": true },
+          { "name": "Quinshon Judkins", "rookie": true },
+          { "name": "TreVeyon Henderson", "tag": "sleeper", "rookie": true },
+          { "name": "Jadarian Price", "tag": "sleeper", "rookie": true },
+          { "name": "Cam Skattebo", "rookie": true },
+          "Jaylen Warren",
+          "Rhamondre Stevenson",
+          "Tony Pollard"
+        ],
+        "Tier 6 — Deep / Handcuffs": [
+          "Blake Corum",
+          "Chuba Hubbard",
+          "RJ Harvey",
+          "Rico Dowdle",
+          { "name": "Kyle Monangai", "rookie": true },
+          "Rachaad White",
+          "Aaron Jones",
+          "J.K. Dobbins",
+          "Kyren Williams"
+        ]
+      }
+    },
+    "WR": {
+      "title": "Wide Receiver",
+      "icon": "🙌",
+      "note": "WR depth extends far into the draft. Rookie class is loaded — don't overpay for aging veterans.",
+      "sleepers": ["Carnell Tate", "Jordyn Tyson", "Travis Hunter"],
+      "tiers": {
+        "Tier 1 — The Elites": [
+          "Ja'Marr Chase",
+          "Puka Nacua",
+          { "name": "Jaxon Smith-Njigba", "tag": "sleeper" }
+        ],
+        "Tier 2 — The Stars": [
+          "Justin Jefferson",
+          "Amon-Ra St. Brown",
+          "CeeDee Lamb",
+          "A.J. Brown"
+        ],
+        "Tier 3 — The High-End WR2s": [
+          "Drake London",
+          "Nico Collins",
+          "George Pickens",
+          { "name": "Tetairoa McMillan", "rookie": true },
+          { "name": "Emeka Egbuka", "rookie": true },
+          "Rashee Rice"
+        ],
+        "Tier 4 — The Solid WR2s": [
+          "Malik Nabers",
+          "Ladd McConkey",
+          "DeVonta Smith",
+          "Zay Flowers",
+          { "name": "Luther Burden III", "tag": "sleeper", "rookie": true },
+          "Garrett Wilson",
+          "Jaylen Waddle",
+          "Tee Higgins",
+          "Chris Olave"
+        ],
+        "Tier 5 — The WR3s / Upside": [
+          "Terry McLaurin",
+          "Jameson Williams",
+          { "name": "Carnell Tate", "tag": "sleeper", "rookie": true },
+          { "name": "Jordyn Tyson", "tag": "sleeper", "rookie": true },
+          "Marvin Harrison Jr.",
+          "Mike Evans",
+          "Rome Odunze",
+          "Davante Adams",
+          "Brian Thomas Jr.",
+          "Christian Watson"
+        ],
+        "Tier 6 — Deep / Lottery Tickets": [
+          "Parker Washington",
+          "DK Metcalf",
+          { "name": "Makai Lemon", "rookie": true },
+          { "name": "Travis Hunter", "tag": "sleeper", "rookie": true },
+          { "name": "Matthew Golden", "rookie": true },
+          { "name": "KC Concepcion", "rookie": true },
+          { "name": "Jayden Higgins", "rookie": true },
+          "Josh Downs",
+          "Jayden Reed",
+          "Quentin Johnston",
+          "Alec Pierce",
+          "Chris Godwin",
+          "Ricky Pearsall",
+          "Courtland Sutton",
+          "Xavier Worthy",
+          { "name": "Jalen Coker", "rookie": true }
+        ]
+      }
+    },
+    "TE": {
+      "title": "Tight End",
+      "icon": "🎯",
+      "note": "Two-tier position with a massive cliff after #3. Missing Tier 1 means streaming — plan accordingly.",
+      "sleepers": ["Harold Fannin Jr.", "Tyler Warren", "Oronde Gadsden II"],
+      "tiers": {
+        "Tier 1 — The Positional Advantage": [
+          "Brock Bowers",
+          "Trey McBride"
+        ],
+        "Tier 2 — The Near-Elite": [
+          { "name": "Colston Loveland", "rookie": true },
+          { "name": "Harold Fannin Jr.", "tag": "sleeper", "rookie": true },
+          { "name": "Tyler Warren", "tag": "sleeper", "rookie": true }
+        ],
+        "Tier 3 — The Reliable TE1s": [
+          "Tucker Kraft",
+          "Sam LaPorta",
+          "Kyle Pitts"
+        ],
+        "Tier 4 — The TE2s": [
+          "George Kittle",
+          "Dalton Kincaid",
+          "Travis Kelce",
+          "Mark Andrews",
+          "Dallas Goedert",
+          { "name": "Oronde Gadsden II", "tag": "sleeper", "rookie": true }
+        ],
+        "Tier 5 — The Streamers": [
+          "Jake Ferguson",
+          "Isaiah Likely",
+          "Juwan Johnson",
+          "Chig Okonkwo",
+          "Hunter Henry",
+          "T.J. Hockenson",
+          "Brenton Strange"
+        ]
+      }
+    },
+    "K": {
+      "title": "Kicker",
+      "icon": "🥾",
+      "note": "Wait until your last 1-2 picks. Target kickers on fast-paced, high-volume offenses.",
+      "sleepers": ["Will Reichard", "Jason Myers"],
+      "tiers": {
+        "Tier 1 — The Must-Start": [
+          "Brandon Aubrey",
+          "Cameron Dicker",
+          "Ka'imi Fairbairn"
+        ],
+        "Tier 2 — The Strong Options": [
+          "Jason Myers",
+          "Will Reichard",
+          "Harrison Butker",
+          "Eddy Pineiro"
+        ],
+        "Tier 3 — The Solid Streamers": [
+          "Evan McPherson",
+          "Harrison Mevis",
+          "Jake Bates",
+          "Nick Folk",
+          "Tyler Bass"
+        ]
+      }
+    },
+    "DST": {
+      "title": "Defense / ST",
+      "icon": "🛡️",
+      "note": "Stream DST weekly — matchups matter more than talent. Draft one solid floor option, then roster-swap.",
+      "sleepers": ["Cleveland Browns", "New England Patriots"],
+      "tiers": {
+        "Tier 1 — Lock It In": [
+          "Philadelphia Eagles",
+          "Kansas City Chiefs",
+          "San Francisco 49ers"
+        ],
+        "Tier 2 — Strong Floor": [
+          "Baltimore Ravens",
+          "Houston Texans",
+          { "name": "Cleveland Browns", "tag": "sleeper" }
+        ],
+        "Tier 3 — Schedule-Dependent": [
+          "Dallas Cowboys",
+          "Pittsburgh Steelers",
+          "Los Angeles Chargers",
+          { "name": "New England Patriots", "tag": "sleeper" },
+          "Denver Broncos"
+        ],
+        "Tier 4 — Deep Streamers": [
+          "Detroit Lions",
+          "Atlanta Falcons",
+          "Las Vegas Raiders",
+          "Minnesota Vikings",
+          "Cincinnati Bengals"
+        ]
+      }
+    }
+  },
+  "rookies": [
+    { "name": "Ashton Jeanty",       "pos": "RB",  "team": "LV",  "note": "Elite RB prospect — RB1 upside, ADP reflects it" },
+    { "name": "Jeremiyah Love",       "pos": "RB",  "team": "ARI", "note": "Workhorse upside in ARI — buy if McCaffrey handcuff falls" },
+    { "name": "Emeka Egbuka",         "pos": "WR",  "team": "TB",  "note": "Separates from the slot, immediate target share" },
+    { "name": "Tetairoa McMillan",    "pos": "WR",  "team": "CAR", "note": "Big-bodied WR1 talent, Bryce Young's top target" },
+    { "name": "Luther Burden III",    "pos": "WR",  "team": "CHI", "note": "After-the-catch monster, Caleb Williams' safety valve" },
+    { "name": "Colston Loveland",     "pos": "TE",  "team": "CHI", "note": "Immediate role in CHI — Tier 2 TE upside" },
+    { "name": "Harold Fannin Jr.",    "pos": "TE",  "team": "CLE", "note": "Late-round steal — CLE needs pass catchers badly" },
+    { "name": "Tyler Warren",         "pos": "TE",  "team": "IND", "note": "Big target in IND offense, Daniel Jones' safety net" },
+    { "name": "Carnell Tate",         "pos": "WR",  "team": "TEN", "note": "Cam Ward's go-to receiver — high upside if TEN offense clicks" },
+    { "name": "Jordyn Tyson",         "pos": "WR",  "team": "NO",  "note": "Big play receiver, deep sleeper in NO" },
+    { "name": "Travis Hunter",        "pos": "WR",  "team": "JAX", "note": "Heisman winner, two-way star — immediate WR role in JAX" },
+    { "name": "TreVeyon Henderson",   "pos": "RB",  "team": "NE",  "note": "Pass-catching specialist — PPR upside as Drake Maye's RB" },
+    { "name": "Jadarian Price",       "pos": "RB",  "team": "SEA", "note": "Stealth sleeper in SEA's backfield — dart throw value" },
+    { "name": "Cam Skattebo",         "pos": "RB",  "team": "NYG", "note": "Bulldozer runner — goal-line upside for NYG" },
+    { "name": "Jaxson Dart",          "pos": "QB",  "team": "NYG", "note": "Starting job in NY — two-QB league value, big-upside dart" },
+    { "name": "Cam Ward",             "pos": "QB",  "team": "TEN", "note": "TEN starter — streaming upside if offense develops" },
+    { "name": "Bhayshul Tuten",       "pos": "RB",  "team": "JAX", "note": "Explosive back in JAX — solid PPR value if role expands" },
+    { "name": "Quinshon Judkins",     "pos": "RB",  "team": "CLE", "note": "Shared backfield in CLE — best-case RB2 finish" }
+  ],
+  "busts": [
+    { "name": "Davante Adams",     "pos": "WR", "team": "LAR", "note": "Age 33, new team, ADP overstates his floor" },
+    { "name": "Travis Kelce",      "pos": "TE", "team": "KC",  "note": "Mahomes returning from knee injury — significant health concern" },
+    { "name": "Mike Evans",        "pos": "WR", "team": "SF",  "note": "Left TB for SF — reduced role behind better pass catchers" },
+    { "name": "Dak Prescott",      "pos": "QB", "team": "DAL", "note": "New coordinator, mediocre supporting cast, injury history" },
+    { "name": "Aaron Jones",       "pos": "RB", "team": "MIN", "note": "Age 31, limited role behind Murray-led offense" }
+  ],
+  "deepSleepers": [
+    { "name": "Jaxon Smith-Njigba", "pos": "WR", "team": "SEA", "note": "Sam Darnold + new OC could unlock massive WR1 upside" },
+    { "name": "Oronde Gadsden II",  "pos": "TE", "team": "LAC", "note": "Harbaugh loves TEs — immediate starting role, high floor" },
+    { "name": "Carnell Tate",       "pos": "WR", "team": "TEN", "note": "Cam Ward's top target — buy early before ADP rises" },
+    { "name": "Jayden Higgins",     "pos": "WR", "team": "HOU", "note": "CJ Stroud connection from college — target share sleeper" },
+    { "name": "Bhayshul Tuten",     "pos": "RB", "team": "JAX", "note": "Explosive rookie with pass-catching ability in PPR" }
+  ],
+  "handcuffs": [
+    { "starter": "Christian McCaffrey", "backup": "Kaelon Black",       "team": "SF",  "note": "CMC injury history — must-own in same league" },
+    { "starter": "Jahmyr Gibbs",        "backup": "David Montgomery",   "team": "DET", "note": "Montgomery is a RB2 on his own; Gibbs holds PPR edge" },
+    { "starter": "Jonathan Taylor",     "backup": "Emmett Johnson",     "team": "IND", "note": "Rookie backup worth a late flier" },
+    { "starter": "James Cook",          "backup": "Ray Davis",          "team": "BUF", "note": "Davis is the direct handcuff and has upside" },
+    { "starter": "Kenneth Walker III",  "backup": "Keaton Mitchell",    "team": "KC",  "note": "Walker new to KC — Mitchell carries over value" },
+    { "starter": "Ashton Jeanty",       "backup": "Mike Washington",    "team": "LV",  "note": "Jeanty carries all the value; Washington is pure bye-week" },
+    { "starter": "De'Von Achane",       "backup": "Ollie Gordon II",    "team": "MIA", "note": "Gordon is a dart throw — Achane injury history is real" },
+    { "starter": "Bijan Robinson",      "backup": "Brian Robinson Jr.", "team": "ATL", "note": "Robinson Jr. handles the goal line; buy only in deep leagues" }
+  ]
+}
