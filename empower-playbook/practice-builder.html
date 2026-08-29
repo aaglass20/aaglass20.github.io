@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice Builder — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Wizard ── */
+    .pb-wizard { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    .wizard-steps { display: flex; gap: .5rem; margin-bottom: 2.5rem; align-items: center; }
+    .wizard-step-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gray-100); color: var(--gray-400);
+      font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .2s;
+    }
+    .wizard-step-dot.active { background: var(--orange); color: #fff; }
+    .wizard-step-dot.done { background: var(--green); color: #fff; }
+    .wizard-step-line { flex: 1; height: 2px; background: var(--gray-100); }
+
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
+
+    .wizard-heading { font-size: 1.35rem; font-weight: 800; color: var(--blue); margin-bottom: .4rem; }
+    .wizard-sub { color: var(--gray-400); font-size: .95rem; margin-bottom: 1.75rem; }
+
+    .sport-picker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .sport-pick-card {
+      background: var(--white); border: 2.5px solid var(--gray-100);
+      border-radius: var(--radius); padding: 1.25rem 1rem;
+      text-align: center; cursor: pointer; transition: all .15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .sport-pick-card:hover { border-color: var(--orange); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .sport-pick-card.selected { border-color: var(--orange); background: var(--orange-light); }
+    .sport-pick-emoji { font-size: 2.25rem; display: block; margin-bottom: .5rem; }
+    .sport-pick-name { font-weight: 700; font-size: .9rem; color: var(--blue); }
+
+    .duration-pills { display: flex; flex-wrap: wrap; gap: .65rem; margin-bottom: 1.25rem; }
+    .dur-pill {
+      padding: .55rem 1.2rem; border-radius: 99px;
+      border: 2px solid var(--gray-100); background: var(--white);
+      font-weight: 600; font-size: .9rem; color: var(--gray-600);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .dur-pill:hover { border-color: var(--orange); color: var(--orange); }
+    .dur-pill.selected { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    .custom-dur-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 2rem; }
+    .custom-dur-row input {
+      width: 90px; padding: .5rem .75rem;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .9rem; font-family: inherit; color: var(--gray-700);
+    }
+    .custom-dur-row input:focus { outline: none; border-color: var(--orange); }
+
+    .warmup-choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    .warmup-choice-card {
+      padding: 1.5rem; border-radius: var(--radius); border: 2.5px solid var(--gray-100);
+      background: var(--white); text-align: center; cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm);
+    }
+    .warmup-choice-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .warmup-choice-card.selected { border-color: var(--orange); background: var(--orange-light); }
+    .warmup-choice-icon { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .warmup-choice-label { font-weight: 700; color: var(--blue); font-size: 1rem; }
+    .warmup-choice-desc { font-size: .83rem; color: var(--gray-400); margin-top: .25rem; }
+
+    .wizard-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+    .btn-wiz-back {
+      background: none; border: 2px solid var(--gray-100); color: var(--gray-600);
+      padding: .6rem 1.25rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-wiz-back:hover { border-color: var(--gray-400); }
+    .btn-wiz-next {
+      background: var(--orange); color: #fff; border: none;
+      padding: .7rem 1.75rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .95rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-wiz-next:hover { background: var(--orange-dark); }
+    .btn-wiz-next:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+
+    .summary-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.75rem 2rem; margin-bottom: 2rem; border-top: 5px solid var(--orange);
+    }
+    .summary-row { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid var(--gray-100); font-size: .95rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { color: var(--gray-400); font-weight: 500; }
+    .summary-value { color: var(--blue); font-weight: 700; }
+
+    /* ── Builder ── */
+    .pb-builder { display: none; }
+    .pb-builder.active { display: block; max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    .builder-header {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+      border-top: 5px solid var(--orange);
+    }
+    .bh-top { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .75rem; }
+    .bh-sport { display: flex; align-items: center; gap: .5rem; margin-right: auto; }
+    .bh-sport-icon { font-size: 1.75rem; }
+    .bh-sport-name { font-weight: 800; color: var(--blue); font-size: 1.1rem; }
+    .bh-sport-sub { font-size: .78rem; color: var(--gray-400); }
+
+    .time-chips { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .time-chip { padding: .35rem .9rem; border-radius: 99px; font-size: .82rem; font-weight: 700; }
+    .tc-total { background: var(--blue-light); color: var(--blue); }
+    .tc-used { background: var(--orange-light); color: var(--orange-dark); }
+    .tc-left { background: var(--green-light); color: #16a34a; }
+    .tc-over { background: #fee2e2; color: var(--red); }
+
+    .time-progress-bar { width: 100%; height: 8px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+    .time-progress-fill { height: 100%; background: var(--orange); border-radius: 99px; transition: width .3s; }
+    .time-progress-fill.over { background: var(--red); }
+
+    .builder-timeline { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
+
+    .plan-block {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: 1rem;
+      border-left: 4px solid var(--gray-100); position: relative;
+      cursor: pointer; transition: box-shadow .15s, transform .15s;
+    }
+    .plan-block:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .plan-block.type-warmup { border-left-color: var(--orange); }
+    .plan-block.type-drill { border-left-color: var(--blue); }
+    .plan-block.type-rotation { border-left-color: var(--purple); }
+    .plan-block.type-break { border-left-color: var(--teal); }
+    .plan-block.type-closing { border-left-color: var(--green); }
+
+    .block-edit-hint {
+      font-size: .72rem; color: var(--orange); font-weight: 600;
+      opacity: 0; transition: opacity .15s; display: block; margin-top: .35rem;
+    }
+    .plan-block:hover .block-edit-hint { opacity: 1; }
+
+    .block-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
+    .block-body { flex: 1; min-width: 0; padding-right: 2rem; }
+    .block-name { font-weight: 700; color: var(--blue); font-size: .98rem; margin-bottom: .15rem; }
+    .block-desc { font-size: .82rem; color: var(--gray-600); line-height: 1.45; margin-bottom: .2rem; }
+    .block-purpose { font-size: .8rem; color: var(--gray-400); font-style: italic; margin-bottom: .2rem; }
+    .block-tip { font-size: .79rem; color: var(--gray-600); }
+    .block-dur-badge {
+      flex-shrink: 0; background: var(--gray-100); color: var(--gray-600);
+      font-weight: 700; font-size: .82rem; padding: .25rem .65rem;
+      border-radius: 99px; white-space: nowrap; align-self: flex-start; margin-top: .1rem;
+    }
+    .block-remove {
+      position: absolute; top: .6rem; right: .75rem;
+      background: none; border: none; color: var(--gray-400);
+      cursor: pointer; font-size: 1rem; padding: .2rem .4rem;
+      border-radius: var(--radius-xs); line-height: 1; transition: all .15s;
+    }
+    .block-remove:hover { background: #fee2e2; color: var(--red); }
+
+    .rotation-drills-list { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
+    .rotation-drill-tag {
+      background: var(--purple-light); color: var(--purple);
+      font-size: .78rem; font-weight: 600; padding: .2rem .55rem; border-radius: 99px;
+    }
+
+    .remaining-block {
+      background: var(--gray-100); border-radius: var(--radius);
+      padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;
+      border: 2px dashed var(--gray-400); cursor: pointer; transition: all .15s;
+    }
+    .remaining-block:hover { border-color: var(--orange); background: var(--orange-light); }
+    .remaining-block.complete { border-color: var(--green); background: var(--green-light); cursor: default; }
+    .remaining-block.over { border-color: var(--red); background: #fee2e2; cursor: default; }
+    .rem-icon { font-size: 1.4rem; }
+    .rem-title { font-weight: 700; color: var(--gray-600); }
+    .rem-sub { font-size: .82rem; color: var(--gray-400); }
+
+    .btn-add-block {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      width: 100%; padding: .9rem;
+      background: var(--white); border: 2.5px dashed var(--orange);
+      border-radius: var(--radius); color: var(--orange);
+      font-weight: 700; font-size: .95rem; cursor: pointer; font-family: inherit; transition: all .15s;
+      margin-top: .5rem;
+    }
+    .btn-add-block:hover { background: var(--orange-light); }
+    .btn-add-block:disabled { border-color: var(--gray-100); color: var(--gray-400); cursor: not-allowed; background: none; }
+
+    .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--gray-400); }
+    .empty-state .es-icon { font-size: 3rem; display: block; margin-bottom: .75rem; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 680px; max-height: 88vh; overflow-y: auto; position: relative;
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+    .modal-title { font-weight: 800; color: var(--blue); font-size: 1.05rem; }
+    .modal-close {
+      background: none; border: none; font-size: 1.2rem; color: var(--gray-400);
+      cursor: pointer; padding: .25rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+    }
+    .modal-close:hover { background: var(--gray-100); }
+    .modal-body { padding: 1.5rem; }
+
+    .sub-panel { display: none; }
+    .sub-panel.active { display: block; }
+
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .choice-card {
+      padding: 1.25rem 1rem; border-radius: var(--radius);
+      border: 2.5px solid var(--gray-100); text-align: center;
+      cursor: pointer; transition: all .15s;
+    }
+    .choice-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .choice-card.c-warmup:hover { border-color: var(--orange); background: var(--orange-light); }
+    .choice-card.c-drill:hover { border-color: var(--blue); background: var(--blue-light); }
+    .choice-card.c-break:hover { border-color: var(--teal); background: var(--teal-light); }
+    .choice-card.c-closing:hover { border-color: var(--green); background: var(--green-light); }
+    .choice-emoji { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .choice-label { font-weight: 700; color: var(--blue); font-size: .95rem; }
+    .choice-desc { font-size: .8rem; color: var(--gray-400); margin-top: .2rem; }
+
+    .sub-back-btn {
+      background: none; border: none; color: var(--orange); font-weight: 600;
+      font-size: .85rem; cursor: pointer; font-family: inherit;
+      padding: 0; margin-bottom: 1.25rem;
+      display: inline-flex; align-items: center; gap: .35rem;
+    }
+    .sub-back-btn:hover { text-decoration: underline; }
+
+    .bank-grid { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.25rem; }
+    .bank-card {
+      background: var(--gray-50); border: 2px solid var(--gray-100);
+      border-radius: var(--radius-sm); padding: .85rem 1rem;
+      cursor: pointer; transition: all .15s;
+      display: flex; align-items: flex-start; gap: .75rem;
+    }
+    .bank-card:hover { border-color: var(--orange); background: var(--orange-light); }
+    .bank-card.selected { border-color: var(--orange); background: var(--orange-light); }
+    .bank-card.multi-sel { border-color: var(--purple); background: var(--purple-light); }
+    .bank-icon { font-size: 1.35rem; flex-shrink: 0; margin-top: .05rem; }
+    .bank-info { flex: 1; min-width: 0; }
+    .bank-name { font-weight: 700; color: var(--blue); font-size: .9rem; }
+    .bank-cat { font-size: .73rem; color: var(--gray-400); font-weight: 400; margin-left: .35rem; }
+    .bank-desc { font-size: .8rem; color: var(--gray-600); margin-top: .15rem; line-height: 1.4; }
+    .bank-purpose { font-size: .77rem; color: var(--gray-400); font-style: italic; margin-top: .2rem; }
+    .bank-tip { font-size: .77rem; color: var(--gray-600); margin-top: .25rem; }
+    .bank-check { flex-shrink: 0; font-size: 1rem; color: var(--orange); display: none; }
+    .bank-card.selected .bank-check { display: block; color: var(--orange); }
+    .bank-card.multi-sel .bank-check { display: block; color: var(--purple); }
+
+    .cat-filter { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .cat-btn {
+      padding: .3rem .8rem; border-radius: 99px; border: 2px solid var(--gray-100);
+      background: var(--white); font-size: .78rem; font-weight: 600;
+      color: var(--gray-600); cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .cat-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .cat-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+    .rotational-section {
+      background: var(--purple-light); border-radius: var(--radius-sm);
+      padding: .9rem 1rem; margin-bottom: 1rem;
+    }
+    .rotational-toggle-row { display: flex; align-items: center; gap: .5rem; }
+    .rotational-toggle-row label { font-weight: 600; color: var(--purple); font-size: .88rem; cursor: pointer; }
+    .rotational-calc { font-size: .83rem; color: var(--purple); font-weight: 600; margin-top: .5rem; }
+
+    .time-input-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+    .time-input-row label { font-weight: 600; font-size: .88rem; color: var(--gray-700); min-width: 110px; }
+    .time-input-row input[type="number"] {
+      width: 80px; padding: .45rem .6rem; border: 2px solid var(--gray-100);
+      border-radius: var(--radius-xs); font-size: .9rem; font-family: inherit; text-align: center;
+    }
+    .time-input-row input[type="number"]:focus { outline: none; border-color: var(--orange); }
+    .min-label { color: var(--gray-400); font-size: .85rem; }
+
+    .break-preset-row { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .break-preset-btn {
+      flex: 1; padding: .7rem; border-radius: var(--radius-sm); border: 2px solid var(--gray-100);
+      background: var(--white); font-weight: 700; font-size: .9rem; color: var(--gray-600);
+      cursor: pointer; font-family: inherit; text-align: center; transition: all .15s;
+    }
+    .break-preset-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .break-preset-btn.selected { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+    .text-input-field {
+      width: 100%; padding: .6rem .9rem; border: 2px solid var(--gray-100);
+      border-radius: var(--radius-sm); font-size: .93rem; font-family: inherit; margin-bottom: 1rem;
+    }
+    .text-input-field:focus { outline: none; border-color: var(--green); }
+
+    .btn-confirm {
+      width: 100%; padding: .85rem; background: var(--orange); color: #fff;
+      border: none; border-radius: var(--radius-sm); font-weight: 700;
+      font-size: .95rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-confirm:hover { background: var(--orange-dark); }
+    .btn-confirm:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+
+    .btn-new-plan {
+      background: none; border: 2px solid var(--orange); color: var(--orange);
+      padding: .5rem 1.1rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .83rem; cursor: pointer; font-family: inherit; transition: all .15s;
+      flex-shrink: 0;
+    }
+    .btn-new-plan:hover { background: var(--orange-light); }
+
+    /* ── Rotation expanded cards ── */
+    .rotation-drills-expanded { margin-top: .7rem; display: flex; flex-direction: column; gap: .5rem; }
+    .rot-drill-card {
+      background: var(--purple-light); border-radius: var(--radius-xs);
+      padding: .65rem .85rem; border-left: 3px solid var(--purple);
+    }
+    .rot-drill-header {
+      font-weight: 700; font-size: .88rem; color: var(--purple);
+      margin-bottom: .25rem; display: flex; align-items: center; gap: .4rem;
+    }
+    .rot-drill-per-time {
+      font-weight: 500; font-size: .75rem; color: var(--purple);
+      opacity: .65; margin-left: auto;
+    }
+    .rot-drill-desc { font-size: .8rem; color: var(--gray-600); line-height: 1.4; margin-bottom: .2rem; }
+    .rot-drill-purpose { font-size: .77rem; color: var(--gray-400); font-style: italic; margin-bottom: .2rem; }
+    .rot-drill-tip { font-size: .77rem; color: var(--gray-600); }
+
+    /* ── Print button ── */
+    .btn-print {
+      background: none; border: 2px solid var(--blue); color: var(--blue);
+      padding: .5rem 1.1rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .83rem; cursor: pointer; font-family: inherit; transition: all .15s;
+      flex-shrink: 0;
+    }
+    .btn-print:hover { background: var(--blue-light); }
+
+    /* ── Print styles ── */
+    @media print {
+      .nav, section.hero, #wizard, .btn-add-block, .btn-new-plan, .btn-print,
+      .block-remove, .block-edit-hint, .remaining-block, .time-progress-bar { display: none !important; }
+
+      body { background: #fff !important; }
+      .container-wide { max-width: 100% !important; padding: 0 1rem !important; }
+      .pb-builder.active { padding: 1rem 0 2rem !important; max-width: 100% !important; }
+      .builder-header {
+        box-shadow: none !important; border-radius: 0 !important; border-top: none !important;
+        border-bottom: 3px solid #003B8E !important; margin-bottom: 1.25rem !important; padding: .75rem 0 !important;
+      }
+      .bh-top { flex-wrap: nowrap !important; }
+      .plan-block {
+        box-shadow: none !important; border: 1px solid #ddd !important;
+        break-inside: avoid; page-break-inside: avoid;
+        cursor: default !important; transform: none !important;
+      }
+      .plan-block:hover { transform: none !important; box-shadow: none !important; }
+      .builder-timeline { gap: .5rem !important; }
+      .rot-drill-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 520px) {
+      .choice-grid { grid-template-columns: 1fr; }
+      .warmup-choice-grid { grid-template-columns: 1fr; }
+      .sport-picker-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">⚡</span>
+      <span>Empower Sports<br><small>Program Playbook</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">🏠 <span class="link-label">Home</span></a>
+      <a href="basketball.html">🏀 <span class="link-label">Basketball</span></a>
+      <a href="softball.html">🥎 <span class="link-label">Softball</span></a>
+      <a href="football.html">🏈 <span class="link-label">Football</span></a>
+      <a href="pickleball.html">🏓 <span class="link-label">Pickleball</span></a>
+      <a href="soccer.html">⚽ <span class="link-label">Soccer</span></a>
+      <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
+      <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
+      <a href="practice-builder.html" class="active">📋 <span class="link-label">Plan Builder</span></a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" style="padding: 2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">📋 Practice Builder</div>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);">Build Your <span>Practice Plan</span></h1>
+    <p style="font-size:.97rem;">Set up your session in seconds — pick drills, set timing, and go.</p>
+  </section>
+
+  <div class="container-wide">
+
+    <!-- ══ WIZARD ══ -->
+    <div class="pb-wizard" id="wizard">
+
+      <div class="wizard-steps">
+        <div class="wizard-step-dot active" id="dot-1">1</div>
+        <div class="wizard-step-line"></div>
+        <div class="wizard-step-dot" id="dot-2">2</div>
+        <div class="wizard-step-line"></div>
+        <div class="wizard-step-dot" id="dot-3">3</div>
+        <div class="wizard-step-line"></div>
+        <div class="wizard-step-dot" id="dot-4">✓</div>
+      </div>
+
+      <!-- Step 1: Sport -->
+      <div class="wizard-panel active" id="panel-step-1">
+        <div class="wizard-heading">Which sport?</div>
+        <div class="wizard-sub">Choose the sport you're planning a session for.</div>
+        <div class="sport-picker-grid" id="sportGrid"></div>
+        <div class="wizard-nav">
+          <div></div>
+          <button class="btn-wiz-next" id="next1" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Duration -->
+      <div class="wizard-panel" id="panel-step-2">
+        <div class="wizard-heading">How long is the practice?</div>
+        <div class="wizard-sub">Pick a session length — you can fine-tune timing for each block afterward.</div>
+        <div class="duration-pills" id="durPills">
+          <button class="dur-pill" data-min="30">30 min</button>
+          <button class="dur-pill" data-min="45">45 min</button>
+          <button class="dur-pill" data-min="60">60 min</button>
+          <button class="dur-pill selected" data-min="75">75 min</button>
+          <button class="dur-pill" data-min="90">90 min</button>
+        </div>
+        <div class="custom-dur-row">
+          <span style="font-size:.88rem;color:var(--gray-600);font-weight:500;">Custom:</span>
+          <input type="number" id="customDur" min="10" max="180" placeholder="— min" />
+          <span class="min-label">minutes</span>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn-wiz-back" id="back2">← Back</button>
+          <button class="btn-wiz-next" id="next2">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Warmup -->
+      <div class="wizard-panel" id="panel-step-3">
+        <div class="wizard-heading">Include a warmup?</div>
+        <div class="wizard-sub">If yes, you'll pick from the warmup bank when building your plan.</div>
+        <div class="warmup-choice-grid">
+          <div class="warmup-choice-card selected" id="wcYes">
+            <span class="warmup-choice-icon">🌟</span>
+            <div class="warmup-choice-label">Yes, include warmup</div>
+            <div class="warmup-choice-desc">I'll pick from the warmup bank</div>
+          </div>
+          <div class="warmup-choice-card" id="wcNo">
+            <span class="warmup-choice-icon">⏭️</span>
+            <div class="warmup-choice-label">No warmup</div>
+            <div class="warmup-choice-desc">Jump straight into drills</div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn-wiz-back" id="back3">← Back</button>
+          <button class="btn-wiz-next" id="next3">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Summary -->
+      <div class="wizard-panel" id="panel-step-4">
+        <div class="wizard-heading">Ready to build!</div>
+        <div class="wizard-sub">Here's your session setup — click below to start filling in your plan.</div>
+        <div class="summary-card" id="summaryCard"></div>
+        <div class="wizard-nav">
+          <button class="btn-wiz-back" id="back4">← Back</button>
+          <button class="btn-wiz-next" id="startBuild" style="background:var(--blue);">🏗️ Build My Plan →</button>
+        </div>
+      </div>
+
+    </div><!-- /wizard -->
+
+    <!-- ══ BUILDER ══ -->
+    <div class="pb-builder" id="builder">
+
+      <div class="builder-header">
+        <div class="bh-top">
+          <div class="bh-sport" id="bhSport"></div>
+          <div class="time-chips" id="timeChips"></div>
+          <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+          <button class="btn-new-plan" id="newPlanBtn">↩ New Plan</button>
+        </div>
+        <div class="time-progress-bar">
+          <div class="time-progress-fill" id="progressFill" style="width:0%;"></div>
+        </div>
+      </div>
+
+      <div class="builder-timeline" id="timeline"></div>
+      <button class="btn-add-block" id="addBlockBtn">＋ Add Block</button>
+
+    </div><!-- /builder -->
+
+  </div>
+
+  <!-- ══ MODAL ══ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Add to Plan</div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Choices -->
+        <div class="sub-panel active" id="panelChoice">
+          <div class="choice-grid">
+            <div class="choice-card c-warmup" onclick="showSubPanel('warmup')">
+              <span class="choice-emoji">🌟</span>
+              <div class="choice-label">Warmup</div>
+              <div class="choice-desc">Pick from the warmup bank</div>
+            </div>
+            <div class="choice-card c-drill" onclick="showSubPanel('drill')">
+              <span class="choice-emoji">🏃</span>
+              <div class="choice-label">Drill</div>
+              <div class="choice-desc">Single drill or rotational set</div>
+            </div>
+            <div class="choice-card c-break" onclick="showSubPanel('break')">
+              <span class="choice-emoji">💧</span>
+              <div class="choice-label">Break</div>
+              <div class="choice-desc">Water or rest break</div>
+            </div>
+            <div class="choice-card c-closing" onclick="showSubPanel('closing')">
+              <span class="choice-emoji">🏁</span>
+              <div class="choice-label">Closing</div>
+              <div class="choice-desc">Cool-down or wrap-up</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warmup -->
+        <div class="sub-panel" id="panelWarmup">
+          <button class="sub-back-btn" onclick="showSubPanel('choice')">← Back</button>
+          <div class="bank-grid" id="warmupBank"></div>
+          <div class="time-input-row">
+            <label for="warmupTime">Duration:</label>
+            <input type="number" id="warmupTime" min="5" max="30" value="10" />
+            <span class="min-label">minutes</span>
+          </div>
+          <button class="btn-confirm" id="confirmWarmup" disabled>Add Warmup</button>
+        </div>
+
+        <!-- Drill -->
+        <div class="sub-panel" id="panelDrill">
+          <button class="sub-back-btn" onclick="showSubPanel('choice')">← Back</button>
+          <div class="cat-filter" id="catFilter"></div>
+          <div class="rotational-section">
+            <div class="rotational-toggle-row">
+              <input type="checkbox" id="rotToggle" />
+              <label for="rotToggle">🔄 Rotational — select multiple drills, set time per drill</label>
+            </div>
+            <div class="rotational-calc" id="rotCalc" style="display:none;"></div>
+          </div>
+          <div class="bank-grid" id="drillBank"></div>
+          <div class="time-input-row">
+            <label for="drillTime" id="drillTimeLabel">Duration:</label>
+            <input type="number" id="drillTime" min="5" max="60" value="12" />
+            <span class="min-label">minutes</span>
+          </div>
+          <button class="btn-confirm" id="confirmDrill" disabled>Add Drill</button>
+        </div>
+
+        <!-- Break -->
+        <div class="sub-panel" id="panelBreak">
+          <button class="sub-back-btn" onclick="showSubPanel('choice')">← Back</button>
+          <div style="font-weight:600;margin-bottom:.75rem;font-size:.88rem;color:var(--gray-700);">How long is the break?</div>
+          <div class="break-preset-row">
+            <button class="break-preset-btn" data-min="2">2 min</button>
+            <button class="break-preset-btn selected" data-min="5">5 min</button>
+            <button class="break-preset-btn" data-min="10">10 min</button>
+          </div>
+          <div class="time-input-row">
+            <label>Custom:</label>
+            <input type="number" id="breakTime" min="1" max="30" value="5" />
+            <span class="min-label">minutes</span>
+          </div>
+          <div class="time-input-row">
+            <label>Label:</label>
+            <input type="text" id="breakLabel" value="💧 Water Break"
+              style="flex:1;padding:.45rem .6rem;border:2px solid var(--gray-100);border-radius:var(--radius-xs);font-size:.88rem;font-family:inherit;" />
+          </div>
+          <button class="btn-confirm" id="confirmBreak">Add Break</button>
+        </div>
+
+        <!-- Closing -->
+        <div class="sub-panel" id="panelClosing">
+          <button class="sub-back-btn" onclick="showSubPanel('choice')">← Back</button>
+          <div style="font-weight:600;margin-bottom:.5rem;font-size:.88rem;color:var(--gray-700);">Closing name:</div>
+          <input type="text" class="text-input-field" id="closingName" value="🏁 Closing Circle" placeholder="Cool-Down, Closing Circle, Awards..." />
+          <div class="time-input-row">
+            <label for="closingTime">Duration:</label>
+            <input type="number" id="closingTime" min="2" max="30" value="10" />
+            <span class="min-label">minutes</span>
+          </div>
+          <button class="btn-confirm" id="confirmClosing">Add Closing</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ═══════════════════════════════════════
+  //  DATA
+  // ═══════════════════════════════════════
+
+  const SPORTS = [
+    { id: 'basketball', name: 'Basketball', icon: '🏀' },
+    { id: 'softball',   name: 'Softball',   icon: '🥎' },
+    { id: 'football',   name: 'Football',   icon: '🏈' },
+    { id: 'pickleball', name: 'Pickleball', icon: '🏓' },
+    { id: 'soccer',     name: 'Soccer',     icon: '⚽' },
+    { id: 'kickball',   name: 'Kickball',   icon: '🔴' },
+  ];
+
+  const WARMUP_BANK = {
+    soccer: [
+      { id: 'w-soc-welcome', icon: '🌟', name: 'Welcome & Warm-Up',
+        description: 'Greet every participant by name — high-fives all around! Seated or standing stretches with the ball.',
+        purpose: 'Sets the tone and gets everyone comfortable together.',
+        tip: 'Set the tone: energy, smiles, and patience. Many participants may be meeting volunteers for the first time.',
+        defaultTime: 10 },
+      { id: 'w-soc-ball-roll-tag', icon: '⚽', name: 'Ball Roll Tag',
+        description: 'Everyone rolls the ball with their foot around a circle. No competition — just touch!',
+        purpose: 'Immediate ball contact in a zero-pressure environment.',
+        tip: 'Great first-touch intro. BDU players pair up 1:1 with each participant right away.',
+        defaultTime: 10 },
+      { id: 'w-soc-intro-stretch', icon: '🙆', name: 'Intro & Stretch',
+        description: 'Introductions, light movement, and stretch. Walk through each stretch together as a group.',
+        purpose: 'Prepares bodies for activity and builds group rapport.',
+        tip: 'Go slow. Narrate each stretch — "reach to the sky, now touch your toes!"',
+        defaultTime: 15 },
+    ],
+    basketball: [
+      { id: 'w-bball-welcome', icon: '🌟', name: 'Welcome & Dribble Around',
+        description: 'Greet participants, then everyone dribbles freely around the gym at their own pace.',
+        purpose: 'Immediate ball contact, no pressure.',
+        tip: 'No wrong way to dribble — celebrate every touch.',
+        defaultTime: 10 },
+    ],
+    softball: [
+      { id: 'w-soft-welcome', icon: '🌟', name: 'Welcome & Throwing Warmup',
+        description: 'Greet participants, then close-range soft-toss in pairs to get arms loose.',
+        purpose: 'Arm warmup and partner connection.',
+        tip: 'Start very close — 5 feet is fine. Focus on the catch, not the throw.',
+        defaultTime: 10 },
+    ],
+    football: [
+      { id: 'w-foot-welcome', icon: '🌟', name: 'Welcome & Catch Warmup',
+        description: 'Greet participants, then easy catching — toss gently and let each player catch at their own pace.',
+        purpose: 'Hand-eye warmup and building comfort with the ball.',
+        tip: 'Use a foam football if needed. Every catch is a win.',
+        defaultTime: 10 },
+    ],
+    pickleball: [
+      { id: 'w-pick-welcome', icon: '🌟', name: 'Welcome & Balloon Tap',
+        description: 'Greet participants, then tap balloons back and forth with paddles — low pressure, high laughs.',
+        purpose: 'Paddle control warmup in a no-fail environment.',
+        tip: 'Balloons move slowly — perfect for all mobility levels.',
+        defaultTime: 10 },
+    ],
+    kickball: [
+      { id: 'w-kick-welcome', icon: '🌟', name: 'Welcome & Ball Roll',
+        description: 'Greet participants, then gently roll the ball to each person so they can kick it back.',
+        purpose: 'Ball touch warmup that gauges each person\'s mobility.',
+        tip: 'Celebrate every kick — soft tap or big boot, both get the same cheer.',
+        defaultTime: 10 },
+    ],
+  };
+
+  const DRILL_BANK = {
+    soccer: [
+      { id: 'd-soc-drb-agility', category: 'Dribbling', icon: '🔶', name: 'Dribbling Agility',
+        description: 'Cones, ladders, and hurdles set up as an obstacle course. Players go through without ball first to learn the path, then dribble through at their own pace.',
+        purpose: 'Ball control at pace, agility, confidence with obstacles.',
+        tip: 'Let participants run through without a ball first — removes dual-task pressure and builds spatial confidence.',
+        defaultTime: 12 },
+      { id: 'd-soc-drb-music', category: 'Dribbling', icon: '🎵', name: 'Dribble to Music',
+        description: 'Everyone dribbles around the space while music plays. When the music stops, freeze and stop the ball with your foot.',
+        purpose: 'Fun dribbling with quick-stop reaction practice.',
+        tip: 'Pause without warning so the freeze is a surprise. Mix slow songs and fast songs for variety.',
+        defaultTime: 12 },
+      { id: 'd-soc-pas-lines', category: 'Passing', icon: '↔️', name: 'Passing Lines',
+        description: 'Two facing lines with one ball. First player passes across to first player in opposite line, then goes to back of that line. Constant rotation and movement.',
+        purpose: 'Passing technique while moving; teamwork.',
+        tip: 'Keep lines short — longer lines mean too much waiting.',
+        defaultTime: 12 },
+      { id: 'd-soc-pas-partner', category: 'Passing', icon: '🤝', name: 'Partner Passing',
+        description: 'Partners across from each other passing back and forth. Start close, gradually add distance as confidence grows.',
+        purpose: 'Repetitive passing technique in a comfortable pairing.',
+        tip: 'Closer is always fine — the goal is connection and touch, not distance.',
+        defaultTime: 12 },
+      { id: 'd-soc-sht-pass', category: 'Shooting', icon: '⚡', name: 'Pass to Shot',
+        description: 'Two lines in front of goal: one line passes to the other; receiver takes a first touch and shoots.',
+        purpose: 'Combining receiving with finishing.',
+        tip: 'Celebrate every shot — makes or misses both get the same energy!',
+        defaultTime: 12 },
+      { id: 'd-soc-sht-dribble', category: 'Shooting', icon: '🏃', name: 'Dribble to Shot',
+        description: 'Single line in front of goal with cones ahead. Each player dribbles through the cone obstacle then shoots on goal.',
+        purpose: 'Dribbling into finishing.',
+        tip: 'Keep the goal close and cones forgiving. Narrate every touch: "Great dribble! What a shot!"',
+        defaultTime: 12 },
+      { id: 'd-soc-sht-penalty', category: 'Shooting', icon: '🎯', name: 'Penalty Shooting',
+        description: 'Players line up at penalty spot and take turns shooting. Coach or volunteer plays goalkeeper.',
+        purpose: 'Shooting confidence and accuracy.',
+        tip: 'Let the goalkeeper be dramatic about saves they miss — it\'s hilarious and empowering for the shooter!',
+        defaultTime: 12 },
+      { id: 'd-soc-gm-construction', category: 'Mini Game', icon: '🚧', name: 'Construction Zone',
+        description: 'Cones and pylons spread randomly across the field. Every player dribbles around knocking them over. Once all are down, reset and repeat.',
+        purpose: 'Free-form dribbling in all directions with a playful goal.',
+        tip: 'Coaches may reset cones during play to keep it continuous and exciting.',
+        defaultTime: 12 },
+      { id: 'd-soc-gm-longest', category: 'Mini Game', icon: '📏', name: 'Longest Shot Competition',
+        description: 'All players shoot from the same starting distance. After each round the line moves back one step. Repeat until there\'s a winner.',
+        purpose: 'Shooting power and confidence from distance.',
+        tip: 'Make a huge deal of every distance marker — "Can you score from HERE?!"',
+        defaultTime: 12 },
+      { id: 'd-soc-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
+        description: '5–7 ES players + 1–2 peer volunteers per team. Coaches on field with both teams at all times.',
+        purpose: 'Full game experience and team play.',
+        tip: 'Celebrate both teams equally — every goal from either side gets the same cheer.',
+        defaultTime: 40 },
+      { id: 'd-soc-ml-dps', category: 'Multi-Skill', icon: '🥅', name: 'Dribble, Pass, Score!',
+        description: 'Player dribbles to a middle cone, passes to a volunteer waiting on the side, then runs onto the set-up ball and shoots.',
+        purpose: 'Combines dribble + pass + shoot in one fluid sequence.',
+        tip: 'Keep it moving fast — every player gets several turns. Narrate every touch!',
+        defaultTime: 15 },
+    ],
+    basketball: [
+      { id: 'd-bball-drb-station', category: 'Dribbling', icon: '🏀', name: 'Stationary Dribbling',
+        description: 'Stand in place and dribble with dominant hand, then off-hand. Focus on fingertip control and rhythm.',
+        purpose: 'Ball-handling fundamentals in a low-pressure setting.',
+        tip: 'Low bounces are fine — just keep the rhythm going.',
+        defaultTime: 10 },
+      { id: 'd-bball-drb-cone', category: 'Dribbling', icon: '🔶', name: 'Cone Dribble Course',
+        description: 'Dribble through a line of cones in and out. Go at your own pace.',
+        purpose: 'Dribbling while navigating obstacles.',
+        tip: 'Walk the course first without the ball.',
+        defaultTime: 10 },
+      { id: 'd-bball-pas-chest', category: 'Passing', icon: '🤝', name: 'Chest Pass Lines',
+        description: 'Two lines facing each other. Chest-pass back and forth. Focus on catching with two hands.',
+        purpose: 'Basic passing mechanics and catching confidence.',
+        tip: 'Use a lighter foam ball if a regulation ball is too heavy.',
+        defaultTime: 10 },
+      { id: 'd-bball-sht-layup', category: 'Shooting', icon: '🥅', name: 'Layup Line',
+        description: 'Players dribble toward the basket and take a layup. Rotate through quickly so everyone gets many turns.',
+        purpose: 'Fundamental finishing at the basket.',
+        tip: 'Walk if needed — the motion matters, not the speed.',
+        defaultTime: 12 },
+      { id: 'd-bball-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
+        description: '3–5 ES players + 1–2 peer volunteers per team. Coaches on court. Modified rules — focus on fun.',
+        purpose: 'Full game experience.',
+        tip: 'Celebrate every made basket from either team!',
+        defaultTime: 30 },
+    ],
+    softball: [
+      { id: 'd-soft-fld-catch', category: 'Fielding', icon: '🥎', name: 'Partner Catching',
+        description: 'Partners 10 feet apart, soft-toss back and forth. Use a foam ball if needed.',
+        purpose: 'Hand-eye coordination and catching confidence.',
+        tip: 'Keep throws low and gentle — focus on the catch, not the throw.',
+        defaultTime: 10 },
+      { id: 'd-soft-fld-ground', category: 'Fielding', icon: '⬇️', name: 'Ground Ball Fielding',
+        description: 'Coach rolls ground balls to each player who fields and throws back. Move through the line quickly.',
+        purpose: 'Fielding stance and throwing fundamentals.',
+        tip: 'Slow rollers are fine — focus on fielding position and effort.',
+        defaultTime: 10 },
+      { id: 'd-soft-hit-tee', category: 'Hitting', icon: '⚾', name: 'Tee Hitting',
+        description: 'Players step up to a batting tee and swing away. Rotate quickly so everyone gets multiple swings.',
+        purpose: 'Hitting mechanics without the pressure of a moving ball.',
+        tip: 'Celebrate every contact — a tiny nick of the ball counts!',
+        defaultTime: 12 },
+      { id: 'd-soft-run-bases', category: 'Base Running', icon: '🏃', name: 'Base Running',
+        description: 'Players run the bases one at a time on the coach\'s signal. Coaches stationed at each base.',
+        purpose: 'Understanding the base path and running sequence.',
+        tip: 'Cheer every player around the bases — make every run feel like a home run.',
+        defaultTime: 10 },
+    ],
+    football: [
+      { id: 'd-foot-qb-throw', category: 'Passing', icon: '🏈', name: 'QB Throwing',
+        description: 'Players take turns as QB, throwing to a volunteer receiver at a set distance.',
+        purpose: 'Throwing mechanics and release point.',
+        tip: 'Use a foam football — it\'s easier to grip for smaller hands.',
+        defaultTime: 10 },
+      { id: 'd-foot-wr-routes', category: 'Routes', icon: '🏃', name: 'WR Routes',
+        description: 'Players run a simple route (out, go, or curl) and catch a pass from a coach or volunteer.',
+        purpose: 'Route running and catching.',
+        tip: 'Keep routes short — 5-yard patterns are plenty.',
+        defaultTime: 10 },
+      { id: 'd-foot-rl-gl', category: 'Game', icon: '🚦', name: 'Red Light Green Light (Football)',
+        description: 'Everyone runs with the ball on "green light," stops on "red light." Last one to stop each round is out.',
+        purpose: 'Ball-carrying, listening skills, and fun.',
+        tip: 'Go slow on the eliminations — keep everyone engaged and in good spirits.',
+        defaultTime: 10 },
+      { id: 'd-foot-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
+        description: '3–5 ES players + 1–2 peer volunteers per team. Flag football format. Coaches on field.',
+        purpose: 'Full game experience.',
+        tip: 'Keep scores even-ish with coaching adjustments — the joy is the play, not the scoreboard.',
+        defaultTime: 30 },
+    ],
+    pickleball: [
+      { id: 'd-pick-balloon', category: 'Fundamentals', icon: '🎈', name: 'Balloon Tap',
+        description: 'Tap a balloon up with the paddle. Count how many consecutive taps before it hits the ground.',
+        purpose: 'Paddle control and hand-eye coordination in a no-fail environment.',
+        tip: 'Balloons move slowly — perfect for all mobility levels. Make it a personal record challenge!',
+        defaultTime: 10 },
+      { id: 'd-pick-serve-bucket', category: 'Serving', icon: '🪣', name: 'Serve into a Bucket',
+        description: 'Players serve from behind the kitchen line into a bucket or hula hoop target across the net.',
+        purpose: 'Serving mechanics with a fun target.',
+        tip: 'Big bucket, close target to start. Move the target as skills improve.',
+        defaultTime: 10 },
+      { id: 'd-pick-volley', category: 'Volley', icon: '🏓', name: 'Dink Volley',
+        description: 'Partners volley back and forth over the net at the kitchen line. Soft hands — keep it going!',
+        purpose: 'Net play and soft-shot precision.',
+        tip: 'Count consecutive volleys as a team goal. Celebrate new records!',
+        defaultTime: 10 },
+      { id: 'd-pick-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
+        description: '1–2 ES players + 1–2 peer volunteers per team. Standard pickleball rules, simplified scoring.',
+        purpose: 'Full game experience.',
+        tip: 'Coaches narrate the play — keep the energy high and celebrate every rally.',
+        defaultTime: 25 },
+    ],
+    kickball: [
+      { id: 'd-kick-fld-ground', category: 'Fielding', icon: '🔴', name: 'Fielding Ground Balls',
+        description: 'Coach rolls ball to each player in a line, player fields and rolls/throws back. Quick rotation.',
+        purpose: 'Fielding fundamentals.',
+        tip: 'Slow rollers are fine — focus on positioning and the effort.',
+        defaultTime: 10 },
+      { id: 'd-kick-run-bases', category: 'Base Running', icon: '🏃', name: 'Base Running',
+        description: 'Players run bases on the coach\'s signal, one at a time.',
+        purpose: 'Base path and sequence familiarity.',
+        tip: 'Cheer every player home!',
+        defaultTime: 10 },
+      { id: 'd-kick-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
+        description: 'Full-group kickball game. Coach pitches a gentle roll for each kicker.',
+        purpose: 'Full game experience.',
+        tip: 'Keep the energy high — narrate every kick and run!',
+        defaultTime: 30 },
+    ],
+  };
+
+  // ═══════════════════════════════════════
+  //  STATE
+  // ═══════════════════════════════════════
+  let wiz = { sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true };
+  let plan = null;
+  let selectedWarmup = null;
+  let selectedDrill = null;
+  let selectedRotDrills = [];
+  let isRotational = false;
+  let activeCat = 'All';
+  let editIdx = null;
+
+  // ═══════════════════════════════════════
+  //  WIZARD
+  // ═══════════════════════════════════════
+  function goStep(n) {
+    document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-step-' + n).classList.add('active');
+    [1, 2, 3, 4].forEach(i => {
+      const dot = document.getElementById('dot-' + i);
+      dot.classList.toggle('active', i === n);
+      dot.classList.toggle('done', i < n);
+    });
+  }
+
+  // Sport grid
+  (function() {
+    const grid = document.getElementById('sportGrid');
+    SPORTS.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'sport-pick-card';
+      card.innerHTML = `<span class="sport-pick-emoji">${s.icon}</span><div class="sport-pick-name">${s.name}</div>`;
+      card.addEventListener('click', () => {
+        grid.querySelectorAll('.sport-pick-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        wiz.sport = s.id; wiz.sportName = s.name; wiz.sportIcon = s.icon;
+        document.getElementById('next1').disabled = false;
+      });
+      grid.appendChild(card);
+    });
+  })();
+
+  document.getElementById('next1').addEventListener('click', () => goStep(2));
+
+  document.querySelectorAll('.dur-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dur-pill').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      wiz.durationMinutes = parseInt(btn.dataset.min);
+      document.getElementById('customDur').value = '';
+    });
+  });
+  document.getElementById('customDur').addEventListener('input', function() {
+    if (this.value) {
+      document.querySelectorAll('.dur-pill').forEach(b => b.classList.remove('selected'));
+      wiz.durationMinutes = parseInt(this.value) || 75;
+    }
+  });
+  document.getElementById('back2').addEventListener('click', () => goStep(1));
+  document.getElementById('next2').addEventListener('click', () => goStep(3));
+
+  document.getElementById('wcYes').addEventListener('click', () => {
+    document.getElementById('wcYes').classList.add('selected');
+    document.getElementById('wcNo').classList.remove('selected');
+    wiz.hasWarmup = true;
+  });
+  document.getElementById('wcNo').addEventListener('click', () => {
+    document.getElementById('wcNo').classList.add('selected');
+    document.getElementById('wcYes').classList.remove('selected');
+    wiz.hasWarmup = false;
+  });
+  document.getElementById('back3').addEventListener('click', () => goStep(2));
+  document.getElementById('next3').addEventListener('click', () => { buildSummary(); goStep(4); });
+  document.getElementById('back4').addEventListener('click', () => goStep(3));
+  document.getElementById('startBuild').addEventListener('click', startBuilder);
+
+  function buildSummary() {
+    document.getElementById('summaryCard').innerHTML = `
+      <div class="summary-row"><span class="summary-label">Sport</span><span class="summary-value">${wiz.sportIcon} ${wiz.sportName}</span></div>
+      <div class="summary-row"><span class="summary-label">Session Length</span><span class="summary-value">${wiz.durationMinutes} minutes</span></div>
+      <div class="summary-row"><span class="summary-label">Includes Warmup</span><span class="summary-value">${wiz.hasWarmup ? '✅ Yes' : '❌ No, jump straight to drills'}</span></div>
+    `;
+  }
+
+  // ═══════════════════════════════════════
+  //  BUILDER
+  // ═══════════════════════════════════════
+  function startBuilder() {
+    plan = { sport: wiz.sport, sportName: wiz.sportName, sportIcon: wiz.sportIcon, durationMinutes: wiz.durationMinutes, hasWarmup: wiz.hasWarmup, blocks: [] };
+    document.getElementById('wizard').style.display = 'none';
+    document.getElementById('builder').classList.add('active');
+    renderBuilder();
+    savePlan();
+  }
+
+  function minsUsed() { return plan.blocks.reduce((s, b) => s + (b.durationMinutes || 0), 0); }
+  function minsLeft() { return plan.durationMinutes - minsUsed(); }
+
+  function renderBuilder() {
+    const used = minsUsed();
+    const left = minsLeft();
+    const over = left < 0;
+    const pct = Math.min((used / plan.durationMinutes) * 100, 100);
+
+    document.getElementById('bhSport').innerHTML = `
+      <span class="bh-sport-icon">${plan.sportIcon}</span>
+      <div><div class="bh-sport-name">${plan.sportName}</div><div class="bh-sport-sub">Practice Plan</div></div>
+    `;
+    document.getElementById('timeChips').innerHTML = `
+      <span class="time-chip tc-total">⏱ ${plan.durationMinutes} min</span>
+      <span class="time-chip tc-used">Used: ${used} min</span>
+      <span class="time-chip ${over ? 'tc-over' : 'tc-left'}">${over ? '⚠️ Over by ' + Math.abs(left) + ' min' : left + ' min left'}</span>
+    `;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('over', over);
+
+    const tl = document.getElementById('timeline');
+    tl.innerHTML = '';
+
+    if (plan.blocks.length === 0) {
+      tl.innerHTML = `<div class="empty-state"><span class="es-icon">📋</span><span class="es-text">Your plan is empty — click below to add your first block.</span></div>`;
+    } else {
+      plan.blocks.forEach((block, idx) => tl.appendChild(makeBlockEl(block, idx)));
+    }
+
+    // Remaining indicator
+    const rem = document.createElement('div');
+    if (left > 0) {
+      rem.className = 'remaining-block';
+      rem.innerHTML = `<span class="rem-icon">⬜</span><div class="rem-text"><div class="rem-title">${left} min unscheduled</div><div class="rem-sub">Click "+ Add Block" to fill this time</div></div><span style="color:var(--orange);font-weight:700;">＋</span>`;
+      rem.addEventListener('click', () => openModal());
+    } else if (left === 0) {
+      rem.className = 'remaining-block complete';
+      rem.innerHTML = `<span class="rem-icon">✅</span><div class="rem-text"><div class="rem-title" style="color:#16a34a;">Plan complete — all ${plan.durationMinutes} min scheduled!</div><div class="rem-sub">Review and adjust as needed.</div></div>`;
+    } else {
+      rem.className = 'remaining-block over';
+      rem.innerHTML = `<span class="rem-icon">⚠️</span><div class="rem-text"><div class="rem-title" style="color:var(--red);">Over by ${Math.abs(left)} min</div><div class="rem-sub">Remove or shorten a block to fit.</div></div>`;
+    }
+    tl.appendChild(rem);
+
+    document.getElementById('addBlockBtn').disabled = left <= 0;
+  }
+
+  function makeBlockEl(block, idx) {
+    const div = document.createElement('div');
+    div.className = 'plan-block type-' + block.type;
+
+    const iconMap = { warmup: block.icon || '🌟', drill: block.icon || '🏃', rotation: '🔄', break: '💧', closing: '🏁' };
+    const icon = iconMap[block.type] || '📌';
+
+    let extra = '';
+    if (block.type === 'rotation') {
+      extra = `<div class="rotation-drills-expanded">${block.drills.map(d => `
+        <div class="rot-drill-card">
+          <div class="rot-drill-header">
+            <span>${d.icon || '🏃'} ${d.name}</span>
+            <span class="rot-drill-per-time">${block.timePerDrill} min</span>
+          </div>
+          ${d.description ? `<div class="rot-drill-desc">${d.description}</div>` : ''}
+          ${d.purpose ? `<div class="rot-drill-purpose">Purpose: ${d.purpose}</div>` : ''}
+          ${d.tip ? `<div class="rot-drill-tip">💡 ${d.tip}</div>` : ''}
+        </div>`).join('')}
+      </div>`;
+    } else {
+      if (block.purpose) extra += `<div class="block-purpose">Purpose: ${block.purpose}</div>`;
+      if (block.tip) extra += `<div class="block-tip">💡 ${block.tip}</div>`;
+    }
+
+    div.innerHTML = `
+      <span class="block-icon">${icon}</span>
+      <div class="block-body">
+        <div class="block-name">${block.name}</div>
+        ${block.description ? `<div class="block-desc">${block.description}</div>` : ''}
+        ${extra}
+        <span class="block-edit-hint">✏️ Click to edit</span>
+      </div>
+      <span class="block-dur-badge">${block.durationMinutes} min</span>
+      <button class="block-remove" title="Remove">✕</button>
+    `;
+    div.querySelector('.block-remove').addEventListener('click', e => {
+      e.stopPropagation();
+      plan.blocks.splice(idx, 1);
+      savePlan(); renderBuilder();
+    });
+    div.addEventListener('click', () => openModal(idx));
+    return div;
+  }
+
+  document.getElementById('newPlanBtn').addEventListener('click', () => {
+    if (!confirm('Start a new plan? Your current plan will be cleared.')) return;
+    localStorage.removeItem('empowerPracticePlan');
+    plan = null;
+    document.getElementById('builder').classList.remove('active');
+    document.getElementById('wizard').style.display = '';
+    wiz = { sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true };
+    document.querySelectorAll('.sport-pick-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.dur-pill').forEach(b => b.classList.toggle('selected', b.dataset.min === '75'));
+    document.getElementById('customDur').value = '';
+    document.getElementById('wcYes').classList.add('selected');
+    document.getElementById('wcNo').classList.remove('selected');
+    document.getElementById('next1').disabled = true;
+    goStep(1);
+  });
+
+  // ═══════════════════════════════════════
+  //  MODAL
+  // ═══════════════════════════════════════
+  function openModal(editingIdx = null) {
+    editIdx = editingIdx;
+    selectedWarmup = null; selectedDrill = null; selectedRotDrills = []; isRotational = false; activeCat = 'All';
+    document.getElementById('rotToggle').checked = false;
+    document.getElementById('rotCalc').style.display = 'none';
+    document.getElementById('drillTimeLabel').textContent = 'Duration:';
+    document.getElementById('drillTime').value = 12;
+    buildWarmupBank();
+    buildDrillBank();
+    if (editIdx !== null) {
+      prePopulateEdit(plan.blocks[editIdx]);
+    } else {
+      showSubPanel('choice');
+    }
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    editIdx = null;
+    document.getElementById('confirmWarmup').textContent = 'Add Warmup';
+    document.getElementById('confirmDrill').textContent = 'Add Drill';
+    document.getElementById('confirmBreak').textContent = 'Add Break';
+    document.getElementById('confirmClosing').textContent = 'Add Closing';
+  }
+
+  function showSubPanel(name) {
+    document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+    const id = 'panel' + name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById(id).classList.add('active');
+    const addTitles = { choice: 'Add to Plan', warmup: 'Pick a Warmup', drill: 'Pick a Drill', break: 'Add a Break', closing: 'Add Closing' };
+    const editTitles = { warmup: 'Edit Warmup', drill: 'Edit Drill', break: 'Edit Break', closing: 'Edit Closing' };
+    document.getElementById('modalTitle').textContent = (editIdx !== null ? editTitles[name] : addTitles[name]) || 'Add to Plan';
+  }
+
+  function prePopulateEdit(block) {
+    const drills = DRILL_BANK[plan.sport] || [];
+    const warmups = WARMUP_BANK[plan.sport] || WARMUP_BANK.soccer;
+
+    if (block.type === 'warmup') {
+      showSubPanel('warmup');
+      document.getElementById('warmupTime').value = block.durationMinutes;
+      document.getElementById('confirmWarmup').textContent = 'Update Warmup';
+      const match = warmups.find(w => w.name === block.name);
+      if (match) {
+        selectedWarmup = match;
+        document.getElementById('warmupBank').querySelectorAll('.bank-card').forEach(c => {
+          if (c.querySelector('.bank-name') && c.querySelector('.bank-name').textContent.trim() === match.name) c.classList.add('selected');
+        });
+        document.getElementById('confirmWarmup').disabled = false;
+      }
+
+    } else if (block.type === 'drill') {
+      showSubPanel('drill');
+      document.getElementById('drillTime').value = block.durationMinutes;
+      document.getElementById('confirmDrill').textContent = 'Update Drill';
+      const match = drills.find(d => d.name === block.name);
+      if (match) {
+        selectedDrill = match;
+        document.getElementById('confirmDrill').disabled = false;
+        buildDrillBank(activeCat);
+      }
+
+    } else if (block.type === 'rotation') {
+      showSubPanel('drill');
+      isRotational = true;
+      document.getElementById('rotToggle').checked = true;
+      document.getElementById('drillTime').value = block.timePerDrill;
+      document.getElementById('confirmDrill').textContent = 'Update Rotation';
+      selectedRotDrills = block.drills.map(bd => drills.find(d => d.id === bd.id)).filter(Boolean);
+      buildDrillBank(activeCat);
+
+    } else if (block.type === 'break') {
+      showSubPanel('break');
+      document.getElementById('breakTime').value = block.durationMinutes;
+      document.getElementById('breakLabel').value = block.name;
+      document.getElementById('confirmBreak').textContent = 'Update Break';
+      document.querySelectorAll('.break-preset-btn').forEach(b => {
+        b.classList.toggle('selected', parseInt(b.dataset.min) === block.durationMinutes);
+      });
+
+    } else if (block.type === 'closing') {
+      showSubPanel('closing');
+      document.getElementById('closingName').value = block.name;
+      document.getElementById('closingTime').value = block.durationMinutes;
+      document.getElementById('confirmClosing').textContent = 'Update Closing';
+    }
+  }
+
+  function upsertBlock(block) {
+    if (editIdx !== null) {
+      plan.blocks[editIdx] = block;
+    } else {
+      plan.blocks.push(block);
+    }
+    savePlan();
+    renderBuilder();
+  }
+
+  document.getElementById('addBlockBtn').addEventListener('click', () => openModal());
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+
+  // ── Warmup bank ──
+  function buildWarmupBank() {
+    const warmups = WARMUP_BANK[plan.sport] || WARMUP_BANK.soccer;
+    const grid = document.getElementById('warmupBank');
+    grid.innerHTML = '';
+    selectedWarmup = null;
+    document.getElementById('confirmWarmup').disabled = true;
+
+    warmups.forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'bank-card';
+      card.innerHTML = `
+        <span class="bank-icon">${w.icon}</span>
+        <div class="bank-info">
+          <div class="bank-name">${w.name}</div>
+          <div class="bank-desc">${w.description}</div>
+          ${w.purpose ? `<div class="bank-purpose">Purpose: ${w.purpose}</div>` : ''}
+          ${w.tip ? `<div class="bank-tip">💡 ${w.tip}</div>` : ''}
+        </div>
+        <span class="bank-check">✓</span>
+      `;
+      card.addEventListener('click', () => {
+        grid.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedWarmup = w;
+        document.getElementById('warmupTime').value = w.defaultTime;
+        document.getElementById('confirmWarmup').disabled = false;
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  document.getElementById('confirmWarmup').addEventListener('click', () => {
+    if (!selectedWarmup) return;
+    const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedWarmup.id + '-' + Date.now();
+    upsertBlock({ type: 'warmup', id: existId, name: selectedWarmup.name, icon: selectedWarmup.icon, description: selectedWarmup.description, purpose: selectedWarmup.purpose, tip: selectedWarmup.tip, durationMinutes: parseInt(document.getElementById('warmupTime').value) || 10 });
+    closeModal();
+  });
+
+  // ── Drill bank ──
+  function buildDrillBank(filterCat) {
+    const drills = DRILL_BANK[plan.sport] || [];
+    const cats = ['All', ...new Set(drills.map(d => d.category))];
+
+    const catFilter = document.getElementById('catFilter');
+    catFilter.innerHTML = '';
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'cat-btn' + (cat === activeCat ? ' active' : '');
+      btn.textContent = cat;
+      btn.addEventListener('click', () => { activeCat = cat; buildDrillBank(cat); });
+      catFilter.appendChild(btn);
+    });
+
+    const grid = document.getElementById('drillBank');
+    grid.innerHTML = '';
+    const filtered = (filterCat && filterCat !== 'All') ? drills.filter(d => d.category === filterCat) : drills;
+
+    filtered.forEach(d => {
+      const isMulti = selectedRotDrills.some(r => r.id === d.id);
+      const isSel = !isRotational && selectedDrill && selectedDrill.id === d.id;
+      const card = document.createElement('div');
+      card.className = 'bank-card' + (isMulti ? ' multi-sel' : isSel ? ' selected' : '');
+      card.innerHTML = `
+        <span class="bank-icon">${d.icon}</span>
+        <div class="bank-info">
+          <div class="bank-name">${d.name}<span class="bank-cat">${d.category}</span></div>
+          <div class="bank-desc">${d.description}</div>
+          ${d.purpose ? `<div class="bank-purpose">Purpose: ${d.purpose}</div>` : ''}
+          ${d.tip ? `<div class="bank-tip">💡 ${d.tip}</div>` : ''}
+        </div>
+        <span class="bank-check">✓</span>
+      `;
+      card.addEventListener('click', () => {
+        if (isRotational) {
+          const idx = selectedRotDrills.findIndex(r => r.id === d.id);
+          if (idx >= 0) selectedRotDrills.splice(idx, 1); else selectedRotDrills.push(d);
+          updateRotCalc(); buildDrillBank(activeCat);
+        } else {
+          selectedDrill = d;
+          document.getElementById('drillTime').value = d.defaultTime;
+          document.getElementById('confirmDrill').disabled = false;
+          buildDrillBank(activeCat);
+        }
+      });
+      grid.appendChild(card);
+    });
+
+    updateRotCalc();
+  }
+
+  function updateRotCalc() {
+    const calc = document.getElementById('rotCalc');
+    const confirmBtn = document.getElementById('confirmDrill');
+    if (isRotational) {
+      const n = selectedRotDrills.length;
+      const t = parseInt(document.getElementById('drillTime').value) || 12;
+      calc.style.display = n > 0 ? 'block' : 'none';
+      calc.textContent = `${n} drill${n !== 1 ? 's' : ''} × ${t} min each = ${n * t} min total`;
+      confirmBtn.disabled = n === 0;
+      confirmBtn.textContent = n > 0 ? `Add Rotation (${n * t} min)` : 'Add Rotation';
+      document.getElementById('drillTimeLabel').textContent = 'Time per drill:';
+    } else {
+      calc.style.display = 'none';
+      document.getElementById('drillTimeLabel').textContent = 'Duration:';
+      confirmBtn.textContent = 'Add Drill';
+    }
+  }
+
+  document.getElementById('rotToggle').addEventListener('change', function() {
+    isRotational = this.checked;
+    selectedDrill = null; selectedRotDrills = [];
+    document.getElementById('confirmDrill').disabled = true;
+    buildDrillBank(activeCat);
+  });
+  document.getElementById('drillTime').addEventListener('input', updateRotCalc);
+
+  document.getElementById('confirmDrill').addEventListener('click', () => {
+    if (isRotational) {
+      if (!selectedRotDrills.length) return;
+      const tpd = parseInt(document.getElementById('drillTime').value) || 12;
+      const existId = editIdx !== null ? plan.blocks[editIdx].id : 'rot-' + Date.now();
+      upsertBlock({ type: 'rotation', id: existId, name: `Rotation Stations (${selectedRotDrills.length} drills)`, drills: selectedRotDrills.map(d => ({ id: d.id, name: d.name, icon: d.icon, description: d.description || '', purpose: d.purpose || '', tip: d.tip || '' })), timePerDrill: tpd, durationMinutes: selectedRotDrills.length * tpd });
+    } else {
+      if (!selectedDrill) return;
+      const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedDrill.id + '-' + Date.now();
+      upsertBlock({ type: 'drill', id: existId, name: selectedDrill.name, icon: selectedDrill.icon, description: selectedDrill.description, purpose: selectedDrill.purpose, tip: selectedDrill.tip, durationMinutes: parseInt(document.getElementById('drillTime').value) || 12 });
+    }
+    closeModal();
+  });
+
+  // ── Break ──
+  document.querySelectorAll('.break-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.break-preset-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('breakTime').value = btn.dataset.min;
+    });
+  });
+  document.getElementById('breakTime').addEventListener('input', () => {
+    document.querySelectorAll('.break-preset-btn').forEach(b => b.classList.remove('selected'));
+  });
+  document.getElementById('confirmBreak').addEventListener('click', () => {
+    const existId = editIdx !== null ? plan.blocks[editIdx].id : 'break-' + Date.now();
+    upsertBlock({ type: 'break', id: existId, name: document.getElementById('breakLabel').value || '💧 Water Break', durationMinutes: parseInt(document.getElementById('breakTime').value) || 5 });
+    closeModal();
+  });
+
+  // ── Closing ──
+  document.getElementById('confirmClosing').addEventListener('click', () => {
+    const existId = editIdx !== null ? plan.blocks[editIdx].id : 'closing-' + Date.now();
+    upsertBlock({ type: 'closing', id: existId, name: document.getElementById('closingName').value || '🏁 Closing Circle', durationMinutes: parseInt(document.getElementById('closingTime').value) || 10 });
+    closeModal();
+  });
+
+  // ═══════════════════════════════════════
+  //  BLOCK MANAGEMENT
+  // ═══════════════════════════════════════
+
+  // ═══════════════════════════════════════
+  //  LOCALSTORAGE
+  // ═══════════════════════════════════════
+  function savePlan() {
+    if (plan) localStorage.setItem('empowerPracticePlan', JSON.stringify(plan));
+  }
+
+  (function init() {
+    const raw = localStorage.getItem('empowerPracticePlan');
+    if (!raw) return;
+    try {
+      plan = JSON.parse(raw);
+      document.getElementById('wizard').style.display = 'none';
+      document.getElementById('builder').classList.add('active');
+      renderBuilder();
+    } catch { localStorage.removeItem('empowerPracticePlan'); }
+  })();
+  </script>
+
+  <script>
+  (function() {
+    var btn = document.getElementById('navHamburger');
+    var links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function() {
+      var open = links.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
