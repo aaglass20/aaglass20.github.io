@@ -670,61 +670,249 @@
 
   const DRILL_BANK = {
     soccer: [
-      { id: 'd-soc-drb-agility', category: 'Dribbling', icon: '🔶', name: 'Dribbling Agility',
-        description: 'Cones, ladders, and hurdles set up as an obstacle course. Players go through without ball first to learn the path, then dribble through at their own pace.',
-        purpose: 'Ball control at pace, agility, confidence with obstacles.',
-        tip: 'Let participants run through without a ball first — removes dual-task pressure and builds spatial confidence.',
+      // ── Ball Control ──
+      { id: 'd-soc-touch-ball', category: 'Ball Control', icon: '🦶', name: 'Ball Touch Station',
+        description: 'Foot-skill fundamentals — sole taps, rolls, and tick tocks in place.',
+        steps: [
+          { icon: '⚽', text: 'Sole Taps — tap the top of the ball alternating feet while stationary', tag: 'skill' },
+          { icon: '↔️', text: 'Side-to-Side Rolls — roll ball left and right with sole of foot' },
+          { icon: '🔵', text: 'Toe-Ball-Toe — push ball forward with toe, pull back with sole, repeat in place' },
+          { icon: '🕰️', text: 'Tick Tocks — tap ball back and forth between the insides of both feet, like a clock swinging', tag: 'skill' },
+          { icon: '🌟', text: 'BDU players demo first, then guide their partner through each move' }
+        ],
+        why: 'The more we touch the ball with our feet, the better our feet learn it. Lots of touches make soccer easier!',
+        volunteerTip: 'Celebrate any ball contact as a win. For wheelchair participants, use hands or a ramp assist — any interaction counts!',
+        facilitatorTip: 'Demo each move slowly before participants try. Keep transitions between moves quick so everyone stays active.',
+        defaultTime: 12 },
+      // ── Dribbling ──
+      { id: 'd-soc-drb-agility', category: 'Dribbling', icon: '🔶', name: 'Dribbling Agility Course',
+        description: 'Cones, ladders, and hurdles as an obstacle course — go through without ball first, then dribble.',
+        steps: [
+          { icon: '🔶', text: 'Set up cones, ladders, or low hurdles in a course', tag: 'skill' },
+          { icon: '🚶', text: 'Players walk the path without a ball first to learn the layout' },
+          { icon: '⚽', text: 'Then dribble through at their own pace — no timer, no pressure' },
+          { icon: '🌟', text: 'BDU player runs alongside and celebrates each section completed' }
+        ],
+        why: 'Dribbling through obstacles teaches our feet and eyes to work together — the same way we navigate defenders in a real game!',
+        volunteerTip: 'Let participants run through without a ball first — removes dual-task pressure and builds spatial confidence.',
+        facilitatorTip: 'Set up multiple parallel courses so players aren\'t waiting. Widen the course for beginners.',
         defaultTime: 12 },
       { id: 'd-soc-drb-music', category: 'Dribbling', icon: '🎵', name: 'Dribble to Music',
-        description: 'Everyone dribbles around the space while music plays. When the music stops, freeze and stop the ball with your foot.',
-        purpose: 'Fun dribbling with quick-stop reaction practice.',
-        tip: 'Pause without warning so the freeze is a surprise. Mix slow songs and fast songs for variety.',
+        description: 'Dribble freely while music plays — freeze and stop the ball when the music cuts.',
+        steps: [
+          { icon: '🎶', text: 'Dribble on the Beat — dribble the ball around the space while music plays', tag: 'fun' },
+          { icon: '🛑', text: 'Freeze! — when the music stops, freeze your body AND stop the ball with your foot' },
+          { icon: '🐢', text: 'Mix it up — slow songs = slow dribble, fast songs = quick feet' },
+          { icon: '🎉', text: 'BDU players dribble too and freeze big and silly', tag: 'team' }
+        ],
+        why: 'Music makes soccer fun! Freezing helps us learn to stop the ball fast — like when a coach yells STOP!',
+        volunteerTip: 'Have your phone/speaker ready with 3-4 upbeat songs. Pause without warning so the freeze is a surprise every time.',
+        facilitatorTip: 'Vary the pause length — sometimes pause immediately, sometimes let it play longer. Shorter pauses build quicker reactions.',
         defaultTime: 12 },
+      { id: 'd-soc-drb-cone-course', category: 'Dribbling', icon: '🌀', name: 'Cone Dribbling Course',
+        description: 'Three side-by-side courses at increasing difficulty — participants choose their level.',
+        steps: [
+          { icon: '🔶', text: 'Set up 3 courses side by side: wide weave (easy), tight weave (harder), hoop course (dribble in, stop inside hoop)', tag: 'skill' },
+          { icon: '⚽', text: 'BDU player demos first, then participant picks their course — choice builds confidence' },
+          { icon: '⬆️', text: 'Encourage moving up to the next course if they\'re ready' },
+          { icon: '🏅', text: 'Cheer loudly every time they reach the end!' }
+        ],
+        why: 'Dribbling through cones teaches our feet to control the ball while moving — the same skill real soccer players use to get past defenders!',
+        volunteerTip: 'Set up all 3 courses before the session starts. Letting participants choose removes the fear of failure from the start.',
+        facilitatorTip: 'Walk each course yourself so volunteers understand the difficulty levels. Adjust cone spacing based on the group.',
+        defaultTime: 12 },
+      { id: 'd-soc-drb-red-green', category: 'Dribbling', icon: '🚦', name: 'Red Light / Green Light',
+        description: 'Color-coded dribbling commands — including a Color Dot variation for extra challenge.',
+        steps: [
+          { icon: '🟢', text: 'Green Light — dribble forward!', tag: 'skill' },
+          { icon: '🔴', text: 'Red Light — stop the ball with your sole (no hands)' },
+          { icon: '🟡', text: 'Yellow Light — dribble in tiny circles' },
+          { icon: '💙', text: 'Blue Light (bonus BDU round) — dribble backwards!' },
+          { icon: '🔵', text: 'Color Dot variant: scatter multi-colored spot markers. Call a color ("Go to RED!") and everyone dribbles to that dot.', tag: 'skill' },
+          { icon: '🎉', text: 'BDU players play too — make it a shared experience', tag: 'team' }
+        ],
+        why: 'Learning to stop the ball quickly is one of the most important skills in soccer. When we control where the ball goes AND when it stops, we control the game!',
+        volunteerTip: 'Call colors loudly and with energy. Give extra praise for clean stops — that\'s the key skill.',
+        facilitatorTip: 'For the dot variant: keep dots close so nobody travels far. Vary the cadence of commands to keep players alert.',
+        defaultTime: 12 },
+      // ── Passing ──
       { id: 'd-soc-pas-lines', category: 'Passing', icon: '↔️', name: 'Passing Lines',
-        description: 'Two facing lines with one ball. First player passes across to first player in opposite line, then goes to back of that line. Constant rotation and movement.',
-        purpose: 'Passing technique while moving; teamwork.',
-        tip: 'Keep lines short — longer lines mean too much waiting.',
+        description: 'Two facing lines, one ball. Pass across and go to the back of the opposite line — constant rotation.',
+        steps: [
+          { icon: '🤝', text: 'Two facing lines with one ball. First player passes to the front of the opposite line', tag: 'skill' },
+          { icon: '🔁', text: 'After passing, go to the back of the opposite line — constant movement' },
+          { icon: '📢', text: 'Call "Ready!" before passing so the receiver is prepared' },
+          { icon: '💬', text: 'BDU players celebrate every clean pass out loud' }
+        ],
+        why: 'Passing while moving is how real soccer works — this drill gets our feet and brains working together in real time!',
+        volunteerTip: 'Keep lines short — longer lines mean too much waiting. 3-4 players per line max.',
+        facilitatorTip: 'Position yourself at one end to cue the pace and watch for form. Slow it down if passes are consistently off target.',
         defaultTime: 12 },
-      { id: 'd-soc-pas-partner', category: 'Passing', icon: '🤝', name: 'Partner Passing',
-        description: 'Partners across from each other passing back and forth. Start close, gradually add distance as confidence grows.',
-        purpose: 'Repetitive passing technique in a comfortable pairing.',
-        tip: 'Closer is always fine — the goal is connection and touch, not distance.',
+      { id: 'd-soc-pas-partner', category: 'Passing', icon: '🎯', name: 'Partner Passing',
+        description: 'Partners facing each other — inside-of-foot passes, start close and build distance.',
+        steps: [
+          { icon: '🟡', text: 'Close Passes — 3-4 feet apart, inside-of-foot passes. Focus on stopping the ball.', tag: 'skill' },
+          { icon: '📏', text: 'Step Back — after 3 successful passes, each pair takes one step back. How far can you go?' },
+          { icon: '💬', text: 'Encourage cheering between pairs — "Great pass!", "You\'ve got this!"' }
+        ],
+        why: 'Soccer is a team sport. Passing is how we share the ball with our friends and help them score!',
+        volunteerTip: 'Adjust distance based on each participant\'s ability. Closer is always fine — the goal is connection and touch, not distance.',
+        facilitatorTip: 'Station yourself between pairs to provide cues. Keep both partners moving — even the waiting partner should be lightly bouncing or engaged.',
         defaultTime: 12 },
+      // ── Shooting ──
       { id: 'd-soc-sht-pass', category: 'Shooting', icon: '⚡', name: 'Pass to Shot',
-        description: 'Two lines in front of goal: one line passes to the other; receiver takes a first touch and shoots.',
-        purpose: 'Combining receiving with finishing.',
-        tip: 'Celebrate every shot — makes or misses both get the same energy!',
+        description: 'Two lines in front of goal — one passes, the other receives, first-touches, and shoots.',
+        steps: [
+          { icon: '🏃', text: 'Two lines face each other in front of goal', tag: 'skill' },
+          { icon: '⚽', text: 'First player in line A passes to first player in line B' },
+          { icon: '🥅', text: 'Line B player takes a first touch and shoots on goal', tag: 'skill' },
+          { icon: '🎉', text: 'Celebrate every shot — makes AND misses get the same energy!' }
+        ],
+        why: 'Scoring in a real game always comes after a pass. This drill ties the two together so the finish feels natural!',
+        volunteerTip: 'Celebrate every shot regardless of outcome. The habit of shooting confidently matters more than accuracy.',
+        facilitatorTip: 'Keep the goal close for beginners. Position a volunteer at goal to return balls quickly and keep the pace up.',
         defaultTime: 12 },
       { id: 'd-soc-sht-dribble', category: 'Shooting', icon: '🏃', name: 'Dribble to Shot',
-        description: 'Single line in front of goal with cones ahead. Each player dribbles through the cone obstacle then shoots on goal.',
-        purpose: 'Dribbling into finishing.',
-        tip: 'Keep the goal close and cones forgiving. Narrate every touch: "Great dribble! What a shot!"',
+        description: 'Single line — each player dribbles through a small cone obstacle then shoots on goal.',
+        steps: [
+          { icon: '🔶', text: 'Set up a simple cone obstacle in front of goal — 2-3 cones is plenty', tag: 'skill' },
+          { icon: '⚽', text: 'Player dribbles through at their own pace' },
+          { icon: '🥅', text: 'Shoot on goal at the end — any foot, any style', tag: 'skill' },
+          { icon: '🌟', text: 'BDU player narrates every touch: "Great dribble! What a shot!"' }
+        ],
+        why: 'In real soccer, you dribble to create space, then shoot — this drill connects those two moments naturally!',
+        volunteerTip: 'Keep the goal close and cones forgiving. Narrate every touch with energy.',
+        facilitatorTip: 'Run parallel lines if you have enough goals/cones so players aren\'t waiting long.',
         defaultTime: 12 },
       { id: 'd-soc-sht-penalty', category: 'Shooting', icon: '🎯', name: 'Penalty Shooting',
-        description: 'Players line up at penalty spot and take turns shooting. Coach or volunteer plays goalkeeper.',
-        purpose: 'Shooting confidence and accuracy.',
-        tip: 'Let the goalkeeper be dramatic about saves they miss — it\'s hilarious and empowering for the shooter!',
+        description: 'Line up at the penalty spot — each player shoots while the keeper dives dramatically the wrong way.',
+        steps: [
+          { icon: '⚽', text: 'Players line up at the penalty spot (or closer for beginners)', tag: 'skill' },
+          { icon: '🤡', text: 'BDU player is the "silly goalkeeper" — always dives the wrong way, always misses dramatically' },
+          { icon: '🥅', text: 'Player shoots — any style, any power', tag: 'skill' },
+          { icon: '🎉', text: 'Crowd goes WILD for every single goal', tag: 'team' },
+          { icon: '🔁', text: 'Every player shoots multiple times — keep the line moving and the energy high' }
+        ],
+        why: 'Shooting confidence comes from repetition. Every goal scored in practice makes the next one feel easier and more natural!',
+        volunteerTip: 'The sillier the keeper dive, the better. Every participant should feel like a superstar scorer.',
+        facilitatorTip: 'Let the keeper be dramatic about saves they miss — it\'s hilarious and empowering for the shooter! Move the shooting line closer for participants who need it.',
         defaultTime: 12 },
-      { id: 'd-soc-gm-construction', category: 'Mini Game', icon: '🚧', name: 'Construction Zone',
-        description: 'Cones and pylons spread randomly across the field. Every player dribbles around knocking them over. Once all are down, reset and repeat.',
-        purpose: 'Free-form dribbling in all directions with a playful goal.',
-        tip: 'Coaches may reset cones during play to keep it continuous and exciting.',
+      // ── Goalkeeping ──
+      { id: 'd-soc-gk-intro', category: 'Goalkeeping', icon: '🧤', name: 'Goalie Introduction',
+        description: 'Scoop catches, 3-step sequence, and gentle saves — making every participant feel like a hero.',
+        steps: [
+          { icon: '🔶', text: 'Cone Gap Warmup — 5 cones in a row with a gap between each. BDU player rolls ball slowly through each gap', tag: 'skill' },
+          { icon: '🙌', text: 'Participant scoops the ball as it rolls through — any method: two hands, one hand, arms cradle' },
+          { icon: '⬆️', text: '3-step sequence (when ready): bounce once → basket catch (arms wide) → full catch with both hands', tag: 'skill' },
+          { icon: '🥅', text: 'Light Saves — participant in front of goal while BDU player rolls a gentle ball toward the net', tag: 'skill' },
+          { icon: '🛑', text: 'Stop it any way you can — foot, hands, body. Every stop is a SAVE! Celebrate huge.', tag: 'team' },
+          { icon: '📈', text: 'Progression (if ready): BDU volunteer takes a soft kick-shot. Announce "here it comes!" first', tag: 'fun' }
+        ],
+        why: 'Every team needs a goalkeeper — the hero who protects the net! Scooping and catching builds the bravery goalkeepers use in every real game!',
+        volunteerTip: 'Keep shots gentle, slow, and aimed right at the participant — say "it\'s coming to YOU!" first. Any stop counts: foot, hand, body block.',
+        facilitatorTip: 'For wheelchair participants, a hand stop or lean-in is a full save. Never rush progression — stay at each step until the participant is comfortable.',
         defaultTime: 12 },
-      { id: 'd-soc-gm-longest', category: 'Mini Game', icon: '📏', name: 'Longest Shot Competition',
-        description: 'All players shoot from the same starting distance. After each round the line moves back one step. Repeat until there\'s a winner.',
-        purpose: 'Shooting power and confidence from distance.',
-        tip: 'Make a huge deal of every distance marker — "Can you score from HERE?!"',
+      // ── Multi-Skill ──
+      { id: 'd-soc-ml-dps', category: 'Multi-Skill', icon: '🥅', name: 'Dribble, Pass, Score!',
+        description: 'Player dribbles to a middle cone, passes to a BDU partner, then runs onto the set-up ball and shoots.',
+        steps: [
+          { icon: '🌀', text: 'Player dribbles from a start cone toward a middle cone', tag: 'skill' },
+          { icon: '🤝', text: 'At the middle cone, pass across to a BDU partner waiting on the side' },
+          { icon: '🥅', text: 'Partner sets the ball up — player runs onto it and shoots into a small goal', tag: 'skill' },
+          { icon: '🔁', text: 'Every player gets several turns — rotate quickly, cheer every shot' }
+        ],
+        why: 'Real soccer is dribble, then pass, then shoot — all together! This is how goals happen in a real game.',
+        volunteerTip: 'Keep the goal close and the pass short. Every touch is a win — narrate it: "Great dribble! Nice pass! What a shot!"',
+        facilitatorTip: 'Have one BDU player stationed as the "setter" so participants can focus on their own run. Rotate that role every few turns.',
+        defaultTime: 15 },
+      { id: 'd-soc-ml-gates', category: 'Multi-Skill', icon: '🚪', name: 'Gate Goals → Shoot!',
+        description: 'Dribble through your assigned number of mini-gates, then finish on goal — dribbling with purpose.',
+        steps: [
+          { icon: '🔵', text: 'Set up 6-8 pairs of cones as mini gates scattered near a real goal', tag: 'skill' },
+          { icon: '🔢', text: 'Give each participant a number — "Your number is 3!" — that\'s how many gates to dribble through before shooting', tag: 'fun' },
+          { icon: '⚽', text: 'Participant dribbles through their gates in any order — BDU player counts aloud: "1… 2… 3…"' },
+          { icon: '🥅', text: 'Hit their number → BDU player calls "SHOOT!" → participant finishes on goal', tag: 'skill' },
+          { icon: '🎉', text: 'Whole group erupts for every goal — BDU players are the full hype squad', tag: 'team' },
+          { icon: '⬆️', text: 'Increase the number for confident participants — can you hit 5 gates before you shoot?' }
+        ],
+        why: 'Real soccer is all about moving with the ball, finding space, and then finishing. Gates teach us to dribble with a purpose — and the shot at the end makes it feel just like a real game!',
+        volunteerTip: 'Tune the number to each participant — 1 or 2 gates for beginners, 4-5 for confident dribblers. Keep the shot close to goal.',
+        facilitatorTip: 'BDU players count out loud so the whole space feels alive with energy. Keep gates spread so participants aren\'t crowding each other.',
+        defaultTime: 12 },
+      // ── Games ──
+      { id: 'd-soc-gm-everybody-scores', category: 'Game', icon: '⭐', name: 'Everybody Scores',
+        description: 'Small-sided game where every player on the team must score before the team can win.',
+        steps: [
+          { icon: '🔵', text: 'Pick a size based on numbers (3v3, 5v5, or 7v7). Small goals, no goalkeeper. Every player must score before the team can win', tag: 'team' },
+          { icon: '🎉', text: 'BDU players celebrate every goal (for either team!) with maximum energy' },
+          { icon: '🤝', text: 'Rotate BDU players onto both teams to keep numbers even and energy high' },
+          { icon: '⏱️', text: 'Short games with quick restarts — keep it moving and upbeat' }
+        ],
+        why: 'Games are the fun part of soccer! We use everything we learned — touching, dribbling, passing, and scoring — and we cheer for our team!',
+        volunteerTip: 'Celebrate both teams equally — every goal from either side gets the same cheer.',
+        facilitatorTip: 'Best with the Advanced group. The "everybody scores" rule naturally creates dramatic and inclusive moments.',
+        defaultTime: 17 },
+      { id: 'd-soc-gm-hungry-hippos', category: 'Game', icon: '🦛', name: 'Hungry Hungry Hippos',
+        description: 'Ball pile in the center — pick one, do a skill, then dribble or pass it to your goal.',
+        steps: [
+          { icon: '🥅', text: 'Two goals on each end. Pile all balls in the middle of the space', tag: 'fun' },
+          { icon: '🦶', text: 'Player picks a ball and does a skill first — BDU player calls one (toe taps, sole rolls, tick tocks)', tag: 'skill' },
+          { icon: '⚽', text: 'Then dribble or pass the ball into their goal — any style, any speed' },
+          { icon: '🔁', text: 'Repeat until all balls are gone — each new ball gets a different skill called out' },
+          { icon: '🎉', text: 'Count the goals out loud together as a team — how many did we get?!', tag: 'team' }
+        ],
+        why: 'Games are the fun part of soccer! We use everything we learned — touching, dribbling, passing, and scoring — and we cheer for our team!',
+        volunteerTip: 'Keep the skill simple and change it each round. The goal is lots of ball touches with a fun finish — not perfection!',
+        facilitatorTip: 'Best with the Beginners group. As soon as all balls are scored, cheer loudly and reset immediately to keep momentum.',
+        defaultTime: 17 },
+      { id: 'd-soc-gm-treasure-hunt', category: 'Game', icon: '🏴‍☠️', name: 'Treasure Hunt Dribble',
+        description: 'Collect treasure (balls) from the center pile by dribbling them one at a time to your team\'s chest.',
+        steps: [
+          { icon: '💰', text: 'Pile all balls in the center — that\'s the treasure!', tag: 'fun' },
+          { icon: '⚽', text: 'Players dribble one ball at a time from the pile to their team\'s "treasure chest" (goal or cone area)', tag: 'skill' },
+          { icon: '🔁', text: 'Return to the pile and get another — keep going until all treasure is collected' },
+          { icon: '📢', text: 'BDU player counts aloud and cheers every delivery: "That\'s 4 gold coins!"', tag: 'team' }
+        ],
+        why: 'In a real game, everything comes together — dribbling, controlling, moving. This is our chance to use every skill we practiced today!',
+        volunteerTip: 'No wrong speed, no wrong style — any dribble counts. Narrate every single ball like it\'s the winning goal!',
+        facilitatorTip: 'Best with the Beginners group. The treasure framing is engaging and removes intimidation around goals/scoring.',
+        defaultTime: 17 },
+      { id: 'd-soc-gm-construction', category: 'Game', icon: '🚧', name: 'Construction Zone',
+        description: 'Cones scattered randomly — dribble around knocking them all over, then reset and repeat.',
+        steps: [
+          { icon: '🔶', text: 'Scatter cones and pylons randomly across the field', tag: 'fun' },
+          { icon: '⚽', text: 'Every player dribbles around knocking cones over — any direction, any pace' },
+          { icon: '🔁', text: 'Once all cones are down, BDU players reset and do it again' },
+          { icon: '🏅', text: 'Count how fast the whole team can knock them all down!' }
+        ],
+        why: 'Free-form dribbling in all directions builds real ball confidence — soccer requires changing direction on the fly!',
+        volunteerTip: 'Coaches may reset cones during play to keep it continuous and exciting.',
+        facilitatorTip: 'Time each round and celebrate new "records." The unpredictability keeps all skill levels engaged.',
+        defaultTime: 12 },
+      { id: 'd-soc-gm-longest', category: 'Game', icon: '📏', name: 'Longest Shot Competition',
+        description: 'Shoot from the same starting line — after each round the line moves back one step.',
+        steps: [
+          { icon: '⚽', text: 'All players line up at the same starting distance from goal', tag: 'skill' },
+          { icon: '📏', text: 'Everyone shoots — celebrate every goal loudly!' },
+          { icon: '⬅️', text: 'After each round, the line moves back one big step' },
+          { icon: '🏆', text: 'See how far back the group can score from — make a HUGE deal of every new "long shot" goal' }
+        ],
+        why: 'Shooting power and confidence from distance — and it teaches players to aim, not just kick hard!',
+        volunteerTip: 'Make a huge deal of every distance marker — "Can you score from HERE?!"',
+        facilitatorTip: 'Don\'t move the line back until most players have succeeded at the current distance. The goal is confidence, not failure.',
         defaultTime: 12 },
       { id: 'd-soc-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
-        description: '5–7 ES players + 1–2 peer volunteers per team. Coaches on field with both teams at all times.',
-        purpose: 'Full game experience and team play.',
-        tip: 'Celebrate both teams equally — every goal from either side gets the same cheer.',
+        description: '5-7 ES players + 1-2 peer volunteers per team. Coaches on field with both teams at all times.',
+        steps: [
+          { icon: '⚖️', text: 'Divide into 2 balanced teams — sprinkle BDU volunteers evenly across both', tag: 'team' },
+          { icon: '🔄', text: 'Rotate players every 10-12 minutes so everyone gets quality field time' },
+          { icon: '🌟', text: 'BDU players on the sideline cheer loudly for both teams — no silent subs' },
+          { icon: '🎉', text: 'Celebrate every goal, every save, every great pass — ALL of it counts', tag: 'team' }
+        ],
+        why: 'This is what soccer is all about — playing together, competing with heart, and cheering for everyone on the field!',
+        volunteerTip: 'Celebrate both teams equally — every goal from either side gets the same cheer.',
+        facilitatorTip: 'Keep the rotation fair and the energy high. The goal isn\'t a final score — it\'s that every participant walks off feeling like an All-Star.',
         defaultTime: 40 },
-      { id: 'd-soc-ml-dps', category: 'Multi-Skill', icon: '🥅', name: 'Dribble, Pass, Score!',
-        description: 'Player dribbles to a middle cone, passes to a volunteer waiting on the side, then runs onto the set-up ball and shoots.',
-        purpose: 'Combines dribble + pass + shoot in one fluid sequence.',
-        tip: 'Keep it moving fast — every player gets several turns. Narrate every touch!',
-        defaultTime: 15 },
     ],
     basketball: [
       { id: 'd-bball-drb-station', category: 'Dribbling', icon: '🏀', name: 'Stationary Dribbling',
@@ -837,6 +1025,20 @@
         defaultTime: 30 },
     ],
   };
+
+  // ─── Merge user-created drills from drill-admin localStorage ───
+  (function mergeLocalDrills() {
+    try {
+      const raw = localStorage.getItem('empowerDrillBank');
+      if (!raw) return;
+      JSON.parse(raw).forEach(d => {
+        if (!d.sport || !d.id) return;
+        if (!DRILL_BANK[d.sport]) DRILL_BANK[d.sport] = [];
+        const idx = DRILL_BANK[d.sport].findIndex(x => x.id === d.id);
+        if (idx >= 0) DRILL_BANK[d.sport][idx] = d; else DRILL_BANK[d.sport].push(d);
+      });
+    } catch(e) {}
+  })();
 
   // ═══════════════════════════════════════
   //  STATE
@@ -982,6 +1184,28 @@
     document.getElementById('addBlockBtn').disabled = left <= 0;
   }
 
+  function renderDrillDetail(d, perTime) {
+    let html = '';
+    if (d.steps && d.steps.length) {
+      const stepItems = d.steps.map(s => {
+        const tag = s.tag ? `<span class="drill-tag ${s.tag}">${s.tag}</span>` : '';
+        return `<li><span class="drill-icon">${s.icon || '▸'}</span> ${s.text}${tag}</li>`;
+      }).join('');
+      html += `<ul class="drill-list">${stepItems}</ul>`;
+    } else if (d.description) {
+      html += `<div class="block-desc">${d.description}</div>`;
+    }
+    if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
+    if (d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
+    if (d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
+    // Legacy fallback
+    if (!d.steps && !d.why) {
+      if (d.purpose) html += `<div class="block-purpose">Purpose: ${d.purpose}</div>`;
+      if (d.tip)     html += `<div class="vol-tip"><span class="tip-icon">💡</span> ${d.tip}</div>`;
+    }
+    return html;
+  }
+
   function makeBlockEl(block, idx) {
     const div = document.createElement('div');
     div.className = 'plan-block type-' + block.type;
@@ -992,26 +1216,20 @@
     let extra = '';
     if (block.type === 'rotation') {
       extra = `<div class="rotation-drills-expanded">${block.drills.map(d => `
-        <div class="rot-drill-card">
-          <div class="rot-drill-header">
-            <span>${d.icon || '🏃'} ${d.name}</span>
-            <span class="rot-drill-per-time">${block.timePerDrill} min</span>
-          </div>
-          ${d.description ? `<div class="rot-drill-desc">${d.description}</div>` : ''}
-          ${d.purpose ? `<div class="rot-drill-purpose">Purpose: ${d.purpose}</div>` : ''}
-          ${d.tip ? `<div class="rot-drill-tip">💡 ${d.tip}</div>` : ''}
+        <div class="station-card">
+          <div class="station-title">${d.icon || '🏃'} ${d.name} <span style="margin-left:auto;font-size:.78rem;font-weight:500;color:#888;">${block.timePerDrill} min</span></div>
+          ${renderDrillDetail(d, block.timePerDrill)}
         </div>`).join('')}
       </div>`;
-    } else {
-      if (block.purpose) extra += `<div class="block-purpose">Purpose: ${block.purpose}</div>`;
-      if (block.tip) extra += `<div class="block-tip">💡 ${block.tip}</div>`;
+    } else if (block.type === 'drill' || block.type === 'warmup') {
+      extra = renderDrillDetail(block, null);
     }
 
     div.innerHTML = `
       <span class="block-icon">${icon}</span>
       <div class="block-body">
         <div class="block-name">${block.name}</div>
-        ${block.description ? `<div class="block-desc">${block.description}</div>` : ''}
+        ${(block.type !== 'drill' && block.type !== 'warmup' && block.description) ? `<div class="block-desc">${block.description}</div>` : ''}
         ${extra}
         <span class="block-edit-hint">✏️ Click to edit</span>
       </div>
@@ -1184,7 +1402,7 @@
   document.getElementById('confirmWarmup').addEventListener('click', () => {
     if (!selectedWarmup) return;
     const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedWarmup.id + '-' + Date.now();
-    upsertBlock({ type: 'warmup', id: existId, name: selectedWarmup.name, icon: selectedWarmup.icon, description: selectedWarmup.description, purpose: selectedWarmup.purpose, tip: selectedWarmup.tip, durationMinutes: parseInt(document.getElementById('warmupTime').value) || 10 });
+    upsertBlock({ type: 'warmup', id: existId, name: selectedWarmup.name, icon: selectedWarmup.icon, description: selectedWarmup.description, steps: selectedWarmup.steps || [], why: selectedWarmup.why || '', volunteerTip: selectedWarmup.volunteerTip || '', facilitatorTip: selectedWarmup.facilitatorTip || '', purpose: selectedWarmup.purpose, tip: selectedWarmup.tip, durationMinutes: parseInt(document.getElementById('warmupTime').value) || 10 });
     closeModal();
   });
 
@@ -1271,11 +1489,11 @@
       if (!selectedRotDrills.length) return;
       const tpd = parseInt(document.getElementById('drillTime').value) || 12;
       const existId = editIdx !== null ? plan.blocks[editIdx].id : 'rot-' + Date.now();
-      upsertBlock({ type: 'rotation', id: existId, name: `Rotation Stations (${selectedRotDrills.length} drills)`, drills: selectedRotDrills.map(d => ({ id: d.id, name: d.name, icon: d.icon, description: d.description || '', purpose: d.purpose || '', tip: d.tip || '' })), timePerDrill: tpd, durationMinutes: selectedRotDrills.length * tpd });
+      upsertBlock({ type: 'rotation', id: existId, name: `Rotation Stations (${selectedRotDrills.length} drills)`, drills: selectedRotDrills.map(d => ({ id: d.id, name: d.name, icon: d.icon, description: d.description || '', steps: d.steps || [], why: d.why || '', volunteerTip: d.volunteerTip || '', facilitatorTip: d.facilitatorTip || '', purpose: d.purpose || '', tip: d.tip || '' })), timePerDrill: tpd, durationMinutes: selectedRotDrills.length * tpd });
     } else {
       if (!selectedDrill) return;
       const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedDrill.id + '-' + Date.now();
-      upsertBlock({ type: 'drill', id: existId, name: selectedDrill.name, icon: selectedDrill.icon, description: selectedDrill.description, purpose: selectedDrill.purpose, tip: selectedDrill.tip, durationMinutes: parseInt(document.getElementById('drillTime').value) || 12 });
+      upsertBlock({ type: 'drill', id: existId, name: selectedDrill.name, icon: selectedDrill.icon, description: selectedDrill.description, steps: selectedDrill.steps || [], why: selectedDrill.why || '', volunteerTip: selectedDrill.volunteerTip || '', facilitatorTip: selectedDrill.facilitatorTip || '', purpose: selectedDrill.purpose, tip: selectedDrill.tip, durationMinutes: parseInt(document.getElementById('drillTime').value) || 12 });
     }
     closeModal();
   });
@@ -1324,6 +1542,27 @@
 
       let inner = '';
 
+      function drillDetailHtml(d) {
+        let dHtml = '';
+        if (d.steps && d.steps.length) {
+          const items = d.steps.map(s => {
+            const tag = s.tag ? `<span class="dtag ${s.tag}">${s.tag}</span>` : '';
+            return `<li><span class="dic">${s.icon || '▸'}</span> ${s.text}${tag}</li>`;
+          }).join('');
+          dHtml += `<ul class="dlist">${items}</ul>`;
+        } else if (d.description) {
+          dHtml += `<div class="s-desc">${d.description}</div>`;
+        }
+        if (d.why) dHtml += `<div class="s-why"><span>🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
+        if (d.volunteerTip) dHtml += `<div class="s-vol"><span>🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
+        if (d.facilitatorTip) dHtml += `<div class="s-fac"><span>💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
+        if (!d.steps && !d.why) {
+          if (d.purpose) dHtml += `<div class="s-purp">Purpose: ${d.purpose}</div>`;
+          if (d.tip)     dHtml += `<div class="s-vol"><span>💡</span> ${d.tip}</div>`;
+        }
+        return dHtml;
+      }
+
       if (block.type === 'rotation') {
         const stationCards = block.drills.map(d => `
           <div class="station">
@@ -1331,15 +1570,14 @@
               <span class="station-name">${d.icon || '🏃'} ${d.name}</span>
               <span class="station-t">${block.timePerDrill} min each</span>
             </div>
-            ${d.description ? `<div class="s-desc">${d.description}</div>` : ''}
-            ${d.purpose    ? `<div class="s-purp">Purpose: ${d.purpose}</div>` : ''}
-            ${d.tip        ? `<div class="s-tip">💡 ${d.tip}</div>` : ''}
+            ${drillDetailHtml(d)}
           </div>`).join('');
         inner = `<div class="stations">${stationCards}</div>`;
       } else {
-        if (block.description) inner += `<div class="b-desc">${block.description}</div>`;
-        if (block.purpose)     inner += `<div class="b-purp">Purpose: ${block.purpose}</div>`;
-        if (block.tip)         inner += `<div class="b-tip">💡 ${block.tip}</div>`;
+        inner = drillDetailHtml(block);
+        if (!block.steps && !block.why && block.description && block.type !== 'drill') {
+          inner = `<div class="b-desc">${block.description}</div>` + inner;
+        }
       }
 
       return `
@@ -1399,14 +1637,29 @@
   .b-tip{font-size:.76rem;color:#444;}
 
   /* ── Rotation stations ── */
-  .stations{margin-top:.65rem;display:flex;flex-direction:column;gap:.4rem;}
-  .station{background:#f5f0ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;padding:.55rem .85rem;break-inside:avoid;page-break-inside:avoid;}
-  .station-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;}
-  .station-name{font-weight:700;font-size:.86rem;color:#5b21b6;}
+  .stations{margin-top:.65rem;display:flex;flex-direction:column;gap:.5rem;}
+  .station{background:#f5f0ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;padding:.65rem .95rem;break-inside:avoid;page-break-inside:avoid;}
+  .station-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;}
+  .station-name{font-weight:700;font-size:.9rem;color:#5b21b6;}
   .station-t{font-size:.73rem;color:#7c3aed;opacity:.7;font-weight:500;}
   .s-desc{font-size:.78rem;color:#555;line-height:1.4;margin-bottom:.14rem;}
   .s-purp{font-size:.74rem;color:#999;font-style:italic;margin-bottom:.14rem;}
-  .s-tip{font-size:.74rem;color:#444;}
+
+  /* ── Drill step list (rich format) ── */
+  .dlist{list-style:none;display:flex;flex-direction:column;gap:.3rem;margin:.3rem 0 .2rem;}
+  .dlist li{display:flex;align-items:flex-start;gap:.4rem;font-size:.8rem;line-height:1.45;color:#444;}
+  .dic{flex-shrink:0;}
+  .dtag{display:inline-block;padding:.1rem .4rem;border-radius:99px;font-size:.62rem;font-weight:700;text-transform:uppercase;margin-left:.3rem;}
+  .dtag.skill{background:#dbeafe;color:#1e40af;}
+  .dtag.fun{background:#fef9c3;color:#854d0e;}
+  .dtag.team{background:#ede9fe;color:#5b21b6;}
+
+  /* ── Why / Volunteer / Facilitator tip strips ── */
+  .s-why,.s-vol,.s-fac{border-radius:0 5px 5px 0;padding:.45rem .7rem;margin-top:.4rem;font-size:.77rem;display:flex;align-items:flex-start;gap:.35rem;line-height:1.45;}
+  .s-why{background:#dbeafe;border-left:3px solid #60a5fa;color:#1e3a8a;}
+  .s-why strong,.s-vol strong,.s-fac strong{font-weight:700;}
+  .s-vol{background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f;}
+  .s-fac{background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d;}
 
   /* ── Footer ── */
   .ftr{margin-top:2rem;padding-top:.65rem;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:.72rem;color:#bbb;}
@@ -1414,7 +1667,7 @@
   @media print{
     body{padding:.5in .75in;max-width:100%;}
     .block{box-shadow:none;border:1px solid #e0e0e0;}
-    .summary,.station{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .summary,.station,.s-why,.s-vol,.s-fac{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   }
 </style>
 </head>

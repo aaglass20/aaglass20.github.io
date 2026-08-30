@@ -61,13 +61,17 @@ File: `empower-playbook/practice-builder.html`
 
 - [ ] **Reorder blocks** — drag or up/down arrows to reorder the timeline
 - [ ] **Edit block duration** — inline edit without removing and re-adding
-- [ ] **Print / export plan** — clean print view
-- [ ] **Add your own drills** — user-entered custom drills stored in localStorage
-- [ ] **Supabase sync** — save named plans, load previous plans
+- [ ] **Supabase sync** — save named plans, load previous plans; drill bank backed by Supabase (planned — see Future Plans below)
+- [ ] **React conversion** — full SPA rewrite planned (see Future Plans below)
 - [ ] **Start time** — optional session start time; shows clock times on each block
-- [ ] **Other sports drill banks** — Basketball/Softball/Football/Pickleball/Kickball need more drills added to match soccer's depth
+- [ ] **More drills for non-soccer sports** — basketball/softball/football/pickleball/kickball need more rich-schema drills
 - [ ] **Scrimmage block type** — dedicated type with team composition notes
 - [ ] **Equipment checklist** — auto-generated from drills in the plan
+
+## Future Plans (noted for design)
+
+- **Supabase persistence** — `empowerDrillBank` and `empowerPracticePlan` both move to Supabase; user auth (PIN or email); named plans
+- **React conversion** — SPA with React + Vite; drill admin becomes a proper CRUD UI; plan builder uses component state
 
 ---
 
@@ -93,3 +97,4 @@ File: `empower-playbook/practice-builder.html`
 | Date | What happened |
 |---|---|
 | 2026-08-29 | v0.1 created: full wizard + builder + modal + 6-sport demo data + LocalStorage |
+| 2026-08-30 | v0.2: Rich drill schema (steps/why/volunteerTip/facilitatorTip); soccer bank updated with Week 1+2 drills (16 soccer drills total); drill-admin.html created with form + live preview + library; station-card CSS added to shared stylesheet; print view updated for rich format; LocalStorage drill merge from drill-admin → practice-builder |

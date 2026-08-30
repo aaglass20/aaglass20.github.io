@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drill Library — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Admin layout ── */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 1.75rem;
+      align-items: flex-start;
+      margin-top: 2rem;
+    }
+    .preview-toggle-btn {
+      display: none; /* desktop: hidden */
+      width: 100%;
+      margin-top: .6rem;
+      padding: .6rem 1rem;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1.5px solid var(--blue-mid);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background .15s, color .15s;
+    }
+    .preview-toggle-btn:hover { background: var(--blue); color: var(--white); }
+
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .form-panel { position: static; max-height: none; }
+      .form-panel-body { overflow: visible; max-height: none; }
+      .preview-sticky { display: none; position: static; }
+      .preview-sticky.open { display: block; margin-top: .75rem; }
+      .preview-toggle-btn { display: block; }
+    }
+
+    /* ── Form panel ── */
+    .form-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      position: sticky;
+      top: 72px;
+      max-height: calc(100vh - 90px);
+      display: flex;
+      flex-direction: column;
+    }
+    .form-panel-head {
+      padding: 1rem 1.25rem .85rem;
+      border-bottom: 2px solid var(--gray-100);
+      flex-shrink: 0;
+    }
+    .form-panel-head h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin: 0;
+    }
+    .form-panel-body {
+      overflow-y: auto;
+      padding: 1.1rem 1.25rem;
+      flex: 1;
+    }
+    .form-panel-foot {
+      padding: .85rem 1.25rem;
+      border-top: 1px solid var(--gray-100);
+      background: var(--gray-50);
+      flex-shrink: 0;
+    }
+
+    /* ── Section grouping ── */
+    .form-section { margin-bottom: 1rem; }
+    .form-section + .form-section {
+      border-top: 1px solid var(--gray-100);
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    .section-label {
+      font-size: .63rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--gray-300, #d1d5db);
+      margin-bottom: .75rem;
+    }
+
+    /* ── Field rows ── */
+    .form-row { margin-bottom: .8rem; }
+    .form-row:last-child { margin-bottom: 0; }
+    .form-row label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--gray-500, #6b7280);
+      margin-bottom: .2rem;
+    }
+    .field-hint {
+      display: block;
+      font-size: .72rem;
+      color: var(--gray-400, #9ca3af);
+      margin-bottom: .3rem;
+      line-height: 1.3;
+      font-weight: 400;
+    }
+    .form-row input[type="text"],
+    .form-row input[type="number"],
+    .form-row textarea,
+    .form-row select {
+      width: 100%;
+      padding: .5rem .7rem;
+      border: 1.5px solid var(--gray-200, #e5e7eb);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .88rem;
+      color: var(--gray-700, #374151);
+      background: var(--white);
+      transition: border-color .15s;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+    .form-row textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+    .form-row-2 { display: grid; gap: .65rem; }
+    .col-icon-title { grid-template-columns: 68px 1fr; }
+    .col-half      { grid-template-columns: 1fr 1fr; }
+    .col-desc-time { grid-template-columns: 1fr 68px; }
+
+    /* ── Steps repeater ── */
+    .steps-list { display: flex; flex-direction: column; gap: .4rem; margin-bottom: .45rem; }
+    .step-row {
+      display: grid;
+      grid-template-columns: 38px 1fr 66px 24px;
+      align-items: center;
+      gap: .35rem;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      padding: .4rem .5rem;
+    }
+    .step-num {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--gray-300);
+      text-align: center;
+    }
+    .step-icon-in {
+      width: 100%;
+      text-align: center;
+      font-size: 1.05rem;
+      border: none;
+      background: transparent;
+      padding: .1rem 0;
+      grid-column: 1;
+    }
+    .step-text-in {
+      border: none;
+      background: transparent;
+      font-size: .84rem;
+      padding: .1rem .25rem;
+      resize: none;
+      height: 34px;
+      font-family: inherit;
+      line-height: 1.35;
+      grid-column: 2;
+      width: 100%;
+    }
+    .step-text-in:focus, .step-icon-in:focus { outline: 1px dashed var(--blue); border-radius: 3px; }
+    .step-tag-sel {
+      font-size: .7rem;
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      padding: .15rem .2rem;
+      background: var(--white);
+      font-family: inherit;
+      grid-column: 3;
+      width: 100%;
+    }
+    .step-del {
+      background: none;
+      border: none;
+      color: var(--gray-300);
+      cursor: pointer;
+      font-size: .85rem;
+      padding: .1rem;
+      grid-column: 4;
+      line-height: 1;
+    }
+    .step-del:hover { color: #dc2626; }
+    .add-step-btn {
+      width: 100%;
+      padding: .4rem;
+      border: 1.5px dashed var(--gray-200);
+      border-radius: var(--radius-sm);
+      background: none;
+      color: var(--gray-400);
+      font-size: .8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color .15s, color .15s;
+    }
+    .add-step-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Form footer actions ── */
+    .form-actions { display: flex; gap: .65rem; }
+    .form-actions .btn { flex: 1; padding: .55rem 1rem; font-size: .88rem; }
+    #formMsg { margin-top: .6rem; font-size: .8rem; font-weight: 600; display: none; }
+
+    /* ── Preview column ── */
+    .preview-sticky {
+      position: sticky;
+      top: 72px;
+    }
+    .preview-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .preview-panel-head {
+      padding: .85rem 1.25rem;
+      border-bottom: 2px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .preview-panel-head h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--gray-500, #6b7280);
+      margin: 0;
+    }
+    .preview-sport-badge {
+      font-size: .68rem;
+      font-weight: 700;
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: .15rem .5rem;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    #livePreview {
+      min-height: 420px;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      padding: 1.25rem;
+      background: #f8faff;
+    }
+    .preview-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 280px;
+      color: var(--gray-300, #d1d5db);
+      font-size: .9rem;
+      gap: .5rem;
+    }
+    .preview-empty span { font-size: 2.5rem; }
+
+    /* ── Drill library ── */
+    .library-section { margin-top: 3rem; }
+    .library-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .sport-filter-tabs { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .sport-tab {
+      padding: .35rem .85rem;
+      border-radius: 99px;
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      color: var(--gray-500);
+    }
+    .sport-tab.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: var(--white);
+    }
+    .export-btn {
+      font-size: .82rem;
+      padding: .35rem .9rem;
+    }
+    .drill-library-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+    .lib-card {
+      background: var(--white);
+      border: 2px solid var(--gray-100);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .lib-card-head {
+      background: var(--blue);
+      color: var(--white);
+      padding: .6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+    .lib-card-head .cat-badge {
+      margin-left: auto;
+      font-size: .67rem;
+      font-weight: 700;
+      background: rgba(255,255,255,.2);
+      padding: .12rem .45rem;
+      border-radius: 99px;
+    }
+    .lib-card-head .time-badge {
+      font-size: .7rem;
+      font-weight: 600;
+      opacity: .8;
+    }
+    .lib-card-body { padding: .75rem 1rem 1rem; }
+    .lib-card-desc { font-size: .83rem; color: var(--gray-500); margin-bottom: .6rem; font-style: italic; }
+    .lib-card-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: .75rem;
+      padding-top: .6rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    .lib-card-actions button {
+      font-size: .75rem;
+      padding: .3rem .7rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+    }
+    .edit-btn { background: var(--blue-light); color: var(--blue); border-color: var(--blue-light); }
+    .edit-btn:hover { background: var(--blue); color: var(--white); }
+    .del-btn { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .del-btn:hover { background: #dc2626; color: var(--white); }
+    .user-badge {
+      font-size: .66rem;
+      font-weight: 700;
+      background: var(--orange-light);
+      color: var(--orange-dark);
+      padding: .1rem .4rem;
+      border-radius: 99px;
+      margin-left: .35rem;
+    }
+    .empty-library {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400);
+    }
+    .empty-library p { margin-top: .5rem; font-size: .9rem; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-brand-icon">⚡</span>
+      <span>Empower Sports<br><small>Program Playbook</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">🏠 <span class="link-label">Home</span></a>
+      <a href="basketball.html">🏀 <span class="link-label">Basketball</span></a>
+      <a href="softball.html">🥎 <span class="link-label">Softball</span></a>
+      <a href="football.html">🏈 <span class="link-label">Football</span></a>
+      <a href="pickleball.html">🏓 <span class="link-label">Pickleball</span></a>
+      <a href="soccer.html">⚽ <span class="link-label">Soccer</span></a>
+      <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
+      <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
+      <a href="practice-builder.html">📋 <span class="link-label">Plan Builder</span></a>
+      <a href="drill-admin.html" class="active">🗂️ <span class="link-label">Drill Library</span></a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" style="padding:2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">🗂️ Drill Management</div>
+    <h1>Drill <span>Library</span></h1>
+    <p style="font-size:.97rem;">Add and manage drills for any Empower sport. Each drill includes steps, "Why we do this," volunteer tips, and facilitator tips. Drills you create here automatically appear in the Practice Builder.</p>
+  </section>
+
+  <div class="container-wide">
+
+    <div class="admin-layout">
+
+      <!-- ── FORM PANEL ── -->
+      <div class="form-panel">
+
+        <div class="form-panel-head">
+          <h3 id="formTitle">➕ Add New Drill</h3>
+        </div>
+
+        <div class="form-panel-body">
+
+          <!-- SECTION: Basic Info -->
+          <div class="form-section">
+            <div class="section-label">Basic Info</div>
+
+            <div class="form-row form-row-2 col-icon-title">
+              <div>
+                <label>Icon</label>
+                <input type="text" id="f-icon" placeholder="⚽" maxlength="4" style="text-align:center;font-size:1.2rem;">
+              </div>
+              <div>
+                <label>Title</label>
+                <input type="text" id="f-name" placeholder="Drill name">
+              </div>
+            </div>
+
+            <div class="form-row form-row-2 col-half">
+              <div>
+                <label>Sport</label>
+                <select id="f-sport">
+                  <option value="soccer">⚽ Soccer</option>
+                  <option value="basketball">🏀 Basketball</option>
+                  <option value="softball">🥎 Softball</option>
+                  <option value="football">🏈 Football</option>
+                  <option value="pickleball">🏓 Pickleball</option>
+                  <option value="kickball">🔴 Kickball</option>
+                </select>
+              </div>
+              <div>
+                <label>Category</label>
+                <input type="text" id="f-category" list="cat-list" placeholder="e.g. Dribbling">
+                <datalist id="cat-list">
+                  <option value="Ball Control">
+                  <option value="Dribbling">
+                  <option value="Passing">
+                  <option value="Shooting">
+                  <option value="Goalkeeping">
+                  <option value="Multi-Skill">
+                  <option value="Game">
+                  <option value="Fielding">
+                  <option value="Hitting">
+                  <option value="Base Running">
+                  <option value="Serving">
+                  <option value="Volley">
+                  <option value="Routes">
+                  <option value="Fundamentals">
+                </datalist>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2 col-desc-time">
+              <div>
+                <label>Summary</label>
+                <small class="field-hint">One sentence describing this drill</small>
+                <input type="text" id="f-description" placeholder="What this drill is at a glance">
+              </div>
+              <div>
+                <label>Time</label>
+                <small class="field-hint">minutes</small>
+                <input type="number" id="f-time" value="12" min="2" max="60" style="text-align:center;">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION: Setup Steps -->
+          <div class="form-section">
+            <div class="section-label">Setup Steps</div>
+            <small class="field-hint" style="margin-bottom:.55rem;">Each step = icon · description · optional tag (skill / fun / team)</small>
+            <div class="steps-list" id="stepsList"></div>
+            <button class="add-step-btn" id="addStepBtn">+ Add step</button>
+          </div>
+
+          <!-- SECTION: Context -->
+          <div class="form-section">
+            <div class="section-label">Context</div>
+
+            <div class="form-row">
+              <label>🤔 Why We Do This</label>
+              <small class="field-hint">Shared with participants — keep it player-friendly</small>
+              <textarea id="f-why" placeholder="e.g. 'The more we touch the ball with our feet, the better our feet learn it!'"></textarea>
+            </div>
+
+            <div class="form-row">
+              <label>🙌 Volunteer Tips</label>
+              <small class="field-hint">For BDU peer volunteers on the field</small>
+              <textarea id="f-vol" placeholder="What to watch for, celebrate, or adjust during the drill…"></textarea>
+            </div>
+
+            <div class="form-row">
+              <label>💡 Facilitator Tips</label>
+              <small class="field-hint">For coaches &amp; program directors — setup, logistics, progressions</small>
+              <textarea id="f-fac" placeholder="Equipment setup, spacing, ability-level adjustments…"></textarea>
+            </div>
+          </div>
+
+        </div><!-- /form-panel-body -->
+
+        <div class="form-panel-foot">
+          <div class="form-actions">
+            <button class="btn btn-primary" id="saveBtn">Save Drill</button>
+            <button class="btn btn-outline" id="cancelBtn" style="display:none;">Cancel</button>
+          </div>
+          <button class="preview-toggle-btn" id="previewToggleBtn">👁 Preview Drill</button>
+          <div id="formMsg"></div>
+        </div>
+
+      </div><!-- /form-panel -->
+
+      <!-- ── PREVIEW PANEL ── -->
+      <div class="preview-sticky">
+        <div class="preview-panel">
+          <div class="preview-panel-head">
+            <h3>Live Preview</h3>
+            <span class="preview-sport-badge" id="previewSportBadge">Soccer</span>
+          </div>
+          <div id="livePreview">
+            <div class="preview-empty">
+              <span>📋</span>
+              Fill in the form to see a preview
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── DRILL LIBRARY ── -->
+    <div class="library-section">
+      <div class="section-header">
+        <h2>Drill Library</h2>
+        <div class="section-divider"></div>
+        <p>All drills — built-in and custom — shown in the station-card format used in practice plans</p>
+      </div>
+
+      <div class="library-header">
+        <div class="sport-filter-tabs" id="sportFilterTabs"></div>
+        <button class="btn btn-outline export-btn" id="exportBtn">⬇️ Export Custom Drills (JSON)</button>
+      </div>
+
+      <div class="drill-library-grid" id="libraryGrid"></div>
+    </div>
+
+  </div>
+
+  <footer class="page-footer">
+    <strong>Empower Sports</strong> Program Playbook — Adapted Athletic, Fitness &amp; Recreational Programs
+  </footer>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+
+// Shared built-in drill bank (same as practice-builder.html — keep in sync)
+const BUILTIN_DRILLS = [
+  // ── Soccer ──
+  { id: 'd-soc-touch-ball', sport: 'soccer', category: 'Ball Control', icon: '🦶', name: 'Ball Touch Station',
+    description: 'Foot-skill fundamentals — sole taps, rolls, and tick tocks in place.',
+    steps: [
+      { icon: '⚽', text: 'Sole Taps — tap the top of the ball alternating feet while stationary', tag: 'skill' },
+      { icon: '↔️', text: 'Side-to-Side Rolls — roll ball left and right with sole of foot' },
+      { icon: '🔵', text: 'Toe-Ball-Toe — push ball forward with toe, pull back with sole, repeat in place' },
+      { icon: '🕰️', text: 'Tick Tocks — tap ball back and forth between the insides of both feet, like a clock swinging', tag: 'skill' },
+      { icon: '🌟', text: 'BDU players demo first, then guide their partner through each move' }
+    ],
+    why: 'The more we touch the ball with our feet, the better our feet learn it. Lots of touches make soccer easier!',
+    volunteerTip: 'Celebrate any ball contact as a win. For wheelchair participants, use hands or a ramp assist — any interaction counts!',
+    facilitatorTip: 'Demo each move slowly before participants try. Keep transitions between moves quick so everyone stays active.',
+    defaultTime: 12 },
+  { id: 'd-soc-drb-music', sport: 'soccer', category: 'Dribbling', icon: '🎵', name: 'Dribble to Music',
+    description: 'Dribble freely while music plays — freeze and stop the ball when the music cuts.',
+    steps: [
+      { icon: '🎶', text: 'Dribble on the Beat — dribble the ball around the space while music plays', tag: 'fun' },
+      { icon: '🛑', text: 'Freeze! — when the music stops, freeze your body AND stop the ball with your foot' },
+      { icon: '🐢', text: 'Mix it up — slow songs = slow dribble, fast songs = quick feet' },
+      { icon: '🎉', text: 'BDU players dribble too and freeze big and silly', tag: 'team' }
+    ],
+    why: 'Music makes soccer fun! Freezing helps us learn to stop the ball fast — like when a coach yells STOP!',
+    volunteerTip: 'Have your phone/speaker ready with 3-4 upbeat songs. Pause without warning so the freeze is a surprise every time.',
+    facilitatorTip: 'Vary the pause length to build quicker reactions. Shorter pauses = more challenge.',
+    defaultTime: 12 },
+  { id: 'd-soc-drb-cone-course', sport: 'soccer', category: 'Dribbling', icon: '🌀', name: 'Cone Dribbling Course',
+    description: 'Three side-by-side courses at increasing difficulty — participants choose their level.',
+    steps: [
+      { icon: '🔶', text: 'Set up 3 courses side by side: wide weave (easy), tight weave (harder), hoop course (stop inside hoop)', tag: 'skill' },
+      { icon: '⚽', text: 'BDU player demos first, then participant picks their course — choice builds confidence' },
+      { icon: '⬆️', text: 'Encourage moving up to the next course if they\'re ready' },
+      { icon: '🏅', text: 'Cheer loudly every time they reach the end!' }
+    ],
+    why: 'Dribbling through cones teaches our feet to control the ball while moving — the same skill real soccer players use to get past defenders!',
+    volunteerTip: 'Set up all 3 courses before the session starts. Letting participants choose removes the fear of failure.',
+    facilitatorTip: 'Walk each course yourself so volunteers understand the difficulty levels. Adjust cone spacing based on the group.',
+    defaultTime: 12 },
+  { id: 'd-soc-drb-red-green', sport: 'soccer', category: 'Dribbling', icon: '🚦', name: 'Red Light / Green Light',
+    description: 'Color-coded dribbling commands — including a Color Dot variation for extra challenge.',
+    steps: [
+      { icon: '🟢', text: 'Green Light — dribble forward!', tag: 'skill' },
+      { icon: '🔴', text: 'Red Light — stop the ball with your sole (no hands)' },
+      { icon: '🟡', text: 'Yellow Light — dribble in tiny circles' },
+      { icon: '💙', text: 'Blue Light (bonus BDU round) — dribble backwards!' },
+      { icon: '🔵', text: 'Color Dot variant: scatter multi-colored spot markers. Call a color and everyone dribbles to that dot.', tag: 'skill' },
+      { icon: '🎉', text: 'BDU players play too — make it a shared experience', tag: 'team' }
+    ],
+    why: 'Learning to stop the ball quickly is one of the most important skills in soccer. When we control where the ball goes AND when it stops, we control the game!',
+    volunteerTip: 'Call colors loudly and with energy. Give extra praise for clean stops.',
+    facilitatorTip: 'For the dot variant: keep dots close so nobody travels far. Vary the cadence of commands to keep players alert.',
+    defaultTime: 12 },
+  { id: 'd-soc-pas-partner', sport: 'soccer', category: 'Passing', icon: '🎯', name: 'Partner Passing',
+    description: 'Partners facing each other — inside-of-foot passes, start close and build distance.',
+    steps: [
+      { icon: '🟡', text: 'Close Passes — 3-4 feet apart, inside-of-foot passes. Focus on stopping the ball.', tag: 'skill' },
+      { icon: '📏', text: 'Step Back — after 3 successful passes, each pair takes one step back. How far can you go?' },
+      { icon: '💬', text: 'Encourage cheering between pairs — "Great pass!", "You\'ve got this!"' }
+    ],
+    why: 'Soccer is a team sport. Passing is how we share the ball with our friends and help them score!',
+    volunteerTip: 'Adjust distance based on each participant\'s ability. Closer is always fine — the goal is connection and touch, not distance.',
+    facilitatorTip: 'Station yourself between pairs to provide cues. Keep both partners active — even the waiting partner should stay engaged.',
+    defaultTime: 12 },
+  { id: 'd-soc-gk-intro', sport: 'soccer', category: 'Goalkeeping', icon: '🧤', name: 'Goalie Introduction',
+    description: 'Scoop catches, 3-step sequence, and gentle saves — making every participant feel like a hero.',
+    steps: [
+      { icon: '🔶', text: 'Cone Gap Warmup — 5 cones in a row. BDU player rolls ball slowly through each gap.', tag: 'skill' },
+      { icon: '🙌', text: 'Participant scoops the ball as it rolls through — any method: two hands, one hand, arms cradle' },
+      { icon: '⬆️', text: '3-step sequence: bounce once → basket catch (arms wide) → full catch with both hands', tag: 'skill' },
+      { icon: '🥅', text: 'Light Saves — participant in front of goal while BDU player rolls a gentle ball toward the net', tag: 'skill' },
+      { icon: '🛑', text: 'Stop it any way you can — foot, hands, body. Every stop is a SAVE! Celebrate huge.', tag: 'team' },
+      { icon: '📈', text: 'Progression (if ready): BDU volunteer takes a soft kick-shot. Announce "here it comes!" first.', tag: 'fun' }
+    ],
+    why: 'Every team needs a goalkeeper — the hero who protects the net! Scooping and catching builds the bravery goalkeepers use in every real game!',
+    volunteerTip: 'Keep shots gentle, slow, and aimed right at the participant. Say "it\'s coming to YOU!" first. Any stop counts.',
+    facilitatorTip: 'For wheelchair participants, a hand stop or lean-in is a full save. Never rush progression — stay at each step until the participant is comfortable.',
+    defaultTime: 12 },
+  { id: 'd-soc-ml-dps', sport: 'soccer', category: 'Multi-Skill', icon: '🥅', name: 'Dribble, Pass, Score!',
+    description: 'Player dribbles to a middle cone, passes to a BDU partner, then runs onto the set-up ball and shoots.',
+    steps: [
+      { icon: '🌀', text: 'Player dribbles from a start cone toward a middle cone', tag: 'skill' },
+      { icon: '🤝', text: 'At the middle cone, pass across to a BDU partner waiting on the side' },
+      { icon: '🥅', text: 'Partner sets the ball up — player runs onto it and shoots into a small goal', tag: 'skill' },
+      { icon: '🔁', text: 'Every player gets several turns — rotate quickly, cheer every shot' }
+    ],
+    why: 'Real soccer is dribble, then pass, then shoot — all together! This is how goals happen in a real game.',
+    volunteerTip: 'Keep the goal close and the pass short. Narrate every touch: "Great dribble! Nice pass! What a shot!"',
+    facilitatorTip: 'Have one BDU player stationed as the "setter" so participants can focus on their own run. Rotate that role every few turns.',
+    defaultTime: 15 },
+  { id: 'd-soc-ml-gates', sport: 'soccer', category: 'Multi-Skill', icon: '🚪', name: 'Gate Goals → Shoot!',
+    description: 'Dribble through your assigned number of mini-gates, then finish on goal.',
+    steps: [
+      { icon: '🔵', text: 'Set up 6-8 pairs of cones as mini gates scattered near a real goal', tag: 'skill' },
+      { icon: '🔢', text: 'Give each participant a number — that\'s how many gates to dribble through before shooting', tag: 'fun' },
+      { icon: '⚽', text: 'Participant dribbles through their gates in any order — BDU player counts aloud' },
+      { icon: '🥅', text: 'Hit their number → BDU player calls "SHOOT!" → participant finishes on goal', tag: 'skill' },
+      { icon: '🎉', text: 'Whole group erupts for every goal', tag: 'team' },
+      { icon: '⬆️', text: 'Increase the number for confident participants' }
+    ],
+    why: 'Real soccer is about moving with the ball, finding space, and then finishing. Gates teach us to dribble with a purpose!',
+    volunteerTip: 'Tune the number to each participant — 1-2 gates for beginners, 4-5 for confident dribblers.',
+    facilitatorTip: 'BDU players count out loud so the whole space feels alive. Keep gates spread so participants aren\'t crowding each other.',
+    defaultTime: 12 },
+  { id: 'd-soc-gm-everybody-scores', sport: 'soccer', category: 'Game', icon: '⭐', name: 'Everybody Scores',
+    description: 'Small-sided game where every player on the team must score before the team can win.',
+    steps: [
+      { icon: '🔵', text: '3v3, 5v5, or 7v7. Small goals, no goalkeeper. Every player must score before the team can win.', tag: 'team' },
+      { icon: '🎉', text: 'BDU players celebrate every goal for either team with maximum energy' },
+      { icon: '🤝', text: 'Rotate BDU players onto both teams to keep numbers even' },
+      { icon: '⏱️', text: 'Short games with quick restarts — keep it moving and upbeat' }
+    ],
+    why: 'Games are the fun part of soccer! We use everything we learned — touching, dribbling, passing, and scoring — and we cheer for our team!',
+    volunteerTip: 'Celebrate both teams equally — every goal from either side gets the same cheer.',
+    facilitatorTip: 'Best with the Advanced group. The "everybody scores" rule creates naturally inclusive and dramatic moments.',
+    defaultTime: 17 },
+  { id: 'd-soc-gm-hungry-hippos', sport: 'soccer', category: 'Game', icon: '🦛', name: 'Hungry Hungry Hippos',
+    description: 'Ball pile in the center — pick one, do a skill, then dribble or pass it to your goal.',
+    steps: [
+      { icon: '🥅', text: 'Two goals on each end. Pile all balls in the middle of the space.', tag: 'fun' },
+      { icon: '🦶', text: 'Player picks a ball and does a skill first — BDU player calls one (toe taps, sole rolls, tick tocks)', tag: 'skill' },
+      { icon: '⚽', text: 'Then dribble or pass the ball into their goal — any style, any speed' },
+      { icon: '🔁', text: 'Repeat until all balls are gone — each new ball gets a different skill called out' },
+      { icon: '🎉', text: 'Count the goals out loud together as a team!', tag: 'team' }
+    ],
+    why: 'Games are the fun part of soccer! We use everything we learned — touching, dribbling, passing, and scoring — and we cheer for our team!',
+    volunteerTip: 'Keep the skill simple and change it each round. The goal is lots of ball touches with a fun finish — not perfection!',
+    facilitatorTip: 'Best with the Beginners group. As soon as all balls are scored, cheer loudly and reset immediately to keep momentum.',
+    defaultTime: 17 },
+  { id: 'd-soc-gm-treasure-hunt', sport: 'soccer', category: 'Game', icon: '🏴‍☠️', name: 'Treasure Hunt Dribble',
+    description: 'Collect treasure (balls) from the center pile by dribbling them one at a time to your team\'s chest.',
+    steps: [
+      { icon: '💰', text: 'Pile all balls in the center — that\'s the treasure!', tag: 'fun' },
+      { icon: '⚽', text: 'Players dribble one ball at a time from the pile to their team\'s treasure chest', tag: 'skill' },
+      { icon: '🔁', text: 'Return to the pile and get another — keep going until all treasure is collected' },
+      { icon: '📢', text: 'BDU player counts aloud and cheers every delivery: "That\'s 4 gold coins!"', tag: 'team' }
+    ],
+    why: 'In a real game, everything comes together — dribbling, controlling, moving. This is our chance to use every skill we practiced today!',
+    volunteerTip: 'No wrong speed, no wrong style — any dribble counts. Narrate every single ball like it\'s the winning goal!',
+    facilitatorTip: 'Best with the Beginners group. The treasure framing is engaging and removes intimidation around goals/scoring.',
+    defaultTime: 17 },
+  // ── Basketball ──
+  { id: 'd-bball-drb-station', sport: 'basketball', category: 'Dribbling', icon: '🏀', name: 'Stationary Dribbling',
+    description: 'Stand in place and dribble with dominant hand, then off-hand. Focus on fingertip control and rhythm.',
+    why: 'Ball-handling fundamentals build the confidence to dribble while moving.',
+    volunteerTip: 'Low bounces are fine — just keep the rhythm going.',
+    defaultTime: 10 },
+  { id: 'd-bball-pas-chest', sport: 'basketball', category: 'Passing', icon: '🤝', name: 'Chest Pass Lines',
+    description: 'Two lines facing each other. Chest-pass back and forth. Focus on catching with two hands.',
+    why: 'Passing is how teams share the ball — every great play starts with a good pass!',
+    volunteerTip: 'Use a lighter foam ball if a regulation ball is too heavy.',
+    defaultTime: 10 },
+  { id: 'd-bball-sht-layup', sport: 'basketball', category: 'Shooting', icon: '🥅', name: 'Layup Line',
+    description: 'Players dribble toward the basket and take a layup. Rotate through quickly so everyone gets many turns.',
+    why: 'The layup is basketball\'s most fundamental finish — getting comfortable with it builds real scoring confidence!',
+    volunteerTip: 'Walk if needed — the motion matters, not the speed.',
+    defaultTime: 12 },
+  // ── Softball ──
+  { id: 'd-soft-fld-catch', sport: 'softball', category: 'Fielding', icon: '🥎', name: 'Partner Catching',
+    description: 'Partners 10 feet apart, soft-toss back and forth. Use a foam ball if needed.',
+    why: 'Hand-eye coordination from catching is the foundation of every defensive play in softball.',
+    volunteerTip: 'Keep throws low and gentle — focus on the catch, not the throw.',
+    defaultTime: 10 },
+  { id: 'd-soft-hit-tee', sport: 'softball', category: 'Hitting', icon: '⚾', name: 'Tee Hitting',
+    description: 'Players step up to a batting tee and swing away. Rotate quickly so everyone gets multiple swings.',
+    why: 'Hitting off a tee removes the pressure of a moving ball so players can focus purely on their swing!',
+    volunteerTip: 'Celebrate every contact — a tiny nick of the ball counts!',
+    defaultTime: 12 },
+  // ── Football ──
+  { id: 'd-foot-qb-throw', sport: 'football', category: 'Passing', icon: '🏈', name: 'QB Throwing',
+    description: 'Players take turns as QB, throwing to a volunteer receiver at a set distance.',
+    why: 'Throwing builds arm strength and coordination — every QB got better through practice!',
+    volunteerTip: 'Use a foam football — it\'s easier to grip for smaller hands.',
+    defaultTime: 10 },
+  { id: 'd-foot-rl-gl', sport: 'football', category: 'Game', icon: '🚦', name: 'Red Light Green Light (Football)',
+    description: 'Everyone runs with the ball on "green light," stops on "red light." Last to stop each round is out.',
+    why: 'Ball-carrying and listening skills — the same skills used by running backs in a real game!',
+    volunteerTip: 'Go slow on the eliminations — keep everyone engaged and in good spirits.',
+    defaultTime: 10 },
+  // ── Pickleball ──
+  { id: 'd-pick-balloon', sport: 'pickleball', category: 'Fundamentals', icon: '🎈', name: 'Balloon Tap',
+    description: 'Tap a balloon up with the paddle. Count how many consecutive taps before it hits the ground.',
+    why: 'Balloons move slowly, giving everyone time to react — perfect for building paddle control in a no-fail environment!',
+    volunteerTip: 'Balloons move slowly — perfect for all mobility levels. Make it a personal record challenge!',
+    defaultTime: 10 },
+  { id: 'd-pick-serve-bucket', sport: 'pickleball', category: 'Serving', icon: '🪣', name: 'Serve into a Bucket',
+    description: 'Players serve from behind the kitchen line into a bucket or hula hoop target across the net.',
+    why: 'Serving with a target teaches accuracy — and hitting a bucket is way more fun than just clearing the net!',
+    volunteerTip: 'Big bucket, close target to start. Move the target as skills improve.',
+    defaultTime: 10 },
+  // ── Kickball ──
+  { id: 'd-kick-fld-ground', sport: 'kickball', category: 'Fielding', icon: '🔴', name: 'Fielding Ground Balls',
+    description: 'Coach rolls ball to each player in a line, player fields and rolls/throws back. Quick rotation.',
+    why: 'Fielding is the heart of defense — every great stop in kickball starts with tracking and stopping the ball!',
+    volunteerTip: 'Slow rollers are fine — focus on positioning and the effort.',
+    defaultTime: 10 },
+  { id: 'd-kick-run-bases', sport: 'kickball', category: 'Base Running', icon: '🏃', name: 'Base Running',
+    description: 'Players run the bases on the coach\'s signal, one at a time.',
+    why: 'Knowing the base path is how runs score — every base runner needs this!',
+    volunteerTip: 'Cheer every player home!',
+    defaultTime: 10 },
+];
+
+const SPORTS = [
+  { id: 'soccer', name: '⚽ Soccer' },
+  { id: 'basketball', name: '🏀 Basketball' },
+  { id: 'softball', name: '🥎 Softball' },
+  { id: 'football', name: '🏈 Football' },
+  { id: 'pickleball', name: '🏓 Pickleball' },
+  { id: 'kickball', name: '🔴 Kickball' },
+];
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let userDrills = [];   // from localStorage
+let editingId  = null; // null = add mode, id string = edit mode
+let filterSport = 'all';
+
+const LS_KEY = 'empowerDrillBank';
+
+function loadUserDrills() {
+  try { userDrills = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); }
+  catch(e) { userDrills = []; }
+}
+
+function saveUserDrills() {
+  localStorage.setItem(LS_KEY, JSON.stringify(userDrills));
+}
+
+function allDrills() {
+  const merged = [...BUILTIN_DRILLS];
+  userDrills.forEach(ud => {
+    const idx = merged.findIndex(d => d.id === ud.id);
+    if (idx >= 0) merged[idx] = ud; else merged.push(ud);
+  });
+  return merged;
+}
+
+// ═══════════════════════════════════════
+//  STEPS REPEATER
+// ═══════════════════════════════════════
+function addStepRow(step) {
+  const list = document.getElementById('stepsList');
+  const row = document.createElement('div');
+  row.className = 'step-row';
+  row.innerHTML = `
+    <input class="step-icon-in" type="text" placeholder="⚽" maxlength="4" value="${step ? escHtml(step.icon || '') : ''}" title="Emoji icon">
+    <textarea class="step-text-in" placeholder="Describe this step…" rows="1">${step ? escHtml(step.text || '') : ''}</textarea>
+    <select class="step-tag-sel" title="Optional tag">
+      <option value="">—</option>
+      <option value="skill" ${step && step.tag === 'skill' ? 'selected' : ''}>skill</option>
+      <option value="fun"   ${step && step.tag === 'fun'   ? 'selected' : ''}>fun</option>
+      <option value="team"  ${step && step.tag === 'team'  ? 'selected' : ''}>team</option>
+    </select>
+    <button class="step-del" title="Remove">✕</button>
+  `;
+  row.querySelector('.step-del').addEventListener('click', () => { row.remove(); updatePreview(); });
+  row.querySelectorAll('input, textarea, select').forEach(el => el.addEventListener('input', updatePreview));
+  list.appendChild(row);
+  updatePreview();
+}
+
+function getSteps() {
+  return Array.from(document.querySelectorAll('.step-row')).map(row => ({
+    icon: row.querySelector('.step-icon-in').value.trim(),
+    text: row.querySelector('.step-text-in').value.trim(),
+    tag:  row.querySelector('.step-tag-sel').value || null,
+  })).filter(s => s.text);
+}
+
+// ═══════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stationCardHtml(d) {
+  const icon = d.icon ? escHtml(d.icon) : '⚽';
+  const name = escHtml(d.name || 'Untitled Drill');
+  let html = `<div class="station-card">
+    <div class="station-title">${icon} ${name}</div>`;
+
+  if (d.steps && d.steps.length) {
+    const items = d.steps.map(s => {
+      const tag = s.tag ? `<span class="drill-tag ${escHtml(s.tag)}">${escHtml(s.tag)}</span>` : '';
+      return `<li><span class="drill-icon">${escHtml(s.icon || '▸')}</span> ${escHtml(s.text)}${tag}</li>`;
+    }).join('');
+    html += `<ul class="drill-list">${items}</ul>`;
+  } else if (d.description) {
+    html += `<p style="font-size:.85rem;color:#555;margin-top:.4rem;font-style:italic;">${escHtml(d.description)}</p>`;
+  }
+
+  if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${escHtml(d.why)}</div></div>`;
+  if (d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${escHtml(d.volunteerTip)}</div></div>`;
+  if (d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${escHtml(d.facilitatorTip)}</div></div>`;
+
+  html += `</div>`;
+  return html;
+}
+
+function updatePreview() {
+  const sport = document.getElementById('f-sport').value;
+  const sportObj = SPORTS.find(s => s.id === sport) || SPORTS[0];
+  document.getElementById('previewSportBadge').textContent = sportObj.name;
+
+  const d = {
+    icon: document.getElementById('f-icon').value.trim(),
+    name: document.getElementById('f-name').value.trim(),
+    description: document.getElementById('f-description').value.trim(),
+    steps: getSteps(),
+    why: document.getElementById('f-why').value.trim(),
+    volunteerTip: document.getElementById('f-vol').value.trim(),
+    facilitatorTip: document.getElementById('f-fac').value.trim(),
+  };
+
+  const el = document.getElementById('livePreview');
+  if (!d.name && !d.steps.length && !d.why) {
+    el.innerHTML = '<div class="preview-empty"><span>📋</span>Fill in the form to see a preview</div>';
+  } else {
+    el.innerHTML = stationCardHtml(d);
+  }
+}
+
+// ═══════════════════════════════════════
+//  FORM SAVE / EDIT / CANCEL
+// ═══════════════════════════════════════
+function collectForm() {
+  return {
+    id: editingId || ('user-' + Date.now()),
+    sport: document.getElementById('f-sport').value,
+    category: document.getElementById('f-category').value.trim(),
+    icon: document.getElementById('f-icon').value.trim(),
+    name: document.getElementById('f-name').value.trim(),
+    description: document.getElementById('f-description').value.trim(),
+    steps: getSteps(),
+    why: document.getElementById('f-why').value.trim(),
+    volunteerTip: document.getElementById('f-vol').value.trim(),
+    facilitatorTip: document.getElementById('f-fac').value.trim(),
+    defaultTime: parseInt(document.getElementById('f-time').value) || 12,
+    source: 'user',
+  };
+}
+
+function clearForm() {
+  document.getElementById('f-icon').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-category').value = '';
+  document.getElementById('f-description').value = '';
+  document.getElementById('f-time').value = '12';
+  document.getElementById('f-why').value = '';
+  document.getElementById('f-vol').value = '';
+  document.getElementById('f-fac').value = '';
+  document.getElementById('stepsList').innerHTML = '';
+  editingId = null;
+  document.getElementById('formTitle').textContent = '➕ Add New Drill';
+  document.getElementById('saveBtn').textContent = 'Save Drill';
+  document.getElementById('cancelBtn').style.display = 'none';
+  updatePreview();
+}
+
+function showMsg(msg, ok) {
+  const el = document.getElementById('formMsg');
+  el.style.display = 'block';
+  el.style.color = ok ? '#166534' : '#dc2626';
+  el.textContent = msg;
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const d = collectForm();
+  if (!d.name) { showMsg('Please enter a drill title.', false); return; }
+  if (!d.sport) { showMsg('Please select a sport.', false); return; }
+
+  const idx = userDrills.findIndex(ud => ud.id === d.id);
+  if (idx >= 0) userDrills[idx] = d; else userDrills.push(d);
+  saveUserDrills();
+  showMsg(editingId ? '✓ Drill updated!' : '✓ Drill saved!', true);
+  clearForm();
+  renderLibrary();
+});
+
+document.getElementById('cancelBtn').addEventListener('click', clearForm);
+
+document.getElementById('addStepBtn').addEventListener('click', () => addStepRow(null));
+
+// ═══════════════════════════════════════
+//  EDIT / DELETE
+// ═══════════════════════════════════════
+function editDrill(id) {
+  const d = allDrills().find(x => x.id === id);
+  if (!d) return;
+  editingId = d.id;
+
+  document.getElementById('f-icon').value = d.icon || '';
+  document.getElementById('f-name').value = d.name || '';
+  document.getElementById('f-sport').value = d.sport || 'soccer';
+  document.getElementById('f-category').value = d.category || '';
+  document.getElementById('f-description').value = d.description || '';
+  document.getElementById('f-time').value = d.defaultTime || 12;
+  document.getElementById('f-why').value = d.why || '';
+  document.getElementById('f-vol').value = d.volunteerTip || '';
+  document.getElementById('f-fac').value = d.facilitatorTip || '';
+
+  document.getElementById('stepsList').innerHTML = '';
+  (d.steps || []).forEach(s => addStepRow(s));
+
+  document.getElementById('formTitle').textContent = '✏️ Edit Drill';
+  document.getElementById('saveBtn').textContent = 'Update Drill';
+  document.getElementById('cancelBtn').style.display = '';
+
+  // If it's a builtin drill, make a user copy
+  if (!userDrills.find(ud => ud.id === d.id)) {
+    editingId = 'user-' + d.id.replace(/^d-/, '');
+    document.getElementById('saveBtn').textContent = 'Save as Custom';
+  }
+
+  updatePreview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function deleteDrill(id) {
+  if (!confirm('Delete this custom drill?')) return;
+  userDrills = userDrills.filter(ud => ud.id !== id);
+  saveUserDrills();
+  renderLibrary();
+}
+
+// ═══════════════════════════════════════
+//  LIBRARY RENDER
+// ═══════════════════════════════════════
+function renderFilterTabs() {
+  const tabs = document.getElementById('sportFilterTabs');
+  tabs.innerHTML = '';
+
+  const all = document.createElement('button');
+  all.className = 'sport-tab' + (filterSport === 'all' ? ' active' : '');
+  all.textContent = 'All Sports';
+  all.addEventListener('click', () => { filterSport = 'all'; renderLibrary(); });
+  tabs.appendChild(all);
+
+  SPORTS.forEach(s => {
+    const drills = allDrills().filter(d => d.sport === s.id);
+    if (!drills.length) return;
+    const btn = document.createElement('button');
+    btn.className = 'sport-tab' + (filterSport === s.id ? ' active' : '');
+    btn.textContent = s.name;
+    btn.addEventListener('click', () => { filterSport = s.id; renderLibrary(); });
+    tabs.appendChild(btn);
+  });
+}
+
+function renderLibrary() {
+  renderFilterTabs();
+  const grid = document.getElementById('libraryGrid');
+  grid.innerHTML = '';
+
+  const drills = allDrills().filter(d => filterSport === 'all' || d.sport === filterSport);
+
+  if (!drills.length) {
+    grid.innerHTML = `<div class="empty-library"><span style="font-size:2.5rem;">🏃</span><p>No drills yet. Fill in the form to add your first drill!</p></div>`;
+    return;
+  }
+
+  drills.forEach(d => {
+    const isUser = !!userDrills.find(ud => ud.id === d.id);
+    const sportName = (SPORTS.find(s => s.id === d.sport) || {}).name || d.sport;
+
+    const card = document.createElement('div');
+    card.className = 'lib-card';
+
+    let bodyInner = '';
+    if (d.description) bodyInner += `<div class="lib-card-desc">${escHtml(d.description)}</div>`;
+    bodyInner += stationCardHtml(d);
+
+    card.innerHTML = `
+      <div class="lib-card-head">
+        <span>${escHtml(d.icon || '⚽')} ${escHtml(d.name)}</span>
+        ${isUser ? '<span class="user-badge">Custom</span>' : ''}
+        <span class="cat-badge">${escHtml(d.category || '')}</span>
+      </div>
+      <div class="lib-card-body">
+        <div style="font-size:.72rem;color:var(--gray-400,#9ca3af);margin-bottom:.4rem;">${sportName} · ${d.defaultTime || 12} min</div>
+        ${bodyInner}
+        <div class="lib-card-actions">
+          <button class="edit-btn">✏️ Edit${isUser ? '' : ' (save as custom)'}</button>
+          ${isUser ? '<button class="del-btn">🗑 Delete</button>' : ''}
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.edit-btn').addEventListener('click', () => editDrill(d.id));
+    const delBtn = card.querySelector('.del-btn');
+    if (delBtn) delBtn.addEventListener('click', () => deleteDrill(d.id));
+
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════
+document.getElementById('exportBtn').addEventListener('click', () => {
+  if (!userDrills.length) { alert('No custom drills to export yet.'); return; }
+  const json = JSON.stringify(userDrills, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    alert('Custom drills JSON copied to clipboard!');
+  }).catch(() => {
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'empower-custom-drills.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+
+// ═══════════════════════════════════════
+//  WIRE PREVIEW UPDATES
+// ═══════════════════════════════════════
+['f-icon','f-name','f-sport','f-category','f-description','f-why','f-vol','f-fac'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
+
+// ═══════════════════════════════════════
+//  MOBILE PREVIEW TOGGLE
+// ═══════════════════════════════════════
+document.getElementById('previewToggleBtn').addEventListener('click', function() {
+  const panel = document.querySelector('.preview-sticky');
+  const open = panel.classList.toggle('open');
+  this.textContent = open ? '✕ Close Preview' : '👁 Preview Drill';
+  if (open) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ═══════════════════════════════════════
+//  NAV HAMBURGER
+// ═══════════════════════════════════════
+(function() {
+  const btn = document.getElementById('navHamburger');
+  const links = document.querySelector('.nav-links');
+  if (!btn || !links) return;
+  btn.addEventListener('click', function() {
+    const open = links.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      links.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+loadUserDrills();
+updatePreview();
+renderLibrary();
+</script>
+</body>
+</html>

@@ -573,6 +573,59 @@ body {
 .drill-tag.agility { background: var(--teal-light); color: var(--teal); }
 .drill-tag.game    { background: var(--green-light); color: #166534; }
 
+/* ── Station-card drill format (shared: drill-admin + practice-builder timeline) ── */
+.station-card {
+  background: var(--gray-50);
+  border: 2px solid var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem 1rem;
+  margin-top: .75rem;
+}
+.station-card:first-child { margin-top: 0; }
+
+.station-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 0 0 .45rem;
+  padding-bottom: .4rem;
+  border-bottom: 2px dashed var(--gray-100);
+}
+
+.drill-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  margin: .35rem 0 0;
+}
+.drill-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .45rem;
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--gray-600, #4b5563);
+}
+.drill-list .drill-icon { flex-shrink: 0; font-size: .9rem; }
+
+/* Why / Volunteer / Facilitator tip strips */
+.why-tip, .vol-tip, .fac-tip {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: .55rem .85rem;
+  margin-top: .6rem;
+  font-size: .82rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .4rem;
+  line-height: 1.5;
+}
+.why-tip .tip-icon, .vol-tip .tip-icon, .fac-tip .tip-icon { flex-shrink: 0; }
+.why-tip  { background: var(--blue-light); border-left: 4px solid var(--blue-mid, #60a5fa); color: var(--blue); }
+.why-tip strong { color: var(--blue); font-weight: 700; }
+.vol-tip  { background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; }
+.fac-tip  { background: #f0fdf4; border-left: 4px solid #22c55e; color: #14532d; }
+
 .equip-pill {
   display: inline-flex;
   align-items: center;
