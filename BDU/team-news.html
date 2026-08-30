@@ -278,6 +278,31 @@
             margin: 0;
         }
 
+        .photo-day-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.75rem;
+        }
+        .photo-day-tab {
+            background: #f0f4f8;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .photo-day-tab.active {
+            background: #003366;
+            color: #fff;
+        }
+        .photo-day-tab:hover:not(.active) { background: #e2e8f0; }
+        .photo-day { display: none; }
+        .photo-day.active { display: block; }
+
         /* ── Responsive ── */
         @media (max-width: 600px) {
             .tab-btn { padding: 0.85rem 1.25rem; font-size: 0.9rem; }
@@ -522,108 +547,121 @@
 <div id="tab-photos" class="tab-panel">
     <div class="photo-feed">
 
-        <!-- August 23, 2026 -->
-        <div class="photo-section-title">
-            <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>August 23, 2026
+        <!-- Date selector pills -->
+        <div class="photo-day-tabs">
+            <button class="photo-day-tab" data-day="8-23-2026" onclick="showPhotoDay('8-23-2026')">Aug 23, 2026 <span style="opacity:0.7;font-weight:400;">(58)</span></button>
+            <button class="photo-day-tab" data-day="5-10-2026" onclick="showPhotoDay('5-10-2026')">May 10, 2026 <span style="opacity:0.7;font-weight:400;">(2)</span></button>
+            <button class="photo-day-tab" data-day="4-12-2026" onclick="showPhotoDay('4-12-2026')">Apr 12, 2026 <span style="opacity:0.7;font-weight:400;">(24)</span></button>
         </div>
-        <div class="photo-grid" id="photoGrid-8-23-2026">
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0089.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0090.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0091.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0095.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0099.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0101.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0102.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0104.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0105.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0117.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0123.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0127.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0132.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0141.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0144.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0166.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0168.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0176.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0187.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0192.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0193.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0201.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0203.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0206.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0207.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0208.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0210.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0222.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0266.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0267.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0269.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0284.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0286.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0296.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0302.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0303.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0305.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0316.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0326.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0341.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0347.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0348.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0349.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0351.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0352.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0361.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0362.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0370.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0372.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0373.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0377.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0384.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0385.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0401.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0403.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0406.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/8_23_2026/DSC_0410.JPG" alt="August 23, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+
+        <!-- August 23, 2026 -->
+        <div class="photo-day" id="day-8-23-2026">
+            <div class="photo-section-title">
+                <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>August 23, 2026
+            </div>
+            <div class="photo-grid">
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0089.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0090.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0091.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0095.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0099.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0101.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0102.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0104.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0105.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0117.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0123.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0127.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0132.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0141.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0144.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0166.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0168.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0176.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0187.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0192.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0193.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0201.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0203.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0206.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0207.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0208.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0210.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0222.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0266.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0267.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0269.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0284.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0286.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0296.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0302.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0303.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0305.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0316.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0326.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0341.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0347.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0348.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0349.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0351.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0352.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0361.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0362.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0370.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0372.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0373.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0377.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0384.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0385.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0401.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0403.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0406.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/8_23_2026/DSC_0410.JPG" alt="August 23, 2026" onclick="openLightbox(this.src)"></div>
+            </div>
         </div>
 
         <!-- May 10, 2026 -->
-        <div class="photo-section-title" style="margin-top:2.5rem;">
-            <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>May 10, 2026 — vs. Twinsburg
-        </div>
-        <div class="photo-grid" id="photoGrid-5-10-2026">
-            <div class="photo-card"><img src="pics/5_10_2026/PXL_20260510_211501694.jpg" alt="BDU vs Twinsburg May 10, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/5_10_2026/PXL_20260510_211509290.jpg" alt="BDU vs Twinsburg May 10, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+        <div class="photo-day" id="day-5-10-2026">
+            <div class="photo-section-title">
+                <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>May 10, 2026 — vs. Twinsburg
+            </div>
+            <div class="photo-grid">
+                <div class="photo-card"><img data-src="pics/5_10_2026/PXL_20260510_211501694.jpg" alt="BDU vs Twinsburg May 10, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/5_10_2026/PXL_20260510_211509290.jpg" alt="BDU vs Twinsburg May 10, 2026" onclick="openLightbox(this.src)"></div>
+            </div>
         </div>
 
         <!-- April 12, 2026 -->
-        <div class="photo-section-title" style="margin-top:2.5rem;">
-            <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>April 12, 2026
-        </div>
-        <div class="photo-grid" id="photoGrid-4-12-2026">
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0032.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0059.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0088.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0102.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0132.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0147.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0170.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0200.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0215.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0229.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0238.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0252.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0268.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0271.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0280.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0294.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0317.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0365.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0366.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0418.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0424.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0515.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0526.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
-            <div class="photo-card"><img src="pics/4_12_2026/DSC_0553.jpg" alt="April 12, 2026" loading="lazy" onclick="openLightbox(this.src)"></div>
+        <div class="photo-day" id="day-4-12-2026">
+            <div class="photo-section-title">
+                <i class="fas fa-calendar-alt" style="color:#0779e4;margin-right:0.5rem;"></i>April 12, 2026
+            </div>
+            <div class="photo-grid">
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0032.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0059.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0088.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0102.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0132.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0147.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0170.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0200.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0215.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0229.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0238.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0252.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0268.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0271.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0280.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0294.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0317.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0365.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0366.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0418.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0424.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0515.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0526.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+                <div class="photo-card"><img data-src="pics/4_12_2026/DSC_0553.jpg" alt="April 12, 2026" onclick="openLightbox(this.src)"></div>
+            </div>
         </div>
 
     </div>
@@ -678,12 +716,26 @@
     });
     scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
+    // Photo day paging
+    function showPhotoDay(dayId) {
+        document.querySelectorAll('.photo-day').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.photo-day-tab').forEach(b => b.classList.remove('active'));
+        const day = document.getElementById('day-' + dayId);
+        day.classList.add('active');
+        document.querySelector('.photo-day-tab[data-day="' + dayId + '"]').classList.add('active');
+        day.querySelectorAll('img[data-src]').forEach(img => {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        });
+    }
+    showPhotoDay('8-23-2026');
+
     // Lightbox
     let lightboxSrcs = [];
     let lightboxIdx = 0;
 
     function openLightbox(src) {
-        lightboxSrcs = Array.from(document.querySelectorAll('.photo-grid img')).map(i => i.src);
+        lightboxSrcs = Array.from(document.querySelectorAll('.photo-day.active .photo-grid img')).map(i => i.src);
         lightboxIdx = lightboxSrcs.indexOf(src);
         document.getElementById('lightboxImg').src = src;
         const lb = document.getElementById('lightbox');
