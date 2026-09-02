@@ -1180,4 +1180,8 @@ body {
   .hero { padding: 2.5rem 1.25rem 3.5rem; }
   .drill-grid { grid-template-columns: 1fr; }
   .tier-grid { grid-template-columns: 1fr; }
+  .station-card { padding: .65rem .7rem .75rem; }
+  .why-tip, .vol-tip, .fac-tip { padding: .4rem .6rem; font-size: .8rem; }
+  .station-title { font-size: .93rem; }
+  .drill-list li { font-size: .84rem; }
 }

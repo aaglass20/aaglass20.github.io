@@ -43,6 +43,13 @@
       .preview-sticky.open { display: block; margin-top: .75rem; }
       .preview-toggle-btn { display: block; }
     }
+    @media (max-width: 640px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .form-panel { position: static; max-height: none; }
+      .form-panel-body { overflow: visible; max-height: none; }
+      .step-row { grid-template-columns: 34px 1fr 22px; }
+      .step-tag-sel { display: none; }
+    }
 
     /* ── Form panel ── */
     .form-panel {
@@ -716,6 +723,132 @@ const BUILTIN_DRILLS = [
     why: 'In a real game, everything comes together — dribbling, controlling, moving. This is our chance to use every skill we practiced today!',
     volunteerTip: 'No wrong speed, no wrong style — any dribble counts. Narrate every single ball like it\'s the winning goal!',
     facilitatorTip: 'Best with the Beginners group. The treasure framing is engaging and removes intimidation around goals/scoring.',
+    defaultTime: 17 },
+  { id: 'd-soc-drb-make-move', sport: 'soccer', category: 'Dribbling', icon: '🌀', name: 'Make Your Move',
+    description: 'Dribble toward a passive BDU "defender," pick one of 4 skill moves, execute it, then shoot.',
+    steps: [
+      { icon: '🎩', text: 'BDU player demos all 4 moves first — slow and clear, one at a time. Participant picks their favorite', tag: 'skill' },
+      { icon: '🦶', text: 'Dribble toward the standing BDU "defender," slow down, pull off the move — then shoot into the open goal!', tag: 'skill' },
+      { icon: '🔁', text: 'Every player gets multiple turns — try a different move each round', tag: 'fun' },
+      { icon: '🎉', text: 'Whole group cheers when someone pulls it off — "That\'s a REAL soccer move!"', tag: 'team' }
+    ],
+    why: 'Real soccer players use moves to get past defenders — and now you know four of them! Pick the one that feels right for YOU. That\'s what makes it YOUR move.',
+    volunteerTip: 'The BDU "defender" should be completely passive — just standing still, maybe waving arms slowly. The head fake works great for wheelchair participants.',
+    facilitatorTip: 'The 4 moves: Rollover, Feint, Outside Tap, Head Fake. Let participants choose freely — ownership builds confidence.',
+    defaultTime: 12 },
+  { id: 'd-soc-pas-combinations', sport: 'soccer', category: 'Passing', icon: '🔁', name: 'Passing Combinations',
+    description: 'Triangle passing + 1-2 wall pass combos — call names, move to space, finish on goal.',
+    steps: [
+      { icon: '🔁', text: 'Triangle Passing — 3-person triangles, pass and move to the open cone', tag: 'skill' },
+      { icon: '📢', text: 'Call name before passing — "Sarah!" then kick' },
+      { icon: '💛', text: '1-2 Combo — pass to BDU player, get it back (wall pass), then shoot', tag: 'skill' }
+    ],
+    why: 'Passing is how we talk on the soccer field. When we pass to a teammate, we\'re saying "I see you and I trust you!"',
+    volunteerTip: 'Calling names builds connection. Participants will light up when their name is called before a pass!',
+    facilitatorTip: 'Triangle setup: 3 cones 5-8 ft apart. Rotate who plays which cone so everyone practices both sending and receiving.',
+    defaultTime: 12 },
+  { id: 'd-soc-sht-pass-finish', sport: 'soccer', category: 'Shooting', icon: '🎯', name: 'Pass & Finish',
+    description: 'BDU players spread at 3–4 angles around goal — participant receives a pass and shoots first or second touch.',
+    steps: [
+      { icon: '📍', text: 'BDU players spread out at 3–4 spots around the goal — left side, right side, straight ahead', tag: 'skill' },
+      { icon: '🤝', text: 'BDU player passes to the participant, who receives and shoots first or second touch' },
+      { icon: '🔁', text: 'Rotate which BDU player serves — each angle is a new challenge' },
+      { icon: '🌟', text: 'Participants who need more time: BDU player sets the ball still so they can walk up and finish' },
+      { icon: '🎉', text: 'Celebrate every finish — the receive AND the shot', tag: 'team' }
+    ],
+    why: 'In a real game, almost every goal starts with a pass. When we receive the ball and shoot right away, we\'re doing exactly what happens in a real game!',
+    volunteerTip: 'Keep passes slow, on the ground, aimed at the participant\'s feet. Start straight-on before adding angles.',
+    facilitatorTip: 'For wheelchair or low-mobility participants, place the ball one step in front of them — still counts as a receive!',
+    defaultTime: 12 },
+  { id: 'd-soc-sht-knock-down', sport: 'soccer', category: 'Shooting', icon: '🎳', name: 'Knock It Down',
+    description: 'Stack foam pins inside the goal — each player gets 3 kicks to knock as many down as possible.',
+    steps: [
+      { icon: '🔶', text: 'Stack 5–6 foam cones or plastic bottles inside the goal mouth as "pins"', tag: 'fun' },
+      { icon: '⚽', text: 'Each player gets 3 kicks — how many pins can they knock over?', tag: 'skill' },
+      { icon: '🎉', text: 'BDU player counts and celebrates every pin — "That\'s 4! That\'s a STRIKE!"', tag: 'team' },
+      { icon: '🔁', text: 'Reset fast and rotate — every player gets multiple rounds' },
+      { icon: '🌟', text: 'Try to beat your own record each round — personal best is the goal' }
+    ],
+    why: 'Real shooting is about aiming — hitting what you\'re looking at. When we knock those pins down, our brain is learning to aim the ball exactly where we want it!',
+    volunteerTip: 'Place pins close together and close to the shooter — big satisfying crash on contact. Any contact counts.',
+    facilitatorTip: 'Foam pins are safer and easier to reset. For wheelchair or low-mobility participants, rolling the ball counts fully.',
+    defaultTime: 12 },
+  { id: 'd-soc-sht-call-shot', sport: 'soccer', category: 'Shooting', icon: '🌈', name: 'Call Your Shot',
+    description: 'Goal divided into 3 colored zones — BDU calls a color, participant aims for that zone and shoots.',
+    steps: [
+      { icon: '🎨', text: 'Divide the goal into 3 zones using colored pinnies or cones: Left (🔵), Middle (🟡), Right (🔴)', tag: 'skill' },
+      { icon: '📢', text: 'BDU player calls a color — "BLUE!" — participant aims for that zone and shoots' },
+      { icon: '🥅', text: 'Any ball in the right zone is a WIN — distance and power don\'t matter', tag: 'skill' },
+      { icon: '🎉', text: 'Hit the zone? Everyone celebrates — "Called it AND scored!"', tag: 'team' },
+      { icon: '⬆️', text: 'Ready for more? Participant calls their OWN color before kicking', tag: 'fun' }
+    ],
+    why: 'In a real game, a good shooter picks a spot BEFORE they kick — they don\'t just blast it and hope. Calling your shot is what makes the difference!',
+    volunteerTip: 'If a participant struggles to aim, physically point at the target zone — visual + verbal cues work best.',
+    facilitatorTip: 'Keep the goal close and zones wide — success rate matters more than difficulty.',
+    defaultTime: 12 },
+  { id: 'd-soc-tm-team-challenges', sport: 'soccer', category: 'Teamwork', icon: '🎮', name: 'Team Challenges',
+    description: 'Relay races and combined-pass target practice — silly rules, multiplier scoring, big team energy.',
+    steps: [
+      { icon: '🏁', text: 'Relay Race — dribble to cone and back, tag next teammate. Silly rules: weak foot only, hop, etc.', tag: 'fun' },
+      { icon: '🎯', text: 'Team Target Practice — team combines passes before shooting; each touch adds a multiplier', tag: 'team' },
+      { icon: '📸', text: 'Encourage BDU players to cheer for other teams too — model good sportsmanship' }
+    ],
+    why: 'Teamwork means working together. When we cheer each other on and celebrate together, we all get better — that\'s how teams win!',
+    volunteerTip: 'Lean into the silly relay rules — the sillier the better. Laughter is teamwork too.',
+    facilitatorTip: 'For the multiplier game, have BDU players count passes out loud so the whole group feels the build-up before each shot.',
+    defaultTime: 12 },
+  { id: 'd-soc-tm-build-goal', sport: 'soccer', category: 'Teamwork', icon: '🏗️', name: 'Build-a-Goal',
+    description: 'Team must complete 3 passes before anyone can shoot — every person who touches the ball owns the goal.',
+    steps: [
+      { icon: '📏', text: 'Simple rule: complete 3 passes before anyone shoots — every touch to a different person', tag: 'team' },
+      { icon: '🤝', text: 'BDU players count out loud: "One… two… THREE — SHOOT!"', tag: 'skill' },
+      { icon: '🥅', text: 'When the shot goes in, the whole team scored — not just the shooter', tag: 'team' },
+      { icon: '⬆️', text: 'Feeling it? Bump to 4 or 5 passes before the shot', tag: 'fun' },
+      { icon: '🎉', text: 'Celebrate every successful pass chain AND every goal — both are wins' }
+    ],
+    why: 'In real soccer, the best goals are built by the whole team — pass by pass. When everyone touches the ball before the shot, everyone owns the goal!',
+    volunteerTip: 'Keep the passing area small and the goal close — this is about connection, not athleticism.',
+    facilitatorTip: 'If a pass chain breaks, reset with no pressure. The rule is the fun — not a test to fail.',
+    defaultTime: 12 },
+  { id: 'd-soc-tm-calling', sport: 'soccer', category: 'Teamwork', icon: '📣', name: 'Calling All Teammates',
+    description: 'Three balls in play — you can only receive a pass if you communicate for it first. Any signal counts.',
+    steps: [
+      { icon: '⚽', text: 'Three balls in play at once — controlled chaos!', tag: 'fun' },
+      { icon: '📢', text: 'Rule: you can only receive a pass if you communicate first — voice, wave, gesture, clap, point', tag: 'team' },
+      { icon: '🌟', text: 'BDU players model it first — shout it, wave it, sign it — no one right way to ask', tag: 'fun' },
+      { icon: '🎯', text: 'The clearest communicator gets the ball — every style of asking counts equally', tag: 'skill' },
+      { icon: '🎉', text: 'Celebrate every signal just as much as every goal — communication IS the skill', tag: 'team' }
+    ],
+    why: 'Great teammates communicate! Your voice, your hands, your signal — whatever works for YOU — is how your teammates know you\'re there!',
+    volunteerTip: 'Any form counts — voice, gesture, wave, noise, raised hand, eye contact. Celebrate every form equally.',
+    facilitatorTip: 'BDU players model a variety of signals first. The goal is connection, not volume.',
+    defaultTime: 12 },
+  { id: 'd-soc-gm-ready-aim-fire', sport: 'soccer', category: 'Game', icon: '🔫', name: 'Ready, Aim, Fire!',
+    description: '4 teams line up, director calls "Ready… Aim… FIRE!" and all four shoot simultaneously at one dramatic keeper.',
+    steps: [
+      { icon: '👥', text: 'Split into 4 teams — each team forms a line behind their ball, equal distance from goal', tag: 'team' },
+      { icon: '📢', text: 'Director calls: "READY…" — set. "AIM…" — eyes on goal. "FIRE!" — all four shoot at the same time', tag: 'fun' },
+      { icon: '🧤', text: 'One BDU volunteer is the "goalkeeper" — faces the whole firing squad. Huge dramatic reactions', tag: 'fun' },
+      { icon: '🏆', text: 'Keep score by team. Run 5–6 rounds, then crown a champion', tag: 'team' },
+      { icon: '🔁', text: 'Next player in each line steps up after every round — everyone fires multiple times' },
+      { icon: '🎉', text: 'BDU players on the sideline go WILD for every goal', tag: 'team' }
+    ],
+    why: 'This is the firing squad — and the goalkeeper has NO chance! All that shooting practice leads to this. Ready… Aim… FIRE!',
+    volunteerTip: 'Set balls up for participants before calling "Ready." Keep the call slow and dramatic to build tension.',
+    facilitatorTip: 'The keeper\'s job is pure entertainment — dive early, miss dramatically, look horrified. The score is real but the keeper is the star.',
+    defaultTime: 17 },
+  { id: 'd-soc-gm-100-goals', sport: 'soccer', category: 'Game', icon: '🎊', name: '100 Goals Together',
+    description: 'The whole group chases one shared number — every goal anyone scores counts toward a team total of 100.',
+    steps: [
+      { icon: '🔢', text: 'Write 100 on a whiteboard — that\'s the team\'s goal for the whole group', tag: 'team' },
+      { icon: '⚽', text: 'Every goal by anyone counts — BDU players narrate: "That\'s 47! Only 53 more!"', tag: 'fun' },
+      { icon: '🚀', text: 'Keep balls flowing fast — moment one goes in, next player is already shooting', tag: 'fun' },
+      { icon: '📣', text: 'Every 10 goals, BDU players lead a big group cheer — energy builds as the number climbs', tag: 'team' },
+      { icon: '🏆', text: 'When you hit 100, the whole group celebrates like a championship — EVERYONE\'S record', tag: 'team' }
+    ],
+    why: 'This isn\'t about one person scoring — it\'s about ALL of us scoring together. Every goal counts for the whole team. Let\'s get to 100!',
+    volunteerTip: 'Set balls up fast — the countdown is the engine. Celebrate each milestone (25, 50, 75) with escalating reactions.',
+    facilitatorTip: 'If the group is small, start at 50. Every participant\'s goal counts equally — that\'s the whole point.',
     defaultTime: 17 },
   // ── Basketball ──
   { id: 'd-bball-drb-station', sport: 'basketball', category: 'Dribbling', icon: '🏀', name: 'Stationary Dribbling',
