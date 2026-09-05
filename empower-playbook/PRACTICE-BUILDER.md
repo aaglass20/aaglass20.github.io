@@ -66,7 +66,7 @@ File: `empower-playbook/practice-builder.html`
 - [ ] **Start time** — optional session start time; shows clock times on each block
 - [ ] **More drills for non-soccer sports** — basketball/softball/football/pickleball/kickball need more rich-schema drills
 - [ ] **Scrimmage block type** — dedicated type with team composition notes
-- [ ] **Equipment checklist** — auto-generated from drills in the plan
+- [x] **Equipment checklist** — auto-generated from drills in the plan (v0.3)
 
 ## Future Plans (noted for design)
 
@@ -98,3 +98,4 @@ File: `empower-playbook/practice-builder.html`
 |---|---|
 | 2026-08-29 | v0.1 created: full wizard + builder + modal + 6-sport demo data + LocalStorage |
 | 2026-08-30 | v0.2: Rich drill schema (steps/why/volunteerTip/facilitatorTip); soccer bank updated with Week 1+2 drills (16 soccer drills total); drill-admin.html created with form + live preview + library; station-card CSS added to shared stylesheet; print view updated for rich format; LocalStorage drill merge from drill-admin → practice-builder |
+| 2026-09-05 | v0.3: Equipment checklist — DRILL_EQUIPMENT lookup table (all 6 sports); `drillId` stored on warmup/drill blocks; `collectEquipment()` deduplicates across plan; checklist renders below timeline with checkbox UI; also appears in print view with printable checkbox boxes |

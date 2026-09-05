@@ -348,7 +348,26 @@
     }
     .btn-print:hover { background: var(--blue-light); }
 
-    /* ── No-op (print handled via printPlan() new window) ── */
+    /* ── Equipment Checklist ── */
+    .equip-checklist {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 1.1rem 1.4rem; margin-top: .75rem; border-top: 4px solid var(--teal);
+    }
+    .equip-title {
+      font-weight: 800; color: var(--blue); font-size: .95rem; margin-bottom: .75rem;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .equip-list {
+      list-style: none; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .35rem .75rem;
+    }
+    .equip-item {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .88rem; color: var(--gray-700); line-height: 1.4;
+    }
+    .equip-check {
+      flex-shrink: 0; font-size: 1rem; color: var(--teal); margin-top: -.05rem;
+    }
 
     @media (max-width: 520px) {
       .choice-grid { grid-template-columns: 1fr; }
@@ -535,6 +554,7 @@
 
       <div class="builder-timeline" id="timeline"></div>
       <button class="btn-add-block" id="addBlockBtn">＋ Add Block</button>
+      <div id="equipSection"></div>
 
     </div><!-- /builder -->
 
@@ -1200,6 +1220,89 @@
     ],
   };
 
+  // ─── Equipment lookup (keyed by drill/warmup bank ID) ───
+  const DRILL_EQUIPMENT = {
+    // Soccer warmups
+    'w-soc-welcome':       ['⚽ Soccer balls'],
+    'w-soc-ball-roll-tag': ['⚽ Soccer balls'],
+    'w-soc-intro-stretch': [],
+    // Other-sport warmups
+    'w-bball-welcome': ['🏀 Basketballs'],
+    'w-soft-welcome':  ['🥎 Softballs (foam)'],
+    'w-foot-welcome':  ['🏈 Footballs (foam)'],
+    'w-pick-welcome':  ['🏓 Pickleball paddles', '🎈 Balloons'],
+    'w-kick-welcome':  ['🔴 Kickball'],
+    // Soccer drills
+    'd-soc-touch-ball':           ['⚽ Soccer balls (1 per player)'],
+    'd-soc-drb-agility':          ['⚽ Soccer balls', '🔶 Cones', '🪜 Agility ladders or hurdles'],
+    'd-soc-drb-music':            ['⚽ Soccer balls', '🔊 Speaker / music'],
+    'd-soc-drb-cone-course':      ['⚽ Soccer balls', '🔶 Cones (many — 3 parallel courses)'],
+    'd-soc-drb-red-green':        ['⚽ Soccer balls', '🟡 Colored spot markers'],
+    'd-soc-drb-make-move':        ['⚽ Soccer balls', '🔶 Cones'],
+    'd-soc-pas-lines':            ['⚽ Soccer balls'],
+    'd-soc-pas-partner':          ['⚽ Soccer balls'],
+    'd-soc-pas-combinations':     ['⚽ Soccer balls', '🔶 Cones'],
+    'd-soc-sht-pass':             ['⚽ Soccer balls', '🥅 Goal'],
+    'd-soc-sht-dribble':          ['⚽ Soccer balls', '🔶 Cones', '🥅 Goal'],
+    'd-soc-sht-penalty':          ['⚽ Soccer balls', '🥅 Goal'],
+    'd-soc-sht-pass-finish':      ['⚽ Soccer balls', '🥅 Goal'],
+    'd-soc-sht-knock-down':       ['⚽ Soccer balls', '🥅 Goal', '🎳 Foam cones or plastic bottles'],
+    'd-soc-sht-call-shot':        ['⚽ Soccer balls', '🥅 Goal', '📌 Colored pinnies (3 colors)'],
+    'd-soc-gk-intro':             ['⚽ Soccer balls', '🔶 Cones (5)', '🥅 Goal'],
+    'd-soc-ml-dps':               ['⚽ Soccer balls', '🔶 Cones', '🥅 Small goal'],
+    'd-soc-ml-gates':             ['⚽ Soccer balls', '🔶 Cones (gate pairs)', '🥅 Goal'],
+    'd-soc-tm-team-challenges':   ['⚽ Soccer balls', '🔶 Cones', '🥅 Goal'],
+    'd-soc-tm-build-goal':        ['⚽ Soccer balls', '🥅 Goal'],
+    'd-soc-tm-calling':           ['⚽ Soccer balls (3 in play)'],
+    'd-soc-gm-everybody-scores':  ['⚽ Soccer balls', '🥅 Small goals (2)'],
+    'd-soc-gm-hungry-hippos':     ['⚽ Soccer balls (many)', '🥅 Goals (2)'],
+    'd-soc-gm-treasure-hunt':     ['⚽ Soccer balls (many)', '🔶 Cones'],
+    'd-soc-gm-construction':      ['⚽ Soccer balls', '🔶 Cones (many)'],
+    'd-soc-gm-longest':           ['⚽ Soccer balls', '🥅 Goal'],
+    'd-soc-gm-scrimmage':         ['⚽ Soccer balls', '🥅 Goals (2)', '📌 Pinnies (team colors)'],
+    'd-soc-gm-ready-aim-fire':    ['⚽ Soccer balls (4+)', '🥅 Goal'],
+    'd-soc-gm-100-goals':         ['⚽ Soccer balls (many)', '🥅 Goals', '📋 Whiteboard or marker'],
+    // Basketball drills
+    'd-bball-drb-station':  ['🏀 Basketballs (1 per player)'],
+    'd-bball-drb-cone':     ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-pas-chest':    ['🏀 Basketballs (or foam balls)'],
+    'd-bball-sht-layup':    ['🏀 Basketballs', '🏀 Basketball hoop'],
+    'd-bball-gm-scrimmage': ['🏀 Basketballs', '🏀 Basketball hoops (2)'],
+    // Softball drills
+    'd-soft-fld-catch':  ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
+    'd-soft-fld-ground': ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
+    'd-soft-hit-tee':    ['🥎 Softballs (foam)', '⚾ Batting tee', '🏏 Bat'],
+    'd-soft-run-bases':  ['⬛ Base markers (4)'],
+    // Football drills
+    'd-foot-qb-throw':     ['🏈 Footballs (foam)'],
+    'd-foot-wr-routes':    ['🏈 Footballs (foam)', '🔶 Cones'],
+    'd-foot-rl-gl':        ['🏈 Footballs (foam)'],
+    'd-foot-gm-scrimmage': ['🏈 Footballs (foam)', '📌 Flag belts'],
+    // Pickleball drills
+    'd-pick-balloon':       ['🏓 Pickleball paddles', '🎈 Balloons'],
+    'd-pick-serve-bucket':  ['🏓 Pickleball paddles', '🏸 Pickleballs', '🪣 Bucket or hula hoop target'],
+    'd-pick-volley':        ['🏓 Pickleball paddles', '🏸 Pickleballs', '🥅 Net'],
+    'd-pick-gm-scrimmage':  ['🏓 Pickleball paddles', '🏸 Pickleballs', '🥅 Net'],
+    // Kickball drills
+    'd-kick-fld-ground':     ['🔴 Kickball'],
+    'd-kick-run-bases':      ['⬛ Base markers (4)', '🔴 Kickball'],
+    'd-kick-gm-scrimmage':   ['🔴 Kickball', '⬛ Base markers (4)'],
+  };
+
+  function collectEquipment() {
+    const items = new Set();
+    plan.blocks.forEach(block => {
+      if (block.type === 'rotation') {
+        block.drills.forEach(d => (DRILL_EQUIPMENT[d.id] || []).forEach(e => items.add(e)));
+      } else if (block.drillId) {
+        (DRILL_EQUIPMENT[block.drillId] || []).forEach(e => items.add(e));
+      }
+    });
+    return [...items].sort((a, b) =>
+      a.replace(/^[\W]+/, '').localeCompare(b.replace(/^[\W]+/, ''))
+    );
+  }
+
   // ─── Merge user-created drills from drill-admin localStorage ───
   (function mergeLocalDrills() {
     try {
@@ -1356,6 +1459,20 @@
     tl.appendChild(rem);
 
     document.getElementById('addBlockBtn').disabled = left <= 0;
+
+    const equipSection = document.getElementById('equipSection');
+    const equipItems = collectEquipment();
+    if (equipItems.length) {
+      equipSection.innerHTML = `
+        <div class="equip-checklist">
+          <div class="equip-title">🎒 Equipment Needed</div>
+          <ul class="equip-list">
+            ${equipItems.map(item => `<li class="equip-item"><span class="equip-check">☐</span>${item}</li>`).join('')}
+          </ul>
+        </div>`;
+    } else {
+      equipSection.innerHTML = '';
+    }
   }
 
   function renderDrillDetail(d, perTime) {
@@ -1576,7 +1693,7 @@
   document.getElementById('confirmWarmup').addEventListener('click', () => {
     if (!selectedWarmup) return;
     const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedWarmup.id + '-' + Date.now();
-    upsertBlock({ type: 'warmup', id: existId, name: selectedWarmup.name, icon: selectedWarmup.icon, description: selectedWarmup.description, steps: selectedWarmup.steps || [], why: selectedWarmup.why || '', volunteerTip: selectedWarmup.volunteerTip || '', facilitatorTip: selectedWarmup.facilitatorTip || '', purpose: selectedWarmup.purpose, tip: selectedWarmup.tip, durationMinutes: parseInt(document.getElementById('warmupTime').value) || 10 });
+    upsertBlock({ type: 'warmup', id: existId, drillId: selectedWarmup.id, name: selectedWarmup.name, icon: selectedWarmup.icon, description: selectedWarmup.description, steps: selectedWarmup.steps || [], why: selectedWarmup.why || '', volunteerTip: selectedWarmup.volunteerTip || '', facilitatorTip: selectedWarmup.facilitatorTip || '', purpose: selectedWarmup.purpose, tip: selectedWarmup.tip, durationMinutes: parseInt(document.getElementById('warmupTime').value) || 10 });
     closeModal();
   });
 
@@ -1667,7 +1784,7 @@
     } else {
       if (!selectedDrill) return;
       const existId = editIdx !== null ? plan.blocks[editIdx].id : selectedDrill.id + '-' + Date.now();
-      upsertBlock({ type: 'drill', id: existId, name: selectedDrill.name, icon: selectedDrill.icon, description: selectedDrill.description, steps: selectedDrill.steps || [], why: selectedDrill.why || '', volunteerTip: selectedDrill.volunteerTip || '', facilitatorTip: selectedDrill.facilitatorTip || '', purpose: selectedDrill.purpose, tip: selectedDrill.tip, durationMinutes: parseInt(document.getElementById('drillTime').value) || 12 });
+      upsertBlock({ type: 'drill', id: existId, drillId: selectedDrill.id, name: selectedDrill.name, icon: selectedDrill.icon, description: selectedDrill.description, steps: selectedDrill.steps || [], why: selectedDrill.why || '', volunteerTip: selectedDrill.volunteerTip || '', facilitatorTip: selectedDrill.facilitatorTip || '', purpose: selectedDrill.purpose, tip: selectedDrill.tip, durationMinutes: parseInt(document.getElementById('drillTime').value) || 12 });
     }
     closeModal();
   });
@@ -1835,6 +1952,13 @@
   .s-vol{background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f;}
   .s-fac{background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d;}
 
+  /* ── Equipment Checklist ── */
+  .equip-section{margin-top:1.5rem;border-top:3px solid #0d9488;padding-top:1rem;}
+  .equip-hd{font-weight:800;font-size:.95rem;color:#003B8E;margin-bottom:.65rem;}
+  .equip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.3rem .75rem;list-style:none;}
+  .equip-gi{display:flex;align-items:flex-start;gap:.4rem;font-size:.82rem;color:#444;line-height:1.4;}
+  .equip-box{flex-shrink:0;width:13px;height:13px;border:1.5px solid #0d9488;border-radius:2px;margin-top:.1rem;display:inline-block;}
+
   /* ── Footer ── */
   .ftr{margin-top:2rem;padding-top:.65rem;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:.72rem;color:#bbb;}
 
@@ -1865,6 +1989,17 @@
   </div>
 
   <div class="blocks">${blocksHtml}</div>
+
+  ${(function(){
+    const equipItems = collectEquipment();
+    if (!equipItems.length) return '';
+    return `<div class="equip-section">
+      <div class="equip-hd">🎒 Equipment Needed</div>
+      <ul class="equip-grid">
+        ${equipItems.map(item => `<li class="equip-gi"><span class="equip-box"></span>${item}</li>`).join('')}
+      </ul>
+    </div>`;
+  })()}
 
   <div class="ftr">
     <span>Empower Sports Program Playbook</span>
