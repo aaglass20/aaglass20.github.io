@@ -1291,11 +1291,19 @@
 
   function collectEquipment() {
     const items = new Set();
+    // Check drill.equipment first (user-created drills from drill-admin),
+    // fall back to the static DRILL_EQUIPMENT table for built-in drills.
+    const getEquip = id => {
+      const drill = Object.values(DRILL_BANK).flat().find(d => d.id === id);
+      return (drill && drill.equipment && drill.equipment.length)
+        ? drill.equipment
+        : (DRILL_EQUIPMENT[id] || []);
+    };
     plan.blocks.forEach(block => {
       if (block.type === 'rotation') {
-        block.drills.forEach(d => (DRILL_EQUIPMENT[d.id] || []).forEach(e => items.add(e)));
+        block.drills.forEach(d => getEquip(d.id).forEach(e => items.add(e)));
       } else if (block.drillId) {
-        (DRILL_EQUIPMENT[block.drillId] || []).forEach(e => items.add(e));
+        getEquip(block.drillId).forEach(e => items.add(e));
       }
     });
     return [...items].sort((a, b) =>

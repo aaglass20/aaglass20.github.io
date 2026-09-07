@@ -625,6 +625,10 @@ body {
 .why-tip strong { color: var(--blue); font-weight: 700; }
 .vol-tip  { background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; }
 .fac-tip  { background: #f0fdf4; border-left: 4px solid #22c55e; color: #14532d; }
+.equip-tip { background: var(--gray-50); border-left: 4px solid var(--gray-300, #d1d5db); color: var(--gray-600); }
+.equip-tip .tip-icon { flex-shrink: 0; }
+.equip-tip ul { margin: .2rem 0 0 1rem; padding: 0; font-size: .82rem; line-height: 1.6; }
+.drill-desc { font-size: .83rem; color: var(--gray-500); font-style: italic; margin: .3rem 0 .55rem; line-height: 1.5; }
 
 .equip-pill {
   display: inline-flex;

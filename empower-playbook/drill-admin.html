@@ -9,44 +9,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* ── Admin layout ── */
-    .admin-layout {
-      display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 1.75rem;
-      align-items: flex-start;
-      margin-top: 2rem;
+    /* ── Tab navigation ── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid var(--gray-100);
+      margin-bottom: 1.75rem;
     }
-    .preview-toggle-btn {
-      display: none; /* desktop: hidden */
-      width: 100%;
-      margin-top: .6rem;
-      padding: .6rem 1rem;
-      background: var(--blue-light);
-      color: var(--blue);
-      border: 1.5px solid var(--blue-mid);
-      border-radius: var(--radius-sm);
+    .tab-btn {
+      padding: .7rem 1.4rem;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
       font-family: inherit;
-      font-size: .85rem;
+      font-size: .9rem;
       font-weight: 700;
+      color: var(--gray-400);
       cursor: pointer;
-      text-align: center;
-      transition: background .15s, color .15s;
+      margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
     }
-    .preview-toggle-btn:hover { background: var(--blue); color: var(--white); }
+    .tab-btn.active { background: var(--blue); color: #fff; border-bottom-color: var(--blue); border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+    .tab-btn:hover:not(.active) { color: var(--gray-600, #4b5563); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    @media (max-width: 900px) {
-      .admin-layout { grid-template-columns: 1fr; }
-      .form-panel { position: static; max-height: none; }
-      .form-panel-body { overflow: visible; max-height: none; }
-      .preview-sticky { display: none; position: static; }
-      .preview-sticky.open { display: block; margin-top: .75rem; }
-      .preview-toggle-btn { display: block; }
-    }
+    /* ── Form layout ── */
+    .admin-layout { max-width: 680px; }
+
     @media (max-width: 640px) {
-      .admin-layout { grid-template-columns: 1fr; }
-      .form-panel { position: static; max-height: none; }
-      .form-panel-body { overflow: visible; max-height: none; }
       .step-row { grid-template-columns: 34px 1fr 22px; }
       .step-tag-sel { display: none; }
     }
@@ -57,9 +47,6 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow-md);
       overflow: hidden;
-      position: sticky;
-      top: 72px;
-      max-height: calc(100vh - 90px);
       display: flex;
       flex-direction: column;
     }
@@ -75,9 +62,7 @@
       margin: 0;
     }
     .form-panel-body {
-      overflow-y: auto;
       padding: 1.1rem 1.25rem;
-      flex: 1;
     }
     .form-panel-foot {
       padding: .85rem 1.25rem;
@@ -143,9 +128,30 @@
     }
     .form-row textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
     .form-row-2 { display: grid; gap: .65rem; }
-    .col-icon-title { grid-template-columns: 68px 1fr; }
-    .col-half      { grid-template-columns: 1fr 1fr; }
-    .col-desc-time { grid-template-columns: 1fr 68px; }
+    .col-title-time { grid-template-columns: 1fr 68px; }
+    .col-half       { grid-template-columns: 1fr 1fr; }
+
+    /* ── Equipment repeater ── */
+    .equip-list { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .4rem; }
+    .equip-row {
+      display: grid;
+      grid-template-columns: 1fr 24px;
+      align-items: center;
+      gap: .35rem;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      padding: .35rem .5rem;
+    }
+    .equip-text-in {
+      border: none;
+      background: transparent;
+      font-size: .84rem;
+      padding: .1rem .25rem;
+      font-family: inherit;
+      width: 100%;
+    }
+    .equip-text-in:focus { outline: 1px dashed var(--blue); border-radius: 3px; }
 
     /* ── Steps repeater ── */
     .steps-list { display: flex; flex-direction: column; gap: .4rem; margin-bottom: .45rem; }
@@ -225,32 +231,11 @@
     /* ── Form footer actions ── */
     .form-actions { display: flex; gap: .65rem; }
     .form-actions .btn { flex: 1; padding: .55rem 1rem; font-size: .88rem; }
+    #previewBtn { background: var(--orange, #f97316); color: #fff; border-color: var(--orange, #f97316); }
+    #previewBtn:hover { background: var(--orange-dark, #ea6a0a); border-color: var(--orange-dark, #ea6a0a); }
     #formMsg { margin-top: .6rem; font-size: .8rem; font-weight: 600; display: none; }
 
-    /* ── Preview column ── */
-    .preview-sticky {
-      position: sticky;
-      top: 72px;
-    }
-    .preview-panel {
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-    }
-    .preview-panel-head {
-      padding: .85rem 1.25rem;
-      border-bottom: 2px solid var(--gray-100);
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-    }
-    .preview-panel-head h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--gray-500, #6b7280);
-      margin: 0;
-    }
+    /* ── Preview modal ── */
     .preview-sport-badge {
       font-size: .68rem;
       font-weight: 700;
@@ -261,19 +246,72 @@
       text-transform: uppercase;
       letter-spacing: .04em;
     }
+    .preview-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.48);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .preview-modal-overlay.open { display: flex; }
+    .preview-modal-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      width: 100%;
+      max-width: 540px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .preview-modal-head {
+      padding: .85rem 1.25rem;
+      border-bottom: 2px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-shrink: 0;
+    }
+    .preview-modal-head h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--gray-500);
+      margin: 0;
+      flex: 1;
+    }
+    .preview-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-200);
+      background: var(--white);
+      color: var(--gray-500);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .preview-modal-close:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
     #livePreview {
-      min-height: 420px;
-      max-height: calc(100vh - 180px);
       overflow-y: auto;
       padding: 1.25rem;
       background: #f8faff;
+      flex: 1;
     }
     .preview-empty {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 280px;
+      height: 200px;
       color: var(--gray-300, #d1d5db);
       font-size: .9rem;
       gap: .5rem;
@@ -281,7 +319,7 @@
     .preview-empty span { font-size: 2.5rem; }
 
     /* ── Drill library ── */
-    .library-section { margin-top: 3rem; }
+    .library-section { }
     .library-header {
       display: flex;
       align-items: center;
@@ -417,9 +455,29 @@
     <p style="font-size:.97rem;">Add and manage drills for any Empower sport. Each drill includes steps, "Why we do this," volunteer tips, and facilitator tips. Drills you create here automatically appear in the Practice Builder.</p>
   </section>
 
+  <!-- ── PREVIEW MODAL ── -->
+  <div class="preview-modal-overlay" id="previewModal">
+    <div class="preview-modal-panel">
+      <div class="preview-modal-head">
+        <span class="preview-sport-badge" id="previewSportBadge">⚽ Soccer</span>
+        <h3>Drill Preview</h3>
+        <button class="preview-modal-close" id="previewModalClose" aria-label="Close preview">✕</button>
+      </div>
+      <div id="livePreview">
+        <div class="preview-empty"><span>📋</span>Fill in the form to see a preview</div>
+      </div>
+    </div>
+  </div>
+
   <div class="container-wide">
 
-    <div class="admin-layout">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="form">Add New Drill</button>
+      <button class="tab-btn" data-tab="library">Drill Library</button>
+    </div>
+
+    <div class="tab-content active" id="tabContent-form">
+      <div class="admin-layout">
 
       <!-- ── FORM PANEL ── -->
       <div class="form-panel">
@@ -434,14 +492,14 @@
           <div class="form-section">
             <div class="section-label">Basic Info</div>
 
-            <div class="form-row form-row-2 col-icon-title">
-              <div>
-                <label>Icon</label>
-                <input type="text" id="f-icon" placeholder="⚽" maxlength="4" style="text-align:center;font-size:1.2rem;">
-              </div>
+            <div class="form-row form-row-2 col-title-time">
               <div>
                 <label>Title</label>
                 <input type="text" id="f-name" placeholder="Drill name">
+              </div>
+              <div>
+                <label>Time <span style="font-weight:400;text-transform:none;font-size:.68rem;color:var(--gray-400)">(min)</span></label>
+                <input type="number" id="f-time" value="12" min="2" max="60" style="text-align:center;">
               </div>
             </div>
 
@@ -459,37 +517,14 @@
               </div>
               <div>
                 <label>Category</label>
-                <input type="text" id="f-category" list="cat-list" placeholder="e.g. Dribbling">
-                <datalist id="cat-list">
-                  <option value="Ball Control">
-                  <option value="Dribbling">
-                  <option value="Passing">
-                  <option value="Shooting">
-                  <option value="Goalkeeping">
-                  <option value="Multi-Skill">
-                  <option value="Game">
-                  <option value="Fielding">
-                  <option value="Hitting">
-                  <option value="Base Running">
-                  <option value="Serving">
-                  <option value="Volley">
-                  <option value="Routes">
-                  <option value="Fundamentals">
-                </datalist>
+                <select id="f-category"></select>
               </div>
             </div>
 
-            <div class="form-row form-row-2 col-desc-time">
-              <div>
-                <label>Summary</label>
-                <small class="field-hint">One sentence describing this drill</small>
-                <input type="text" id="f-description" placeholder="What this drill is at a glance">
-              </div>
-              <div>
-                <label>Time</label>
-                <small class="field-hint">minutes</small>
-                <input type="number" id="f-time" value="12" min="2" max="60" style="text-align:center;">
-              </div>
+            <div class="form-row">
+              <label>Summary</label>
+              <small class="field-hint">Displayed with the drill — describe what participants do</small>
+              <textarea id="f-description" rows="3" placeholder="e.g. Participants dribble through 3 cone courses at increasing difficulty, choosing their own level."></textarea>
             </div>
           </div>
 
@@ -522,6 +557,15 @@
               <small class="field-hint">For coaches &amp; program directors — setup, logistics, progressions</small>
               <textarea id="f-fac" placeholder="Equipment setup, spacing, ability-level adjustments…"></textarea>
             </div>
+
+          </div>
+
+          <!-- SECTION: Equipment -->
+          <div class="form-section">
+            <div class="section-label">🎒 Equipment</div>
+            <small class="field-hint" style="margin-bottom:.55rem;">Each item flows to the Practice Builder equipment checklist</small>
+            <div class="equip-list" id="equipList"></div>
+            <button class="add-step-btn" id="addEquipBtn">+ Add item</button>
           </div>
 
         </div><!-- /form-panel-body -->
@@ -529,31 +573,18 @@
         <div class="form-panel-foot">
           <div class="form-actions">
             <button class="btn btn-primary" id="saveBtn">Save Drill</button>
+            <button class="btn btn-outline" id="previewBtn" type="button">Preview</button>
             <button class="btn btn-outline" id="cancelBtn" style="display:none;">Cancel</button>
           </div>
-          <button class="preview-toggle-btn" id="previewToggleBtn">👁 Preview Drill</button>
           <div id="formMsg"></div>
         </div>
 
       </div><!-- /form-panel -->
 
-      <!-- ── PREVIEW PANEL ── -->
-      <div class="preview-sticky">
-        <div class="preview-panel">
-          <div class="preview-panel-head">
-            <h3>Live Preview</h3>
-            <span class="preview-sport-badge" id="previewSportBadge">Soccer</span>
-          </div>
-          <div id="livePreview">
-            <div class="preview-empty">
-              <span>📋</span>
-              Fill in the form to see a preview
-            </div>
-          </div>
-        </div>
-      </div>
+      </div><!-- /admin-layout -->
+    </div><!-- /tabContent-form -->
 
-    </div>
+    <div class="tab-content" id="tabContent-library">
 
     <!-- ── DRILL LIBRARY ── -->
     <div class="library-section">
@@ -570,6 +601,8 @@
 
       <div class="drill-library-grid" id="libraryGrid"></div>
     </div>
+
+    </div><!-- /tabContent-library -->
 
   </div>
 
@@ -921,6 +954,20 @@ const SPORTS = [
   { id: 'kickball', name: '🔴 Kickball' },
 ];
 
+const SPORT_ICON = {
+  soccer: '⚽', basketball: '🏀', softball: '🥎',
+  football: '🏈', pickleball: '🏓', kickball: '🔴',
+};
+
+const SPORT_CATEGORIES = {
+  soccer:     ['Ball Control','Dribbling','Passing','Shooting','Goalkeeping','Multi-Skill','Teamwork','Game'],
+  basketball: ['Dribbling','Passing','Shooting','Defense','Fundamentals','Game'],
+  softball:   ['Fielding','Hitting','Pitching','Base Running','Game'],
+  football:   ['Passing','Routes','Defense','Fundamentals','Game'],
+  pickleball: ['Serving','Volley','Fundamentals','Game'],
+  kickball:   ['Fielding','Kicking','Base Running','Game'],
+};
+
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
@@ -937,6 +984,16 @@ function loadUserDrills() {
 
 function saveUserDrills() {
   localStorage.setItem(LS_KEY, JSON.stringify(userDrills));
+}
+
+// ═══════════════════════════════════════
+//  CATEGORY SELECT
+// ═══════════════════════════════════════
+function updateCategorySelect(sport, currentVal) {
+  const sel = document.getElementById('f-category');
+  const cats = SPORT_CATEGORIES[sport] || [];
+  sel.innerHTML = '<option value="">— Category —</option>' +
+    cats.map(c => `<option value="${escHtml(c)}"${c === currentVal ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
 }
 
 function allDrills() {
@@ -981,6 +1038,29 @@ function getSteps() {
 }
 
 // ═══════════════════════════════════════
+//  EQUIPMENT REPEATER
+// ═══════════════════════════════════════
+function addEquipRow(val) {
+  const list = document.getElementById('equipList');
+  const row = document.createElement('div');
+  row.className = 'equip-row';
+  row.innerHTML = `
+    <input class="equip-text-in" type="text" placeholder="e.g. 4 cones, 1 ball per pair" value="${val ? escHtml(val) : ''}">
+    <button class="step-del" title="Remove">✕</button>
+  `;
+  row.querySelector('.step-del').addEventListener('click', () => { row.remove(); updatePreview(); });
+  row.querySelector('.equip-text-in').addEventListener('input', updatePreview);
+  list.appendChild(row);
+  updatePreview();
+}
+
+function getEquipment() {
+  return Array.from(document.querySelectorAll('.equip-text-in'))
+    .map(el => el.value.trim())
+    .filter(Boolean);
+}
+
+// ═══════════════════════════════════════
 //  PREVIEW
 // ═══════════════════════════════════════
 function escHtml(s) {
@@ -1000,7 +1080,7 @@ function stationCardHtml(d) {
     }).join('');
     html += `<ul class="drill-list">${items}</ul>`;
   } else if (d.description) {
-    html += `<p style="font-size:.85rem;color:#555;margin-top:.4rem;font-style:italic;">${escHtml(d.description)}</p>`;
+    html += `<p class="drill-desc">${escHtml(d.description)}</p>`;
   }
 
   if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${escHtml(d.why)}</div></div>`;
@@ -1017,10 +1097,11 @@ function updatePreview() {
   document.getElementById('previewSportBadge').textContent = sportObj.name;
 
   const d = {
-    icon: document.getElementById('f-icon').value.trim(),
+    icon: SPORT_ICON[sport] || '⚽',
     name: document.getElementById('f-name').value.trim(),
     description: document.getElementById('f-description').value.trim(),
     steps: getSteps(),
+    equipment: getEquipment(),
     why: document.getElementById('f-why').value.trim(),
     volunteerTip: document.getElementById('f-vol').value.trim(),
     facilitatorTip: document.getElementById('f-fac').value.trim(),
@@ -1038,14 +1119,16 @@ function updatePreview() {
 //  FORM SAVE / EDIT / CANCEL
 // ═══════════════════════════════════════
 function collectForm() {
+  const sport = document.getElementById('f-sport').value;
   return {
     id: editingId || ('user-' + Date.now()),
-    sport: document.getElementById('f-sport').value,
-    category: document.getElementById('f-category').value.trim(),
-    icon: document.getElementById('f-icon').value.trim(),
+    sport,
+    category: document.getElementById('f-category').value,
+    icon: SPORT_ICON[sport] || '⚽',
     name: document.getElementById('f-name').value.trim(),
     description: document.getElementById('f-description').value.trim(),
     steps: getSteps(),
+    equipment: getEquipment(),
     why: document.getElementById('f-why').value.trim(),
     volunteerTip: document.getElementById('f-vol').value.trim(),
     facilitatorTip: document.getElementById('f-fac').value.trim(),
@@ -1055,16 +1138,16 @@ function collectForm() {
 }
 
 function clearForm() {
-  document.getElementById('f-icon').value = '';
   document.getElementById('f-name').value = '';
-  document.getElementById('f-category').value = '';
   document.getElementById('f-description').value = '';
   document.getElementById('f-time').value = '12';
   document.getElementById('f-why').value = '';
   document.getElementById('f-vol').value = '';
   document.getElementById('f-fac').value = '';
   document.getElementById('stepsList').innerHTML = '';
+  document.getElementById('equipList').innerHTML = '';
   editingId = null;
+  updateCategorySelect(document.getElementById('f-sport').value || 'soccer');
   document.getElementById('formTitle').textContent = '➕ Add New Drill';
   document.getElementById('saveBtn').textContent = 'Save Drill';
   document.getElementById('cancelBtn').style.display = 'none';
@@ -1090,11 +1173,13 @@ document.getElementById('saveBtn').addEventListener('click', () => {
   showMsg(editingId ? '✓ Drill updated!' : '✓ Drill saved!', true);
   clearForm();
   renderLibrary();
+  switchTab('library');
 });
 
 document.getElementById('cancelBtn').addEventListener('click', clearForm);
 
 document.getElementById('addStepBtn').addEventListener('click', () => addStepRow(null));
+document.getElementById('addEquipBtn').addEventListener('click', () => addEquipRow(''));
 
 // ═══════════════════════════════════════
 //  EDIT / DELETE
@@ -1104,10 +1189,9 @@ function editDrill(id) {
   if (!d) return;
   editingId = d.id;
 
-  document.getElementById('f-icon').value = d.icon || '';
   document.getElementById('f-name').value = d.name || '';
   document.getElementById('f-sport').value = d.sport || 'soccer';
-  document.getElementById('f-category').value = d.category || '';
+  updateCategorySelect(d.sport || 'soccer', d.category || '');
   document.getElementById('f-description').value = d.description || '';
   document.getElementById('f-time').value = d.defaultTime || 12;
   document.getElementById('f-why').value = d.why || '';
@@ -1116,6 +1200,8 @@ function editDrill(id) {
 
   document.getElementById('stepsList').innerHTML = '';
   (d.steps || []).forEach(s => addStepRow(s));
+  document.getElementById('equipList').innerHTML = '';
+  (d.equipment || []).forEach(e => addEquipRow(e));
 
   document.getElementById('formTitle').textContent = '✏️ Edit Drill';
   document.getElementById('saveBtn').textContent = 'Update Drill';
@@ -1128,6 +1214,7 @@ function editDrill(id) {
   }
 
   updatePreview();
+  switchTab('form');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1229,18 +1316,36 @@ document.getElementById('exportBtn').addEventListener('click', () => {
 // ═══════════════════════════════════════
 //  WIRE PREVIEW UPDATES
 // ═══════════════════════════════════════
-['f-icon','f-name','f-sport','f-category','f-description','f-why','f-vol','f-fac'].forEach(id => {
+['f-name','f-category','f-description','f-why','f-vol','f-fac'].forEach(id => {
   document.getElementById(id).addEventListener('input', updatePreview);
 });
 
+document.getElementById('f-sport').addEventListener('change', function() {
+  updateCategorySelect(this.value);
+  updatePreview();
+});
+
 // ═══════════════════════════════════════
-//  MOBILE PREVIEW TOGGLE
+//  TAB NAVIGATION
 // ═══════════════════════════════════════
-document.getElementById('previewToggleBtn').addEventListener('click', function() {
-  const panel = document.querySelector('.preview-sticky');
-  const open = panel.classList.toggle('open');
-  this.textContent = open ? '✕ Close Preview' : '👁 Preview Drill';
-  if (open) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tabContent-' + tab));
+}
+document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+// ═══════════════════════════════════════
+//  PREVIEW MODAL
+// ═══════════════════════════════════════
+document.getElementById('previewBtn').addEventListener('click', function() {
+  updatePreview();
+  document.getElementById('previewModal').classList.add('open');
+});
+document.getElementById('previewModalClose').addEventListener('click', function() {
+  document.getElementById('previewModal').classList.remove('open');
+});
+document.getElementById('previewModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
 });
 
 // ═══════════════════════════════════════
@@ -1268,6 +1373,7 @@ document.getElementById('previewToggleBtn').addEventListener('click', function()
 //  INIT
 // ═══════════════════════════════════════
 loadUserDrills();
+updateCategorySelect('soccer');
 updatePreview();
 renderLibrary();
 </script>
