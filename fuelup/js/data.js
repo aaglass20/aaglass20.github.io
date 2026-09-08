@@ -102,6 +102,9 @@ const MEALS = [
   { id: 'ham-trky-wrap',  name: 'Ham & Turkey Wrap',       emoji: '🌯', mealType: 'lunch',  protein: true,  carbs: true,  veggie: true,  allDay: true,
     note: 'Ham, turkey, cheese & lettuce in a tortilla',
     fg: { grains: 2, protein: 3, dairy: 0.67, veggies: 0.25 } },
+  { id: 'turkey-cheese-wrap', name: 'Turkey & Cheese Wrap', emoji: '🌯', mealType: 'lunch', protein: true, carbs: true, veggie: true, dairy: true, allDay: true,
+    note: 'Turkey, cheese, and lettuce in a flour wrap',
+    fg: { grains: 2, protein: 3, dairy: 0.67, veggies: 0.25 } },
   { id: 'cheesy-pasta',   name: 'Cheesy Pasta',            emoji: '🍝', mealType: 'lunch',  protein: true,  carbs: true,  veggie: false, dairy: true,  allDay: true,
     fg: { grains: 2.5, dairy: 1.5 } },
 
@@ -135,7 +138,8 @@ const MEALS = [
   { id: 'hotdog',        name: 'Hotdog',                    emoji: '🌭', mealType: 'dinner', protein: true,  carbs: true,  veggie: false, allDay: true,
     fg: { grains: 1, protein: 2 } },
   // ── Soups ────────────────────────────────────────────────────────────────────
-  { id: 'chkn-paprikash', name: 'Chicken Paprikash Soup',  emoji: '🍲', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
+  { id: 'chkn-paprikash', name: 'Chicken Paprikash',       emoji: '🍲', mealType: 'dinner', protein: true,  carbs: false, veggie: true,  allDay: true,
+    note: 'Add Spaetzle as a side for a complete meal',
     fg: { protein: 3, veggies: 1, dairy: 0.5 } },
   { id: 'beef-stew',     name: 'Beef Stew',                 emoji: '🍲', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  allDay: true,
     fg: { protein: 3, veggies: 1 } },
@@ -279,6 +283,7 @@ const SIDES = [
   { id: 'side-grilled-potato', name: 'Grilled Sliced Potatoes', emoji: '🥔', carbs: true, veggie: true, protein: true, fg: { veggies: 1, protein: 0.5 } },
   { id: 'side-bread',      name: 'Dinner Roll / Bread',  emoji: '🍞', carbs: true,  fg: { grains: 1   } },
   { id: 'side-rice',       name: 'Side of Rice',         emoji: '🍚', carbs: true,  fg: { grains: 1.5 } },
+  { id: 'side-spaetzle',   name: 'Spaetzle',             emoji: '🍝', carbs: true,  fg: { grains: 2   } },
   { id: 'side-tater-tots', name: 'Tater Tots',           emoji: '🥔', carbs: true,  fg: { veggies: 0.5 } },
   { id: 'side-hash-browns', name: 'Hash Browns',         emoji: '🥔', carbs: true,  fg: { veggies: 0.5 } },
   { id: 'side-garbanzo',   name: 'Garbanzo Beans',       emoji: '🫘', veggie: true, protein: true, fg: { protein: 2, veggies: 0.5 } },

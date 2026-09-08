@@ -651,6 +651,8 @@ function initPaletteSortable() {
   el._sortable = new Sortable(el, {
     group: { name: 'fuelup', pull: 'clone', put: false },
     sort: false,
+    delay: 150,
+    delayOnTouchOnly: true,
     filter: '.palette-section-header, .pi-fav',
     preventOnFilter: false,
     animation: 120,
@@ -732,17 +734,42 @@ function renderTimeline() {
         <span class="si-name">${item.name}</span>
         ${type==='workout'?`<span class="si-badge">${item.duration}m</span>`:''}
         <button class="si-remove" title="Remove">×</button>
+        <div class="chip-action-bar">
+          <button class="chip-remove-btn">🗑 Remove</button>
+          <button class="chip-cancel-btn">✕</button>
+        </div>
       `;
-      chip.querySelector('.si-remove').addEventListener('click', () => {
+
+      const removeItem = (e) => {
+        e.stopPropagation();
         state.schedule[slot].splice(idx, 1);
         if (!state.schedule[slot].length) delete state.schedule[slot];
         save(); renderTimeline(); renderDaySummary(); renderWeekNav(); evalAndRender();
+      };
+
+      chip.querySelector('.si-remove').addEventListener('click', removeItem);
+      chip.querySelector('.chip-remove-btn').addEventListener('click', removeItem);
+      chip.querySelector('.chip-cancel-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        chip.classList.remove('chip-expanded');
       });
+
+      chip.addEventListener('click', e => {
+        if (e.target.closest('.chip-action-bar') || e.target.classList.contains('si-remove')) return;
+        e.stopPropagation();
+        if (state.selectedItem) { addSelectedToSlot(slot); return; }
+        document.querySelectorAll('.slot-item.chip-expanded').forEach(c => {
+          if (c !== chip) c.classList.remove('chip-expanded');
+        });
+        chip.classList.toggle('chip-expanded');
+      });
+
       zone.appendChild(chip);
     });
 
     // Tap a slot: add selected item (item-first) or open palette for this slot (slot-first on mobile)
     zone.addEventListener('click', () => {
+      document.querySelectorAll('.slot-item.chip-expanded').forEach(c => c.classList.remove('chip-expanded'));
       if (state.selectedItem) { addSelectedToSlot(slot); return; }
       if (window.innerWidth <= 768) {
         pendingSlot = slot;

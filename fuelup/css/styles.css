@@ -668,6 +668,43 @@ body {
 /* ── Water slot item ────────────────────────────── */
 .slot-item.type-water { background: #e0f2fe; color: #0369a1; }
 
+/* ── Chip tap-to-delete action bar ─────────────── */
+.chip-action-bar {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.slot-item.chip-expanded .chip-action-bar { display: flex; }
+.slot-item.chip-expanded .si-remove,
+.slot-item.chip-expanded .si-badge { display: none; }
+
+.chip-remove-btn {
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(220,38,38,0.3);
+  color: #dc2626;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.chip-remove-btn:active { background: rgba(220,38,38,0.28); }
+
+.chip-cancel-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.55;
+  padding: 0 2px;
+  line-height: 1;
+}
+.chip-cancel-btn:hover { opacity: 1; }
+
 /* ── Day Preview Popover ────────────────────────── */
 .day-preview {
   position: fixed;
