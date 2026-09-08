@@ -670,6 +670,8 @@ function initSlotSortables() {
     const s = new Sortable(zone, {
       group: { name: 'fuelup', pull: false, put: true },
       sort: false,
+      filter: '.slot-item',
+      preventOnFilter: false,
       animation: 120,
       ghostClass: 'sortable-ghost',
       onAdd(evt) {

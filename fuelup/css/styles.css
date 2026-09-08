@@ -434,6 +434,8 @@ body {
   font-weight: 500;
   max-width: 100%;
   flex-shrink: 0;
+  touch-action: manipulation;
+  cursor: pointer;
 }
 .slot-item .si-emoji { font-size: 14px; }
 .slot-item .si-name  { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
