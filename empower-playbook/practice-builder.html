@@ -359,6 +359,18 @@
     }
     .btn-print:hover { background: var(--blue-light); }
 
+    /* ── Print / view option pills ── */
+    .bh-opts { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; padding: .45rem 0 .3rem; }
+    .bh-opts-label { font-size: .68rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .07em; }
+    .print-opt-pill {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .7rem; border-radius: 99px; border: 2px solid var(--gray-100);
+      background: var(--white); font-size: .75rem; font-weight: 600;
+      color: var(--gray-400); cursor: pointer; user-select: none; transition: all .15s;
+    }
+    .print-opt-pill.active { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+    .print-opt-pill input[type="checkbox"] { display: none; }
+
     /* ── Equipment Checklist ── */
     .equip-checklist {
       background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
@@ -557,6 +569,15 @@
           <div class="time-chips" id="timeChips"></div>
           <button class="btn-print" onclick="printPlan()">🖨️ Print Plan</button>
           <button class="btn-new-plan" id="newPlanBtn">↩ New Plan</button>
+        </div>
+        <div class="bh-opts">
+          <span class="bh-opts-label">Show:</span>
+          <label class="print-opt-pill active" id="pillTips">
+            <input type="checkbox" id="optTips" checked>💡 Tips
+          </label>
+          <label class="print-opt-pill active" id="pillEquip">
+            <input type="checkbox" id="optEquip" checked>🎒 Equipment
+          </label>
         </div>
         <div class="time-progress-bar">
           <div class="time-progress-fill" id="progressFill" style="width:0%;"></div>
@@ -1273,86 +1294,200 @@
         defaultTime: 30 },
     ],
     softball: [
+      // — Fielding —
       { id: 'd-soft-fld-catch', category: 'Fielding', icon: '🥎', name: 'Partner Catching',
-        description: 'Partners 10 feet apart, soft-toss back and forth. Use a foam ball if needed.',
-        purpose: 'Hand-eye coordination and catching confidence.',
-        tip: 'Keep throws low and gentle — focus on the catch, not the throw.',
+        description: 'Players partner with a teammate or volunteer and play catch. Start close together and gradually move farther apart. Focus on proper catching technique.',
+        equipment: ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
+        why: 'Playing catch is the most fundamental two-person skill in the sport. Starting close and moving apart builds confidence and arm strength at the player\'s own pace.',
+        volunteerTip: 'Start at arm\'s length if needed. Toss at belly height — easy to catch, easy to succeed. Celebrate every catch.',
+        facilitatorTip: 'Partners find a comfortable distance and own it. Not everyone needs to move back — the connection matters more than the distance.',
         defaultTime: 10 },
-      { id: 'd-soft-fld-ground', category: 'Fielding', icon: '⬇️', name: 'Ground Ball Fielding',
-        description: 'Coach rolls ground balls to each player who fields and throws back. Move through the line quickly.',
-        purpose: 'Fielding stance and throwing fundamentals.',
-        tip: 'Slow rollers are fine — focus on fielding position and effort.',
+      { id: 'd-soft-fld-ground', category: 'Fielding', icon: '⬇️', name: 'Ground Ball',
+        description: 'Players form an infield line. A coach rolls ground balls to each player, who fields and throws to a volunteer at first base.',
+        equipment: ['🥎 Softballs (foam)', '🔶 Cones', '🧤 Mitts (optional)'],
+        why: 'Fielding a ground ball and making a throw to a base is the core defensive play in softball. Repetition builds the reaction time and footwork to do it instinctively.',
+        volunteerTip: 'Station yourself at first base and call to your player when they field — "throw it here!" The target makes the throw feel like a real play.',
+        facilitatorTip: 'Roll slowly and close first. Move back and increase pace as players improve. The goal is fielding position — the throw is secondary.',
         defaultTime: 10 },
+      { id: 'd-soft-fld-popfly', category: 'Fielding', icon: '🌤️', name: 'Pop Flies',
+        description: 'Players form a line in the outfield. A coach tosses a fly ball to each player one at a time. After catching (or attempting), the player throws back.',
+        equipment: ['🥎 Softballs (foam)', '🔶 Cones', '🧤 Mitts (optional)'],
+        why: 'Tracking and catching a ball coming down from above is a completely different skill from fielding grounders — and a huge confidence-builder when it connects.',
+        volunteerTip: 'Position yourself close to your player as they track the ball. Encourage them to call "I got it!" — communication is part of the skill.',
+        facilitatorTip: 'Start with very short, low tosses. Height increases once players are comfortable. A successful catch from any height gets the same celebration.',
+        defaultTime: 10 },
+      { id: 'd-soft-fld-partner-ground', category: 'Fielding', icon: '🔄', name: 'Partner Ground Balls',
+        description: 'Players pair up with a teammate or volunteer. Partners stand across from each other and roll ground balls back and forth to practice fielding technique.',
+        equipment: ['🥎 Softballs (foam)'],
+        why: 'Rolling ground balls to each other gives both partners active repetitions and builds the anticipation and body positioning that make fielding feel natural.',
+        volunteerTip: 'Start with slow, straight rolls right at your partner\'s feet. Speed and angle can increase as they get comfortable.',
+        facilitatorTip: 'Encourage players to get low — bent knees, glove to the ground. Building the habit of "getting down" is the most important early goal.',
+        defaultTime: 10 },
+      // — Hitting —
       { id: 'd-soft-hit-tee', category: 'Hitting', icon: '⚾', name: 'Tee Hitting',
-        description: 'Players step up to a batting tee and swing away. Rotate quickly so everyone gets multiple swings.',
-        purpose: 'Hitting mechanics without the pressure of a moving ball.',
-        tip: 'Celebrate every contact — a tiny nick of the ball counts!',
+        description: 'A tee is set up near the fence. One at a time, players step up and hit the ball. Coaches teach hitting fundamentals while players swing away.',
+        equipment: ['🥎 Softballs (foam)', '⚾ Batting tee', '🏏 Bat'],
+        why: 'A stationary ball removes timing pressure entirely so players can focus on stance, grip, and swing path — the mechanical foundation of hitting.',
+        volunteerTip: 'Stand behind and to the side of the hitter — never in front. Cheer the swing, not just clean contact. Every attempt counts.',
+        facilitatorTip: 'Adjust tee height per player. A ball hit into the fence counts just as much as a line drive. Keep a clear area in front of the tee.',
         defaultTime: 12 },
+      // — Base Running —
       { id: 'd-soft-run-bases', category: 'Base Running', icon: '🏃', name: 'Base Running',
-        description: 'Players run the bases one at a time on the coach\'s signal. Coaches stationed at each base.',
-        purpose: 'Understanding the base path and running sequence.',
-        tip: 'Cheer every player around the bases — make every run feel like a home run.',
+        description: 'Players line up at home plate. Coaches or volunteers stand at each base to guide players. The coach at home sends players running the bases.',
+        equipment: ['⬛ Base markers (4)'],
+        why: 'Knowing which base to run to and in what order seems simple — but for players encountering softball for the first time, it\'s the rule that unlocks the whole game.',
+        volunteerTip: 'Run alongside your player the first time. Point to each base as you approach so they know where to go next.',
+        facilitatorTip: 'Station coaches at every base for continuous guidance. Make every home plate arrival feel like a championship moment.',
         defaultTime: 10 },
     ],
     football: [
-      { id: 'd-foot-qb-throw', category: 'Passing', icon: '🏈', name: 'QB Throwing',
-        description: 'Players take turns as QB, throwing to a volunteer receiver at a set distance.',
-        purpose: 'Throwing mechanics and release point.',
-        tip: 'Use a foam football — it\'s easier to grip for smaller hands.',
+      // — Throwing —
+      { id: 'd-foot-qb-throw', category: 'Throwing', icon: '🏈', name: 'QB Throwing Nets',
+        description: 'Players take turns throwing from marked spots toward a target net. Start close, then move farther back as the drill progresses. Competitive version: two nets, race to hit the most targets.',
+        equipment: ['🏈 Footballs (foam)', '🎯 Throwing nets'],
+        why: 'A target net gives players an immediate feedback loop — hit the net, win the moment. Aiming is more motivating than throwing to open space.',
+        volunteerTip: 'Stand behind the net and react to every throw — a miss that clips the edge is still a reason to cheer.',
+        facilitatorTip: 'Start players close. The goal is making contact with the net, not distance. Move back as players find their release point.',
         defaultTime: 10 },
-      { id: 'd-foot-wr-routes', category: 'Routes', icon: '🏃', name: 'WR Routes',
-        description: 'Players run a simple route (out, go, or curl) and catch a pass from a coach or volunteer.',
-        purpose: 'Route running and catching.',
-        tip: 'Keep routes short — 5-yard patterns are plenty.',
+      { id: 'd-foot-cir-pass', category: 'Throwing', icon: '⭕', name: 'Circle Passing',
+        description: 'Players sit or stand in a circle with one football. They call out a teammate\'s name and pass them the ball.',
+        equipment: ['🏈 Footballs (foam)'],
+        why: 'Calling a teammate\'s name before passing creates social connection through the sport — players learn each other\'s names and practice communication in a supportive setting.',
+        volunteerTip: 'Receive the pass with both hands and celebrate the catch before passing on. Your enthusiasm is contagious.',
+        facilitatorTip: 'Keep the circle tight so throws are manageable. Encourage different pass types (overhand, underhand, lateral) as players get comfortable.',
         defaultTime: 10 },
-      { id: 'd-foot-rl-gl', category: 'Game', icon: '🚦', name: 'Red Light Green Light (Football)',
-        description: 'Everyone runs with the ball on "green light," stops on "red light." Last one to stop each round is out.',
-        purpose: 'Ball-carrying, listening skills, and fun.',
-        tip: 'Go slow on the eliminations — keep everyone engaged and in good spirits.',
+      // — Catching —
+      { id: 'd-foot-wr-routes', category: 'Catching', icon: '🏃', name: 'WR Route Running',
+        description: 'Coaches set up cones and colored spots as route markers. Players pick a spot, run to it, and catch a pass from the coach-QB. After catching, they run into the end zone and celebrate.',
+        equipment: ['🏈 Footballs (foam)', '🔶 Cones', '🟡 Color spots'],
+        why: 'Running to a specific spot and catching a pass teaches two foundational skills at once — and scoring a "touchdown" after every rep makes each one memorable.',
+        volunteerTip: 'Call your player\'s name as you throw — it gets their attention and builds the habit of looking for the ball.',
+        facilitatorTip: 'Let players pick their own color spot to run to — ownership of the choice makes the route feel personal. Keep passes short and catchable.',
+        defaultTime: 10 },
+      // — Agility —
+      { id: 'd-foot-rb-agility', category: 'Agility', icon: '🪜', name: 'Running Back Agility',
+        description: 'Players form a line. A coach hands the ball off to each player, who then runs through agility ladders or hurdles and scores in the end zone.',
+        equipment: ['🏈 Footballs (foam)', '🪜 Agility ladders', '🚧 Hurdles'],
+        why: 'The handoff + run + touchdown sequence is pure football magic. The agility course is the obstacle between players and the end zone — and every player scores on every rep.',
+        volunteerTip: 'Hand off the ball with energy. Point toward the end zone and cheer loudly all the way through.',
+        facilitatorTip: 'Adapt the course per player — remove hurdles or simplify the ladder as needed. Every player crosses the goal line.',
+        defaultTime: 10 },
+      { id: 'd-foot-spot-agility', category: 'Agility', icon: '🟡', name: 'Color Spot Agility',
+        description: 'Coaches spread color spots around the field. Each player holds a football. The coach calls out a color, and players quickly run to stand on that spot.',
+        equipment: ['🟡 Color spots', '🏈 Footballs (foam)'],
+        why: 'Reacting to verbal commands while holding a ball trains listening and coordination simultaneously — skills that matter in every play of a real football game.',
+        volunteerTip: 'Move with your player to the correct spot — even if they hesitate, your movement gives them a cue to follow.',
+        facilitatorTip: 'Call colors at a pace that lets everyone succeed at first. Increase speed and unpredictability as players get better at reacting.',
+        defaultTime: 10 },
+      // — Games —
+      { id: 'd-foot-rl-gl', category: 'Game', icon: '🚦', name: 'Red Light, Green Light',
+        description: 'Each player starts with a football at one goal line. Players run on "green light" and freeze when the coach yells "red light." First to reach the far goal line wins.',
+        equipment: ['🏈 Footballs (foam)', '🔴 Red sign', '🟢 Green sign'],
+        why: 'Carrying a football while reacting to commands develops ball security and body awareness at the same time. Listening skills matter as much as athletic ones.',
+        volunteerTip: 'Run alongside your player and stop when they stop — model the behavior and make it fun.',
+        facilitatorTip: 'Go slow on eliminations — keep everyone engaged. The drill is better when everyone runs the whole time.',
+        defaultTime: 10 },
+      { id: 'd-foot-gm-sharks', category: 'Game', icon: '🦈', name: 'Sharks and Minnows',
+        description: 'Players line up on the goal line with their own football. The coach starts as the "shark." Players (minnows) run across without getting tagged. Version 2: tagged players become sharks.',
+        equipment: ['🏈 Footballs (foam)'],
+        why: 'Running while protecting the ball and avoiding being tagged builds ball security, spatial awareness, and full-field vision — all in a game players love.',
+        volunteerTip: 'Cheer every player who makes it across regardless of whether they got tagged. The crossing is the victory.',
+        facilitatorTip: 'Version 1 (everyone crosses) works best early on. Move to Version 2 as confidence builds. Start as the shark yourself — players love chasing a coach.',
         defaultTime: 10 },
       { id: 'd-foot-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
-        description: '3–5 ES players + 1–2 peer volunteers per team. Flag football format. Coaches on field.',
-        purpose: 'Full game experience.',
-        tip: 'Keep scores even-ish with coaching adjustments — the joy is the play, not the scoreboard.',
+        description: '3–5 ES players + 1–2 peer volunteers per team. Coaches play QB for both teams. Flag football format — coaches and volunteers on field throughout. Director pauses for coaching moments.',
+        equipment: ['🏈 Footballs (foam)', '📌 Flag belts', '🟡 Pylons', '📌 Pinnies'],
+        why: 'Flag football gives every player a real game experience without contact. Coaches as QB means every player gets a catchable throw — success rate in the scrimmage matters.',
+        volunteerTip: 'Stay active in the pattern — give your player something to react to and celebrate every play they make.',
+        facilitatorTip: 'Keep scores even with coaching adjustments. Pause for teaching moments whenever energy is right. The joy is the play, not the scoreboard.',
         defaultTime: 30 },
     ],
     pickleball: [
-      { id: 'd-pick-balloon', category: 'Fundamentals', icon: '🎈', name: 'Balloon Tap',
-        description: 'Tap a balloon up with the paddle. Count how many consecutive taps before it hits the ground.',
-        purpose: 'Paddle control and hand-eye coordination in a no-fail environment.',
-        tip: 'Balloons move slowly — perfect for all mobility levels. Make it a personal record challenge!',
+      // — Fundamentals —
+      { id: 'd-pick-balloon', category: 'Fundamentals', icon: '🎈', name: 'Balloon Drills',
+        description: 'Each player has a paddle and balloon. Coach instructs different activities: hitting repeatedly in the air, keeping it off the ground, partner passing, etc.',
+        equipment: ['🏓 Pickleball paddles', '🎈 Balloons (1 per player)'],
+        why: 'Balloons move slowly and predictably — they create a no-fail environment where players build paddle contact confidence without any pressure to perform.',
+        volunteerTip: 'Play alongside your player — hit your own balloon and count out loud. Competing for "most in a row" adds excitement without stakes.',
+        facilitatorTip: 'Try partner passing once individuals are comfortable with solo tapping. A balloon that barely moves counts — contact is the point.',
         defaultTime: 10 },
-      { id: 'd-pick-serve-bucket', category: 'Serving', icon: '🪣', name: 'Serve into a Bucket',
-        description: 'Players serve from behind the kitchen line into a bucket or hula hoop target across the net.',
-        purpose: 'Serving mechanics with a fun target.',
-        tip: 'Big bucket, close target to start. Move the target as skills improve.',
+      { id: 'd-pick-paddle-work', category: 'Fundamentals', icon: '🏓', name: 'Paddle Work',
+        description: 'Each player finds open space with a paddle and ball. Activities: bounce the ball on the paddle, balance the ball, walk around while pushing it on the floor ("walking the dog").',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs'],
+        why: 'Dexterity challenges with the paddle build hand-eye coordination and paddle confidence in a playful self-challenge format — players set their own goals.',
+        volunteerTip: 'Try the challenges alongside your player. Competing for most bounces in a row turns it into a shared game rather than a drill.',
+        facilitatorTip: 'Introduce one challenge at a time. Let players progress at their own pace — some will master one and try to teach it to others, which is a win.',
         defaultTime: 10 },
-      { id: 'd-pick-volley', category: 'Volley', icon: '🏓', name: 'Dink Volley',
-        description: 'Partners volley back and forth over the net at the kitchen line. Soft hands — keep it going!',
-        purpose: 'Net play and soft-shot precision.',
-        tip: 'Count consecutive volleys as a team goal. Celebrate new records!',
+      { id: 'd-pick-wall-ball', category: 'Fundamentals', icon: '🧱', name: 'Wall Ball',
+        description: 'Players find a spot along the wall with paddle and ball. A target can be placed on the wall for visual reference. Players hit the ball against the wall and eventually rally with themselves.',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs'],
+        why: 'Hitting against a wall means every shot comes right back — unlimited reps, no partner needed, and instant feedback on placement and contact.',
+        volunteerTip: 'Stand alongside your player and cheer every wall contact. Help them find a slow, controlled rhythm — that beats a fast miss every time.',
+        facilitatorTip: 'Place tape or a sticker target on the wall at a good strike height. Celebrate each new personal best: one hit, then two consecutive, then three.',
         defaultTime: 10 },
+      { id: 'd-pick-throw-target', category: 'Fundamentals', icon: '🎯', name: 'Throwing to Targets',
+        description: 'Players stand at the kitchen line and throw pickleballs underhand at a target on the opposite kitchen line. Underhand throw to reinforce correct technique.',
+        equipment: ['🟡 Pickleballs', '🟡 Color dots or targets'],
+        why: 'Throwing underhand at a target trains the same arc and release mechanics used in serving — without the paddle variable, so players focus entirely on aim and trajectory.',
+        volunteerTip: 'Help your player find the right underhand release — elbow below shoulder, gentle arc. Celebrate accuracy at any range.',
+        facilitatorTip: 'Place targets at kitchen-line distance. Underhand throws only — remind players this reinforces the serving motion they\'ll use in the game.',
+        defaultTime: 10 },
+      // — Serving —
+      { id: 'd-pick-serve-bucket', category: 'Serving', icon: '🪣', name: 'Serving Into Buckets',
+        description: 'Players start on one side of the court with 2–3 large buckets placed across the net. Players take turns serving pickleballs and attempting to land them in the buckets.',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs', '🪣 Buckets (2–3)'],
+        why: 'A target gives players an immediate feedback loop — the ball either lands in the bucket or it doesn\'t, and both outcomes teach something. Aiming makes serving feel purposeful.',
+        volunteerTip: 'Cheer every serve that clears the net regardless of where it lands. Getting over the net is the first win.',
+        facilitatorTip: 'Start with a large bucket close to the net. Move it back and use smaller containers as accuracy improves.',
+        defaultTime: 10 },
+      // — Volley —
+      { id: 'd-pick-volley', category: 'Volley', icon: '🏓', name: 'Partner Volley',
+        description: 'Players partner with a teammate or volunteer and volley back and forth — either across the net or in open space. Focus on making contact and reacting to incoming shots.',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
+        why: 'A back-and-forth rally is the social heartbeat of pickleball. The shared goal of keeping the ball going creates teamwork without any competitive pressure.',
+        volunteerTip: 'Match your partner\'s pace — slow the rally down if needed. Count consecutive hits out loud: "that\'s five!" The number builds excitement.',
+        facilitatorTip: 'Set a group record for consecutive hits. A new high score from any pair gets a group cheer.',
+        defaultTime: 10 },
+      { id: 'd-pick-react-return', category: 'Volley', icon: '↩️', name: 'Reacting to Returns',
+        description: 'Players line up on one side of the court. A coach or volunteer on the other side serves to each player, who must react and return it over the net. 2–3 serves per player before rotating.',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
+        why: 'Reacting to a serve and hitting it back is the closest thing to real game play — and doing it successfully for the first time is a genuine breakthrough moment.',
+        volunteerTip: 'Stand near the player during their turn. Encourage them to watch the ball — "eyes on the ball!" is the best single cue.',
+        facilitatorTip: 'Serve gently and directly to the player. 2–3 serves per player before rotating keeps the line moving and maximizes reps.',
+        defaultTime: 10 },
+      // — Game —
       { id: 'd-pick-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
-        description: '1–2 ES players + 1–2 peer volunteers per team. Standard pickleball rules, simplified scoring.',
-        purpose: 'Full game experience.',
-        tip: 'Coaches narrate the play — keep the energy high and celebrate every rally.',
+        description: '1–2 ES players + 1–2 peer volunteers per team on the court. Coaches and volunteers play alongside. Director pauses play for coaching moments. Rotate players for court time.',
+        equipment: ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
+        why: 'Everything practiced individually comes together in a real game. Playing alongside peer volunteers creates the shared experience that is at the heart of the Empower Sports program.',
+        volunteerTip: 'Narrate the play for your player — "good return!", "move to the net!" Your voice keeps them oriented and engaged.',
+        facilitatorTip: 'Rotate players frequently so everyone gets court time. Celebrate every point — making contact over the net is a win at any stage.',
         defaultTime: 25 },
     ],
     kickball: [
-      { id: 'd-kick-fld-ground', category: 'Fielding', icon: '🔴', name: 'Fielding Ground Balls',
-        description: 'Coach rolls ball to each player in a line, player fields and rolls/throws back. Quick rotation.',
-        purpose: 'Fielding fundamentals.',
-        tip: 'Slow rollers are fine — focus on positioning and the effort.',
+      // — Fielding —
+      { id: 'd-kick-fld-ground', category: 'Fielding', icon: '🔴', name: 'Fielding Bucket Drill',
+        description: 'Players form an infield line. One coach manages the line; one manages a bucket at first base. Coach rolls the kickball to each player, who fields it and deposits it in the bucket.',
+        equipment: ['🔴 Kickball', '🪣 Bucket', '⬛ Bases'],
+        why: 'The bucket drill teaches the exact mechanic used in the scrimmage — field the ball, deposit it in the bucket to record the out. It\'s not a generic drill; it\'s practice for the specific rule that makes kickball work.',
+        volunteerTip: 'Stand by the bucket at first base and call to the fielder — "put it in!" The verbal cue reinforces the mechanic.',
+        facilitatorTip: 'One coach manages the line, one manages the bucket. Keep the roll gentle — the goal is fielding position, not catching speed.',
         defaultTime: 10 },
+      // — Base Running —
       { id: 'd-kick-run-bases', category: 'Base Running', icon: '🏃', name: 'Base Running',
-        description: 'Players run bases on the coach\'s signal, one at a time.',
-        purpose: 'Base path and sequence familiarity.',
-        tip: 'Cheer every player home!',
+        description: 'Players line up at home plate. Coaches or volunteers stand at each base to guide players. The coach at home sends players running the bases one at a time.',
+        equipment: ['⬛ Bases', '🔴 Kickball (optional)'],
+        why: 'Running the bases sounds simple but it\'s genuinely disorienting the first time. Knowing where to go and when to run unlocks the whole game.',
+        volunteerTip: 'Run one step behind your player on their first lap, pointing to the next base and cheering as they touch each one.',
+        facilitatorTip: 'Station a coach or volunteer at every base. Make home plate the biggest celebration of all — every run matters.',
         defaultTime: 10 },
+      // — Game —
       { id: 'd-kick-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
-        description: 'Full-group kickball game. Coach pitches a gentle roll for each kicker.',
-        purpose: 'Full game experience.',
-        tip: 'Keep the energy high — narrate every kick and run!',
+        description: 'Players divided into two teams. Coaches and volunteers on the field throughout. All players take an at-bat before switching to the field. The bucket drill becomes the out mechanic — field it, deposit it, that\'s the out.',
+        equipment: ['🔴 Kickball', '🪣 Buckets', '⬛ Bases'],
+        why: 'The scrimmage brings the bucket drill and base running together into a real game. Every player kicks, everyone fields, and peer volunteers play alongside — that shared experience is the whole point.',
+        volunteerTip: 'Be active in the field — position yourself to help collect the ball and get it to the bucket. Encourage your player through every kick and run.',
+        facilitatorTip: 'All players kick before sides switch. No strikeouts — every player kicks until they make contact. Celebrate every run home loudly.',
         defaultTime: 30 },
     ],
   };
@@ -1422,24 +1557,34 @@
     'd-bball-gm-agility':      ['🔶 Cones', '🪜 Agility ladders', '🚧 Hurdles'],
     'd-bball-gm-scrimmage':    ['🏀 Basketballs', '🏀 Basketball hoops (2)'],
     // Softball drills
-    'd-soft-fld-catch':  ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
-    'd-soft-fld-ground': ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
-    'd-soft-hit-tee':    ['🥎 Softballs (foam)', '⚾ Batting tee', '🏏 Bat'],
-    'd-soft-run-bases':  ['⬛ Base markers (4)'],
+    'd-soft-fld-catch':          ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
+    'd-soft-fld-ground':         ['🥎 Softballs (foam)', '🔶 Cones', '🧤 Mitts (optional)'],
+    'd-soft-fld-popfly':         ['🥎 Softballs (foam)', '🔶 Cones', '🧤 Mitts (optional)'],
+    'd-soft-fld-partner-ground': ['🥎 Softballs (foam)'],
+    'd-soft-hit-tee':            ['🥎 Softballs (foam)', '⚾ Batting tee', '🏏 Bat'],
+    'd-soft-run-bases':          ['⬛ Base markers (4)'],
     // Football drills
-    'd-foot-qb-throw':     ['🏈 Footballs (foam)'],
-    'd-foot-wr-routes':    ['🏈 Footballs (foam)', '🔶 Cones'],
-    'd-foot-rl-gl':        ['🏈 Footballs (foam)'],
-    'd-foot-gm-scrimmage': ['🏈 Footballs (foam)', '📌 Flag belts'],
+    'd-foot-qb-throw':     ['🏈 Footballs (foam)', '🎯 Throwing nets'],
+    'd-foot-cir-pass':     ['🏈 Footballs (foam)'],
+    'd-foot-wr-routes':    ['🏈 Footballs (foam)', '🔶 Cones', '🟡 Color spots'],
+    'd-foot-rb-agility':   ['🏈 Footballs (foam)', '🪜 Agility ladders', '🚧 Hurdles'],
+    'd-foot-spot-agility': ['🟡 Color spots', '🏈 Footballs (foam)'],
+    'd-foot-rl-gl':        ['🏈 Footballs (foam)', '🔴 Red sign', '🟢 Green sign'],
+    'd-foot-gm-sharks':    ['🏈 Footballs (foam)'],
+    'd-foot-gm-scrimmage': ['🏈 Footballs (foam)', '📌 Flag belts', '🟡 Pylons', '📌 Pinnies'],
     // Pickleball drills
-    'd-pick-balloon':       ['🏓 Pickleball paddles', '🎈 Balloons'],
-    'd-pick-serve-bucket':  ['🏓 Pickleball paddles', '🏸 Pickleballs', '🪣 Bucket or hula hoop target'],
-    'd-pick-volley':        ['🏓 Pickleball paddles', '🏸 Pickleballs', '🥅 Net'],
-    'd-pick-gm-scrimmage':  ['🏓 Pickleball paddles', '🏸 Pickleballs', '🥅 Net'],
+    'd-pick-balloon':        ['🏓 Pickleball paddles', '🎈 Balloons (1 per player)'],
+    'd-pick-paddle-work':    ['🏓 Pickleball paddles', '🟡 Pickleballs'],
+    'd-pick-wall-ball':      ['🏓 Pickleball paddles', '🟡 Pickleballs'],
+    'd-pick-throw-target':   ['🟡 Pickleballs', '🟡 Color dots or targets'],
+    'd-pick-serve-bucket':   ['🏓 Pickleball paddles', '🟡 Pickleballs', '🪣 Buckets (2–3)'],
+    'd-pick-volley':         ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
+    'd-pick-react-return':   ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
+    'd-pick-gm-scrimmage':   ['🏓 Pickleball paddles', '🟡 Pickleballs', '🥅 Net'],
     // Kickball drills
-    'd-kick-fld-ground':     ['🔴 Kickball'],
-    'd-kick-run-bases':      ['⬛ Base markers (4)', '🔴 Kickball'],
-    'd-kick-gm-scrimmage':   ['🔴 Kickball', '⬛ Base markers (4)'],
+    'd-kick-fld-ground':   ['🔴 Kickball', '🪣 Bucket', '⬛ Bases'],
+    'd-kick-run-bases':    ['⬛ Bases', '🔴 Kickball (optional)'],
+    'd-kick-gm-scrimmage': ['🔴 Kickball', '🪣 Buckets', '⬛ Bases'],
   };
 
   function collectEquipment() {
@@ -1490,6 +1635,8 @@
   let activeCat = 'All';
   let editIdx = null;
   let dragSrcIdx = null;
+  let showTips = true;
+  let showEquipment = true;
 
   // ═══════════════════════════════════════
   //  WIZARD
@@ -1624,7 +1771,7 @@
 
     const equipSection = document.getElementById('equipSection');
     const equipItems = collectEquipment();
-    if (equipItems.length) {
+    if (showEquipment && equipItems.length) {
       equipSection.innerHTML = `
         <div class="equip-checklist">
           <div class="equip-title">🎒 Equipment Needed</div>
@@ -1648,14 +1795,14 @@
     } else if (d.description) {
       html += `<div class="block-desc">${d.description}</div>`;
     }
-    if (d.equipment && d.equipment.length) html += `<div class="equip-tip"><span class="tip-icon">🎒</span><div><strong>Equipment</strong> — ${d.equipment.join(', ')}</div></div>`;
-    if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
-    if (d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
-    if (d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
+    if (showEquipment && d.equipment && d.equipment.length) html += `<div class="equip-tip"><span class="tip-icon">🎒</span><div><strong>Equipment</strong> — ${d.equipment.join(', ')}</div></div>`;
+    if (showTips && d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
+    if (showTips && d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
+    if (showTips && d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
     // Legacy fallback
     if (!d.steps && !d.why) {
       if (d.purpose) html += `<div class="block-purpose">Purpose: ${d.purpose}</div>`;
-      if (d.tip)     html += `<div class="vol-tip"><span class="tip-icon">💡</span> ${d.tip}</div>`;
+      if (showTips && d.tip) html += `<div class="vol-tip"><span class="tip-icon">💡</span> ${d.tip}</div>`;
     }
     return html;
   }
@@ -1731,6 +1878,17 @@
 
     return div;
   }
+
+  document.getElementById('optTips').addEventListener('change', function() {
+    showTips = this.checked;
+    document.getElementById('pillTips').classList.toggle('active', showTips);
+    renderBuilder();
+  });
+  document.getElementById('optEquip').addEventListener('change', function() {
+    showEquipment = this.checked;
+    document.getElementById('pillEquip').classList.toggle('active', showEquipment);
+    renderBuilder();
+  });
 
   document.getElementById('newPlanBtn').addEventListener('click', () => {
     if (!confirm('Start a new plan? Your current plan will be cleared.')) return;
@@ -2040,12 +2198,13 @@
         } else if (d.description) {
           dHtml += `<div class="s-desc">${d.description}</div>`;
         }
-        if (d.why) dHtml += `<div class="s-why"><span>🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
-        if (d.volunteerTip) dHtml += `<div class="s-vol"><span>🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
-        if (d.facilitatorTip) dHtml += `<div class="s-fac"><span>💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
+        if (showEquipment && d.equipment && d.equipment.length) dHtml += `<div class="s-equip"><span>🎒</span><div><strong>Equipment</strong> — ${d.equipment.join(', ')}</div></div>`;
+        if (showTips && d.why) dHtml += `<div class="s-why"><span>🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
+        if (showTips && d.volunteerTip) dHtml += `<div class="s-vol"><span>🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
+        if (showTips && d.facilitatorTip) dHtml += `<div class="s-fac"><span>💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
         if (!d.steps && !d.why) {
           if (d.purpose) dHtml += `<div class="s-purp">Purpose: ${d.purpose}</div>`;
-          if (d.tip)     dHtml += `<div class="s-vol"><span>💡</span> ${d.tip}</div>`;
+          if (showTips && d.tip) dHtml += `<div class="s-vol"><span>💡</span> ${d.tip}</div>`;
         }
         return dHtml;
       }
@@ -2141,8 +2300,10 @@
   .dtag.fun{background:#fef9c3;color:#854d0e;}
   .dtag.team{background:#ede9fe;color:#5b21b6;}
 
-  /* ── Why / Volunteer / Facilitator tip strips ── */
-  .s-why,.s-vol,.s-fac{border-radius:0 5px 5px 0;padding:.45rem .7rem;margin-top:.4rem;font-size:.77rem;display:flex;align-items:flex-start;gap:.35rem;line-height:1.45;}
+  /* ── Equipment / Why / Volunteer / Facilitator tip strips ── */
+  .s-equip,.s-why,.s-vol,.s-fac{border-radius:0 5px 5px 0;padding:.45rem .7rem;margin-top:.4rem;font-size:.77rem;display:flex;align-items:flex-start;gap:.35rem;line-height:1.45;}
+  .s-equip{background:#f8fafc;border-left:3px solid #9ca3af;color:#374151;}
+  .s-equip strong{font-weight:700;}
   .s-why{background:#dbeafe;border-left:3px solid #60a5fa;color:#1e3a8a;}
   .s-why strong,.s-vol strong,.s-fac strong{font-weight:700;}
   .s-vol{background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f;}
@@ -2161,7 +2322,7 @@
   @media print{
     body{padding:.5in .75in;max-width:100%;}
     .block{box-shadow:none;border:1px solid #e0e0e0;}
-    .summary,.station,.s-why,.s-vol,.s-fac{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .summary,.station,.s-equip,.s-why,.s-vol,.s-fac{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   }
 </style>
 </head>
@@ -2187,6 +2348,7 @@
   <div class="blocks">${blocksHtml}</div>
 
   ${(function(){
+    if (!showEquipment) return '';
     const equipItems = collectEquipment();
     if (!equipItems.length) return '';
     return `<div class="equip-section">
