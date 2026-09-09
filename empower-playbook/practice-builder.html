@@ -161,6 +161,17 @@
     }
     .block-remove:hover { background: #fee2e2; color: var(--red); }
 
+    .block-drag-handle {
+      flex-shrink: 0; cursor: grab; color: var(--gray-300);
+      font-size: 1.15rem; padding: .1rem .3rem .1rem 0;
+      margin-top: .05rem; line-height: 1; user-select: none;
+      transition: color .15s;
+    }
+    .block-drag-handle:hover { color: var(--gray-500); }
+    .block-drag-handle:active { cursor: grabbing; }
+    .plan-block.dragging { opacity: .35; box-shadow: none; transform: none; }
+    .plan-block.drag-over { box-shadow: 0 -3px 0 var(--orange), 0 4px 12px rgba(0,0,0,.1); }
+
     .rotation-drills-list { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
     .rotation-drill-tag {
       background: var(--purple-light); color: var(--purple);
@@ -419,7 +430,7 @@
       .drill-tag { display: none !important; }
 
       /* ── Tip strips: tighter on mobile ── */
-      .why-tip, .vol-tip, .fac-tip { padding: .35rem .5rem; font-size: .79rem; }
+      .why-tip, .vol-tip, .fac-tip, .block-equip { padding: .35rem .5rem; font-size: .79rem; }
     }
   </style>
 </head>
@@ -1109,30 +1120,156 @@
         defaultTime: 17 },
     ],
     basketball: [
-      { id: 'd-bball-drb-station', category: 'Dribbling', icon: '🏀', name: 'Stationary Dribbling',
-        description: 'Stand in place and dribble with dominant hand, then off-hand. Focus on fingertip control and rhythm.',
-        purpose: 'Ball-handling fundamentals in a low-pressure setting.',
-        tip: 'Low bounces are fine — just keep the rhythm going.',
+      // — Dribbling —
+      { id: 'd-bball-drb-station', category: 'Dribbling', icon: '🏀', name: 'Individual Dribbling Practice',
+        description: 'Players practice stationary skills: ball slams, wrap-arounds (head/waist/knees), figure-8 dribbling, both hands, and crossovers. Each player learns at their own pace.',
+        equipment: ['🏀 Basketballs (1 per player)'],
+        why: 'Hand-eye coordination and ball confidence are the foundation of every basketball skill. Starting stationary removes the distraction of movement so players can focus on the feel of the ball.',
+        volunteerTip: 'Model each move alongside your player — they\'ll imitate what they see. Celebrate every wrap-around and crossover, no matter how wobbly.',
+        facilitatorTip: 'Players who master a move quickly can try it with their non-dominant hand. Keep energy upbeat — there\'s no wrong way to start.',
         defaultTime: 10 },
-      { id: 'd-bball-drb-cone', category: 'Dribbling', icon: '🔶', name: 'Cone Dribble Course',
-        description: 'Dribble through a line of cones in and out. Go at your own pace.',
-        purpose: 'Dribbling while navigating obstacles.',
-        tip: 'Walk the course first without the ball.',
+      { id: 'd-bball-drb-relay', category: 'Dribbling', icon: '🏁', name: 'Dribbling Relay Race',
+        description: 'Teams of 5 line up at the baseline. First player dribbles to the far cone and back, then gently passes to the next teammate.',
+        equipment: ['🏀 Basketballs', '📍 Cones or floor spots'],
+        why: 'Dribbling while moving is a critical skill. Competition adds motivation while teammates cheering from the sideline builds community.',
+        volunteerTip: 'Dribble alongside your player on the first run to show the path. On the return, let them lead.',
+        facilitatorTip: 'Shorten the course for players who need it — the goal is moving with the ball, not the distance.',
         defaultTime: 10 },
-      { id: 'd-bball-pas-chest', category: 'Passing', icon: '🤝', name: 'Chest Pass Lines',
-        description: 'Two lines facing each other. Chest-pass back and forth. Focus on catching with two hands.',
-        purpose: 'Basic passing mechanics and catching confidence.',
-        tip: 'Use a lighter foam ball if a regulation ball is too heavy.',
-        defaultTime: 10 },
-      { id: 'd-bball-sht-layup', category: 'Shooting', icon: '🥅', name: 'Layup Line',
-        description: 'Players dribble toward the basket and take a layup. Rotate through quickly so everyone gets many turns.',
-        purpose: 'Fundamental finishing at the basket.',
-        tip: 'Walk if needed — the motion matters, not the speed.',
+      { id: 'd-bball-drb-hippos', category: 'Dribbling', icon: '🦛', name: 'Dribbling Hungry Hippos',
+        description: 'Two teams on opposite baselines. Players dribble to the center, pick up one color dot, and return it to their baseline. Team with the most dots wins.',
+        equipment: ['🟡 Color dots (20+)', '🏀 Basketballs (1 per player)'],
+        why: 'Direction changes, stopping, starting, and ball control in an open environment — all while having too much fun to notice they\'re learning.',
+        volunteerTip: 'Help your player track how many dots their team has — the count is part of the excitement.',
+        facilitatorTip: 'Run multiple short rounds so every player gets several trips. Celebrate the team total, not individual hauls.',
         defaultTime: 12 },
+      { id: 'd-bball-drb-cone', category: 'Dribbling', icon: '🪜', name: 'Dribbling Obstacle Course',
+        description: 'Players dribble through an agility ladder and hurdle setup. Start with one foot per square, then increase complexity as players improve.',
+        equipment: ['🪜 Agility ladders', '🚧 Hurdles', '🔶 Cones'],
+        why: 'Agility training builds the footwork and body awareness that translates directly to game movement. It\'s accessible and adaptable for any ability level.',
+        volunteerTip: 'Walk through the course with your player first, pointing out each marker. Stay close on the first run to guide foot placement.',
+        facilitatorTip: 'Offer a simplified path for players who need it — even two ladders and one hurdle is a real accomplishment.',
+        defaultTime: 12 },
+      // — Passing —
+      { id: 'd-bball-pas-partner', category: 'Passing', icon: '🤝', name: 'Stationary Partner Passing',
+        description: 'Partners stand 10–15 feet apart on marked spots and pass back and forth. Coaches encourage verbal and nonverbal communication.',
+        equipment: ['🟡 Floor spots', '🏀 Basketballs'],
+        why: 'Learning a teammate\'s name while catching a pass from them creates social connection through shared activity — one of the core goals of the program.',
+        volunteerTip: 'Keep your pass gentle and at chest height. Call your partner\'s name before every pass.',
+        facilitatorTip: 'Watch for players holding the ball too long — encourage a rhythm: catch, pause, pass. Switch up partners mid-drill.',
+        defaultTime: 10 },
+      { id: 'd-bball-pas-move', category: 'Passing', icon: '🏃', name: 'Partner Passing with Movement',
+        description: 'Partners stand 5 feet apart and pass while moving toward the basket. At the end, one partner shoots.',
+        equipment: ['🏀 Basketballs', '🔶 Cones'],
+        why: 'Passing while moving mirrors real game action. The shot at the end creates a natural payoff that makes the movement feel purposeful.',
+        volunteerTip: 'Match your player\'s pace — walk if they walk. Keep the pass soft and at chest height.',
+        facilitatorTip: 'If coordination is hard, have players stop briefly before passing rather than passing on the run.',
+        defaultTime: 10 },
+      { id: 'd-bball-pas-pcs', category: 'Passing', icon: '✂️', name: 'Pass, Cut, and Shoot',
+        description: 'One line at the top of the key, another on the wing. Player 1 passes to Player 2, then cuts to the basket. Player 2 passes back for a shot. Players rotate positions.',
+        equipment: ['🏀 Basketballs', '📍 Floor spots'],
+        why: '"Pass and stand" is the most common habit to break in youth basketball. This drill makes "pass, then move" feel automatic.',
+        volunteerTip: 'After your player passes, signal them to cut toward the basket — a point or wave is all it takes. Be loud when they get the return pass.',
+        facilitatorTip: 'The coach can play a light defender role — walking toward the passer to show why the cut matters. Keep it instructive, not intimidating.',
+        defaultTime: 12 },
+      { id: 'd-bball-pas-target', category: 'Passing', icon: '🎯', name: 'Passing into Target Nets',
+        description: 'Players line up in front of a target net and get 3 chances to pass the ball into it. Can be competitive or skill-based.',
+        equipment: ['🏀 Basketballs', '📍 Floor spots', '🎯 Target nets'],
+        why: 'Accuracy under a little pressure — aiming for a target — develops the control and focus that distinguish a skilled pass from just throwing the ball.',
+        volunteerTip: 'Help your player find a comfortable stance before each attempt. Celebrate all three tries regardless of result.',
+        facilitatorTip: 'Start targets close and move them back as players succeed. Don\'t rush — players who take their time often hit more.',
+        defaultTime: 10 },
+      { id: 'd-bball-pas-circle', category: 'Passing', icon: '⭕', name: 'Circle Passing',
+        description: 'Players stand in a circle with one basketball and pass to teammates. Practice chest passes, bounce passes, and overhead passes.',
+        equipment: ['🏀 Basketballs', '🔶 Cones'],
+        why: 'Passing in a group means reading where teammates are and communicating — skills that build both basketball IQ and social confidence.',
+        volunteerTip: 'Prompt players to say the receiver\'s name before passing. Keep the habit going every round.',
+        facilitatorTip: 'Try a different pass type each round. Increase pace as the group gets comfortable.',
+        defaultTime: 10 },
+      { id: 'd-bball-pas-chest', category: 'Passing', icon: '👐', name: 'Chest Pass Lines',
+        description: 'Two lines facing each other. Chest-pass back and forth. Focus on catching with two hands.',
+        equipment: ['🏀 Basketballs (or foam balls)'],
+        why: 'The chest pass is the most reliable pass in basketball — getting the mechanics right early builds the foundation for every other passing skill.',
+        volunteerTip: 'Hold your hands out as a target for your partner — it gives them something to aim at.',
+        facilitatorTip: 'Use a foam ball if the regulation ball is too heavy. Focus on the stepping motion, not power.',
+        defaultTime: 10 },
+      // — Shooting —
+      { id: 'd-bball-sht-aroundworld', category: 'Shooting', icon: '🌍', name: 'Around the World',
+        description: 'Players move from spot to spot around the key or three-point line, shooting from each marked location.',
+        equipment: ['🟡 Color dots or cones', '🏀 Basketballs'],
+        why: 'Shooting from different spots builds spatial awareness and confidence — players learn their range and stop avoiding shots outside their comfort zone.',
+        volunteerTip: 'Help your player set their feet for each shot — a stable base makes every attempt better. Cheer the release, not just the make.',
+        facilitatorTip: 'Let players choose their own spots. A close-range make is as worth celebrating as a long-range one — the movement between spots is the real skill.',
+        defaultTime: 12 },
+      { id: 'd-bball-sht-54321', category: 'Shooting', icon: '🔢', name: '5-4-3-2-1 Shooting',
+        description: 'Players shoot from numbered spots — 5 (closest) through 1 (farthest) or vice versa. Can be individual or a team challenge.',
+        equipment: ['🔢 Number spots (5)', '🏀 Basketballs'],
+        why: 'A countdown format creates fun pressure and adds a game-within-the-game that keeps focus high while building shooting repetition.',
+        volunteerTip: 'Count down out loud with the group. Your energy sets the room\'s energy.',
+        facilitatorTip: 'Run the drill in both directions (5-to-1 and 1-to-5) so players shoot from every spot. More reps builds more confidence.',
+        defaultTime: 12 },
+      { id: 'd-bball-sht-layup', category: 'Shooting', icon: '🥅', name: 'Layup / Shooting Lines',
+        description: 'Two lines on each wing: one shooting/layup line and one rebounding line. After each turn, players switch lines.',
+        equipment: ['🏀 Basketballs', '🔶 Cones'],
+        why: 'Layups are the highest-percentage shot in basketball. Repetition builds the footwork and finishing muscle memory that create confidence near the basket.',
+        volunteerTip: 'Stay in the rebounding line and set balls up for the next shooter — quick resets keep energy high.',
+        facilitatorTip: 'Accept walk-up layups — the footwork matters more than the speed. Give individual coaching moments at the basket.',
+        defaultTime: 12 },
+      { id: 'd-bball-sht-dps', category: 'Shooting', icon: '🔗', name: 'Dribble, Pass, and Shoot',
+        description: 'Baseline line dribbles through cones. Wing line cuts to the basket. The dribbler passes to the cutter, who shoots.',
+        equipment: ['🏀 Basketballs', '🔶 Cones'],
+        why: 'Stringing skills together — dribble, pass, receive, shoot — simulates real game sequences and teaches players how skills connect.',
+        volunteerTip: 'As the wing cutter, read your partner\'s dribble and time your cut. Over-communicate — call for the ball by name.',
+        facilitatorTip: 'If timing is hard to coordinate, pause and walk both lines through the sequence slowly before running at pace.',
+        defaultTime: 12 },
+      // — Games —
+      { id: 'd-bball-gm-hustle', category: 'Game', icon: '💥', name: 'Hustle Drill',
+        description: 'Two players lie on their backs on opposite sides of the key. Coach rolls a ball toward half court. On "go," both race to it. Player who gets the ball is on offense — the other plays defense.',
+        equipment: ['🏀 Basketball'],
+        why: 'Every basketball game has loose-ball moments. This drill builds the competitive instinct to go for it — and the sportsmanship to accept the result.',
+        volunteerTip: 'Cheer loudly for whichever player gets the ball — the hustle is what we celebrate, not who wins.',
+        facilitatorTip: 'Control the pace with your voice — "ready... ready... GO!" Vary the timing to keep both players alert.',
+        defaultTime: 10 },
+      { id: 'd-bball-gm-freeze', category: 'Game', icon: '🧊', name: 'Freeze Tag',
+        description: 'Players dribble around the gym. When tagged by a coach, they freeze. A partner must complete a pass to unfreeze them.',
+        equipment: ['🏀 Basketballs (1 per player)'],
+        why: 'The unfreeze mechanic creates a reason to pass that\'s intrinsic and immediate — players help teammates because they want to, not because a coach said to.',
+        volunteerTip: 'Stay close to your player and be ready to receive a quick pass. Call to them if they get tagged: "I\'m open!"',
+        facilitatorTip: 'Start with only one coach as the shark. Add more sharks as players improve. Enforce the rule: only a completed pass unfreezes.',
+        defaultTime: 10 },
+      { id: 'd-bball-gm-rlgl', category: 'Game', icon: '🚦', name: 'Red Light, Green Light',
+        description: 'Players dribble from one baseline to the other. They freeze on "red light" and dribble on "green light." First to the far baseline wins.',
+        equipment: ['🏀 Basketballs', '🔴 Red sign', '🟢 Green sign'],
+        why: 'Following verbal commands while maintaining ball control requires listening and motor multitasking — exactly the kind of game-awareness basketball demands.',
+        volunteerTip: 'Dribble alongside your player and stop when they stop — you\'re both playing. Make it silly.',
+        facilitatorTip: 'Add yellow light (slow dribble) once players handle two commands easily. Vary the cadence unpredictably to keep everyone alert.',
+        defaultTime: 10 },
+      { id: 'd-bball-gm-sharks', category: 'Game', icon: '🦈', name: 'Sharks and Minnows',
+        description: 'Players dribble from baseline to baseline while avoiding the "shark." In Version 2, tagged players become sharks too.',
+        equipment: ['🏀 Basketballs (1 per player)'],
+        why: 'Dribbling while aware of defenders is the core challenge of live basketball. This game makes ball protection feel like an adventure rather than a skill.',
+        volunteerTip: 'Help your player keep their head up while dribbling — they need to see the shark coming. Celebrate every successful crossing loudly.',
+        facilitatorTip: 'Version 1 (everyone gets across regardless) is great for early sessions. Move to Version 2 (tagged become sharks) as confidence builds.',
+        defaultTime: 10 },
+      { id: 'd-bball-gm-relay', category: 'Game', icon: '🏁', name: 'Relay Race',
+        description: 'Two teams on the baseline. Players dribble through cones, shoot a layup, then dribble back and pass to the next teammate. First team to finish wins.',
+        equipment: ['🏀 Basketballs', '🔶 Cones'],
+        why: 'Combining dribbling, layups, and passing in a team competition builds all three skills at once and creates shared stakes — the team wins or tries again together.',
+        volunteerTip: 'Cheer every layup attempt — misses grab the ball and dribble back too. The effort is the win.',
+        facilitatorTip: 'Keep teams balanced in ability. If one team is dominating, adjust lanes or give a head start — the fun comes from a close finish.',
+        defaultTime: 12 },
+      { id: 'd-bball-gm-agility', category: 'Game', icon: '🏃', name: 'Agility Practice',
+        description: 'Players form a line and take turns running through agility ladders, hurdles, and cone paths. Coaches set the layout and adjust complexity per player.',
+        equipment: ['🔶 Cones', '🪜 Agility ladders', '🚧 Hurdles'],
+        why: 'Footwork and agility are the hidden foundation of every sport skill. Better balance and foot speed make dribbling, passing, and cutting all easier.',
+        volunteerTip: 'Walk through each station with your player before they go at pace. Clap a rhythm to help with timing.',
+        facilitatorTip: 'Adapt the course for each player — remove hurdles or widen ladder spacing as needed. Progression, not perfection, is the goal.',
+        defaultTime: 10 },
       { id: 'd-bball-gm-scrimmage', category: 'Game', icon: '🏟️', name: 'Scrimmage',
-        description: '3–5 ES players + 1–2 peer volunteers per team. Coaches on court. Modified rules — focus on fun.',
-        purpose: 'Full game experience.',
-        tip: 'Celebrate every made basket from either team!',
+        description: '3–5 ES players + 1–2 peer volunteers per team. Coaches on court. Director pauses play for coaching moments.',
+        equipment: ['🏀 Basketballs', '🏀 Basketball hoops (2)'],
+        why: 'Everything else is preparation. The scrimmage is where players apply skills in a live setting, experience the game socially, and feel what basketball actually feels like.',
+        volunteerTip: 'Stay active on the court — pass, call for the ball, set up plays for your player. You\'re their partner in the game, not a bystander.',
+        facilitatorTip: 'Pause the game every few minutes for a coaching moment. Celebrate every basket from both teams equally.',
         defaultTime: 30 },
     ],
     softball: [
@@ -1263,11 +1400,27 @@
     'd-soc-gm-ready-aim-fire':    ['⚽ Soccer balls (4+)', '🥅 Goal'],
     'd-soc-gm-100-goals':         ['⚽ Soccer balls (many)', '🥅 Goals', '📋 Whiteboard or marker'],
     // Basketball drills
-    'd-bball-drb-station':  ['🏀 Basketballs (1 per player)'],
-    'd-bball-drb-cone':     ['🏀 Basketballs', '🔶 Cones'],
-    'd-bball-pas-chest':    ['🏀 Basketballs (or foam balls)'],
-    'd-bball-sht-layup':    ['🏀 Basketballs', '🏀 Basketball hoop'],
-    'd-bball-gm-scrimmage': ['🏀 Basketballs', '🏀 Basketball hoops (2)'],
+    'd-bball-drb-station':     ['🏀 Basketballs (1 per player)'],
+    'd-bball-drb-relay':       ['🏀 Basketballs', '📍 Cones or floor spots'],
+    'd-bball-drb-hippos':      ['🟡 Color dots (20+)', '🏀 Basketballs (1 per player)'],
+    'd-bball-drb-cone':        ['🪜 Agility ladders', '🚧 Hurdles', '🔶 Cones'],
+    'd-bball-pas-partner':     ['🟡 Floor spots', '🏀 Basketballs'],
+    'd-bball-pas-move':        ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-pas-pcs':         ['🏀 Basketballs', '📍 Floor spots'],
+    'd-bball-pas-target':      ['🏀 Basketballs', '📍 Floor spots', '🎯 Target nets'],
+    'd-bball-pas-circle':      ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-pas-chest':       ['🏀 Basketballs (or foam balls)'],
+    'd-bball-sht-aroundworld': ['🟡 Color dots or cones', '🏀 Basketballs'],
+    'd-bball-sht-54321':       ['🔢 Number spots (5)', '🏀 Basketballs'],
+    'd-bball-sht-layup':       ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-sht-dps':         ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-gm-hustle':       ['🏀 Basketball'],
+    'd-bball-gm-freeze':       ['🏀 Basketballs (1 per player)'],
+    'd-bball-gm-rlgl':         ['🏀 Basketballs', '🔴 Red sign', '🟢 Green sign'],
+    'd-bball-gm-sharks':       ['🏀 Basketballs (1 per player)'],
+    'd-bball-gm-relay':        ['🏀 Basketballs', '🔶 Cones'],
+    'd-bball-gm-agility':      ['🔶 Cones', '🪜 Agility ladders', '🚧 Hurdles'],
+    'd-bball-gm-scrimmage':    ['🏀 Basketballs', '🏀 Basketball hoops (2)'],
     // Softball drills
     'd-soft-fld-catch':  ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
     'd-soft-fld-ground': ['🥎 Softballs (foam)', '🧤 Mitts (optional)'],
@@ -1336,6 +1489,7 @@
   let isRotational = false;
   let activeCat = 'All';
   let editIdx = null;
+  let dragSrcIdx = null;
 
   // ═══════════════════════════════════════
   //  WIZARD
@@ -1494,6 +1648,7 @@
     } else if (d.description) {
       html += `<div class="block-desc">${d.description}</div>`;
     }
+    if (d.equipment && d.equipment.length) html += `<div class="equip-tip"><span class="tip-icon">🎒</span><div><strong>Equipment</strong> — ${d.equipment.join(', ')}</div></div>`;
     if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${d.why}</div></div>`;
     if (d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`;
     if (d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`;
@@ -1508,6 +1663,7 @@
   function makeBlockEl(block, idx) {
     const div = document.createElement('div');
     div.className = 'plan-block type-' + block.type;
+    div.setAttribute('draggable', 'true');
 
     const iconMap = { warmup: block.icon || '🌟', drill: block.icon || '🏃', rotation: '🔄', break: '💧', closing: '🏁' };
     const icon = iconMap[block.type] || '📌';
@@ -1525,6 +1681,7 @@
     }
 
     div.innerHTML = `
+      <span class="block-drag-handle" title="Drag to reorder">⠿</span>
       <span class="block-icon">${icon}</span>
       <div class="block-body">
         <div class="block-name">${block.name}</div>
@@ -1535,12 +1692,43 @@
       <span class="block-dur-badge">${block.durationMinutes} min</span>
       <button class="block-remove" title="Remove">✕</button>
     `;
+
+    div.querySelector('.block-drag-handle').addEventListener('click', e => e.stopPropagation());
+
     div.querySelector('.block-remove').addEventListener('click', e => {
       e.stopPropagation();
       plan.blocks.splice(idx, 1);
       savePlan(); renderBuilder();
     });
     div.addEventListener('click', () => openModal(idx));
+
+    div.addEventListener('dragstart', e => {
+      dragSrcIdx = idx;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => div.classList.add('dragging'), 0);
+    });
+    div.addEventListener('dragend', () => {
+      div.classList.remove('dragging');
+      document.querySelectorAll('.plan-block').forEach(b => b.classList.remove('drag-over'));
+      dragSrcIdx = null;
+    });
+    div.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (dragSrcIdx !== null && dragSrcIdx !== idx) div.classList.add('drag-over');
+    });
+    div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+    div.addEventListener('drop', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (dragSrcIdx === null || dragSrcIdx === idx) return;
+      const [moved] = plan.blocks.splice(dragSrcIdx, 1);
+      plan.blocks.splice(idx, 0, moved);
+      dragSrcIdx = null;
+      savePlan();
+      renderBuilder();
+    });
+
     return div;
   }
 
