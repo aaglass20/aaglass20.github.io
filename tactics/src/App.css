@@ -16,6 +16,7 @@ body {
   display: flex;
   flex-direction: row;
   min-height: 100vh;
+  position: relative;  /* anchor for absolutely-positioned panels */
 }
 
 /* ── Sidebar ── */
@@ -92,15 +93,28 @@ body {
   line-height: 1;
 }
 
-/* ── Objects panel ── */
+/* ── Side panel (objects, fields, etc.) ── */
+/* Absolutely positioned so it overlays the canvas — no layout shift when opening */
 .objects-panel {
+  position: absolute;
+  left: 66px;
+  top: 0;
+  bottom: 0;
   width: 190px;
   background: #1c1c1f;
   border-right: 1px solid rgba(255,255,255,0.07);
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   overflow-y: auto;
+  z-index: 10;
+  /* calc(-100% - 66px) pushes the panel fully past the sidebar so it's off-screen when closed */
+  transform: translateX(calc(-100% - 66px));
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.objects-panel.open {
+  transform: translateX(0);
+  box-shadow: 4px 0 20px rgba(0,0,0,0.45);
 }
 
 .panel-header {
@@ -174,6 +188,32 @@ body {
   max-width: 932px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-btn {
+  padding: 7px 16px;
+  background: transparent;
+  color: rgba(96,165,250,0.8);
+  border: 1.5px solid rgba(96,165,250,0.3);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.export-btn:not(:disabled):hover {
+  background: rgba(96,165,250,0.1);
+  color: #93c5fd;
+  border-color: rgba(96,165,250,0.6);
+}
+
+.export-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
 .clear-btn {
   padding: 7px 16px;
   background: transparent;
@@ -190,6 +230,87 @@ body {
   background: rgba(248,113,113,0.1);
   color: #f87171;
   border-color: rgba(248,113,113,0.6);
+}
+
+/* ── Export save dialog ── */
+.export-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.export-dialog {
+  background: #1e1e24;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 13px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+  padding: 24px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.export-dialog-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0fdf4;
+}
+
+.export-name-input {
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 7px;
+  color: #f9fafb;
+  font-size: 14px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.export-name-input:focus {
+  border-color: rgba(96,165,250,0.6);
+}
+
+.export-dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.export-save-btn {
+  padding: 8px 20px;
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.export-save-btn:hover { background: #2563eb; }
+
+.export-cancel-btn {
+  padding: 8px 16px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: 1.5px solid rgba(255,255,255,0.13);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.export-cancel-btn:hover {
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.3);
 }
 
 h1 {
@@ -421,6 +542,84 @@ canvas {
 .ctx-btn.danger:hover {
   background: rgba(248,113,113,0.1);
   color: #f87171;
+}
+
+/* ── Field cards ── */
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.field-card {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 9px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  gap: 6px;
+  width: 100%;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.field-card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.field-card.active {
+  border-color: #4ade80;
+  background: rgba(74,222,128,0.07);
+}
+
+.field-preview {
+  width: 100%;
+  height: 58px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #2d8b2d;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Full field mini preview: green with white border + center line */
+.field-preview[data-field="full"] {
+  border: 2px solid rgba(255,255,255,0.5);
+}
+.field-preview[data-field="full"]::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255,255,255,0.5);
+}
+
+/* Half field: image fills the preview */
+.field-preview[data-field="half"] img,
+.field-preview[data-field="half-flip"] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.field-preview[data-field="half-flip"] img {
+  transform: scaleY(-1);
+}
+
+.field-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+}
+
+.field-card.active .field-card-label {
+  color: #4ade80;
 }
 
 /* ── Jersey color swatches ── */

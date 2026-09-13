@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Stage, Layer, Rect, Circle, Line, Path } from 'react-konva'
+import { Stage, Layer, Rect, Circle, Line, Path, Image as KonvaImage } from 'react-konva'
 import './App.css'
 
 // Field at 8px/m — 105m × 68m
@@ -31,6 +31,13 @@ const CATALOG = [
   { type: 'cone',   label: 'Cone',        src: 'cone.png'       },
   { type: 'hoop',   label: 'Hoop',        src: 'hoop.png'       },
   { type: 'pole',   label: 'Pole',        src: 'pole.png'       },
+]
+
+const FIELD_CATALOG = [
+  { id: 'full',      label: 'Full Field',       src: null           },
+  { id: 'half',      label: 'Half Field',        src: 'halfield.png' },
+  { id: 'half-flip', label: 'Half Field (flip)', src: 'halfield.png' },
+  { id: 'blank',     label: 'Blank',             src: null           },
 ]
 
 // ── Equipment image processing ────────────────────────────────────────────────
@@ -293,18 +300,40 @@ export default function App() {
   // UI state
   const [activePanel, setActivePanel] = useState(null)
   const [contextMenu, setContextMenu] = useState(null)   // { x, y, objId }
-  const [images, setImages] = useState({})   // { [type]: HTMLImageElement }
+  const [images, setImages]       = useState({})   // { [type]: HTMLImageElement, field_half: ... }
+  const [currentField, setCurrentField] = useState('full')
 
-  const nextId  = useRef(0)
-  const objRefs = useRef({})   // { [id]: Konva node } — populated via callback refs
-  const rafRef  = useRef(null)
+  const [isExporting, setIsExporting]   = useState(false)
+  const [exportBlob,  setExportBlob]    = useState(null)   // ready-to-save recording
+  const [exportName,  setExportName]    = useState('play')
 
-  // Load all catalog images once
+  const nextId           = useRef(0)
+  const objRefs          = useRef({})
+  const rafRef           = useRef(null)
+  const stageRef         = useRef(null)
+  const recorderRef      = useRef(null)
+  const exportStartedRef = useRef(false)  // flips true once isPlaying goes true during export
+
+  // Load all catalog + field images once
   useEffect(() => {
     CATALOG.forEach(({ type, src }) => {
       const img = new window.Image()
       img.src = `${import.meta.env.BASE_URL}${src}`
       img.onload = () => setImages(prev => ({ ...prev, [type]: img }))
+    })
+    // Deduplicate by src so halfield.png only loads once; both half and half-flip share the same image
+    const seenSrcs = new Map()
+    FIELD_CATALOG.filter(f => f.src).forEach(({ id, src }) => {
+      if (!seenSrcs.has(src)) {
+        const img = new window.Image()
+        img.src = `${import.meta.env.BASE_URL}${src}`
+        img.onload = () => setImages(prev => {
+          const updates = {}
+          FIELD_CATALOG.filter(f => f.src === src).forEach(f => { updates[`field_${f.id}`] = img })
+          return { ...prev, ...updates }
+        })
+        seenSrcs.set(src, true)
+      }
     })
   }, [])
 
@@ -314,6 +343,48 @@ export default function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // Stop the recorder once the animation finishes during export
+  useEffect(() => {
+    if (!isExporting) return
+    if (isPlaying) { exportStartedRef.current = true; return }
+    if (!exportStartedRef.current) return  // export hasn't started playing yet
+    if (recorderRef.current?.state === 'recording') {
+      // Small delay so the final frame is flushed to the canvas before we stop
+      setTimeout(() => {
+        recorderRef.current?.stop()
+        exportStartedRef.current = false
+        setIsExporting(false)
+      }, 200)
+    }
+  }, [isPlaying, isExporting])
+
+  const exportVideo = useCallback(() => {
+    if (frames.length < 2 || isPlaying || isExporting) return
+    const layer = stageRef.current?.getLayers()?.[0]
+    if (!layer) return
+
+    const canvas  = layer.getCanvas()._canvas
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : 'video/webm'
+    const stream   = canvas.captureStream(30)
+    const recorder = new MediaRecorder(stream, { mimeType })
+    const chunks   = []
+
+    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data) }
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' })
+      setExportBlob(blob)
+    }
+
+    recorderRef.current      = recorder
+    exportStartedRef.current = false
+    recorder.start()
+    setIsExporting(true)
+    // Defer play() one tick so isExporting state is set first
+    setTimeout(() => play(), 0)
+  }, [frames, isPlaying, isExporting, play])
 
   // ── Object mutations ─────────────────────────────────────────────────────────
 
@@ -547,43 +618,77 @@ export default function App() {
           active={activePanel === 'objects'}
           onClick={() => setActivePanel(p => p === 'objects' ? null : 'objects')}
         />
+        <SidebarBtn
+          label="Fields"
+          icon="⬚"
+          active={activePanel === 'fields'}
+          onClick={() => setActivePanel(p => p === 'fields' ? null : 'fields')}
+        />
         <SidebarBtn label="Zones" icon="⬜" disabled onClick={() => {}} />
         <SidebarBtn label="Text"  icon="T"  disabled onClick={() => {}} />
         <SidebarBtn label="Draw"  icon="✏"  disabled onClick={() => {}} />
       </nav>
 
-      {/* ── Objects panel ── */}
-      {activePanel === 'objects' && (
-        <aside className="objects-panel">
-          <div className="panel-header">Objects</div>
-          <div className="object-grid">
-            {CATALOG.map(item => (
-              <button
-                key={item.type}
-                className="object-card"
-                onClick={() => addToField(item.type)}
-                title={`Add ${item.label}`}
-              >
-                <img src={`${import.meta.env.BASE_URL}${item.src}`} alt={item.label} />
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </aside>
-      )}
+      {/* ── Fields panel ── */}
+      <aside className={`objects-panel${activePanel === 'fields' ? ' open' : ''}`}>
+        <div className="panel-header">Fields</div>
+        <div className="field-list">
+          {FIELD_CATALOG.map(f => (
+            <button
+              key={f.id}
+              className={`field-card${currentField === f.id ? ' active' : ''}`}
+              onClick={() => setCurrentField(f.id)}
+              title={f.label}
+            >
+              <div className="field-preview" data-field={f.id}>
+                {f.src && <img src={`${import.meta.env.BASE_URL}${f.src}`} alt={f.label} />}
+              </div>
+              <span className="field-card-label">{f.label}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* ── Objects panel — always in DOM, slides in/out via class ── */}
+      <aside className={`objects-panel${activePanel === 'objects' ? ' open' : ''}`}>
+        <div className="panel-header">Objects</div>
+        <div className="object-grid">
+          {CATALOG.map(item => (
+            <button
+              key={item.type}
+              className="object-card"
+              onClick={() => addToField(item.type)}
+              title={`Add ${item.label}`}
+            >
+              <img src={`${import.meta.env.BASE_URL}${item.src}`} alt={item.label} />
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
 
       {/* ── Main ── */}
       <div className="main">
         <header className="header">
           <h1>Soccer Tactics Board</h1>
-          <button className="clear-btn" onClick={clearBoard} title="Clear board">
-            Clear
-          </button>
+          <div className="header-right">
+            <button
+              className="export-btn"
+              onClick={exportVideo}
+              disabled={isPlaying || isExporting || frames.length < 2 || placedObjects.length === 0}
+              title="Export animation as video"
+            >
+              {isExporting ? 'Recording…' : '⬇ Export'}
+            </button>
+            <button className="clear-btn" onClick={clearBoard} title="Clear board">
+              Clear
+            </button>
+          </div>
         </header>
 
-        <Stage width={SW} height={SH} onClick={() => setContextMenu(null)}>
+        <Stage ref={stageRef} width={SW} height={SH} onClick={() => setContextMenu(null)}>
           <Layer x={PAD} y={PAD}>
-            <SoccerField />
+            <FieldBackground field={currentField} halfImg={images['field_half']} />
 
             {/* Motion trails — dashed lines between frame positions, hidden during playback */}
             {!isPlaying && frames.length > 1 && placedObjects.flatMap(obj =>
@@ -676,6 +781,47 @@ export default function App() {
         </div>
       </div>
 
+      {/* ── Export save dialog ── */}
+      {exportBlob && (
+        <div className="export-overlay">
+          <div className="export-dialog">
+            <div className="export-dialog-title">Save Recording</div>
+            <input
+              className="export-name-input"
+              value={exportName}
+              onChange={e => setExportName(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  const a = document.createElement('a')
+                  a.href = URL.createObjectURL(exportBlob)
+                  a.download = `${exportName || 'play'}.webm`
+                  a.click()
+                  URL.revokeObjectURL(a.href)
+                  setExportBlob(null)
+                }
+              }}
+              placeholder="File name"
+              autoFocus
+            />
+            <div className="export-dialog-actions">
+              <button className="export-save-btn" onClick={() => {
+                const a = document.createElement('a')
+                a.href = URL.createObjectURL(exportBlob)
+                a.download = `${exportName || 'play'}.webm`
+                a.click()
+                URL.revokeObjectURL(a.href)
+                setExportBlob(null)
+              }}>
+                Save
+              </button>
+              <button className="export-cancel-btn" onClick={() => setExportBlob(null)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Context menu ── */}
       {contextMenu && (
         <>
@@ -739,6 +885,20 @@ export default function App() {
       )}
     </div>
   )
+}
+
+// ── Field background switcher ─────────────────────────────────────────────────
+function FieldBackground({ field, halfImg }) {
+  if (field === 'blank') {
+    return <Rect width={FW} height={FH} fill="#2d8b2d" cornerRadius={2} />
+  }
+  if (field === 'half' || field === 'half-flip') {
+    if (!halfImg) return <Rect width={FW} height={FH} fill="#2d8b2d" cornerRadius={2} />
+    const flipped = field === 'half-flip'
+    // scaleY=-1 flips vertically around the origin; y=FH compensates so the image still fills 0→FH
+    return <KonvaImage image={halfImg} y={flipped ? FH : 0} width={FW} height={FH} scaleY={flipped ? -1 : 1} />
+  }
+  return <SoccerField />
 }
 
 // ── Soccer field (static) ─────────────────────────────────────────────────────
