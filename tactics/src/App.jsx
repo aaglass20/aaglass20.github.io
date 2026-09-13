@@ -359,33 +359,6 @@ export default function App() {
     }
   }, [isPlaying, isExporting])
 
-  const exportVideo = useCallback(() => {
-    if (frames.length < 2 || isPlaying || isExporting) return
-    const layer = stageRef.current?.getLayers()?.[0]
-    if (!layer) return
-
-    const canvas  = layer.getCanvas()._canvas
-    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-      ? 'video/webm;codecs=vp9'
-      : 'video/webm'
-    const stream   = canvas.captureStream(30)
-    const recorder = new MediaRecorder(stream, { mimeType })
-    const chunks   = []
-
-    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data) }
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: 'video/webm' })
-      setExportBlob(blob)
-    }
-
-    recorderRef.current      = recorder
-    exportStartedRef.current = false
-    recorder.start()
-    setIsExporting(true)
-    // Defer play() one tick so isExporting state is set first
-    setTimeout(() => play(), 0)
-  }, [frames, isPlaying, isExporting, play])
-
   // ── Object mutations ─────────────────────────────────────────────────────────
 
   const addToField = useCallback((type) => {
@@ -561,6 +534,34 @@ export default function App() {
     setIsPlaying(false)
     setCurrentFrame(0)
   }, [])
+
+  // exportVideo must come AFTER play — it references play in its deps array
+  const exportVideo = useCallback(() => {
+    if (frames.length < 2 || isPlaying || isExporting) return
+    const layer = stageRef.current?.getLayers()?.[0]
+    if (!layer) return
+
+    const canvas   = layer.getCanvas()._canvas
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : 'video/webm'
+    const stream   = canvas.captureStream(30)
+    const recorder = new MediaRecorder(stream, { mimeType })
+    const chunks   = []
+
+    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data) }
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' })
+      setExportBlob(blob)
+    }
+
+    recorderRef.current      = recorder
+    exportStartedRef.current = false
+    recorder.start()
+    setIsExporting(true)
+    // Defer play() one tick so isExporting state is set first
+    setTimeout(() => play(), 0)
+  }, [frames, isPlaying, isExporting, play])
 
   // ── Fill helpers ─────────────────────────────────────────────────────────────
 
