@@ -2,13 +2,18 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { Stage, Layer, Rect, Circle, Line, Path, Image as KonvaImage } from 'react-konva'
 import './App.css'
 
-// Field at 8px/m — 105m × 68m
-const FW = 840, FH = 544, PAD = 44
+// Full field (portrait): 68m wide × 105m tall at 8px/m
+const FW = 544, FH = 840, PAD = 44
 const SW = FW + PAD * 2, SH = FH + PAD * 2
 const CX = FW / 2, CY = FH / 2
 const PA_HW = 162, PA_D = 132, GA_HW = 73, GA_D = 44
 const PS_D = 88, CIRCLE_R = 73, ARC_X = 58.3
 const GOAL_HW = 30, GOAL_D = 20
+const GBUF = 14   // green border around all fields
+
+// Image-based fields (half, blank) use a larger landscape canvas
+const LW = 840, LH = 544
+const LSW = LW + PAD * 2, LSH = LH + PAD * 2
 
 const SIZE_RADII   = [10, 13, 17, 22, 27, 34]
 const DEFAULT_SIZE = 3
@@ -307,6 +312,26 @@ export default function App() {
   const [exportBlob,  setExportBlob]    = useState(null)   // ready-to-save recording
   const [exportName,  setExportName]    = useState('play')
 
+  const [viewW, setViewW] = useState(() => window.innerWidth)
+  const [viewH, setViewH] = useState(() => window.innerHeight)
+
+  // Active canvas dims — must be computed before any callbacks that reference them
+  const isFullField = currentField === 'full'
+  const aFW = isFullField ? FW : LW
+  const aFH = isFullField ? FH : LH
+  const aSW = isFullField ? SW : LSW
+  const aSH = isFullField ? SH : LSH
+  const aCX = aFW / 2
+  const aCY = aFH / 2
+
+  // Scale the stage to fit available viewport space; never enlarges past 1
+  const isMobile = viewW < 640
+  const fieldScale = Math.min(
+    (viewW - (isMobile ? 16 : 66 + 40)) / aSW,   // sidebar + main h-padding
+    (viewH - (isMobile ? 192 : 148))    / aSH,   // header + bottom-bar + mobile-nav + gaps
+    1
+  )
+
   const nextId           = useRef(0)
   const objRefs          = useRef({})
   const rafRef           = useRef(null)
@@ -344,6 +369,13 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // Track viewport size for stage scaling
+  useEffect(() => {
+    const onResize = () => { setViewW(window.innerWidth); setViewH(window.innerHeight) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   // Stop the recorder once the animation finishes during export
   useEffect(() => {
     if (!isExporting) return
@@ -364,8 +396,8 @@ export default function App() {
   const addToField = useCallback((type) => {
     const id = nextId.current++
     const initPos = {
-      x: CX + (Math.random() - 0.5) * 120,
-      y: CY + (Math.random() - 0.5) * 80,
+      x: aCX + (Math.random() - 0.5) * 120,
+      y: aCY + (Math.random() - 0.5) * 80,
     }
     setPlacedObjects(prev => [...prev, {
       id,
@@ -378,7 +410,7 @@ export default function App() {
       ...f,
       positions: { ...f.positions, [id]: { ...initPos } },
     })))
-  }, [])
+  }, [aCX, aCY])
 
   // Called onDragMove / onDragEnd — updates only the current frame
   const moveObject = useCallback((id, x, y) => {
@@ -415,7 +447,7 @@ export default function App() {
       return src ? [...prev, { ...src, id: newId }] : prev
     })
     setFrames(prev => prev.map(f => {
-      const orig = f.positions[id] ?? { x: CX, y: CY }
+      const orig = f.positions[id] ?? { x: aCX, y: aCY }
       return { ...f, positions: { ...f.positions, [newId]: { x: orig.x + 28, y: orig.y + 28 } } }
     }))
     setContextMenu(null)
@@ -687,9 +719,16 @@ export default function App() {
           </div>
         </header>
 
-        <Stage ref={stageRef} width={SW} height={SH} onClick={() => setContextMenu(null)}>
+        <Stage
+          ref={stageRef}
+          width={Math.round(aSW * fieldScale)}
+          height={Math.round(aSH * fieldScale)}
+          scaleX={fieldScale}
+          scaleY={fieldScale}
+          onClick={() => setContextMenu(null)}
+        >
           <Layer x={PAD} y={PAD}>
-            <FieldBackground field={currentField} halfImg={images['field_half']} />
+            <FieldBackground field={currentField} halfImg={images['field_half']} fieldW={aFW} fieldH={aFH} />
 
             {/* Motion trails — dashed lines between frame positions, hidden during playback */}
             {!isPlaying && frames.length > 1 && placedObjects.flatMap(obj =>
@@ -734,12 +773,19 @@ export default function App() {
                   onDragMove={(e) => moveObject(obj.id, e.target.x(), e.target.y())}
                   onDragEnd={(e)  => moveObject(obj.id, e.target.x(), e.target.y())}
                   dragBoundFunc={(p) => ({
-                    x: Math.max(PAD + r, Math.min(p.x, PAD + FW - r)),
-                    y: Math.max(PAD + r, Math.min(p.y, PAD + FH - r)),
+                    x: Math.max(PAD - GBUF + r, Math.min(p.x, PAD + aFW + GBUF - r)),
+                    y: isFullField
+                      ? Math.max(PAD - GOAL_D - GBUF + r, Math.min(p.y, PAD + aFH + GOAL_D + GBUF - r))
+                      : Math.max(PAD - GBUF + r, Math.min(p.y, PAD + aFH + GBUF - r)),
                   })}
                   onDblClick={(e) => {
                     e.cancelBubble = true
                     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, objId: obj.id })
+                  }}
+                  onDblTap={(e) => {
+                    e.cancelBubble = true
+                    const t = e.evt.changedTouches?.[0]
+                    if (t) setContextMenu({ x: t.clientX, y: t.clientY, objId: obj.id })
                   }}
                 />
               )
@@ -829,7 +875,10 @@ export default function App() {
           <div className="ctx-overlay" onClick={() => setContextMenu(null)} />
           <div
             className="ctx-menu"
-            style={{ left: contextMenu.x, top: contextMenu.y }}
+            style={{
+              left: Math.min(contextMenu.x, viewW - 234),
+              top:  Math.min(contextMenu.y, viewH - 320),
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Color picker — player, cone, hoop */}
@@ -889,24 +938,69 @@ export default function App() {
 }
 
 // ── Field background switcher ─────────────────────────────────────────────────
-function FieldBackground({ field, halfImg }) {
+// Half-field goal net overlay in rendered (840×544) space.
+// Goal frame is the small rectangle that extends below the outer field line at the bottom center.
+// Y measured from the top of the canvas; flip case mirrors to the top.
+const HALF_GOAL_X = 378, HALF_GOAL_W = 76
+const HALF_GOAL_Y = 521, HALF_GOAL_H = 18   // trimmed right + top to sit inside goal frame
+
+function FieldBackground({ field, halfImg, fieldW, fieldH }) {
+  const net = getNetPattern()
+  const greenBorder = <Rect x={-GBUF} y={-GBUF} width={fieldW+GBUF*2} height={fieldH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
+
   if (field === 'blank') {
-    return <Rect width={FW} height={FH} fill="#2d8b2d" cornerRadius={2} />
+    return greenBorder
   }
   if (field === 'half' || field === 'half-flip') {
-    if (!halfImg) return <Rect width={FW} height={FH} fill="#2d8b2d" cornerRadius={2} />
+    if (!halfImg) return greenBorder
     const flipped = field === 'half-flip'
-    // scaleY=-1 flips vertically around the origin; y=FH compensates so the image still fills 0→FH
-    return <KonvaImage image={halfImg} y={flipped ? FH : 0} width={FW} height={FH} scaleY={flipped ? -1 : 1} />
+    // In 'half-flip' the image is rendered scaleY=-1 from y=fieldH, so image pixel at
+    // source y maps to canvas y = fieldH - source_y. Goal at bottom → canvas top.
+    const goalY = flipped ? fieldH - (HALF_GOAL_Y + HALF_GOAL_H) : HALF_GOAL_Y
+    return (
+      <>
+        {greenBorder}
+        <KonvaImage image={halfImg} y={flipped ? fieldH : 0} width={fieldW} height={fieldH} scaleY={flipped ? -1 : 1} />
+        {/* Darken the image to match the full-field green shade (#2d8b2d) */}
+        <Rect width={fieldW} height={fieldH} fill="rgba(0,0,0,0.26)" listening={false} />
+        <Rect x={HALF_GOAL_X} y={goalY} width={HALF_GOAL_W} height={HALF_GOAL_H}
+              fillPatternImage={net} fillPatternRepeat="repeat"
+              fillPatternOffsetX={0} fillPatternOffsetY={0}
+              stroke="rgba(255,255,255,0.5)" strokeWidth={1}
+              listening={false} />
+      </>
+    )
   }
+  // Full field always uses portrait FIFA constants (FW=544, FH=840)
   return <SoccerField />
+}
+
+// ── Net pattern — tiled 5×5 grid cell, created once ─────────────────────────
+let _netPattern = null
+function getNetPattern() {
+  if (_netPattern) return _netPattern
+  const size = 5
+  const c = document.createElement('canvas')
+  c.width = size; c.height = size
+  const ctx = c.getContext('2d')
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)'
+  ctx.lineWidth = 0.8
+  ctx.beginPath()
+  // Right edge of cell
+  ctx.moveTo(size - 0.5, 0); ctx.lineTo(size - 0.5, size)
+  // Bottom edge of cell
+  ctx.moveTo(0, size - 0.5); ctx.lineTo(size, size - 0.5)
+  ctx.stroke()
+  _netPattern = c
+  return c
 }
 
 // ── Soccer field (static) ─────────────────────────────────────────────────────
 function SoccerField() {
+  const net = getNetPattern()
   return (
     <>
-      <Rect width={FW} height={FH} fill="#2d8b2d" cornerRadius={2} />
+      <Rect x={-GBUF} y={-(GOAL_D+GBUF)} width={FW+GBUF*2} height={FH+(GOAL_D+GBUF)*2} fill="#2d8b2d" cornerRadius={4} />
       <Rect width={FW} height={FH} stroke="white" strokeWidth={2.5} fill="transparent" />
       <Line points={[0, CY, FW, CY]} stroke="white" strokeWidth={2} />
       <Circle x={CX} y={CY} radius={CIRCLE_R} stroke="white" strokeWidth={2} fill="transparent" />
@@ -916,15 +1010,21 @@ function SoccerField() {
       <Circle x={CX} y={PS_D}        radius={3.5} fill="white" />
       <Path data={`M ${CX+ARC_X} ${PA_D} A ${CIRCLE_R} ${CIRCLE_R} 0 0 1 ${CX-ARC_X} ${PA_D}`}
             stroke="white" strokeWidth={2} fill="transparent" />
+      {/* Top goal — net fill */}
       <Rect x={CX-GOAL_HW} y={-GOAL_D} width={GOAL_HW*2} height={GOAL_D}
-            stroke="white" strokeWidth={2} fill="rgba(255,255,255,0.07)" />
+            stroke="white" strokeWidth={2}
+            fillPatternImage={net} fillPatternRepeat="repeat"
+            fillPatternOffsetX={0} fillPatternOffsetY={0} />
       <Rect x={CX-PA_HW} y={FH-PA_D} width={PA_HW*2} height={PA_D}   stroke="white" strokeWidth={2} fill="transparent" />
       <Rect x={CX-GA_HW} y={FH-GA_D} width={GA_HW*2} height={GA_D}   stroke="white" strokeWidth={2} fill="transparent" />
       <Circle x={CX} y={FH-PS_D}    radius={3.5} fill="white" />
       <Path data={`M ${CX+ARC_X} ${FH-PA_D} A ${CIRCLE_R} ${CIRCLE_R} 0 0 0 ${CX-ARC_X} ${FH-PA_D}`}
             stroke="white" strokeWidth={2} fill="transparent" />
+      {/* Bottom goal — net fill */}
       <Rect x={CX-GOAL_HW} y={FH}   width={GOAL_HW*2} height={GOAL_D}
-            stroke="white" strokeWidth={2} fill="rgba(255,255,255,0.07)" />
+            stroke="white" strokeWidth={2}
+            fillPatternImage={net} fillPatternRepeat="repeat"
+            fillPatternOffsetX={0} fillPatternOffsetY={0} />
     </>
   )
 }
