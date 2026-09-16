@@ -816,3 +816,300 @@ canvas {
     min-height: 20px;
   }
 }
+
+/* ── Draw panel ──────────────────────────────────────────────────────────── */
+.draw-panel {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.draw-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+}
+
+.draw-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.draw-type-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 6px;
+  transition: background 0.15s;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.draw-type-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.draw-type-btn.active {
+  background: rgba(74,222,128,0.1);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.draw-mode-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.draw-mode-btn {
+  flex: 1;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.draw-mode-btn.active {
+  background: rgba(74,222,128,0.1);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.draw-thickness-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.draw-thick-btn {
+  flex: 1;
+  height: 36px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.draw-thick-btn:hover { background: rgba(255,255,255,0.1); }
+
+.draw-thick-btn.active {
+  background: rgba(74,222,128,0.1);
+  border-color: #4ade80;
+}
+
+.draw-thick-preview {
+  width: 28px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 2px;
+}
+
+.draw-thick-btn.active .draw-thick-preview { background: #4ade80; }
+
+@media (max-width: 640px) {
+  .draw-panel-aside {
+    flex-direction: column !important;
+    height: 280px;
+    overflow-y: auto;
+  }
+  .draw-panel {
+    overflow-y: auto;
+  }
+}
+
+/* ── Free-path toggle ────────────────────────────────────────────────────── */
+.free-path-btn {
+  padding: 5px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.free-path-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.free-path-btn.active {
+  background: rgba(74,222,128,0.12);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.free-path-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Shapes panel ────────────────────────────────────────────────────────── */
+.shape-type-row {
+  display: flex;
+  gap: 6px;
+}
+
+.shape-add-btn {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 6px;
+  transition: background 0.15s;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.shape-add-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.shape-style-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.shape-style-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 6px;
+  transition: background 0.15s;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.shape-style-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.shape-style-btn.active {
+  background: rgba(74,222,128,0.1);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+/* ── Text panel ──────────────────────────────────────────────────────────── */
+.add-text-btn {
+  width: 100%;
+  padding: 9px 0;
+  background: rgba(96,165,250,0.12);
+  border: 1.5px solid rgba(96,165,250,0.3);
+  border-radius: 8px;
+  color: #93c5fd;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+
+.add-text-btn:hover {
+  background: rgba(96,165,250,0.2);
+  border-color: rgba(96,165,250,0.55);
+}
+
+.text-size-row {
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+}
+
+.text-size-btn {
+  flex: 1;
+  height: 34px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-size-btn:hover { background: rgba(255,255,255,0.1); }
+
+.text-size-btn.active {
+  background: rgba(96,165,250,0.12);
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+.text-bg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.text-bg-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.text-bg-btn:hover { background: rgba(255,255,255,0.1); }
+
+.text-bg-btn.active {
+  background: rgba(96,165,250,0.12);
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+.text-bg-preview {
+  width: 32px;
+  height: 14px;
+  border-radius: 3px;
+}

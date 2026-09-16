@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Stage, Layer, Rect, Circle, Line, Path, Image as KonvaImage } from 'react-konva'
+import { Stage, Layer, Rect, Circle, Line, Path, Arrow, Group, Image as KonvaImage, Ellipse, Transformer, Text as KonvaText } from 'react-konva'
 import './App.css'
 
 // Full field (portrait): 68m wide × 105m tall at 8px/m
@@ -21,6 +21,32 @@ const getRadius    = (size) => SIZE_RADII[(size ?? DEFAULT_SIZE) - 1]
 
 const FRAME_MS  = 900
 const easeInOut = (t) => t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t
+
+// Walk a flat [x0,y0, x1,y1,...] polyline at progress t (0→1), returning {x,y}.
+// Arc-length parameterised so easing produces even speed along curved paths.
+function walkPath(points, t) {
+  const n = points.length >> 1
+  if (n < 2) return { x: points[0] ?? 0, y: points[1] ?? 0 }
+  const lens = [0]
+  for (let i = 1; i < n; i++) {
+    const dx = points[i*2] - points[(i-1)*2], dy = points[i*2+1] - points[(i-1)*2+1]
+    lens.push(lens[i-1] + Math.sqrt(dx*dx + dy*dy))
+  }
+  const total = lens[n-1]
+  if (total === 0) return { x: points[0], y: points[1] }
+  const target = total * Math.min(t, 1)
+  for (let i = 1; i < n; i++) {
+    if (lens[i] >= target || i === n-1) {
+      const sl = lens[i] - lens[i-1]
+      const st = sl > 0 ? (target - lens[i-1]) / sl : 0
+      return {
+        x: points[(i-1)*2]   + (points[i*2]   - points[(i-1)*2])   * st,
+        y: points[(i-1)*2+1] + (points[i*2+1] - points[(i-1)*2+1]) * st,
+      }
+    }
+  }
+  return { x: points[(n-1)*2], y: points[(n-1)*2+1] }
+}
 
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
@@ -44,6 +70,68 @@ const FIELD_CATALOG = [
   { id: 'half-flip', label: 'Half Field (flip)', src: 'halfield.png' },
   { id: 'blank',     label: 'Blank',             src: null           },
 ]
+
+const DRAW_TYPES = [
+  { id: 'line',         label: 'Line'     },
+  { id: 'arrow',        label: 'Arrow'    },
+  { id: 'dashed',       label: 'Dashed'   },
+  { id: 'dashed-arrow', label: 'Dash →'   },
+  { id: 'T',            label: 'T-Line'   },
+  { id: 'dashed-T',     label: 'Dash T'   },
+]
+const DRAW_COLORS     = ['#ffffff','#facc15','#ef4444','#3b82f6','#22c55e','#f97316','#a855f7','#000000']
+const DRAW_THICKNESSES = [1, 2, 3, 4, 5]
+
+function ShapeTypeIcon({ type }) {
+  const c = 'rgba(255,255,255,0.75)'
+  const sw = 2
+  if (type === 'rect')
+    return <svg width="36" height="26"><rect x="3" y="4" width="30" height="18" fill="none" stroke={c} strokeWidth={sw} rx="2"/></svg>
+  if (type === 'ellipse')
+    return <svg width="36" height="26"><ellipse cx="18" cy="13" rx="15" ry="9" fill="none" stroke={c} strokeWidth={sw}/></svg>
+  if (type === 'triangle')
+    return <svg width="36" height="26"><polygon points="18,3 33,23 3,23" fill="none" stroke={c} strokeWidth={sw}/></svg>
+  return null
+}
+
+const SHAPE_STYLES = [
+  { id: 'fill',    label: 'Filled'   },
+  { id: 'semi',    label: 'Tinted'   },
+  { id: 'outline', label: 'Outline'  },
+  { id: 'dashed',  label: 'Dashed'   },
+]
+
+function ShapeStyleIcon({ id, active }) {
+  const c = active ? '#4ade80' : 'rgba(255,255,255,0.65)'
+  const sw = 1.5
+  if (id === 'fill')
+    return <svg width="36" height="22"><rect x="3" y="3" width="30" height="16" fill={c} rx="2"/></svg>
+  if (id === 'semi')
+    return <svg width="36" height="22"><rect x="3" y="3" width="30" height="16" fill={c} fillOpacity="0.35" stroke={c} strokeWidth={sw} rx="2"/></svg>
+  if (id === 'outline')
+    return <svg width="36" height="22"><rect x="3" y="3" width="30" height="16" fill="none" stroke={c} strokeWidth={sw} rx="2"/></svg>
+  if (id === 'dashed')
+    return <svg width="36" height="22"><rect x="3" y="3" width="30" height="16" fill="none" stroke={c} strokeWidth={sw} strokeDasharray="4,3" rx="2"/></svg>
+  return null
+}
+
+function DrawTypeIcon({ type, active }) {
+  const c  = active ? '#4ade80' : 'rgba(255,255,255,0.65)'
+  const sw = 2
+  if (type === 'line')
+    return <svg width="38" height="14"><line x1="3" y1="7" x2="35" y2="7" stroke={c} strokeWidth={sw} strokeLinecap="round"/></svg>
+  if (type === 'arrow')
+    return <svg width="38" height="14"><line x1="3" y1="7" x2="28" y2="7" stroke={c} strokeWidth={sw} strokeLinecap="round"/><polygon points="27,3.5 35,7 27,10.5" fill={c}/></svg>
+  if (type === 'dashed')
+    return <svg width="38" height="14"><line x1="3" y1="7" x2="35" y2="7" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray="5,4"/></svg>
+  if (type === 'dashed-arrow')
+    return <svg width="38" height="14"><line x1="3" y1="7" x2="28" y2="7" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray="5,4"/><polygon points="27,3.5 35,7 27,10.5" fill={c}/></svg>
+  if (type === 'T')
+    return <svg width="38" height="18"><line x1="3" y1="9" x2="30" y2="9" stroke={c} strokeWidth={sw} strokeLinecap="round"/><line x1="30" y1="2" x2="30" y2="16" stroke={c} strokeWidth={sw} strokeLinecap="round"/></svg>
+  if (type === 'dashed-T')
+    return <svg width="38" height="18"><line x1="3" y1="9" x2="30" y2="9" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray="5,4"/><line x1="30" y1="2" x2="30" y2="16" stroke={c} strokeWidth={sw} strokeLinecap="round"/></svg>
+  return null
+}
 
 // ── Equipment image processing ────────────────────────────────────────────────
 // Knocks out white background + shadow pixels and bakes a 1px black outline.
@@ -315,6 +403,32 @@ export default function App() {
   const [viewW, setViewW] = useState(() => window.innerWidth)
   const [viewH, setViewH] = useState(() => window.innerHeight)
 
+  const [drawings,    setDrawings]    = useState([])
+  const [currentDraw, setCurrentDraw] = useState(null)
+  const [drawTool,    setDrawTool]    = useState({ type: 'line', mode: 'straight', color: '#ffffff', thickness: 2 })
+  const [drawCtxMenu, setDrawCtxMenu] = useState(null)   // { x, y, id }
+
+  const [freePaths,    setFreePaths]    = useState({})   // { "f-t": { [objId]: [x,y,...] } }
+  const [freePathMode, setFreePathMode] = useState(false)
+
+  const [shapes,          setShapes]          = useState([])
+  const [selectedShapeId, setSelectedShapeId] = useState(null)
+  const [shapeTool,       setShapeTool]       = useState({ type: 'rect', color: '#3b82f6', style: 'outline', keepRatio: false })
+  const [shapeCtxMenu,    setShapeCtxMenu]    = useState(null)
+
+  const [textItems,      setTextItems]      = useState([])
+  const [selectedTextId, setSelectedTextId] = useState(null)
+  const [editingText,    setEditingText]    = useState(null)  // { id, x, y, width, height }
+  const [textTool,       setTextTool]       = useState({
+    fontSize: 18,
+    bold: false,
+    italic: false,
+    fill: '#ffffff',
+    background: 'transparent',
+    align: 'left',
+  })
+  const [textCtxMenu,    setTextCtxMenu]    = useState(null)
+
   // Active canvas dims — must be computed before any callbacks that reference them
   const isFullField = currentField === 'full'
   const aFW = isFullField ? FW : LW
@@ -333,11 +447,23 @@ export default function App() {
   )
 
   const nextId           = useRef(0)
+  const nextDrawId       = useRef(0)
+  const recordingPath    = useRef(null)   // { objId, segKey, points } during free-path drag
+  const previewLineRef   = useRef(null)   // direct Konva Line node for live path preview
   const objRefs          = useRef({})
   const rafRef           = useRef(null)
   const stageRef         = useRef(null)
   const recorderRef      = useRef(null)
   const exportStartedRef = useRef(false)  // flips true once isPlaying goes true during export
+  const shapeRefs      = useRef({})
+  const transformerRef = useRef(null)
+  const nextShapeId    = useRef(0)
+  const shapesRef      = useRef([])  // mirrors shapes state for use inside event handlers
+  const textGroupRefs  = useRef({})
+  const textNodeRefs   = useRef({})
+  const textTransRef   = useRef(null)
+  const nextTextId     = useRef(0)
+  const textEditRef    = useRef(null)
 
   // Load all catalog + field images once
   useEffect(() => {
@@ -375,6 +501,27 @@ export default function App() {
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
+
+  // Keep shapesRef in sync with shapes state
+  useEffect(() => { shapesRef.current = shapes }, [shapes])
+
+  // Attach/detach Konva Transformer to selected shape node
+  useEffect(() => {
+    const tr = transformerRef.current
+    if (!tr) return
+    const node = selectedShapeId !== null ? shapeRefs.current[selectedShapeId] : null
+    tr.nodes(node ? [node] : [])
+    tr.getLayer()?.batchDraw()
+  }, [selectedShapeId])
+
+  // Attach/detach Konva Transformer to selected text node
+  useEffect(() => {
+    const tr = textTransRef.current
+    if (!tr) return
+    const node = selectedTextId !== null ? textGroupRefs.current[selectedTextId] : null
+    tr.nodes(node ? [node] : [])
+    tr.getLayer()?.batchDraw()
+  }, [selectedTextId])
 
   // Stop the recorder once the animation finishes during export
   useEffect(() => {
@@ -431,6 +578,15 @@ export default function App() {
       delete positions[id]
       return { ...f, positions }
     }))
+    setFreePaths(prev => {
+      const next = {}
+      Object.entries(prev).forEach(([key, seg]) => {
+        const updated = { ...seg }
+        delete updated[id]
+        if (Object.keys(updated).length) next[key] = updated
+      })
+      return next
+    })
     setContextMenu(null)
   }, [])
 
@@ -461,6 +617,213 @@ export default function App() {
     setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, color } : o))
   }, [])
 
+  // ── Draw tool ────────────────────────────────────────────────────────────────
+
+  const getLayerPos = useCallback(() => {
+    const layer = stageRef.current?.getLayers()?.[0]
+    return layer?.getRelativePointerPosition() ?? { x: 0, y: 0 }
+  }, [])
+
+  const handleDrawStart = useCallback(() => {
+    const pos = getLayerPos()
+    setCurrentDraw({
+      id: nextDrawId.current++,
+      type: drawTool.type,
+      mode: drawTool.mode,
+      color: drawTool.color,
+      thickness: drawTool.thickness,
+      points: [pos.x, pos.y, pos.x, pos.y],
+    })
+  }, [drawTool, getLayerPos])
+
+  const handleDrawMove = useCallback(() => {
+    const pos = getLayerPos()
+    setCurrentDraw(prev => {
+      if (!prev) return prev
+      if (prev.mode === 'straight') {
+        const pts = [...prev.points]
+        pts[pts.length - 2] = pos.x
+        pts[pts.length - 1] = pos.y
+        return { ...prev, points: pts }
+      } else {
+        const last = prev.points.slice(-2)
+        const dx = pos.x - last[0], dy = pos.y - last[1]
+        if (dx * dx + dy * dy < 4) return prev   // skip if < 2px movement
+        return { ...prev, points: [...prev.points, pos.x, pos.y] }
+      }
+    })
+  }, [getLayerPos])
+
+  const handleDrawEnd = useCallback(() => {
+    setCurrentDraw(prev => {
+      if (!prev) return prev
+      const pts = prev.points
+      const dx = pts[pts.length - 2] - pts[0]
+      const dy = pts[pts.length - 1] - pts[1]
+      if (Math.sqrt(dx * dx + dy * dy) > 5) {
+        setDrawings(d => [...d, prev])
+      }
+      return null
+    })
+  }, [])
+
+  const deleteDrawing = useCallback((id) => {
+    setDrawings(prev => prev.filter(d => d.id !== id))
+    setDrawCtxMenu(null)
+  }, [])
+
+  const moveDrawing = useCallback((id, dx, dy) => {
+    setDrawings(prev => prev.map(d =>
+      d.id !== id ? d : {
+        ...d,
+        points: d.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)),
+      }
+    ))
+  }, [])
+
+  // ── Shape mutations ──────────────────────────────────────────────────────────
+
+  const addShape = useCallback((type) => {
+    const id = nextShapeId.current++
+    const defaults = type === 'ellipse'
+      ? { width: 90,  height: 90  }
+      : type === 'triangle'
+        ? { width: 100, height: 87  }
+        : { width: 100, height: 100 }
+    setShapes(prev => [...prev, {
+      id, type,
+      x: aCX + (Math.random() - 0.5) * 80,
+      y: aCY + (Math.random() - 0.5) * 60,
+      rotation: 0,
+      color: shapeTool.color,
+      style: shapeTool.style,
+      ...defaults,
+    }])
+  }, [shapeTool, aCX, aCY])
+
+  const deleteShape = useCallback((id) => {
+    setShapes(prev => prev.filter(s => s.id !== id))
+    setSelectedShapeId(prev => prev === id ? null : prev)
+    setShapeCtxMenu(null)
+  }, [])
+
+  const handleShapeTransformEnd = useCallback((id, e) => {
+    const node = e.target
+    const shape = shapesRef.current.find(s => s.id === id)
+    if (!shape) return
+    const scX = node.scaleX(), scY = node.scaleY()
+    const newW = Math.max(10, Math.abs(shape.width  * scX))
+    const newH = Math.max(10, Math.abs(shape.height * scY))
+    node.scaleX(1); node.scaleY(1)
+    // Bake scale back into native Konva props to avoid flash before React re-renders
+    if (shape.type === 'rect') {
+      node.width(newW); node.height(newH)
+      node.offsetX(newW / 2); node.offsetY(newH / 2)
+    } else if (shape.type === 'ellipse') {
+      node.radiusX(newW / 2); node.radiusY(newH / 2)
+    } else if (shape.type === 'triangle') {
+      node.points([0, -newH/2, newW/2, newH/2, -newW/2, newH/2])
+    }
+    setShapes(prev => prev.map(s =>
+      s.id === id
+        ? { ...s, x: node.x(), y: node.y(), width: newW, height: newH, rotation: node.rotation() }
+        : s
+    ))
+  }, [])
+
+  // ── Text tool ────────────────────────────────────────────────────────────────
+
+  const openTextEdit = useCallback((id) => {
+    const group = textGroupRefs.current[id]
+    if (!group || !stageRef.current) return
+    const stageEl = stageRef.current.container()
+    const stageRect = stageEl.getBoundingClientRect()
+    const rect = group.getClientRect({ relativeTo: stageRef.current })
+    setSelectedTextId(null)
+    setEditingText({
+      id,
+      x: stageRect.left + rect.x,
+      y: stageRect.top  + rect.y,
+      width:  Math.max(60,  rect.width),
+      height: Math.max(24, rect.height),
+    })
+  }, [])
+
+  const addText = useCallback(() => {
+    const id = nextTextId.current++
+    const fontStyle = [textTool.bold && 'bold', textTool.italic && 'italic'].filter(Boolean).join(' ') || 'normal'
+    setTextItems(prev => [...prev, {
+      id,
+      x: aCX + (Math.random() - 0.5) * 120,
+      y: aCY + (Math.random() - 0.5) * 80,
+      text: 'Label',
+      fontSize: textTool.fontSize,
+      fontStyle,
+      fill: textTool.fill,
+      background: textTool.background,
+      align: textTool.align,
+      rotation: 0,
+      scaleX: 1, scaleY: 1,
+      width: 110,
+    }])
+    // Defer edit until node is mounted
+    requestAnimationFrame(() => requestAnimationFrame(() => openTextEdit(id)))
+  }, [textTool, aCX, aCY, openTextEdit])
+
+  const deleteText = useCallback((id) => {
+    setTextItems(prev => prev.filter(t => t.id !== id))
+    setSelectedTextId(prev => prev === id ? null : prev)
+    setTextCtxMenu(null)
+  }, [])
+
+  const handleTextTransformEnd = useCallback((id, e) => {
+    const node = e.target
+    setTextItems(prev => prev.map(t =>
+      t.id === id
+        ? { ...t, x: node.x(), y: node.y(), scaleX: node.scaleX(), scaleY: node.scaleY(), rotation: node.rotation() }
+        : t
+    ))
+  }, [])
+
+  // ── Free-path recording ──────────────────────────────────────────────────────
+
+  const handleFreePathDragStart = useCallback((objId, x, y) => {
+    if (!freePathMode || currentFrame === 0) return
+    recordingPath.current = {
+      objId,
+      segKey: `${currentFrame - 1}-${currentFrame}`,
+      points: [x, y],
+    }
+    previewLineRef.current?.points([x, y])
+    previewLineRef.current?.getLayer()?.batchDraw()
+  }, [freePathMode, currentFrame])
+
+  const handleFreePathDragMove = useCallback((objId, x, y) => {
+    if (!recordingPath.current || recordingPath.current.objId !== objId) return
+    const pts = recordingPath.current.points
+    const dx = x - pts[pts.length - 2], dy = y - pts[pts.length - 1]
+    if (dx*dx + dy*dy >= 9) {
+      pts.push(x, y)
+      previewLineRef.current?.points([...pts])
+      previewLineRef.current?.getLayer()?.batchDraw()
+    }
+  }, [])
+
+  const handleFreePathDragEnd = useCallback((objId, x, y) => {
+    if (!recordingPath.current || recordingPath.current.objId !== objId) return
+    const { segKey, points } = recordingPath.current
+    recordingPath.current = null
+    points.push(x, y)
+    previewLineRef.current?.points([])
+    previewLineRef.current?.getLayer()?.batchDraw()
+    if (points.length >= 6) {
+      setFreePaths(prev => ({
+        ...prev,
+        [segKey]: { ...(prev[segKey] ?? {}), [objId]: points },
+      }))
+    }
+  }, [])
+
   // Resets everything back to a blank board
   const clearBoard = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -470,6 +833,19 @@ export default function App() {
     setFrames([{ positions: {} }])
     setCurrentFrame(0)
     setContextMenu(null)
+    setDrawings([])
+    setCurrentDraw(null)
+    setDrawCtxMenu(null)
+    setFreePaths({})
+    setShapes([])
+    setSelectedShapeId(null)
+    setShapeCtxMenu(null)
+    setTextItems([])
+    setSelectedTextId(null)
+    setEditingText(null)
+    setTextCtxMenu(null)
+    recordingPath.current = null
+    previewLineRef.current?.points([])
   }, [])
 
   // ── Frame controls ───────────────────────────────────────────────────────────
@@ -492,14 +868,29 @@ export default function App() {
     const updated = frames.filter((_, i) => i !== idx)
     setFrames(updated)
     setCurrentFrame(prev => Math.min(prev, updated.length - 1))
+    setFreePaths(prev => {
+      const next = {}
+      Object.entries(prev).forEach(([key, seg]) => {
+        const [a, b] = key.split('-').map(Number)
+        if (a === idx || b === idx) return   // segment touched deleted frame — discard
+        const na = a > idx ? a - 1 : a
+        const nb = b > idx ? b - 1 : b
+        next[`${na}-${nb}`] = seg
+      })
+      return next
+    })
   }, [frames, isPlaying])
 
   // ── Playback ─────────────────────────────────────────────────────────────────
 
   const play = useCallback(() => {
     if (frames.length < 2 || isPlaying) return
+    setSelectedShapeId(null)
+    setSelectedTextId(null)
+    setEditingText(null)
 
-    const snap = frames.map(f => ({ ...f.positions }))
+    const snap      = frames.map(f => ({ ...f.positions }))
+    const pathsSnap = freePaths
 
     setIsPlaying(true)
     setCurrentFrame(0)
@@ -526,8 +917,9 @@ export default function App() {
         return
       }
 
-      const fromPos = snap[seg]
-      const toPos   = snap[seg + 1]
+      const fromPos  = snap[seg]
+      const toPos    = snap[seg + 1]
+      const segPaths = pathsSnap[`${seg}-${seg + 1}`] ?? {}
       const ids = [...new Set([...Object.keys(fromPos), ...Object.keys(toPos)])].map(Number)
 
       const tick = (now) => {
@@ -538,10 +930,12 @@ export default function App() {
           const from = fromPos[id]
           const to   = toPos[id]
           if (!from || !to) return
-          objRefs.current[id]?.position({
-            x: from.x + (to.x - from.x) * e,
-            y: from.y + (to.y - from.y) * e,
-          })
+          const path = segPaths[id]
+          objRefs.current[id]?.position(
+            path
+              ? walkPath(path, e)
+              : { x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e }
+          )
         })
         batchDraw()
 
@@ -558,7 +952,7 @@ export default function App() {
     }
 
     rafRef.current = requestAnimationFrame(runSegment)
-  }, [frames, isPlaying])
+  }, [frames, isPlaying, freePaths])
 
   const stop = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -657,9 +1051,24 @@ export default function App() {
           active={activePanel === 'fields'}
           onClick={() => setActivePanel(p => p === 'fields' ? null : 'fields')}
         />
-        <SidebarBtn label="Zones" icon="⬜" disabled onClick={() => {}} />
-        <SidebarBtn label="Text"  icon="T"  disabled onClick={() => {}} />
-        <SidebarBtn label="Draw"  icon="✏"  disabled onClick={() => {}} />
+        <SidebarBtn
+          label="Shapes"
+          icon="□"
+          active={activePanel === 'shapes'}
+          onClick={() => { setActivePanel(p => p === 'shapes' ? null : 'shapes'); setSelectedShapeId(null) }}
+        />
+        <SidebarBtn
+          label="Text"
+          icon="T"
+          active={activePanel === 'text'}
+          onClick={() => { setActivePanel(p => p === 'text' ? null : 'text'); setSelectedTextId(null) }}
+        />
+        <SidebarBtn
+          label="Draw"
+          icon="✏"
+          active={activePanel === 'draw'}
+          onClick={() => setActivePanel(p => p === 'draw' ? null : 'draw')}
+        />
       </nav>
 
       {/* ── Fields panel ── */}
@@ -700,6 +1109,230 @@ export default function App() {
         </div>
       </aside>
 
+      {/* ── Text panel ── */}
+      <aside className={`objects-panel${activePanel === 'text' ? ' open' : ''}`}>
+        <div className="panel-header">Text</div>
+        <div className="draw-panel">
+
+          <button className="add-text-btn" onClick={addText}>+ Add Text</button>
+
+          <div className="draw-section-label">Size</div>
+          <div className="text-size-row">
+            {[12, 16, 20, 28, 40].map(sz => (
+              <button
+                key={sz}
+                className={`text-size-btn${textTool.fontSize === sz ? ' active' : ''}`}
+                onClick={() => setTextTool(t => ({ ...t, fontSize: sz }))}
+                style={{ fontSize: Math.max(9, Math.round(sz * 0.55)) }}
+              >Aa</button>
+            ))}
+          </div>
+
+          <div className="draw-section-label">Style</div>
+          <div className="draw-mode-toggle">
+            <button
+              className={`draw-mode-btn${!textTool.bold && !textTool.italic ? ' active' : ''}`}
+              onClick={() => setTextTool(t => ({ ...t, bold: false, italic: false }))}
+            >Normal</button>
+            <button
+              className={`draw-mode-btn${textTool.bold && !textTool.italic ? ' active' : ''}`}
+              style={{ fontWeight: 'bold' }}
+              onClick={() => setTextTool(t => ({ ...t, bold: !t.bold, italic: false }))}
+            >Bold</button>
+          </div>
+          <div className="draw-mode-toggle">
+            <button
+              className={`draw-mode-btn${textTool.italic && !textTool.bold ? ' active' : ''}`}
+              style={{ fontStyle: 'italic' }}
+              onClick={() => setTextTool(t => ({ ...t, italic: !t.italic, bold: false }))}
+            >Italic</button>
+            <button
+              className={`draw-mode-btn${textTool.bold && textTool.italic ? ' active' : ''}`}
+              style={{ fontWeight: 'bold', fontStyle: 'italic' }}
+              onClick={() => setTextTool(t => ({ ...t, bold: true, italic: true }))}
+            >B+I</button>
+          </div>
+
+          <div className="draw-section-label">Align</div>
+          <div className="draw-mode-toggle">
+            <button
+              className={`draw-mode-btn${textTool.align === 'left' ? ' active' : ''}`}
+              onClick={() => setTextTool(t => ({ ...t, align: 'left' }))}
+            >Left</button>
+            <button
+              className={`draw-mode-btn${textTool.align === 'center' ? ' active' : ''}`}
+              onClick={() => setTextTool(t => ({ ...t, align: 'center' }))}
+            >Center</button>
+            <button
+              className={`draw-mode-btn${textTool.align === 'right' ? ' active' : ''}`}
+              onClick={() => setTextTool(t => ({ ...t, align: 'right' }))}
+            >Right</button>
+          </div>
+
+          <div className="draw-section-label">Color</div>
+          <div className="ctx-colors">
+            {DRAW_COLORS.map(c => (
+              <button
+                key={c}
+                className={`color-swatch${textTool.fill === c ? ' active' : ''}`}
+                style={{ background: c }}
+                onClick={() => setTextTool(t => ({ ...t, fill: c }))}
+                title={c}
+              />
+            ))}
+          </div>
+
+          <div className="draw-section-label">Background</div>
+          <div className="text-bg-row">
+            {[
+              { id: 'transparent',        label: 'None'  },
+              { id: 'rgba(0,0,0,0.55)',   label: 'Dark'  },
+              { id: 'rgba(0,20,60,0.6)',  label: 'Navy'  },
+              { id: 'rgba(255,255,255,0.15)', label: 'Frost' },
+            ].map(bg => (
+              <button
+                key={bg.id}
+                className={`text-bg-btn${textTool.background === bg.id ? ' active' : ''}`}
+                onClick={() => setTextTool(t => ({ ...t, background: bg.id }))}
+                title={bg.label}
+              >
+                <span
+                  className="text-bg-preview"
+                  style={{ background: bg.id === 'transparent' ? 'none' : bg.id, border: bg.id === 'transparent' ? '1.5px dashed rgba(255,255,255,0.3)' : 'none' }}
+                />
+                <span>{bg.label}</span>
+              </button>
+            ))}
+          </div>
+
+        </div>
+      </aside>
+
+      {/* ── Shapes panel ── */}
+      <aside className={`objects-panel${activePanel === 'shapes' ? ' open' : ''}`}>
+        <div className="panel-header">Shapes</div>
+        <div className="draw-panel">
+
+          <div className="draw-section-label">Add Shape</div>
+          <div className="shape-type-row">
+            {(['rect','ellipse','triangle']).map(type => (
+              <button
+                key={type}
+                className="shape-add-btn"
+                onClick={() => { setShapeTool(t => ({ ...t, type })); addShape(type) }}
+                title={type}
+              >
+                <ShapeTypeIcon type={type} />
+                <span>{type === 'rect' ? 'Rect' : type === 'ellipse' ? 'Circle' : 'Triangle'}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="draw-section-label">Resize</div>
+          <div className="draw-mode-toggle">
+            <button
+              className={`draw-mode-btn${!shapeTool.keepRatio ? ' active' : ''}`}
+              onClick={() => setShapeTool(t => ({ ...t, keepRatio: false }))}
+            >Free</button>
+            <button
+              className={`draw-mode-btn${shapeTool.keepRatio ? ' active' : ''}`}
+              onClick={() => setShapeTool(t => ({ ...t, keepRatio: true }))}
+            >Lock □</button>
+          </div>
+
+          <div className="draw-section-label">Style</div>
+          <div className="shape-style-grid">
+            {SHAPE_STYLES.map(s => (
+              <button
+                key={s.id}
+                className={`shape-style-btn${shapeTool.style === s.id ? ' active' : ''}`}
+                onClick={() => setShapeTool(t => ({ ...t, style: s.id }))}
+                title={s.label}
+              >
+                <ShapeStyleIcon id={s.id} active={shapeTool.style === s.id} />
+                <span>{s.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="draw-section-label">Color</div>
+          <div className="ctx-colors">
+            {DRAW_COLORS.map(c => (
+              <button
+                key={c}
+                className={`color-swatch${shapeTool.color === c ? ' active' : ''}`}
+                style={{ background: c }}
+                onClick={() => setShapeTool(t => ({ ...t, color: c }))}
+                title={c}
+              />
+            ))}
+          </div>
+
+        </div>
+      </aside>
+
+      {/* ── Draw panel ── */}
+      <aside className={`objects-panel draw-panel-aside${activePanel === 'draw' ? ' open' : ''}`}>
+        <div className="panel-header">Draw</div>
+        <div className="draw-panel">
+
+          <div className="draw-section-label">Type</div>
+          <div className="draw-type-grid">
+            {DRAW_TYPES.map(dt => (
+              <button
+                key={dt.id}
+                className={`draw-type-btn${drawTool.type === dt.id ? ' active' : ''}`}
+                onClick={() => setDrawTool(t => ({ ...t, type: dt.id }))}
+                title={dt.label}
+              >
+                <DrawTypeIcon type={dt.id} active={drawTool.type === dt.id} />
+                <span>{dt.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="draw-section-label">Mode</div>
+          <div className="draw-mode-toggle">
+            <button
+              className={`draw-mode-btn${drawTool.mode === 'straight' ? ' active' : ''}`}
+              onClick={() => setDrawTool(t => ({ ...t, mode: 'straight' }))}
+            >Straight</button>
+            <button
+              className={`draw-mode-btn${drawTool.mode === 'free' ? ' active' : ''}`}
+              onClick={() => setDrawTool(t => ({ ...t, mode: 'free' }))}
+            >Free</button>
+          </div>
+
+          <div className="draw-section-label">Color</div>
+          <div className="ctx-colors">
+            {DRAW_COLORS.map(c => (
+              <button
+                key={c}
+                className={`color-swatch${drawTool.color === c ? ' active' : ''}`}
+                style={{ background: c }}
+                onClick={() => setDrawTool(t => ({ ...t, color: c }))}
+                title={c}
+              />
+            ))}
+          </div>
+
+          <div className="draw-section-label">Thickness</div>
+          <div className="draw-thickness-row">
+            {DRAW_THICKNESSES.map(n => (
+              <button
+                key={n}
+                className={`draw-thick-btn${drawTool.thickness === n ? ' active' : ''}`}
+                onClick={() => setDrawTool(t => ({ ...t, thickness: n }))}
+                title={`${n}px`}
+              >
+                <div className="draw-thick-preview" style={{ height: n + 1 }} />
+              </button>
+            ))}
+          </div>
+
+        </div>
+      </aside>
+
       {/* ── Main ── */}
       <div className="main">
         <header className="header">
@@ -725,21 +1358,33 @@ export default function App() {
           height={Math.round(aSH * fieldScale)}
           scaleX={fieldScale}
           scaleY={fieldScale}
-          onClick={() => setContextMenu(null)}
+          onClick={() => { setContextMenu(null); setSelectedShapeId(null); setSelectedTextId(null) }}
         >
           <Layer x={PAD} y={PAD}>
             <FieldBackground field={currentField} halfImg={images['field_half']} fieldW={aFW} fieldH={aFH} />
 
-            {/* Motion trails — dashed lines between frame positions, hidden during playback */}
+            {/* Live preview line while recording a free path */}
+            <Line
+              ref={previewLineRef}
+              points={[]}
+              stroke="rgba(255,220,0,0.85)"
+              strokeWidth={2}
+              dash={[8, 6]}
+              lineCap="round"
+              listening={false}
+            />
+
+            {/* Motion trails — dashed lines (or curved paths) between frame positions */}
             {!isPlaying && frames.length > 1 && placedObjects.flatMap(obj =>
               frames.slice(0, -1).map((f, i) => {
                 const from = f.positions[obj.id]
                 const to   = frames[i + 1].positions[obj.id]
                 if (!from || !to) return null
+                const segPath = freePaths[`${i}-${i+1}`]?.[obj.id]
                 return (
                   <Line
                     key={`trail-${obj.id}-${i}`}
-                    points={[from.x, from.y, to.x, to.y]}
+                    points={segPath ?? [from.x, from.y, to.x, to.y]}
                     stroke="rgba(255,220,0,0.4)"
                     strokeWidth={2}
                     dash={[8, 6]}
@@ -749,6 +1394,182 @@ export default function App() {
                 )
               })
             )}
+
+            {/* Shapes */}
+            {shapes.map(shape => {
+              const interactive = !isPlaying && activePanel !== 'draw'
+              const isDashed = shape.style === 'dashed'
+              const fillColor = shape.style === 'fill'
+                ? shape.color
+                : shape.style === 'semi'
+                  ? shape.color + '59'
+                  : 'transparent'
+              const common = {
+                ref: (node) => { if (node) shapeRefs.current[shape.id] = node; else delete shapeRefs.current[shape.id] },
+                x: shape.x, y: shape.y, rotation: shape.rotation,
+                fill: fillColor,
+                stroke: shape.color,
+                strokeWidth: 2,
+                ...(isDashed ? { dash: [10, 6] } : {}),
+                draggable: interactive,
+                onClick:    interactive ? (e) => { e.cancelBubble = true; setSelectedShapeId(shape.id); setSelectedTextId(null) } : undefined,
+                onTap:      interactive ? (e) => { e.cancelBubble = true; setSelectedShapeId(shape.id); setSelectedTextId(null) } : undefined,
+                onDragEnd:  (e) => setShapes(prev => prev.map(s => s.id === shape.id ? { ...s, x: e.target.x(), y: e.target.y() } : s)),
+                onTransformEnd: (e) => handleShapeTransformEnd(shape.id, e),
+                onDblClick: (e) => { e.cancelBubble = true; setShapeCtxMenu({ x: e.evt.clientX, y: e.evt.clientY, id: shape.id }) },
+                onDblTap:   (e) => { e.cancelBubble = true; const t = e.evt.changedTouches?.[0]; if (t) setShapeCtxMenu({ x: t.clientX, y: t.clientY, id: shape.id }) },
+              }
+              if (shape.type === 'rect') {
+                return (
+                  <Rect key={shape.id} {...common}
+                    width={shape.width} height={shape.height}
+                    offsetX={shape.width / 2} offsetY={shape.height / 2}
+                  />
+                )
+              }
+              if (shape.type === 'ellipse') {
+                return <Ellipse key={shape.id} {...common} radiusX={shape.width / 2} radiusY={shape.height / 2} />
+              }
+              // triangle
+              return (
+                <Line key={shape.id} {...common}
+                  points={[0, -shape.height/2, shape.width/2, shape.height/2, -shape.width/2, shape.height/2]}
+                  closed
+                />
+              )
+            })}
+            <Transformer
+              ref={transformerRef}
+              keepRatio={shapeTool.keepRatio}
+              rotateEnabled={true}
+              visible={!isPlaying}
+              borderStroke="#4ade80"
+              borderStrokeWidth={1}
+              anchorFill="#fff"
+              anchorStroke="#4ade80"
+              anchorSize={8}
+              anchorCornerRadius={2}
+            />
+
+            {/* Text items */}
+            {textItems.map(t => {
+              const isEditing = editingText?.id === t.id
+              const hasBg     = t.background !== 'transparent'
+              const interactive = !isPlaying && activePanel !== 'draw'
+              return (
+                <Group
+                  key={t.id}
+                  ref={node => { if (node) textGroupRefs.current[t.id] = node; else delete textGroupRefs.current[t.id] }}
+                  x={t.x} y={t.y}
+                  scaleX={t.scaleX ?? 1} scaleY={t.scaleY ?? 1}
+                  rotation={t.rotation}
+                  draggable={interactive}
+                  visible={!isEditing}
+                  onClick={interactive    ? (e) => { e.cancelBubble = true; setSelectedTextId(t.id); setSelectedShapeId(null) } : undefined}
+                  onTap={interactive      ? (e) => { e.cancelBubble = true; setSelectedTextId(t.id); setSelectedShapeId(null) } : undefined}
+                  onDragEnd={e => setTextItems(prev => prev.map(ti => ti.id === t.id ? { ...ti, x: e.target.x(), y: e.target.y() } : ti))}
+                  onTransformEnd={e => handleTextTransformEnd(t.id, e)}
+                  onDblClick={interactive ? (e) => { e.cancelBubble = true; openTextEdit(t.id) } : undefined}
+                  onDblTap={interactive   ? (e) => { e.cancelBubble = true; openTextEdit(t.id) } : undefined}
+                  onContextMenu={interactive ? (e) => { e.evt.preventDefault(); e.cancelBubble = true; setTextCtxMenu({ x: e.evt.clientX, y: e.evt.clientY, id: t.id }) } : undefined}
+                >
+                  {hasBg && (
+                    <Rect
+                      x={-6} y={-4}
+                      width={t.width + 12} height={t.fontSize * 1.45 + 8}
+                      fill={t.background} cornerRadius={4}
+                      listening={false}
+                    />
+                  )}
+                  <KonvaText
+                    ref={node => { if (node) textNodeRefs.current[t.id] = node; else delete textNodeRefs.current[t.id] }}
+                    text={t.text}
+                    fontSize={t.fontSize}
+                    fontFamily="Segoe UI, system-ui, -apple-system, sans-serif"
+                    fontStyle={t.fontStyle}
+                    fill={t.fill}
+                    align={t.align}
+                    width={t.width}
+                    wrap="word"
+                    shadowColor="rgba(0,0,0,0.7)"
+                    shadowBlur={3}
+                    shadowOffsetX={1}
+                    shadowOffsetY={1}
+                  />
+                </Group>
+              )
+            })}
+            <Transformer
+              ref={textTransRef}
+              keepRatio={false}
+              rotateEnabled={true}
+              visible={!isPlaying && !editingText}
+              borderStroke="#60a5fa"
+              borderStrokeWidth={1}
+              anchorFill="#fff"
+              anchorStroke="#60a5fa"
+              anchorSize={8}
+              anchorCornerRadius={2}
+              enabledAnchors={['middle-left','middle-right','top-left','top-right','bottom-left','bottom-right','top-center','bottom-center']}
+            />
+
+            {/* Saved drawings — below objects so objects remain on top */}
+            {[...drawings, ...(currentDraw ? [currentDraw] : [])].map(d => {
+              const isDashed  = d.type.includes('dashed')
+              const isArrow   = d.type === 'arrow' || d.type === 'dashed-arrow'
+              const isT       = d.type === 'T' || d.type === 'dashed-T'
+              const dashArr   = isDashed ? [d.thickness * 5, d.thickness * 3] : undefined
+              const isPreview = d === currentDraw
+              const lineProps = {
+                stroke: d.color, strokeWidth: d.thickness,
+                lineCap: 'round', lineJoin: 'round',
+                ...(dashArr ? { dash: dashArr } : {}),
+              }
+              const dragHandlers = isPreview ? { listening: false } : {
+                draggable: activePanel !== 'draw' && !isPlaying,
+                onDragEnd: (e) => {
+                  const dx = e.target.x(), dy = e.target.y()
+                  e.target.position({ x: 0, y: 0 })
+                  moveDrawing(d.id, dx, dy)
+                },
+                onDblClick: (e) => {
+                  e.cancelBubble = true
+                  setDrawCtxMenu({ x: e.evt.clientX, y: e.evt.clientY, id: d.id })
+                },
+                onDblTap: (e) => {
+                  e.cancelBubble = true
+                  const t = e.evt.changedTouches?.[0]
+                  if (t) setDrawCtxMenu({ x: t.clientX, y: t.clientY, id: d.id })
+                },
+              }
+              if (isArrow) {
+                return (
+                  <Arrow key={d.id}
+                    points={d.points} fill={d.color}
+                    pointerLength={Math.max(8, d.thickness * 4)}
+                    pointerWidth={Math.max(6, d.thickness * 3)}
+                    {...lineProps} {...dragHandlers}
+                  />
+                )
+              }
+              if (isT) {
+                const pts = d.points, n = pts.length
+                const x2 = pts[n-2], y2 = pts[n-1]
+                const x1 = n >= 4 ? pts[n-4] : x2, y1 = n >= 4 ? pts[n-3] : y2
+                const dirX = x2 - x1, dirY = y2 - y1
+                const len  = Math.sqrt(dirX*dirX + dirY*dirY) || 1
+                const nx = -dirY / len, ny = dirX / len
+                const tLen = Math.max(14, d.thickness * 6)
+                return (
+                  <Group key={d.id} {...dragHandlers}>
+                    <Line points={pts} {...lineProps} listening={false} />
+                    <Line points={[x2+nx*tLen, y2+ny*tLen, x2-nx*tLen, y2-ny*tLen]}
+                          stroke={d.color} strokeWidth={d.thickness} lineCap="round" listening={false} />
+                  </Group>
+                )
+              }
+              return <Line key={d.id} points={d.points} {...lineProps} {...dragHandlers} />
+            })}
 
             {/* Placed objects */}
             {placedObjects.map(obj => {
@@ -769,9 +1590,16 @@ export default function App() {
                   strokeEnabled={obj.type === 'ball'}
                   stroke="#1a1a1a"
                   strokeWidth={1.5}
-                  draggable={!isPlaying}
-                  onDragMove={(e) => moveObject(obj.id, e.target.x(), e.target.y())}
-                  onDragEnd={(e)  => moveObject(obj.id, e.target.x(), e.target.y())}
+                  draggable={!isPlaying && activePanel !== 'draw'}
+                  onDragStart={(e) => handleFreePathDragStart(obj.id, e.target.x(), e.target.y())}
+                  onDragMove={(e) => {
+                    moveObject(obj.id, e.target.x(), e.target.y())
+                    handleFreePathDragMove(obj.id, e.target.x(), e.target.y())
+                  }}
+                  onDragEnd={(e) => {
+                    moveObject(obj.id, e.target.x(), e.target.y())
+                    handleFreePathDragEnd(obj.id, e.target.x(), e.target.y())
+                  }}
                   dragBoundFunc={(p) => ({
                     x: Math.max(PAD - GBUF + r, Math.min(p.x, PAD + aFW + GBUF - r)),
                     y: isFullField
@@ -790,6 +1618,23 @@ export default function App() {
                 />
               )
             })}
+
+            {/* Draw capture rect — on top of everything when draw panel is open */}
+            {activePanel === 'draw' && (
+              <Rect
+                x={-GBUF} y={isFullField ? -(GOAL_D + GBUF) : -GBUF}
+                width={aFW + GBUF * 2}
+                height={isFullField ? aFH + (GOAL_D + GBUF) * 2 : aFH + GBUF * 2}
+                fill="transparent"
+                onMouseDown={handleDrawStart}
+                onMouseMove={handleDrawMove}
+                onMouseUp={handleDrawEnd}
+                onMouseLeave={handleDrawEnd}
+                onTouchStart={handleDrawStart}
+                onTouchMove={handleDrawMove}
+                onTouchEnd={handleDrawEnd}
+              />
+            )}
           </Layer>
         </Stage>
 
@@ -799,6 +1644,15 @@ export default function App() {
             <button className="play-btn" onClick={play}  disabled={!canPlay}   title="Play">▶</button>
             <button className="stop-btn" onClick={stop}  disabled={!isPlaying} title="Stop">■</button>
           </div>
+
+          <button
+            className={`free-path-btn${freePathMode ? ' active' : ''}`}
+            onClick={() => setFreePathMode(p => !p)}
+            disabled={isPlaying || frames.length < 2}
+            title={freePathMode ? 'Free path ON — drag objects to record curved paths' : 'Free path OFF — animation moves in straight lines'}
+          >
+            〜 Free
+          </button>
 
           <div className="frame-strip">
             {frames.map((_, i) => (
@@ -933,6 +1787,109 @@ export default function App() {
           </div>
         </>
       )}
+
+      {drawCtxMenu && (
+        <>
+          <div className="ctx-overlay" onClick={() => setDrawCtxMenu(null)} />
+          <div
+            className="ctx-menu"
+            style={{
+              left: Math.min(drawCtxMenu.x, viewW - 234),
+              top:  Math.min(drawCtxMenu.y, viewH - 100),
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="ctx-btn danger" onClick={() => deleteDrawing(drawCtxMenu.id)}>
+              <span className="ctx-icon">✕</span> Delete
+            </button>
+          </div>
+        </>
+      )}
+
+      {shapeCtxMenu && (
+        <>
+          <div className="ctx-overlay" onClick={() => setShapeCtxMenu(null)} />
+          <div
+            className="ctx-menu"
+            style={{
+              left: Math.min(shapeCtxMenu.x, viewW - 234),
+              top:  Math.min(shapeCtxMenu.y, viewH - 100),
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="ctx-btn danger" onClick={() => deleteShape(shapeCtxMenu.id)}>
+              <span className="ctx-icon">✕</span> Delete
+            </button>
+          </div>
+        </>
+      )}
+
+      {textCtxMenu && (
+        <>
+          <div className="ctx-overlay" onClick={() => setTextCtxMenu(null)} />
+          <div
+            className="ctx-menu"
+            style={{
+              left: Math.min(textCtxMenu.x, viewW - 234),
+              top:  Math.min(textCtxMenu.y, viewH - 100),
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="ctx-btn" onClick={() => { openTextEdit(textCtxMenu.id); setTextCtxMenu(null) }}>
+              <span className="ctx-icon">✎</span> Edit
+            </button>
+            <div className="ctx-divider" />
+            <button className="ctx-btn danger" onClick={() => deleteText(textCtxMenu.id)}>
+              <span className="ctx-icon">✕</span> Delete
+            </button>
+          </div>
+        </>
+      )}
+
+      {editingText && (() => {
+        const t = textItems.find(ti => ti.id === editingText.id)
+        if (!t) return null
+        return (
+          <textarea
+            key={editingText.id}
+            ref={textEditRef}
+            defaultValue={t.text}
+            style={{
+              position: 'fixed',
+              left:   editingText.x,
+              top:    editingText.y,
+              width:  editingText.width,
+              minHeight: editingText.height,
+              fontSize:   `${t.fontSize * (t.scaleX ?? 1) * fieldScale}px`,
+              fontFamily: 'Segoe UI, system-ui, -apple-system, sans-serif',
+              fontWeight: t.fontStyle?.includes('bold')   ? 'bold'   : 'normal',
+              fontStyle:  t.fontStyle?.includes('italic') ? 'italic' : 'normal',
+              color:      t.fill,
+              background: t.background === 'transparent' ? 'rgba(0,0,0,0.01)' : t.background,
+              border:     '1.5px dashed #60a5fa',
+              borderRadius: '3px',
+              outline:    'none',
+              resize:     'none',
+              overflow:   'hidden',
+              padding:    '2px 4px',
+              lineHeight: 1.25,
+              textAlign:  t.align,
+              zIndex:     200,
+              transform:  `rotate(${t.rotation}deg)`,
+              transformOrigin: 'top left',
+            }}
+            onBlur={e => {
+              const val = e.target.value.trim() || 'Label'
+              setTextItems(prev => prev.map(ti => ti.id === editingText.id ? { ...ti, text: val } : ti))
+              setEditingText(null)
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Escape') setEditingText(null)
+            }}
+            autoFocus
+          />
+        )
+      })()}
     </div>
   )
 }
