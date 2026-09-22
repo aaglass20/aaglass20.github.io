@@ -303,6 +303,40 @@
         .photo-day { display: none; }
         .photo-day.active { display: block; }
 
+        /* ── Article Pager ── */
+        .article-pager {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-pager.bottom { margin-top: 1.5rem; margin-bottom: 0; }
+        .pager-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.6rem 1.25rem;
+            background: #003366;
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, opacity 0.15s;
+        }
+        .pager-btn:hover { background: #0779e4; }
+        .pager-btn:disabled { opacity: 0.3; cursor: default; background: #003366; }
+        .pager-label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #718096;
+            white-space: nowrap;
+        }
+        .news-article { display: none; }
+        .news-article.active { display: block; }
+
         /* ── Responsive ── */
         @media (max-width: 600px) {
             .tab-btn { padding: 0.85rem 1.25rem; font-size: 0.9rem; }
@@ -348,6 +382,79 @@
 <!-- ══ NEWS TAB ══ -->
 <div id="tab-news" class="tab-panel active">
     <div class="news-feed">
+
+        <!-- Article pager (top) -->
+        <div class="article-pager" id="pager-top">
+            <button class="pager-btn" id="pager-prev-top" onclick="changePage(-1)">&#8249; Previous</button>
+            <span class="pager-label" id="pager-label-top"></span>
+            <button class="pager-btn" id="pager-next-top" onclick="changePage(1)">Next &#8250;</button>
+        </div>
+
+        <!-- Article: Shaker Heights 9/20/2026 -->
+        <article class="news-article">
+            <div class="article-header">
+                <span class="article-category">Match Report</span>
+                <h2 class="article-title">🏆🔒 Back-to-Back Brilliance! BDU U13 Girls Dominate Possession in 2–0 Home Shutout Over Shaker Heights</h2>
+                <div class="article-meta"><i class="fas fa-map-marker-alt"></i> Independence, OH &nbsp;·&nbsp; <i class="fas fa-calendar"></i> September 20, 2026</div>
+            </div>
+            <div class="article-body">
+                <div class="score-badge"><i class="fas fa-futbol"></i> BDU 2 – Shaker Heights 0</div>
+
+                <p>Sunday evening, the Blue Devil United (BDU) U13 Girls Soccer Team delivered another masterclass performance on their home turf. Controlling the tempo from the opening whistle to the final horn, BDU rolled to a commanding 2–0 victory over Shaker Heights — earning their <strong>second straight win</strong> in dominant fashion!</p>
+
+                <div class="article-section-heading">⚡ Lightning Strike Out of the Gate</div>
+                <p>Just like their previous outing, BDU wasted no time making their presence felt. Under three minutes in (2:58), <strong>Evie Peters</strong> sparked the offense with a sharp setup pass to <strong>Whitney Phillips</strong>. Phillips transitioned the ball seamlessly into space, dialed in her angle, and slotted a clinical, pinpoint finish past the keeper to put BDU up 1–0 before Shaker Heights could even settle in.</p>
+
+                <div class="article-section-heading">🎬 Goal Highlights</div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:0.5rem 0 1.5rem;">
+                    <div style="background:#f7fafc;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+                        <video controls style="width:100%;display:block;" preload="none" playsinline data-src="pics/9_21_2026/whitney%201%20-%200%20Assist%20Evie.mp4">
+                        </video>
+                        <div style="padding:0.6rem 0.85rem;font-size:0.88rem;color:#4a5568;font-weight:600;">⚽ 2:58 &mdash; Whitney Phillips (Assist: Evie Peters) &nbsp;<span style="color:#0779e4;font-weight:700;">1–0</span></div>
+                    </div>
+                    <div style="background:#f7fafc;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+                        <video controls style="width:100%;display:block;" preload="none" playsinline data-src="pics/9_21_2026/charlie%202%20-%200.mp4">
+                        </video>
+                        <div style="padding:0.6rem 0.85rem;font-size:0.88rem;color:#4a5568;font-weight:600;">⚽ 29:22 &mdash; Charlie Merker (Cross: Claire Brandt) &nbsp;<span style="color:#0779e4;font-weight:700;">2–0</span></div>
+                    </div>
+                </div>
+
+                <div class="article-section-heading">💪 Hustle, Grit, and a Two-Goal Cushion</div>
+                <p>BDU's relentless pressure paid off once again late in the first half at 29:22. <strong>Claire Brandt</strong> showcased sheer grit, bodying up her defender to win a tough physical battle before sending a soaring cross into the danger zone. <strong>Charlie Merker</strong> met the cross with a rocket of a blast on frame — and when the initial shot deflected back into play, Merker stayed laser-focused, following up with a delicate, composed soft touch into the back of the net to extend the lead to 2–0!</p>
+
+                <div class="article-section-heading">📊 Total Pitch Domination by the Numbers</div>
+                <div class="highlights-box">
+                    <h4>📊 Match Stats</h4>
+                    <ul>
+                        <li>62% Ball Possession — BDU dictated the pace, keeping Shaker Heights chasing shadows</li>
+                        <li>157 Completed Passes — a true team clinic vs. just 55 for the visitors</li>
+                        <li>Won the vast majority of 50/50 balls — refusing to give Shaker Heights an inch</li>
+                    </ul>
+                </div>
+
+                <div class="article-section-heading">🛡️ Four-Keeper Shutout &amp; Clutch Late Defending</div>
+                <p>BDU's backline put on an absolute clinic. Anchoring the defensive wall all evening were <strong>Mara Buntura</strong>, <strong>Josie DiGeronimo</strong>, and <strong>JoJo Rollins</strong>, who continually snuffed out attacks and maintained team shape with poise. BDU earned a rare four-player combined clean sheet, sharing goalkeeper duties between <strong>Ava Durdella-Vourliotis</strong>, <strong>Emma Barwacz</strong>, <strong>Isla Zdolshek</strong>, and <strong>Whitney Phillips</strong>.</p>
+
+                <p>When Shaker Heights mounted a desperate late push in the closing minutes, BDU slammed the door shut with two highlight-reel plays:</p>
+
+                <div class="highlights-box">
+                    <h4>🔒 Clutch Late Stops</h4>
+                    <ul>
+                        <li><strong>Hannah Bechlem</strong> — turned on the afterburners, tracking down a dangerous Shaker Heights breakaway from behind, winning back possession, and calmly playing it back to safety</li>
+                        <li><strong>Ava Durdella-Vourliotis</strong> — came up massive between the posts, flashing quick reflexes to parry a dangerous blast wide to the left to preserve the clean sheet</li>
+                    </ul>
+                </div>
+
+                <div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0 0;">
+                    <div style="color:#00ff88;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.5rem;">📅 Up Next — Hitting the Road for Game Three!</div>
+                    <div style="color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:0.6rem;">Sunday, September 27, 2026 at Aurora (Away)</div>
+                    <div style="color:#a0aec0;font-size:0.92rem;margin-bottom:0.75rem;">
+                        🕞 3:30 PM &nbsp;·&nbsp; 📍 Away
+                    </div>
+                    <p style="color:#cbd5e0;font-size:0.92rem;margin:0;line-height:1.7;">With dynamic finishing, precision passing, and an airtight defense, Blue Devil United is firing on all cylinders with two straight wins under their belts. Let's go, Blue Devils!</p>
+                </div>
+            </div>
+        </article>
 
         <!-- Article: Revere 9/14/2026 -->
         <article class="news-article">
@@ -662,6 +769,13 @@
             </div>
         </article>
 
+        <!-- Article pager (bottom) -->
+        <div class="article-pager bottom" id="pager-bottom">
+            <button class="pager-btn" id="pager-prev-bottom" onclick="changePage(-1)">&#8249; Previous</button>
+            <span class="pager-label" id="pager-label-bottom"></span>
+            <button class="pager-btn" id="pager-next-bottom" onclick="changePage(1)">Next &#8250;</button>
+        </div>
+
     </div>
 </div>
 
@@ -880,6 +994,44 @@
             if (e.key === 'Escape')     closeLightbox();
         }
     });
+
+    // Article pager
+    let currentArticle = 0;
+    const articles = Array.from(document.querySelectorAll('#tab-news .news-article'));
+
+    function activateVideos(article) {
+        article.querySelectorAll('video[data-src]').forEach(v => {
+            v.src = v.dataset.src;
+            v.removeAttribute('data-src');
+        });
+    }
+
+    function updatePager() {
+        const total = articles.length;
+        const label = 'Game ' + (currentArticle + 1) + ' of ' + total;
+        document.getElementById('pager-label-top').textContent = label;
+        document.getElementById('pager-label-bottom').textContent = label;
+        const prevDis = currentArticle === 0;
+        const nextDis = currentArticle === total - 1;
+        ['pager-prev-top','pager-prev-bottom'].forEach(id => document.getElementById(id).disabled = prevDis);
+        ['pager-next-top','pager-next-bottom'].forEach(id => document.getElementById(id).disabled = nextDis);
+    }
+
+    function showArticle(idx) {
+        articles.forEach((a, i) => a.classList.toggle('active', i === idx));
+        activateVideos(articles[idx]);
+        updatePager();
+        document.querySelector('.news-feed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function changePage(dir) {
+        const next = currentArticle + dir;
+        if (next < 0 || next >= articles.length) return;
+        currentArticle = next;
+        showArticle(currentArticle);
+    }
+
+    showArticle(0);
 </script>
 
 <script src="scripts/scripts.js"></script>
