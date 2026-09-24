@@ -709,8 +709,13 @@ canvas {
     transition: color 0.2s;
   }
 
-  .mobile-tab-handle.open .mobile-tab-label {
+  .mobile-tab-handle.open .mobile-tab-label,
+  .mobile-tab-handle.panel-open .mobile-tab-label {
     color: rgba(255,255,255,0.6);
+  }
+
+  .mobile-tab-handle.panel-open .mobile-tab-grip {
+    background: rgba(255,255,255,0.45);
   }
 
   /* Sidebar: collapsed by default, slides in when tray open */
@@ -778,11 +783,6 @@ canvas {
     overflow-x: auto;
     overflow-y: hidden;
     flex-direction: row;
-  }
-
-  /* When tray is also open, panel sits above tray+handle (52+30=82px) */
-  .app.mobile-tools-open .objects-panel {
-    bottom: 82px;
   }
 
   .objects-panel.open {

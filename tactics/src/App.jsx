@@ -1042,15 +1042,17 @@ export default function App() {
 
       {/* ── Mobile bottom tab handle ── */}
       <button
-        className={`mobile-tab-handle${mobileToolsOpen ? ' open' : ''}`}
+        className={`mobile-tab-handle${mobileToolsOpen ? ' open' : activePanel ? ' panel-open' : ''}`}
         onClick={() => {
-          if (mobileToolsOpen) { setMobileToolsOpen(false); setActivePanel(null) }
-          else setMobileToolsOpen(true)
+          if (mobileToolsOpen) { setMobileToolsOpen(false) }
+          else { setMobileToolsOpen(true); setActivePanel(null) }
         }}
         aria-label="Toggle tools"
       >
         <div className="mobile-tab-grip" />
-        <span className="mobile-tab-label">{mobileToolsOpen ? '▾ Tools' : '▸ Tools'}</span>
+        <span className="mobile-tab-label">
+          {mobileToolsOpen ? '▾ Tools' : activePanel ? `▾ ${activePanel}` : '▸ Tools'}
+        </span>
       </button>
 
       {/* ── Sidebar ── */}
@@ -1059,31 +1061,31 @@ export default function App() {
           label="Objects"
           imgSrc={`${import.meta.env.BASE_URL}soccerball.png`}
           active={activePanel === 'objects'}
-          onClick={() => setActivePanel(p => p === 'objects' ? null : 'objects')}
+          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'objects' ? null : 'objects') }}
         />
         <SidebarBtn
           label="Fields"
           icon="⬚"
           active={activePanel === 'fields'}
-          onClick={() => setActivePanel(p => p === 'fields' ? null : 'fields')}
+          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'fields' ? null : 'fields') }}
         />
         <SidebarBtn
           label="Shapes"
           icon="□"
           active={activePanel === 'shapes'}
-          onClick={() => { setActivePanel(p => p === 'shapes' ? null : 'shapes'); setSelectedShapeId(null) }}
+          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'shapes' ? null : 'shapes'); setSelectedShapeId(null) }}
         />
         <SidebarBtn
           label="Text"
           icon="T"
           active={activePanel === 'text'}
-          onClick={() => { setActivePanel(p => p === 'text' ? null : 'text'); setSelectedTextId(null) }}
+          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'text' ? null : 'text'); setSelectedTextId(null) }}
         />
         <SidebarBtn
           label="Draw"
           icon="✏"
           active={activePanel === 'draw'}
-          onClick={() => setActivePanel(p => p === 'draw' ? null : 'draw')}
+          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'draw' ? null : 'draw') }}
         />
       </nav>
 
