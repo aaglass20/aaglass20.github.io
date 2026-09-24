@@ -394,6 +394,7 @@ export default function App() {
 
   // UI state
   const [activePanel, setActivePanel] = useState(null)
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false)
   const [contextMenu, setContextMenu] = useState(null)   // { x, y, objId }
   const [images, setImages]       = useState({})   // { [type]: HTMLImageElement, field_half: ... }
   const [currentField, setCurrentField] = useState('full')
@@ -1037,7 +1038,20 @@ export default function App() {
   const canPlay = !isPlaying && frames.length >= 2 && placedObjects.length > 0
 
   return (
-    <div className="app">
+    <div className={`app${mobileToolsOpen ? ' mobile-tools-open' : ''}`}>
+
+      {/* ── Mobile bottom tab handle ── */}
+      <button
+        className={`mobile-tab-handle${mobileToolsOpen ? ' open' : ''}`}
+        onClick={() => {
+          if (mobileToolsOpen) { setMobileToolsOpen(false); setActivePanel(null) }
+          else setMobileToolsOpen(true)
+        }}
+        aria-label="Toggle tools"
+      >
+        <div className="mobile-tab-grip" />
+        <span className="mobile-tab-label">{mobileToolsOpen ? '▾ Tools' : '▸ Tools'}</span>
+      </button>
 
       {/* ── Sidebar ── */}
       <nav className="sidebar">
