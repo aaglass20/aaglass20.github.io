@@ -51,16 +51,17 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'cone', 'hoop'])
+const COLORIZABLE = new Set(['player', 'cone', 'hoop', 'pinnie'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#ef4444', cone: '#ef4444', hoop: '#3b82f6' }
+const DEFAULT_COLORS = { player: '#ef4444', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444' }
 
 const CATALOG = [
   { type: 'ball',   label: 'Soccer Ball', src: 'soccerball.png' },
   { type: 'player', label: 'Player',      src: 'player1.png'    },
   { type: 'cone',   label: 'Cone',        src: 'cone.png'       },
   { type: 'hoop',   label: 'Hoop',        src: 'hoop.png'       },
+  { type: 'pinnie', label: 'Pinnie',      src: 'pinnie.png'     },
   { type: 'pole',   label: 'Pole',        src: 'pole.png'       },
 ]
 
@@ -68,6 +69,7 @@ const FIELD_CATALOG = [
   { id: 'full',      label: 'Full Field',       src: null           },
   { id: 'half',      label: 'Half Field',        src: 'halfield.png' },
   { id: 'half-flip', label: 'Half Field (flip)', src: 'halfield.png' },
+  { id: 'middle',    label: 'Middle Third',      src: null           },
   { id: 'blank',     label: 'Blank',             src: null           },
 ]
 
@@ -1375,7 +1377,7 @@ export default function App() {
             />
 
             {/* Motion trails — dashed lines (or curved paths) between frame positions */}
-            {!isPlaying && frames.length > 1 && placedObjects.flatMap(obj =>
+            {!isPlaying && !isExporting && frames.length > 1 && placedObjects.flatMap(obj =>
               frames.slice(0, -1).map((f, i) => {
                 const from = f.positions[obj.id]
                 const to   = frames[i + 1].positions[obj.id]
@@ -1908,6 +1910,9 @@ function FieldBackground({ field, halfImg, fieldW, fieldH }) {
   if (field === 'blank') {
     return greenBorder
   }
+  if (field === 'middle') {
+    return <MiddleThirdField />
+  }
   if (field === 'half' || field === 'half-flip') {
     if (!halfImg) return greenBorder
     const flipped = field === 'half-flip'
@@ -1950,6 +1955,27 @@ function getNetPattern() {
   ctx.stroke()
   _netPattern = c
   return c
+}
+
+// ── Middle third field (landscape, same canvas as half field) ────────────────
+// Shows only the center band: sidelines + halfway line + center circle.
+// Left/right edges are open cuts — no goal lines drawn.
+function MiddleThirdField() {
+  const LCX = LW / 2
+  const LCY = LH / 2
+  return (
+    <>
+      <Rect x={-GBUF} y={-GBUF} width={LW+GBUF*2} height={LH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
+      {/* Sidelines only — no left/right goal lines */}
+      <Line points={[0, 0, LW, 0]}   stroke="white" strokeWidth={2.5} />
+      <Line points={[0, LH, LW, LH]} stroke="white" strokeWidth={2.5} />
+      {/* Halfway line */}
+      <Line points={[LCX, 0, LCX, LH]} stroke="white" strokeWidth={2} />
+      {/* Center circle + spot */}
+      <Circle x={LCX} y={LCY} radius={CIRCLE_R} stroke="white" strokeWidth={2} fill="transparent" />
+      <Circle x={LCX} y={LCY} radius={3.5} fill="white" />
+    </>
+  )
 }
 
 // ── Soccer field (static) ─────────────────────────────────────────────────────

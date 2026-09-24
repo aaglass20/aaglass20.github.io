@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Builder — The Indy Way — BDU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── BDU color tokens ── */
+    :root {
+      --g:          #00ff88;
+      --g-dark:     #00b368;
+      --g-light:    #f0fff8;
+      --navy:       #1a1a2e;
+      --blue:       #0779e4;
+      --blue-light: #ebf5ff;
+      --amber:      #f59e0b;
+      --amber-light:#fffbeb;
+      --teal:       #38b2ac;
+      --teal-light: #e6fffa;
+      --purple:     #7c3aed;
+      --purple-light:#f5f3ff;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f7fafc;
+      --gray-200:   #edf2f7;
+      --gray-300:   #e2e8f0;
+      --gray-400:   #a0aec0;
+      --gray-500:   #718096;
+      --gray-600:   #4a5568;
+      --gray-700:   #2d3748;
+      --white:      #ffffff;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.08);
+      --shadow-md:  0 4px 16px rgba(0,0,0,.1);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,.14);
+      --radius:     12px;
+      --radius-sm:  8px;
+      --radius-xs:  6px;
+    }
+
+    /* ── Page layout ── */
+    .builder-page { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 5rem; }
+
+    /* ── Wizard step dots ── */
+    .wizard-steps { display: flex; gap: .5rem; margin-bottom: 2.5rem; align-items: center; }
+    .step-dot {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--gray-200); color: var(--gray-400);
+      font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .2s;
+    }
+    .step-dot.active { background: var(--g); color: var(--navy); }
+    .step-dot.done   { background: var(--navy); color: var(--g); }
+    .step-line { flex: 1; height: 2px; background: var(--gray-200); }
+
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
+
+    .wiz-heading { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); margin-bottom: .3rem; }
+    .wiz-sub { color: var(--gray-400); font-size: .92rem; margin-bottom: 1.75rem; }
+
+    /* ── Age group picker ── */
+    .age-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: .75rem;
+      margin-bottom: 2rem;
+    }
+    .age-card {
+      background: var(--white); border: 2.5px solid var(--gray-200);
+      border-radius: var(--radius); padding: 1.25rem .75rem;
+      text-align: center; cursor: pointer; transition: all .15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .age-card:hover { border-color: var(--g); transform: translateY(-2px); }
+    .age-card.selected { border-color: var(--g); background: var(--g-light); }
+    .age-card-badge {
+      display: inline-block;
+      background: var(--navy); color: var(--g);
+      font-size: 1.1rem; font-weight: 700;
+      padding: .3rem .7rem; border-radius: 8px;
+      margin-bottom: .5rem;
+    }
+    .age-card-label { font-size: .82rem; color: var(--gray-500); font-weight: 500; }
+
+    /* ── Duration pills ── */
+    .dur-pills { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.25rem; }
+    .dur-pill {
+      padding: .55rem 1.25rem; border-radius: 99px;
+      border: 2px solid var(--gray-200); background: var(--white);
+      font-weight: 600; font-size: .9rem; color: var(--gray-600);
+      cursor: pointer; transition: all .15s;
+    }
+    .dur-pill:hover { border-color: var(--g-dark); color: var(--g-dark); }
+    .dur-pill.selected { background: var(--g); border-color: var(--g); color: var(--navy); font-weight: 700; }
+
+    .custom-dur-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 2rem; }
+    .custom-dur-row input {
+      width: 90px; padding: .5rem .75rem;
+      border: 2px solid var(--gray-200); border-radius: var(--radius-xs);
+      font-size: .9rem; font-family: inherit; color: var(--gray-700);
+    }
+    .custom-dur-row input:focus { outline: none; border-color: var(--g); }
+    .min-label { color: var(--gray-400); font-size: .85rem; }
+
+    /* ── Warmup choice ── */
+    .warmup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    .warmup-card {
+      padding: 1.5rem; border-radius: var(--radius); border: 2.5px solid var(--gray-200);
+      background: var(--white); text-align: center; cursor: pointer; transition: all .15s;
+    }
+    .warmup-card:hover { border-color: var(--g); transform: translateY(-2px); }
+    .warmup-card.selected { border-color: var(--g); background: var(--g-light); }
+    .warmup-card-icon { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .warmup-card-label { font-weight: 700; color: var(--navy); font-size: 1rem; }
+    .warmup-card-desc { font-size: .8rem; color: var(--gray-400); margin-top: .25rem; }
+
+    /* ── Summary card ── */
+    .summary-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.5rem 2rem; margin-bottom: 2rem; border-top: 5px solid var(--g);
+    }
+    .summary-row { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid var(--gray-200); font-size: .93rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { color: var(--gray-400); font-weight: 500; }
+    .summary-value { color: var(--navy); font-weight: 700; }
+
+    /* ── Wizard nav ── */
+    .wiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+    .btn-back {
+      background: none; border: 2px solid var(--gray-200); color: var(--gray-600);
+      padding: .6rem 1.25rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-back:hover { border-color: var(--gray-400); }
+    .btn-next {
+      background: var(--g); color: var(--navy); border: none;
+      padding: .7rem 1.75rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .95rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-next:hover { background: var(--g-dark); color: var(--white); }
+    .btn-next:disabled { background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; }
+    .btn-next.blue { background: var(--blue); color: var(--white); }
+    .btn-next.blue:hover { background: #0667cc; }
+
+    /* ── Builder layout ── */
+    .pb-builder { display: none; }
+    .pb-builder.active { display: block; max-width: 860px; margin: 0 auto; padding: 2rem 1rem 5rem; }
+
+    .builder-header {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+      border-top: 5px solid var(--g);
+    }
+    .bh-top { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .75rem; }
+    .bh-info { margin-right: auto; }
+    .bh-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--navy); font-size: 1.1rem; }
+    .bh-sub { font-size: .78rem; color: var(--gray-400); margin-top: .1rem; }
+
+    .time-chips { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .tc { padding: .3rem .85rem; border-radius: 99px; font-size: .8rem; font-weight: 700; }
+    .tc-total  { background: var(--blue-light); color: var(--blue); }
+    .tc-used   { background: var(--amber-light); color: #b45309; }
+    .tc-left   { background: var(--g-light); color: var(--g-dark); }
+    .tc-over   { background: #fee2e2; color: #dc2626; }
+
+    .time-bar { width: 100%; height: 8px; background: var(--gray-200); border-radius: 99px; overflow: hidden; }
+    .time-bar-fill { height: 100%; background: var(--g); border-radius: 99px; transition: width .3s; }
+    .time-bar-fill.over { background: #dc2626; }
+
+    /* ── Plan blocks ── */
+    .builder-timeline { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.25rem; }
+
+    .plan-block {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: .85rem;
+      border-left: 4px solid var(--gray-300); position: relative;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .plan-block:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .plan-block.type-warmup  { border-left-color: var(--amber); }
+    .plan-block.type-drill   { border-left-color: var(--blue); }
+    .plan-block.type-break   { border-left-color: var(--teal); }
+    .plan-block.type-closing { border-left-color: var(--g); }
+
+    .drag-handle {
+      flex-shrink: 0; cursor: grab; color: var(--gray-300);
+      font-size: 1.1rem; padding: .15rem .3rem .1rem 0;
+      margin-top: .1rem; user-select: none; transition: color .15s; line-height: 1;
+    }
+    .drag-handle:hover { color: var(--gray-500); }
+    .drag-handle:active { cursor: grabbing; }
+    .plan-block.dragging { opacity: .3; box-shadow: none; transform: none; }
+    .plan-block.drag-over { box-shadow: 0 -3px 0 var(--g), var(--shadow-md); }
+
+    .block-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: .1rem; }
+    .block-body { flex: 1; min-width: 0; padding-right: 1.75rem; }
+    .block-name { font-weight: 700; color: var(--navy); font-size: .96rem; margin-bottom: .2rem; }
+    .block-type-tag {
+      display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; padding: .1rem .45rem; border-radius: 99px; margin-bottom: .3rem;
+    }
+    .tag-warmup  { background: var(--amber-light); color: #b45309; }
+    .tag-drill   { background: var(--blue-light); color: var(--blue); }
+    .tag-break   { background: var(--teal-light); color: #2c7a7b; }
+    .tag-closing { background: var(--g-light); color: var(--g-dark); }
+
+    .block-desc  { font-size: .82rem; color: var(--gray-500); line-height: 1.5; margin-bottom: .25rem; }
+    .block-coaching { margin-top: .4rem; }
+    .block-coaching li { font-size: .79rem; color: var(--gray-600); line-height: 1.45; margin-left: 1rem; }
+
+    .block-dur {
+      flex-shrink: 0; background: var(--gray-100); color: var(--gray-600);
+      font-weight: 700; font-size: .8rem; padding: .22rem .6rem;
+      border-radius: 99px; white-space: nowrap; align-self: flex-start; margin-top: .1rem;
+    }
+    .block-remove {
+      position: absolute; top: .6rem; right: .65rem;
+      background: none; border: none; color: var(--gray-400);
+      cursor: pointer; font-size: .9rem; padding: .2rem .4rem;
+      border-radius: var(--radius-xs); line-height: 1; transition: all .15s;
+    }
+    .block-remove:hover { background: #fee2e2; color: #dc2626; }
+
+    .age-variant-note {
+      margin-top: .35rem; font-size: .77rem; color: var(--blue); font-weight: 600;
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .block-actions { display: flex; gap: .85rem; margin-top: .5rem; flex-wrap: wrap; }
+    .block-watch-btn, .block-info-btn {
+      display: inline-flex; align-items: center; gap: .3rem;
+      background: none; border: none; padding: 0;
+      font-size: .77rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: color .15s;
+    }
+    .block-watch-btn { color: var(--g-dark); }
+    .block-watch-btn:hover { color: var(--navy); text-decoration: underline; }
+    .block-info-btn { color: var(--blue); }
+    .block-info-btn:hover { color: var(--navy); text-decoration: underline; }
+    @media print { .block-actions { display: none; } }
+
+    /* ── Info modal ── */
+    .info-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      z-index: 350; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .info-modal-overlay.open { display: flex; }
+    .info-modal-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto;
+    }
+    .info-modal-head {
+      padding: 1rem 1.4rem; border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+    .info-modal-title { font-weight: 700; color: var(--navy); font-size: 1rem; }
+    .info-modal-close {
+      background: none; border: none; font-size: 1.15rem; color: var(--gray-400);
+      cursor: pointer; padding: .2rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+    }
+    .info-modal-close:hover { background: var(--gray-100); }
+    .info-modal-body { padding: 1.4rem; }
+    .info-section { margin-bottom: 1.4rem; }
+    .info-section:last-child { margin-bottom: 0; }
+    .info-section-head {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .78rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .09em; color: var(--gray-400); margin-bottom: .65rem;
+    }
+    .info-section-head span { font-size: 1rem; }
+    .info-section ul { margin: 0; padding-left: 1.2rem; }
+    .info-section li { font-size: .88rem; color: var(--gray-600); line-height: 1.6; margin-bottom: .35rem; }
+    .info-section li:last-child { margin-bottom: 0; }
+    .info-section li strong { color: var(--navy); }
+
+    .btn-add-block {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      width: 100%; padding: .9rem;
+      background: var(--white); border: 2.5px dashed var(--g-dark);
+      border-radius: var(--radius); color: var(--g-dark);
+      font-weight: 700; font-size: .95rem; cursor: pointer; font-family: inherit; transition: all .15s;
+      margin-bottom: .75rem;
+    }
+    .btn-add-block:hover { background: var(--g-light); }
+    .btn-add-block:disabled { border-color: var(--gray-200); color: var(--gray-400); cursor: not-allowed; background: none; }
+
+    .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--gray-400); }
+    .empty-state .es-icon { font-size: 3rem; display: block; margin-bottom: .75rem; }
+
+    .action-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .btn-secondary {
+      background: none; border: 2px solid var(--gray-300); color: var(--gray-600);
+      padding: .55rem 1.1rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .85rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-secondary:hover { border-color: var(--navy); color: var(--navy); }
+    .btn-primary-sm {
+      background: var(--navy); color: var(--g);
+      padding: .55rem 1.1rem; border-radius: var(--radius-sm); border: none;
+      font-weight: 700; font-size: .85rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-primary-sm:hover { background: #2a2a4e; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto; position: relative;
+    }
+    .modal-header {
+      padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+    .modal-title { font-weight: 700; color: var(--navy); font-size: 1rem; }
+    .modal-close {
+      background: none; border: none; font-size: 1.15rem; color: var(--gray-400);
+      cursor: pointer; padding: .2rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+    }
+    .modal-close:hover { background: var(--gray-100); }
+    .modal-body { padding: 1.4rem; }
+
+    .sub-panel { display: none; }
+    .sub-panel.active { display: block; }
+
+    .sub-back {
+      background: none; border: none; color: var(--blue); font-weight: 600;
+      font-size: .84rem; cursor: pointer; font-family: inherit;
+      padding: 0; margin-bottom: 1.1rem;
+      display: inline-flex; align-items: center; gap: .35rem;
+    }
+    .sub-back:hover { text-decoration: underline; }
+
+    /* ── Modal choice grid ── */
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .choice-card {
+      padding: 1.25rem 1rem; border-radius: var(--radius);
+      border: 2.5px solid var(--gray-200); text-align: center;
+      cursor: pointer; transition: all .15s;
+    }
+    .choice-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .choice-card.c-warmup:hover  { border-color: var(--amber);  background: var(--amber-light); }
+    .choice-card.c-drill:hover   { border-color: var(--blue);   background: var(--blue-light); }
+    .choice-card.c-break:hover   { border-color: var(--teal);   background: var(--teal-light); }
+    .choice-card.c-closing:hover { border-color: var(--g);      background: var(--g-light); }
+    .choice-emoji  { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .choice-label  { font-weight: 700; color: var(--navy); font-size: .93rem; }
+    .choice-desc   { font-size: .78rem; color: var(--gray-400); margin-top: .2rem; }
+
+    /* ── Bank cards ── */
+    .bank-grid { display: flex; flex-direction: column; gap: .55rem; margin-bottom: 1rem; }
+    .bank-card {
+      background: var(--gray-50); border: 2px solid var(--gray-200);
+      border-radius: var(--radius-sm); padding: .8rem 1rem;
+      cursor: pointer; transition: all .15s;
+      display: flex; align-items: flex-start; gap: .7rem;
+    }
+    .bank-card:hover   { border-color: var(--g); background: var(--g-light); }
+    .bank-card.selected{ border-color: var(--g); background: var(--g-light); }
+    .bank-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: .05rem; }
+    .bank-info { flex: 1; min-width: 0; }
+    .bank-name { font-weight: 700; color: var(--navy); font-size: .88rem; }
+    .bank-desc { font-size: .79rem; color: var(--gray-500); margin-top: .15rem; line-height: 1.4; }
+    .bank-age-tag {
+      display: inline-block; font-size: .67rem; font-weight: 700;
+      background: var(--blue-light); color: var(--blue);
+      padding: .1rem .45rem; border-radius: 99px; margin-top: .25rem;
+    }
+    .bank-check { flex-shrink: 0; font-size: 1rem; color: var(--g-dark); display: none; }
+    .bank-card.selected .bank-check { display: block; }
+
+    /* ── Time input ── */
+    .time-row { display: flex; align-items: center; gap: .75rem; margin: .75rem 0 1.1rem; }
+    .time-row label { font-weight: 600; font-size: .85rem; color: var(--gray-600); min-width: 90px; }
+    .time-row input[type="number"] {
+      width: 75px; padding: .45rem .6rem; border: 2px solid var(--gray-200);
+      border-radius: var(--radius-xs); font-size: .9rem; font-family: inherit; text-align: center;
+    }
+    .time-row input[type="number"]:focus { outline: none; border-color: var(--g); }
+
+    .break-presets { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .break-preset {
+      flex: 1; padding: .65rem; border-radius: var(--radius-sm); border: 2px solid var(--gray-200);
+      background: var(--white); font-weight: 700; font-size: .88rem; color: var(--gray-600);
+      cursor: pointer; font-family: inherit; text-align: center; transition: all .15s;
+    }
+    .break-preset:hover     { border-color: var(--teal); color: var(--teal); }
+    .break-preset.selected  { background: var(--teal); border-color: var(--teal); color: var(--white); }
+
+    .btn-confirm {
+      width: 100%; padding: .8rem; background: var(--navy); color: var(--g);
+      border: none; border-radius: var(--radius-sm); font-weight: 700;
+      font-size: .93rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-confirm:hover { background: #2a2a4e; }
+    .btn-confirm:disabled { background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; }
+
+    /* ── Video preview button on bank cards ── */
+    .bank-card-actions { display: flex; gap: .5rem; margin-top: .5rem; }
+    .btn-vid-preview {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .72rem; font-weight: 700; padding: .2rem .55rem;
+      border-radius: 99px; border: 1.5px solid var(--gray-300);
+      background: var(--white); color: var(--gray-600);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-vid-preview:hover { border-color: var(--navy); color: var(--navy); background: var(--gray-100); }
+
+    /* ── Video modal ── */
+    .vid-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7);
+      z-index: 300; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .vid-modal-overlay.open { display: flex; }
+    .vid-modal-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
+    }
+    .vid-modal-head {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+    .vid-modal-title { font-weight: 700; color: var(--navy); font-size: 1rem; }
+    .vid-modal-close {
+      background: none; border: none; font-size: 1.2rem; color: var(--gray-400);
+      cursor: pointer; padding: .2rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+    }
+    .vid-modal-close:hover { background: var(--gray-100); }
+    .vid-modal-body { padding: 1.25rem; }
+    .vid-modal-body video { width: 100%; border-radius: var(--radius-sm); background: #000; }
+    .vid-meta { display: flex; gap: .5rem; flex-wrap: wrap; margin: .85rem 0 .6rem; }
+    .vid-meta-chip {
+      font-size: .75rem; font-weight: 600; padding: .2rem .65rem;
+      border-radius: 99px; background: var(--gray-100); color: var(--gray-600);
+    }
+    .vid-desc { font-size: .88rem; color: var(--gray-600); line-height: 1.6; margin-bottom: .75rem; }
+    .vid-coaching { margin: 0; padding-left: 1.25rem; }
+    .vid-coaching li { font-size: .83rem; color: var(--gray-600); line-height: 1.55; }
+
+    /* ── Print ── */
+    @media print {
+      header, .waffle-menu-toggle, .waffle-menu, #waffleMenuContainer,
+      .wizard-steps, .pb-wizard, .btn-add-block, .action-row,
+      .drag-handle, .block-remove, #shared-footer { display: none !important; }
+      .pb-builder { padding: 0; }
+      .plan-block { break-inside: avoid; box-shadow: none; border-left-width: 6px; }
+      .builder-header { border-top-width: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>Practice Builder</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<!-- ══════════ WIZARD ══════════ -->
+<div class="builder-page" id="wizardPage">
+
+  <div class="wizard-steps">
+    <div class="step-dot active" id="dot1">1</div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="dot2">2</div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="dot3">✓</div>
+  </div>
+
+  <!-- Step 1: Age Group -->
+  <div class="wizard-panel active" id="step1">
+    <div class="wiz-heading">Which age group?</div>
+    <div class="wiz-sub">Drills and coaching points are tailored to the selected age group.</div>
+    <div class="age-grid" id="ageGrid"></div>
+    <div class="wiz-nav">
+      <div></div>
+      <button class="btn-next" id="next1" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Duration -->
+  <div class="wizard-panel" id="step2">
+    <div class="wiz-heading">How long is the session?</div>
+    <div class="wiz-sub">Set the total practice time — you'll allocate minutes to each block in the builder.</div>
+    <div class="dur-pills" id="durPills">
+      <button class="dur-pill" data-min="45">45 min</button>
+      <button class="dur-pill" data-min="60">60 min</button>
+      <button class="dur-pill selected" data-min="75">75 min</button>
+      <button class="dur-pill" data-min="90">90 min</button>
+    </div>
+    <div class="custom-dur-row">
+      <span style="font-size:.85rem;color:var(--gray-500);font-weight:500;">Custom:</span>
+      <input type="number" id="customDur" min="15" max="180" placeholder="— min" />
+      <span class="min-label">minutes</span>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" id="back2">← Back</button>
+      <button class="btn-next" id="next2">Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Summary -->
+  <div class="wizard-panel" id="step3">
+    <div class="wiz-heading">Ready to build!</div>
+    <div class="wiz-sub">Here's your session setup — click below to start assembling your plan.</div>
+    <div class="summary-card" id="summaryCard"></div>
+    <div class="wiz-nav">
+      <button class="btn-back" id="back3">← Back</button>
+      <button class="btn-next blue" id="startBuild">Build My Plan →</button>
+    </div>
+  </div>
+
+</div><!-- /wizardPage -->
+
+<!-- ══════════ BUILDER ══════════ -->
+<div class="pb-builder" id="builderPage">
+
+  <div class="builder-header">
+    <div class="bh-top">
+      <div class="bh-info">
+        <div class="bh-title" id="bhTitle"></div>
+        <div class="bh-sub" id="bhSub"></div>
+      </div>
+      <div class="time-chips" id="timeChips"></div>
+      <button class="btn-primary-sm" onclick="printPlan()">🖨️ Print</button>
+      <button class="btn-secondary" id="newPlanBtn">↩ New Plan</button>
+    </div>
+    <div class="time-bar"><div class="time-bar-fill" id="timeFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="builder-timeline" id="timeline"></div>
+  <button class="btn-add-block" id="addBlockBtn">＋ Add Block</button>
+
+</div><!-- /builderPage -->
+
+<!-- ══════════ MODAL ══════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add to Plan</div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Choose type -->
+      <div class="sub-panel active" id="panelChoice">
+        <div class="choice-grid">
+          <div class="choice-card c-warmup"  onclick="showPanel('warmup')">
+            <span class="choice-emoji">🌞</span>
+            <div class="choice-label">Warmup</div>
+            <div class="choice-desc">Dynamic warmup to start the session</div>
+          </div>
+          <div class="choice-card c-drill" onclick="showPanel('drill')">
+            <span class="choice-emoji">⚽</span>
+            <div class="choice-label">Drill</div>
+            <div class="choice-desc">Training drill from the library</div>
+          </div>
+          <div class="choice-card c-break" onclick="showPanel('break')">
+            <span class="choice-emoji">💧</span>
+            <div class="choice-label">Water Break</div>
+            <div class="choice-desc">Rest and hydration break</div>
+          </div>
+          <div class="choice-card c-closing" onclick="showPanel('closing')">
+            <span class="choice-emoji">🏁</span>
+            <div class="choice-label">Closing</div>
+            <div class="choice-desc">Cool-down or end-of-session activity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warmup panel -->
+      <div class="sub-panel" id="panelWarmup">
+        <button class="sub-back" onclick="showPanel('choice')">← Back</button>
+        <div class="bank-grid" id="warmupBank"></div>
+        <div class="time-row">
+          <label>Duration:</label>
+          <input type="number" id="warmupTime" min="5" max="20" value="10" />
+          <span class="min-label">min</span>
+        </div>
+        <button class="btn-confirm" id="confirmWarmup" disabled>Add Warmup</button>
+      </div>
+
+      <!-- Drill panel -->
+      <div class="sub-panel" id="panelDrill">
+        <button class="sub-back" onclick="showPanel('choice')">← Back</button>
+        <div class="bank-grid" id="drillBank"></div>
+        <div class="time-row">
+          <label>Duration:</label>
+          <input type="number" id="drillTime" min="5" max="40" value="15" />
+          <span class="min-label">min</span>
+        </div>
+        <button class="btn-confirm" id="confirmDrill" disabled>Add Drill</button>
+      </div>
+
+      <!-- Break panel -->
+      <div class="sub-panel" id="panelBreak">
+        <button class="sub-back" onclick="showPanel('choice')">← Back</button>
+        <div class="break-presets">
+          <button class="break-preset selected" data-min="2">2 min</button>
+          <button class="break-preset" data-min="5">5 min</button>
+          <button class="break-preset" data-min="10">10 min</button>
+        </div>
+        <div class="time-row">
+          <label>Custom:</label>
+          <input type="number" id="breakTime" min="1" max="20" value="2" />
+          <span class="min-label">min</span>
+        </div>
+        <button class="btn-confirm" id="confirmBreak">Add Break</button>
+      </div>
+
+      <!-- Closing panel -->
+      <div class="sub-panel" id="panelClosing">
+        <button class="sub-back" onclick="showPanel('choice')">← Back</button>
+        <div class="bank-grid" id="closingBank"></div>
+        <div class="time-row">
+          <label>Duration:</label>
+          <input type="number" id="closingTime" min="5" max="20" value="10" />
+          <span class="min-label">min</span>
+        </div>
+        <button class="btn-confirm" id="confirmClosing" disabled>Add Closing</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ INFO MODAL ══════════ -->
+<div class="info-modal-overlay" id="infoOverlay">
+  <div class="info-modal-box">
+    <div class="info-modal-head">
+      <div class="info-modal-title" id="infoTitle"></div>
+      <button class="info-modal-close" id="infoClose">✕</button>
+    </div>
+    <div class="info-modal-body" id="infoBody"></div>
+  </div>
+</div>
+
+<!-- ══════════ VIDEO MODAL ══════════ -->
+<div class="vid-modal-overlay" id="vidOverlay">
+  <div class="vid-modal-box">
+    <div class="vid-modal-head">
+      <div class="vid-modal-title" id="vidTitle"></div>
+      <button class="vid-modal-close" id="vidClose">✕</button>
+    </div>
+    <div class="vid-modal-body">
+      <video id="vidPlayer" controls playsinline></video>
+      <div class="vid-meta" id="vidMeta"></div>
+      <div class="vid-desc" id="vidDescText"></div>
+      <ul class="vid-coaching" id="vidCoachingList"></ul>
+    </div>
+  </div>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+
+const AGE_GROUPS = [
+  { id: 'U8',    label: 'U8',    sub: 'Ages 6–8' },
+  { id: 'U10',   label: 'U10',   sub: 'Ages 8–10' },
+  { id: 'U12',   label: 'U12',   sub: 'Ages 10–12' },
+  { id: 'U14',   label: 'U14',   sub: 'Ages 12–14' },
+  { id: 'U16',   label: 'U16',   sub: 'Ages 14–16' },
+  { id: 'Mixed', label: 'Mixed', sub: 'Multi-age' },
+];
+
+const WARMUP_BANK = [
+  {
+    id: 'dynamic-warmup',
+    name: 'Dynamic Movement Warmup',
+    icon: '🏃',
+    videoFile: null,
+    desc: 'Jogging, high knees, butt kicks, lateral shuffles, and light stretching to prepare the body for training.',
+  },
+  {
+    id: 'rondo',
+    name: 'Rondo / Possession Circle',
+    icon: '🔵',
+    videoFile: null,
+    desc: 'Small-group keep-away circle to warm up passing, movement, and decision-making before the main session.',
+  },
+  {
+    id: 'dribble-activate',
+    name: 'Dribbling Activation',
+    icon: '⚽',
+    videoFile: null,
+    desc: 'Players dribble freely through a grid, performing coach-called moves (stop, turn, fast, slow) to warm up ball control.',
+  },
+  {
+    id: '4-person-movement-warmup',
+    name: '4 Person Movement Warmup',
+    icon: '🏃',
+    videoFile: '4 person Movement Warmup.mp4',
+    desc: '4 players move continuously, progressing from two-touch to one-bounce juggle. Avoid circular patterns.',
+  },
+  {
+    id: 'circle-passing-warmup',
+    name: 'Circle Passing Warmup',
+    icon: '⭕',
+    videoFile: 'circlePassingWarmup.mp4',
+    desc: 'Coach feeds 5 balls into a cone circle. Players receive, pass one direction, and sprint to the next cone. Add balls as rhythm builds.',
+  },
+];
+
+const CLOSING_BANK = [
+  {
+    id: 'team-talk',
+    name: 'Team Huddle & Recap',
+    icon: '🗣️',
+    desc: 'Gather the team for a quick session review. Ask players what they learned and reinforce the day\'s coaching theme.',
+  },
+  {
+    id: 'cool-down',
+    name: 'Cool-Down Stretch',
+    icon: '🧘',
+    desc: 'Light static stretching — quads, hamstrings, calves, hips. Helps recovery and gives players a calm finish to training.',
+  },
+  {
+    id: 'finishing-game',
+    name: 'Finishing Game',
+    icon: '🥅',
+    desc: 'Small-sided finishing competition to close practice on a high. Teams compete to score; first to 5 wins.',
+  },
+];
+
+const DRILL_BANK = [
+  // ── Technical ──
+  {
+    id: '1v1-basic',
+    name: '1v1 Attacking Duel',
+    icon: '⚔️',
+    category: 'Technical',
+    minAge: 'U8',
+    defaultDuration: 15,
+    videoFile: null,
+    equipment: ['Cones', 'Balls', 'Small goals or target gates'],
+    purpose: 'Develop 1v1 attacking confidence and defensive discipline under live pressure.',
+    ageGroups: ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Set up two small goals 15–20 yards apart. Players alternate as attacker and defender. Attacker starts with the ball and tries to score; defender applies pressure. Switch roles after each duel.',
+        coaching: ['Attacker: head up, read the defender\'s body shape', 'Defender: stay on your feet, force to the weak side', 'Change of pace is the key — slow then fast'],
+      },
+      U8: {
+        desc: 'Larger grid (20×25 yds). Defender starts 2 yards back to give the attacker more time on the ball. Focus is on dribbling forward and taking a shot — no tackling yet.',
+        coaching: ['Head up when dribbling — where is the goal?', 'Take your shot — be brave!', 'Defender: stand up, don\'t dive in'],
+      },
+      U10: {
+        desc: 'Standard 15×20 yd grid. Introduce body feints before making the move. Attacker scores by dribbling through either of two gates; defender tries to win the ball and clear.',
+        coaching: ['Use a feint to shift the defender\'s weight before you move', 'Defender: track the ball, not the player\'s upper body', 'Keep the ball close under pressure'],
+      },
+      U12: {
+        desc: '15×20 yd grid, full intensity. After the duel ends, winner stays on for the next attacker — builds competitive pressure. Rotate through pairs.',
+        coaching: ['Explosive first step after the feint', 'Defender: delay, don\'t panic — make them predictable', 'Attacker: keep a low center of gravity to protect the ball'],
+      },
+      U14: {
+        desc: 'Smaller grid (10×15 yds), maximum intensity. Add a neutral target player who can receive a layoff — attacker must decide quickly: drive or pass. Loser becomes the next defender.',
+        coaching: ['Decision speed matters — pass or drive, commit early', 'Defender: force to weak foot, cut off the layoff angle', 'Attacker: after winning the duel, shield and protect possession'],
+      },
+      U16: {
+        desc: 'Tight 10×12 yd grid with a full-size goal. High-press environment — attacker has 8 seconds to score. Defender wins the ball and transitions immediately to counter through cone gates.',
+        coaching: ['Attacker: exploit the first touch — get behind the defender early', 'Defender: tackle timing is everything — patience then commitment', 'Transition: when you win the ball, attack immediately'],
+      },
+      Mixed: {
+        desc: 'Pair older and younger players as attacker and defender. Older player takes the more challenging role. Adjust the grid size to match the younger player\'s comfort level.',
+        coaching: ['Older players: be a good training partner, not just a winner', 'Focus on effort and improvement, not the score', 'Coaches: rotate pairs frequently'],
+      },
+    },
+  },
+  {
+    id: 'pass-tap-pass-back',
+    name: 'Pass, Tap, Pass Back',
+    icon: '👟',
+    category: 'Technical',
+    minAge: 'U8',
+    defaultDuration: 10,
+    videoFile: 'Pass, tap, pass back, 3 distances.mp4',
+    equipment: ['Cones', 'Balls'],
+    purpose: 'Improve first touch, ball control, and passing accuracy at varying distances.',
+    ageGroups: ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two players pass back and forth. One player has a cone in front of them and must receive on one side, drag the ball across the cone, and play it back. Work for about a minute, then switch. Repeat the sequence, removing the front cone each round until only one cone remains.',
+        coaching: ['Sharp first touch across the cone — don\'t let the ball run', 'Use both feet on the drag', 'Communicate — call "ready" when set to receive'],
+      },
+    },
+  },
+  {
+    id: 'cone-passing',
+    name: 'Cone Passing',
+    icon: '🎯',
+    category: 'Technical',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: 'cone passing.mp4',
+    equipment: ['Many cones', 'Balls'],
+    purpose: 'Build consistent passing, first touch, and movement habits across multiple skill variations.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Cones spread across half the field. Three groups (red/blue/yellow) rotate through. Player A performs a skill then passes to Player B following the color rotation; Player A moves to an open cone. Sets last 2–3 min with 1 min rest; run 5 sets. Change skill and pass type each set.',
+        coaching: ['Sharp skill before the pass — don\'t rush the touch', 'Move immediately after passing — don\'t stand still', 'Awareness of color rotation'],
+      },
+    },
+  },
+  {
+    id: 'movement-skill-reset',
+    name: 'Movement Skill Reset',
+    icon: '🔄',
+    category: 'Technical',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: 'MovementSkillResetFindTarget.mp4',
+    equipment: ['Cones', 'Balls'],
+    purpose: 'Train receiving and passing under movement pressure across multiple technical skills.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Players run through the gate and call a teammate\'s name to receive a pass. They play the ball back while calling their own name, then run through the gate again. Run each round for 1–2 minutes. Works across multiple skill sets: two-touch, volleys, headers, chest trap, thigh trap, foot trap, and turns.',
+        coaching: ['Eye contact before the pass — use their name', 'First touch must be out of your feet', 'Receive, play, reset — stay alert'],
+      },
+    },
+  },
+  // ── Passing ──
+  {
+    id: 'gates-competition-passing',
+    name: 'Gates Competition Passing',
+    icon: '🚪',
+    category: 'Passing',
+    minAge: 'U10',
+    defaultDuration: 12,
+    videoFile: 'Gates competition passing.mp4',
+    equipment: ['Many cones', 'Balls'],
+    purpose: 'Add competition to passing accuracy — pairs race to pass through as many gates as possible.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two evenly matched players pair up and pass to each other through as many gates as possible in 1 minute, tallying a combined score. Pairs compete against the rest of the group. Rest for 1 minute, then challenge another pair. The pair with the lower total completes a brief exercise.',
+        coaching: ['Communicate — pick the gate together before moving', 'Sharp, firm passes — let the ball do the work', 'Head up to spot the next available gate'],
+      },
+    },
+  },
+  {
+    id: 'long-passes-4',
+    name: 'Long Passes (4 People)',
+    icon: '↔️',
+    category: 'Passing',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'long passes 4 people.mp4',
+    equipment: ['Cones', 'Balls'],
+    purpose: 'Develop long passing technique, receiving, and combination play at distance.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Groups of four — two players on each side facing each other. Receive and trap, then play to the teammate beside you, who drives the ball across. Next, follow with a lofting pass or chip. Finally, add give-and-go combinations. Emphasize communication on both the receiving and sending end.',
+        coaching: ['Open body to receive — don\'t receive across yourself', 'Lofted passes: follow through high, lean back', 'Communication: call before the pass arrives'],
+      },
+    },
+  },
+  {
+    id: 'get-open',
+    name: 'Get Open',
+    icon: '🏃',
+    category: 'Passing',
+    minAge: 'U10',
+    defaultDuration: 12,
+    videoFile: 'get open.mp4',
+    equipment: ['Cones', 'Balls'],
+    purpose: 'Train movement off the ball, creating passing angles, and beating a defender to get open.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'One player starts in the middle as a defender. Two players run back and forth, attempting to get open and complete a pass through the middle. A cone can be placed in between to create a designated passing lane.',
+        coaching: ['Change direction with purpose — don\'t just run sideways', 'Use a shoulder drop or change of pace to create separation', 'Passer: wait for the right moment — don\'t force the pass'],
+      },
+    },
+  },
+  // ── Dribbling ──
+  {
+    id: 'gates-competition-dribbling',
+    name: 'Gates Competition Dribbling',
+    icon: '🚪',
+    category: 'Dribbling',
+    minAge: 'U10',
+    defaultDuration: 12,
+    videoFile: 'Gates competition dribbling.mp4',
+    equipment: ['Many cones', 'Balls'],
+    purpose: 'Build dribbling speed, control, and decision-making in a competitive timed format.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two evenly matched players pair up. One player dribbles through as many gates as possible in 1 minute while the other counts. Rest for 1 minute, then switch. The player with the lower total completes a brief exercise. Can also be run as a team competition.',
+        coaching: ['Head up — scan for the next gate before finishing the current one', 'Keep the ball tight — don\'t overrun gates', 'Accelerate through the gate, don\'t slow before it'],
+      },
+    },
+  },
+  // ── Possession ──
+  {
+    id: 'bumper-keepaway',
+    name: 'Bumper Keepaway',
+    icon: '🔵',
+    category: 'Possession',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: 'bumper Keepaway.mp4',
+    equipment: ['Cones', 'Balls', 'Pinnies'],
+    purpose: 'Develop ball retention, pressing, and tactical use of a neutral bumper player.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two teams play keep-away with 4 gates. Score a point by passing through a gate or dribbling through one. A neutral bumper player works the sideline for either team in possession. Keep score.',
+        coaching: ['Move after your pass — don\'t stand still', 'Use the bumper — they\'re always available', 'Defenders: press as a unit, don\'t ball-watch'],
+      },
+    },
+  },
+  {
+    id: 'across-the-river',
+    name: 'Across The River',
+    icon: '🌊',
+    category: 'Possession',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'across the river.mp4',
+    equipment: ['Cones', 'Balls', 'Pinnies'],
+    purpose: 'Develop ball movement, vision, timing, and the ability to switch play under pressure.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two grids, two teams. E.g. 5 vs. 2 — the larger team plays keep-away while the pair tries to win the ball and pass it to the opposite grid. If the larger team wins it back, they continue. If the smaller team is struggling, they can call for reinforcements.',
+        coaching: ['Play away from pressure — see the switch before it\'s needed', 'Quick first touch to beat the press', 'Defenders: cut passing lanes, don\'t chase blindly'],
+      },
+    },
+  },
+  {
+    id: '3-team-keepaway',
+    name: '3 Team Keep Away',
+    icon: '🔄',
+    category: 'Possession',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: '3 Team Keep Away.mp4',
+    equipment: ['Cones', 'Balls', 'Pinnies (3 colors)'],
+    purpose: 'Build communication, controlled possession, and tactical decision-making with three rotating teams.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Set up four cone goals. Three teams wear different colors — e.g. with 13 players: 5 blue, 5 yellow, 3 red. Red plays for whichever team has possession. Teams score by completing a pass through a gate. First to 5 wins.',
+        coaching: ['Neutral team: read the game — which side needs you?', 'Scoring team: find the gates, create overloads', 'Communicate constantly — talk your team into position'],
+      },
+    },
+  },
+  // ── Shooting ──
+  {
+    id: 'block-or-one-time',
+    name: 'Block Or One Time',
+    icon: '🥅',
+    category: 'Shooting',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'block or one time.mp4',
+    equipment: ['Goal', 'Balls', 'Pinnies'],
+    purpose: 'Train shooting quickly under defensive pressure while building defensive blocking habits.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Divide into three teams. One team at the goal post; the other two at the 18-yard box. The coach plays a ball in and the striking team attempts to score. The post team must block. If strikers score, defenders touch the pole again before resuming. If defense wins the ball, they move into the striking line.',
+        coaching: ['Strikers: shoot early — don\'t wait for the perfect moment', 'Defenders: get in the shooting lane, be brave', 'Call "mine!" when taking the block'],
+      },
+    },
+  },
+  {
+    id: 'closing-fast-shot-fast',
+    name: 'Closing Fast, Shot Fast',
+    icon: '🏹',
+    category: 'Shooting',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'closingFastShotFast.mp4',
+    equipment: ['2 Goals', 'Balls', 'Goalkeepers'],
+    purpose: 'Train defenders to close down quickly and forwards to shoot before being closed out.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two goals approximately 20–25 yards apart, one goalkeeper each. Defenders must close quickly to prevent shots. The offensive team should shoot quickly and frequently. Players use communication and movement to create and deny opportunities.',
+        coaching: ['Attackers: shoot the moment you\'re in range — no extra touch', 'Defenders: close angle together, not solo', 'GK: set your feet before each shot — stay alert'],
+      },
+    },
+  },
+  {
+    id: '4-point-shooting',
+    name: '4 Point Shooting',
+    icon: '⚽',
+    category: 'Shooting',
+    minAge: 'U14',
+    defaultDuration: 20,
+    videoFile: '4 point shooting.mp4',
+    equipment: ['Goal', 'Balls', 'Goalkeeper', 'Cones'],
+    purpose: 'Build finishing under realistic game conditions — rebounds, crosses, one-touch finishes, and follow-ups.',
+    ageGroups: ['U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Four lines rotate left to right. After each line shoots, they remain in play for rebounds. Line 1: receive pass, turn, shoot. Line 2: one-touch from coach. Line 3: move then shoot. Line 4: cross for finish. Keep good tempo throughout.',
+        coaching: ['Anticipate the rebound — get in position before the shot', 'Attack the ball on the cross, don\'t wait for it', 'Keep tempo high — reset quickly after each rep'],
+      },
+    },
+  },
+  // ── Possession (continued) ──
+  {
+    id: 'pierce-the-circle',
+    name: 'Pierce The Circle',
+    icon: '🎯',
+    category: 'Possession',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'tactics/Pierce the Circle.webm',
+    equipment: ['Cones or center circle', 'Balls', 'Pinnies (2 colors)'],
+    purpose: 'Train players to circulate possession under pressure and deliver sharp, penetrating passes through congested central areas.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'A possession-and-vision game where both teams operate outside a central circle and score by completing a ground pass directly through it to a teammate on the opposite side.',
+        coaching: [
+          'Draw defenders to one flank before playing through the center',
+          'Weak-side players: always adjust your angle to create a passing lane',
+          'Pass weight must be firm — don\'t let it stall inside the dead zone',
+        ],
+        setup: [
+          'Grid: Use the regulation center circle, or mark a circle with cones (10–18 yds diameter). Smaller circles increase technical difficulty.',
+          'Players: Two equal teams — 4v4 up to 7v7.',
+          'Equipment: 1 ball (plus spares nearby), cones/pinnies to mark boundaries and designate teams.',
+        ],
+        howToPlay: [
+          'Perimeter Possession: Both teams operate entirely outside the circle in a continuous keep-away game.',
+          'Scoring: A team scores 1 point by completing a ground pass directly through the circle to a teammate on the opposite side.',
+          'Restricted Zone: The central circle is a no-entry dead zone for all field players. Stepping inside = immediate turnover. Ball stops inside the circle = possession awarded to the opposing team.',
+          'Game Length: Play to a target score of 5, or run timed intervals of 3–5 minutes per round.',
+        ],
+        coachingPoints: [
+          'Draw to Exploit: Bait defenders toward one flank with short, quick passes before firing a line-breaking ball through the vacated central channel.',
+          'Off-Ball Movement: Players on the weak side must constantly adjust their angles to provide open passing lanes through the circle.',
+          'Pass Weight & Accuracy: Passes through the middle need firm pace to ensure they do not stall inside the dead zone.',
+        ],
+      },
+    },
+  },
+  // ── Tactical ──
+  {
+    id: '3v2-transition',
+    name: '3v2 Transition',
+    icon: '⚡',
+    category: 'Tactical',
+    minAge: 'U12',
+    defaultDuration: 20,
+    videoFile: '3v2 Transition.mp4',
+    equipment: ['Cones', 'Balls', 'Pinnies'],
+    purpose: 'Train transition speed, quick decision-making, and overload exploitation in a continuous format.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Three grids: the first runs a 3v2, the second is a transition zone, the third hosts a 2v2. One team holds pinnies. When a defender wins the ball, they drop their pinnie and drive into the transition zone to pass to teammates. A dropped pinnie is picked up by a waiting player to form the next 2v2.',
+        coaching: ['When you win it, go immediately — no pause', 'Third man: check shoulder and be available in next grid', 'Defenders: deny the transition pass first, then recover'],
+      },
+    },
+  },
+];
+
+// ══════════════════════════════════════════════
+//  APP STATE
+// ══════════════════════════════════════════════
+
+const LS_KEY = 'bdu_indy_plan_v1';
+
+let state = {
+  ageGroup: null,
+  duration: 75,
+  plan: [],        // array of block objects
+};
+
+let dragSrcIdx = null;
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildAgeGrid();
+  buildDurPills();
+  wireWizard();
+  wireModal();
+  wireDragDrop();
+
+  // Restore from localStorage if present
+  const saved = localStorage.getItem(LS_KEY);
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      if (s.ageGroup && s.duration && Array.isArray(s.plan)) {
+        state = s;
+        skipToBuilder();
+      }
+    } catch(e) { /* ignore corrupt data */ }
+  }
+});
+
+// ══════════════════════════════════════════════
+//  WIZARD BUILD
+// ══════════════════════════════════════════════
+
+function buildAgeGrid() {
+  const grid = document.getElementById('ageGrid');
+  AGE_GROUPS.forEach(ag => {
+    const card = document.createElement('div');
+    card.className = 'age-card';
+    card.dataset.id = ag.id;
+    card.innerHTML = `<div class="age-card-badge">${ag.label}</div><div class="age-card-label">${ag.sub}</div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.ageGroup = ag.id;
+      document.getElementById('next1').disabled = false;
+    });
+    grid.appendChild(card);
+  });
+}
+
+function buildDurPills() {
+  document.querySelectorAll('.dur-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.dur-pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+      state.duration = parseInt(pill.dataset.min);
+      document.getElementById('customDur').value = '';
+    });
+  });
+
+  document.getElementById('customDur').addEventListener('input', e => {
+    const v = parseInt(e.target.value);
+    if (v >= 15 && v <= 180) {
+      document.querySelectorAll('.dur-pill').forEach(p => p.classList.remove('selected'));
+      state.duration = v;
+    }
+  });
+}
+
+function wireWizard() {
+  // Step 1 → 2
+  document.getElementById('next1').addEventListener('click', () => goStep(2));
+  // Step 2 → 3
+  document.getElementById('next2').addEventListener('click', () => {
+    buildSummary();
+    goStep(3);
+  });
+  // Step 3 → Builder
+  document.getElementById('startBuild').addEventListener('click', skipToBuilder);
+  // Back buttons
+  document.getElementById('back2').addEventListener('click', () => goStep(1));
+  document.getElementById('back3').addEventListener('click', () => goStep(2));
+  // New Plan
+  document.getElementById('newPlanBtn').addEventListener('click', resetToWizard);
+}
+
+function goStep(n) {
+  document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  // Update dots
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    const step = i + 1;
+    dot.classList.remove('active', 'done');
+    if (step < n) dot.classList.add('done');
+    else if (step === n) dot.classList.add('active');
+  });
+}
+
+function buildSummary() {
+  const totalUsed = state.plan.reduce((s, b) => s + b.duration, 0);
+  document.getElementById('summaryCard').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Age Group</span><span class="summary-value">${state.ageGroup}</span></div>
+    <div class="summary-row"><span class="summary-label">Total Duration</span><span class="summary-value">${state.duration} min</span></div>
+    <div class="summary-row"><span class="summary-label">Blocks in plan</span><span class="summary-value">${state.plan.length}</span></div>
+  `;
+}
+
+function skipToBuilder() {
+  document.getElementById('wizardPage').style.display = 'none';
+  document.getElementById('builderPage').classList.add('active');
+  renderBuilderHeader();
+  renderTimeline();
+}
+
+function resetToWizard() {
+  if (state.plan.length > 0 && !confirm('Start a new plan? Your current plan will be cleared.')) return;
+  state = { ageGroup: null, duration: 75, plan: [] };
+  localStorage.removeItem(LS_KEY);
+  document.getElementById('wizardPage').style.display = '';
+  document.getElementById('builderPage').classList.remove('active');
+  document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('next1').disabled = true;
+  goStep(1);
+}
+
+// ══════════════════════════════════════════════
+//  BUILDER RENDER
+// ══════════════════════════════════════════════
+
+function renderBuilderHeader() {
+  document.getElementById('bhTitle').textContent = `${state.ageGroup} Practice Plan`;
+  document.getElementById('bhSub').textContent = `${state.duration} min session`;
+}
+
+function renderTimeline() {
+  const timeline = document.getElementById('timeline');
+  const used = state.plan.reduce((s, b) => s + b.duration, 0);
+  const left = state.duration - used;
+  const pct  = Math.min(100, Math.round((used / state.duration) * 100));
+
+  // Time chips
+  const chips = document.getElementById('timeChips');
+  chips.innerHTML = `
+    <span class="tc tc-total">${state.duration} min total</span>
+    <span class="tc tc-used">${used} min used</span>
+    <span class="tc ${left < 0 ? 'tc-over' : 'tc-left'}">${left < 0 ? Math.abs(left) + ' min over' : left + ' min left'}</span>
+  `;
+
+  // Progress bar
+  const fill = document.getElementById('timeFill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('over', left < 0);
+
+  // Add block button
+  document.getElementById('addBlockBtn').disabled = left <= 0;
+
+  // Timeline
+  timeline.innerHTML = '';
+
+  if (state.plan.length === 0) {
+    timeline.innerHTML = `
+      <div class="empty-state">
+        <span class="es-icon">📋</span>
+        <div>No blocks yet — click <strong>Add Block</strong> to build your plan.</div>
+      </div>`;
+    saveState();
+    return;
+  }
+
+  state.plan.forEach((block, idx) => {
+    const div = document.createElement('div');
+    div.className = `plan-block type-${block.type}`;
+    div.setAttribute('draggable', 'true');
+    div.dataset.idx = idx;
+
+    const ageBadge = block.hasVariant
+      ? `<span class="age-variant-note"><i class="fas fa-tag"></i> ${state.ageGroup} version</span>` : '';
+
+    let coachingHTML = '';
+    if (block.coaching && block.coaching.length) {
+      coachingHTML = `<ul class="block-coaching">${block.coaching.map(c => `<li>${c}</li>`).join('')}</ul>`;
+    }
+
+    const hasInfo = block.setup || block.howToPlay || block.coachingPoints;
+    const watchBtn  = block.videoFile ? `<button class="block-watch-btn">▶ Watch video</button>` : '';
+    const infoBtn   = hasInfo ? `<button class="block-info-btn">📋 Drill info</button>` : '';
+    const watchLink = (watchBtn || infoBtn) ? `<div class="block-actions">${watchBtn}${infoBtn}</div>` : '';
+
+    div.innerHTML = `
+      <span class="drag-handle" title="Drag to reorder">⠿</span>
+      <span class="block-icon">${block.icon}</span>
+      <div class="block-body">
+        <span class="block-type-tag tag-${block.type}">${block.type}</span>
+        <div class="block-name">${block.name}</div>
+        <div class="block-desc">${block.desc}</div>
+        ${ageBadge}
+        ${coachingHTML}
+        ${watchLink}
+      </div>
+      <span class="block-dur">${block.duration} min</span>
+      <button class="block-remove" title="Remove" data-idx="${idx}">✕</button>
+    `;
+
+    div.querySelector('.block-remove').addEventListener('click', e => {
+      e.stopPropagation();
+      state.plan.splice(parseInt(e.target.dataset.idx), 1);
+      renderTimeline();
+    });
+
+    if (block.videoFile) {
+      div.querySelector('.block-watch-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        openVideoModal(block.videoFile, block.name, { desc: block.desc, coaching: block.coaching || [] });
+      });
+    }
+    if (hasInfo) {
+      div.querySelector('.block-info-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        openInfoModal(block);
+      });
+    }
+
+    // Drag events
+    div.addEventListener('dragstart', e => {
+      dragSrcIdx = idx;
+      setTimeout(() => div.classList.add('dragging'), 0);
+    });
+    div.addEventListener('dragend', () => {
+      div.classList.remove('dragging');
+      document.querySelectorAll('.plan-block').forEach(b => b.classList.remove('drag-over'));
+      dragSrcIdx = null;
+    });
+    div.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragSrcIdx !== null && dragSrcIdx !== idx) div.classList.add('drag-over');
+    });
+    div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+    div.addEventListener('drop', e => {
+      e.preventDefault();
+      div.classList.remove('drag-over');
+      if (dragSrcIdx === null || dragSrcIdx === idx) return;
+      const moved = state.plan.splice(dragSrcIdx, 1)[0];
+      const targetIdx = parseInt(div.dataset.idx);
+      const insertAt = dragSrcIdx < targetIdx ? targetIdx : targetIdx;
+      state.plan.splice(insertAt, 0, moved);
+      renderTimeline();
+    });
+
+    timeline.appendChild(div);
+  });
+
+  saveState();
+}
+
+function saveState() {
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+
+function wireModal() {
+  document.getElementById('addBlockBtn').addEventListener('click', openModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+
+  // Warmup confirm
+  buildBankGrid('warmupBank', WARMUP_BANK, 'warmup');
+  document.getElementById('confirmWarmup').addEventListener('click', () => {
+    const sel = WARMUP_BANK.find(w => w.id === selectedWarmup);
+    if (!sel) return;
+    const dur = parseInt(document.getElementById('warmupTime').value) || 10;
+    state.plan.push({ type: 'warmup', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false });
+    closeModal();
+    renderTimeline();
+  });
+
+  // Drill confirm
+  buildDrillBank();
+  document.getElementById('confirmDrill').addEventListener('click', () => {
+    const drill = DRILL_BANK.find(d => d.id === selectedDrill);
+    if (!drill) return;
+    const dur = parseInt(document.getElementById('drillTime').value) || drill.defaultDuration;
+    const variant = getDrillVariant(drill, state.ageGroup);
+    state.plan.push({
+      type: 'drill', id: drill.id, name: drill.name, icon: drill.icon,
+      desc: variant.desc, coaching: variant.coaching, duration: dur,
+      hasVariant: !!drill.variants[state.ageGroup],
+      videoFile: drill.videoFile || null,
+      setup: variant.setup || null,
+      howToPlay: variant.howToPlay || null,
+      coachingPoints: variant.coachingPoints || null,
+    });
+    closeModal();
+    renderTimeline();
+  });
+
+  // Break presets
+  document.querySelectorAll('.break-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.break-preset').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('breakTime').value = btn.dataset.min;
+    });
+  });
+  document.getElementById('breakTime').addEventListener('input', e => {
+    document.querySelectorAll('.break-preset').forEach(b => b.classList.remove('selected'));
+  });
+  document.getElementById('confirmBreak').addEventListener('click', () => {
+    const dur = parseInt(document.getElementById('breakTime').value) || 2;
+    state.plan.push({ type: 'break', id: 'break', name: 'Water Break', icon: '💧', desc: 'Rest and hydration.', duration: dur, hasVariant: false });
+    closeModal();
+    renderTimeline();
+  });
+
+  // Closing confirm
+  buildBankGrid('closingBank', CLOSING_BANK, 'closing');
+  document.getElementById('confirmClosing').addEventListener('click', () => {
+    const sel = CLOSING_BANK.find(c => c.id === selectedClosing);
+    if (!sel) return;
+    const dur = parseInt(document.getElementById('closingTime').value) || 10;
+    state.plan.push({ type: 'closing', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false });
+    closeModal();
+    renderTimeline();
+  });
+}
+
+let selectedWarmup  = null;
+let selectedDrill   = null;
+let selectedClosing = null;
+
+function buildBankGrid(containerId, bank, selVar) {
+  const grid = document.getElementById(containerId);
+  bank.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'bank-card';
+    card.dataset.id = item.id;
+    card.innerHTML = `
+      <span class="bank-icon">${item.icon}</span>
+      <div class="bank-info">
+        <div class="bank-name">${item.name}</div>
+        <div class="bank-desc">${item.desc}</div>
+        ${item.videoFile ? `<div class="bank-card-actions"><button class="btn-vid-preview" data-vid="${item.videoFile}" data-name="${item.name}">▶ Watch</button></div>` : ''}
+      </div>
+      <span class="bank-check">✓</span>
+    `;
+    card.addEventListener('click', e => {
+      if (e.target.closest('.btn-vid-preview')) return;
+      grid.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      if (selVar === 'warmup') {
+        selectedWarmup = item.id;
+        document.getElementById('confirmWarmup').disabled = false;
+      } else if (selVar === 'closing') {
+        selectedClosing = item.id;
+        document.getElementById('confirmClosing').disabled = false;
+      }
+    });
+    if (item.videoFile) {
+      card.querySelector('.btn-vid-preview').addEventListener('click', e => {
+        e.stopPropagation();
+        openVideoModal(item.videoFile, item.name, { desc: item.desc, coaching: [] });
+      });
+    }
+    grid.appendChild(card);
+  });
+}
+
+function buildDrillBank() {
+  const container = document.getElementById('drillBank');
+  container.innerHTML = '';
+
+  // Category filter pills
+  const cats = ['All', ...new Set(DRILL_BANK.map(d => d.category))];
+  const filterRow = document.createElement('div');
+  filterRow.className = 'cat-filter';
+  filterRow.style.cssText = 'display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;';
+  let activeCat = 'All';
+
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (cat === 'All' ? ' active' : '');
+    btn.style.cssText = 'padding:.28rem .7rem;border-radius:99px;border:2px solid var(--gray-200);background:var(--white);font-size:.75rem;font-weight:700;color:var(--gray-500);cursor:pointer;font-family:inherit;transition:all .15s;';
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      filterRow.querySelectorAll('.cat-btn').forEach(b => { b.classList.remove('active'); b.style.background = 'var(--white)'; b.style.borderColor = 'var(--gray-200)'; b.style.color = 'var(--gray-500)'; });
+      btn.classList.add('active');
+      btn.style.background = 'var(--navy)'; btn.style.borderColor = 'var(--navy)'; btn.style.color = '#fff';
+      activeCat = cat;
+      renderDrillCards();
+    });
+    if (cat === 'All') { btn.style.background = 'var(--navy)'; btn.style.borderColor = 'var(--navy)'; btn.style.color = '#fff'; }
+    filterRow.appendChild(btn);
+  });
+
+  const grid = document.createElement('div');
+  grid.className = 'bank-grid';
+  grid.id = 'drillCardGrid';
+
+  container.appendChild(filterRow);
+  container.appendChild(grid);
+
+  // Age filtering
+  const ageOrder = ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'];
+  const ageIdx = ageOrder.indexOf(state.ageGroup || 'U8');
+
+  function renderDrillCards() {
+    grid.innerHTML = '';
+    const filtered = DRILL_BANK.filter(d => {
+      if (activeCat !== 'All' && d.category !== activeCat) return false;
+      // Show drills whose ageGroups array includes any age >= current
+      return d.ageGroups.some(ag => ageOrder.indexOf(ag) >= ageIdx || ag === 'Mixed');
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--gray-400);font-size:.85rem;">No drills found for this filter.</div>';
+      return;
+    }
+
+    filtered.forEach(drill => {
+      const variant = getDrillVariant(drill, state.ageGroup);
+      const hasSpecific = !!drill.variants[state.ageGroup];
+      const card = document.createElement('div');
+      card.className = 'bank-card';
+      card.dataset.id = drill.id;
+      card.innerHTML = `
+        <span class="bank-icon">${drill.icon}</span>
+        <div class="bank-info">
+          <div class="bank-name">${drill.name} <span style="color:var(--gray-400);font-size:.72rem;font-weight:400;">${drill.category}</span></div>
+          <div class="bank-desc">${variant.desc.substring(0, 95)}…</div>
+          ${hasSpecific ? `<span class="bank-age-tag">${state.ageGroup} version</span>` : ''}
+          ${drill.videoFile ? `<div class="bank-card-actions"><button class="btn-vid-preview" data-vid="${drill.videoFile}" data-name="${drill.name}">▶ Watch</button></div>` : ''}
+        </div>
+        <span class="bank-check">✓</span>
+      `;
+
+      card.addEventListener('click', e => {
+        if (e.target.closest('.btn-vid-preview')) return;
+        grid.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedDrill = drill.id;
+        document.getElementById('drillTime').value = drill.defaultDuration;
+        document.getElementById('confirmDrill').disabled = false;
+      });
+
+      if (drill.videoFile) {
+        card.querySelector('.btn-vid-preview').addEventListener('click', e => {
+          e.stopPropagation();
+          openVideoModal(drill.videoFile, drill.name, variant);
+        });
+      }
+
+      grid.appendChild(card);
+    });
+  }
+
+  renderDrillCards();
+}
+
+function getDrillVariant(drill, ageGroup) {
+  if (drill.variants[ageGroup]) return drill.variants[ageGroup];
+  // Fallback: closest age group
+  const order = ['U8', 'U10', 'U12', 'U14', 'U16'];
+  const idx = order.indexOf(ageGroup);
+  for (let i = idx; i >= 0; i--) {
+    if (drill.variants[order[i]]) return drill.variants[order[i]];
+  }
+  return drill.variants.default;
+}
+
+function openModal() {
+  selectedWarmup = selectedDrill = selectedClosing = null;
+  document.getElementById('confirmWarmup').disabled  = true;
+  document.getElementById('confirmDrill').disabled   = true;
+  document.getElementById('confirmClosing').disabled = true;
+  document.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+  showPanel('choice');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function showPanel(name) {
+  const map = { choice: 'panelChoice', warmup: 'panelWarmup', drill: 'panelDrill', break: 'panelBreak', closing: 'panelClosing' };
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(map[name]).classList.add('active');
+  document.getElementById('modalTitle').textContent =
+    name === 'choice' ? 'Add to Plan' :
+    name === 'warmup' ? 'Add Warmup' :
+    name === 'drill'  ? 'Add Drill' :
+    name === 'break'  ? 'Add Water Break' : 'Add Closing';
+}
+
+function wireDragDrop() {
+  // Delegated via dragover on the timeline container
+  document.getElementById('timeline').addEventListener('dragover', e => e.preventDefault());
+}
+
+// ══════════════════════════════════════════════
+//  VIDEO MODAL
+// ══════════════════════════════════════════════
+
+function openInfoModal(block) {
+  document.getElementById('infoTitle').textContent = block.name;
+
+  const sections = [];
+
+  if (block.setup && block.setup.length) {
+    sections.push({ icon: '⚙️', label: 'Setup & Equipment', items: block.setup });
+  }
+  if (block.howToPlay && block.howToPlay.length) {
+    sections.push({ icon: '🎮', label: 'How to Play', items: block.howToPlay });
+  }
+  if (block.coachingPoints && block.coachingPoints.length) {
+    sections.push({ icon: '🎯', label: 'Key Coaching Points', items: block.coachingPoints });
+  }
+  // Fallback to desc + coaching if no structured data
+  if (!sections.length) {
+    if (block.desc) sections.push({ icon: '📋', label: 'Description', items: [block.desc] });
+    if (block.coaching && block.coaching.length) sections.push({ icon: '🎯', label: 'Coaching Cues', items: block.coaching });
+  }
+
+  document.getElementById('infoBody').innerHTML = sections.map(s => `
+    <div class="info-section">
+      <div class="info-section-head"><span>${s.icon}</span>${s.label}</div>
+      <ul>${s.items.map(item => `<li>${item}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+
+  document.getElementById('infoOverlay').classList.add('open');
+}
+
+function closeInfoModal() {
+  document.getElementById('infoOverlay').classList.remove('open');
+}
+
+function openVideoModal(videoFile, title, variant) {
+  const overlay = document.getElementById('vidOverlay');
+  const player  = document.getElementById('vidPlayer');
+  document.getElementById('vidTitle').textContent = title;
+  player.src = videoFile.includes('/') ? videoFile : 'vid/' + videoFile;
+  player.load();
+  document.getElementById('vidDescText').textContent = variant.desc || '';
+  const list = document.getElementById('vidCoachingList');
+  list.innerHTML = (variant.coaching || []).map(c => `<li>${c}</li>`).join('');
+  document.getElementById('vidMeta').innerHTML = '';
+  overlay.classList.add('open');
+}
+
+function closeVideoModal() {
+  const overlay = document.getElementById('vidOverlay');
+  const player  = document.getElementById('vidPlayer');
+  overlay.classList.remove('open');
+  player.pause();
+  player.src = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('vidClose').addEventListener('click', closeVideoModal);
+  document.getElementById('vidOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('vidOverlay')) closeVideoModal();
+  });
+  document.getElementById('infoClose').addEventListener('click', closeInfoModal);
+  document.getElementById('infoOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('infoOverlay')) closeInfoModal();
+  });
+});
+
+// ══════════════════════════════════════════════
+//  PRINT
+// ══════════════════════════════════════════════
+
+function printPlan() {
+  window.print();
+}
+</script>
+</body>
+</html>

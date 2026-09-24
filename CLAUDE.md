@@ -13,6 +13,7 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 - **After adding/editing pages:** Run `python3 scripts/update-search-index.py` to regenerate `search-index.json`
 - **Game-day:** LocalStorage for lineups/stats; two-way sync with Google Sheets via Apps Script
 - **Conventions:** Collapsible sections auto-indexed by the Python script; don't manually edit `search-index.json`
+- **The Indy Way sub-feature:** `indy-way.html`, `indy-drill-library.html`, `indy-practice-builder.html` — practice plan builder with drill library. **Before adding drills or modifying this feature, read `BDU/INDY-WAY.md`** — it contains the drill data model, category rules, transfer checklist, and a registry of every drill already added (to avoid duplicates from source pages).
 
 ### /brackets — Tournament Bracket Generator
 - **What:** Single/double elimination bracket creation and management

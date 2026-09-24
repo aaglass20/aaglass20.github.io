@@ -30,7 +30,11 @@ done
 # ── Helper: split filename into searchable keywords ──
 split_keywords() {
     local name="$1"
+    # Strip directory prefix (vid/, tactics/, etc.)
+    name="${name##*/}"
+    # Strip extension
     name="${name%.mp4}"
+    name="${name%.webm}"
     # camelCase → spaces
     name=$(echo "$name" | sed 's/\([a-z]\)\([A-Z]\)/\1 \2/g')
     # underscores/hyphens → spaces
@@ -149,10 +153,13 @@ find_insert_line() {
 
 # ── Generate HTML section block ──
 generate_section() {
-    local video_file="$1"
+    local video_path="$1"   # relative path: vid/foo.mp4 or tactics/foo.webm
     local title="$2"
     local id="$3"
     local summary="$4"
+
+    local mime_type="video/mp4"
+    [[ "$video_path" == *.webm ]] && mime_type="video/webm"
 
     cat <<SECTION
 
@@ -170,7 +177,7 @@ generate_section() {
             <div class="collapsible-content">
                 <div class="video-container">
                     <video controls>
-                        <source src="vid/$video_file" type="video/mp4">
+                        <source src="$video_path" type="$mime_type">
                     </video>
                 </div>
             </div>
@@ -180,7 +187,7 @@ SECTION
 }
 
 # ── Main ──
-echo "Scanning for new videos in vid/..."
+echo "Scanning for new videos in vid/ and tactics/..."
 echo ""
 
 # Get list of videos to process
@@ -188,11 +195,11 @@ videos=()
 if [[ ${#file_args[@]} -gt 0 ]]; then
     videos=("${file_args[@]}")
 else
-    # Find untracked mp4 files
-    local raw_list=$(git ls-files --others --exclude-standard 'vid/*.mp4' 2>/dev/null)
+    # Find untracked mp4/webm files in vid/ and tactics/
+    local raw_list=$(git ls-files --others --exclude-standard 'vid/*.mp4' 'vid/*.webm' 'tactics/*.mp4' 'tactics/*.webm' 2>/dev/null)
     if [[ -n "$raw_list" ]]; then
         while IFS= read -r f; do
-            [[ -n "$f" ]] && videos+=("${f#vid/}")
+            [[ -n "$f" ]] && videos+=("$f")
         done <<< "$raw_list"
     fi
 fi

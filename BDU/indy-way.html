@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .indy-hero {
+      text-align: center;
+      padding: 3rem 1.5rem 2.5rem;
+      background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .indy-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 50%, rgba(0,255,136,.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .indy-hero-badge {
+      display: inline-block;
+      background: rgba(0,255,136,.15);
+      border: 1px solid rgba(0,255,136,.4);
+      color: #00ff88;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .indy-hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin: 0 0 .75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .indy-hero h1 span { color: #00ff88; }
+    .indy-hero p {
+      font-size: 1.05rem;
+      opacity: .85;
+      max-width: 560px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      line-height: 1.6;
+    }
+
+    .indy-intro {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem .5rem;
+      text-align: center;
+    }
+    .indy-intro h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.75rem;
+      color: #1a1a2e;
+      margin-bottom: .5rem;
+    }
+    .indy-intro p { color: #718096; font-size: .97rem; line-height: 1.7; }
+
+    .principles-row {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.5rem auto 0;
+      max-width: 720px;
+      padding: 0 1.5rem 2rem;
+    }
+    .principle-chip {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      background: #1a1a2e;
+      color: white;
+      font-size: .82rem;
+      font-weight: 600;
+      padding: .45rem 1rem;
+      border-radius: 99px;
+    }
+    .principle-chip i { color: #00ff88; font-size: .8rem; }
+
+    .indy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    .indy-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 2rem;
+      border-top: 5px solid #00ff88;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform .22s, box-shadow .22s;
+    }
+    .indy-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(0,0,0,.13);
+    }
+    .indy-card-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .indy-card h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      color: #1a1a2e;
+      margin: 0 0 .5rem;
+    }
+    .indy-card p {
+      color: #718096;
+      font-size: .93rem;
+      line-height: 1.6;
+      margin: 0 0 1.25rem;
+    }
+    .indy-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #00ff88;
+      color: #1a1a2e;
+      font-weight: 700;
+      font-size: .88rem;
+      padding: .55rem 1.1rem;
+      border-radius: 8px;
+      transition: background .18s;
+    }
+    .indy-card:hover .indy-card-cta { background: #00e67a; }
+
+    .indy-card.dim {
+      border-top-color: #cbd5e0;
+      cursor: default;
+      opacity: .85;
+    }
+    .indy-card.dim:hover { transform: none; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    .indy-card.dim .indy-card-cta { background: #edf2f7; color: #a0aec0; }
+
+    .tag-soon {
+      display: inline-block;
+      background: #fed7aa;
+      color: #c05621;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: .12rem .5rem;
+      border-radius: 99px;
+      margin-left: .5rem;
+      vertical-align: middle;
+    }
+
+    .divider-label {
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #a0aec0;
+      margin: 2rem 0 1.25rem;
+    }
+    .divider-label::before, .divider-label::after {
+      content: '——  ';
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>The Indy Way</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<div class="indy-hero">
+  <div class="indy-hero-badge">Practice Design</div>
+  <h1>Build It <span>The Indy Way</span></h1>
+  <p>A coaching toolkit for creating your own practice plans — built on BDU principles, tailored to your age group.</p>
+</div>
+
+<div class="indy-intro">
+  <h2>Why The Indy Way?</h2>
+  <p>Great practices are designed, not improvised. The Indy Way gives every BDU coach a structured starting point: drills built for your age group, and a plan builder that keeps sessions intentional and on time.</p>
+</div>
+
+<div class="principles-row">
+  <div class="principle-chip"><i class="fas fa-layer-group"></i> Progressive by age</div>
+  <div class="principle-chip"><i class="fas fa-bolt"></i> Drill-first design</div>
+  <div class="principle-chip"><i class="fas fa-clock"></i> Time-aware planning</div>
+  <div class="principle-chip"><i class="fas fa-print"></i> Print-ready</div>
+</div>
+
+<div class="indy-grid">
+
+  <a href="indy-practice-builder.html" class="indy-card">
+    <span class="indy-card-icon">📋</span>
+    <h2>Practice Plan Builder</h2>
+    <p>Choose your age group and session length, then assemble drills into a timed plan you can print and bring to the field.</p>
+    <span class="indy-card-cta"><i class="fas fa-arrow-right"></i> Open Builder</span>
+  </a>
+
+  <a href="indy-drill-library.html" class="indy-card">
+    <span class="indy-card-icon">🗂️</span>
+    <h2>Drill Library</h2>
+    <p>Browse all 17 BDU drills by category — Warmup, Technical, Passing, Possession, Shooting, and more. Preview any drill with the built-in video player.</p>
+    <span class="indy-card-cta"><i class="fas fa-arrow-right"></i> Browse Drills</span>
+  </a>
+
+  <div class="indy-card dim">
+    <span class="indy-card-icon">📁</span>
+    <h2>Saved Plans <span class="tag-soon">Coming Soon</span></h2>
+    <p>Your saved practice plans, ready to reuse or duplicate. Share with your coaching staff or adapt for next week.</p>
+    <span class="indy-card-cta"><i class="fas fa-lock"></i> Coming Soon</span>
+  </div>
+
+</div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+</body>
+</html>

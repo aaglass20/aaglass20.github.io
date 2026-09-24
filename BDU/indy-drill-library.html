@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drill Library — The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    :root {
+      --navy:      #1a1a2e;
+      --g:         #00ff88;
+      --g-dark:    #00b368;
+      --g-light:   #f0fff8;
+      --blue:      #0779e4;
+      --gray-100:  #f7fafc;
+      --gray-200:  #edf2f7;
+      --gray-300:  #e2e8f0;
+      --gray-400:  #a0aec0;
+      --gray-500:  #718096;
+      --gray-600:  #4a5568;
+      --white:     #ffffff;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.07);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.15);
+      --radius:    12px;
+      --radius-sm: 8px;
+    }
+
+    /* ── Hero strip ── */
+    .lib-hero {
+      background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+      color: white;
+      text-align: center;
+      padding: 2rem 1.5rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .lib-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 75% 50%, rgba(0,255,136,.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .lib-hero-badge {
+      display: inline-block;
+      background: rgba(0,255,136,.15);
+      border: 1px solid rgba(0,255,136,.35);
+      color: var(--g);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .3rem .9rem;
+      border-radius: 99px;
+      margin-bottom: .75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .lib-hero h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 700;
+      margin: 0 0 .4rem;
+      position: relative;
+      z-index: 1;
+    }
+    .lib-hero h2 span { color: var(--g); }
+    .lib-hero p {
+      font-size: .92rem;
+      opacity: .8;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Controls bar ── */
+    .lib-controls {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.75rem 1.5rem .75rem;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .filter-pill {
+      padding: .4rem 1rem;
+      border-radius: 99px;
+      border: 2px solid var(--gray-300);
+      background: var(--white);
+      font-size: .83rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .filter-pill:hover { border-color: var(--g-dark); color: var(--g-dark); }
+    .filter-pill.active { background: var(--g); border-color: var(--g); color: var(--navy); }
+
+    .drill-count {
+      font-size: .82rem;
+      color: var(--gray-400);
+      font-weight: 600;
+    }
+
+    /* ── Card grid ── */
+    .drill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    @media (max-width: 900px) { .drill-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px) { .drill-grid { grid-template-columns: 1fr; } }
+
+    /* ── Individual card ── */
+    .drill-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--g);
+      padding: 1.1rem 1.1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      transition: box-shadow .18s, transform .18s;
+    }
+    .drill-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .drill-card.hidden { display: none; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+    .cat-badge {
+      font-size: .67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding: .15rem .55rem;
+      border-radius: 99px;
+      color: white;
+      white-space: nowrap;
+    }
+    .cat-Warmup    { background: #f59e0b; }
+    .cat-Technical { background: #0779e4; }
+    .cat-Passing   { background: #00b368; }
+    .cat-Dribbling { background: #7c3aed; }
+    .cat-Possession{ background: #38b2ac; }
+    .cat-Shooting  { background: #dc2626; }
+    .cat-Tactical  { background: #d97706; }
+
+    .age-chip {
+      font-size: .67rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      padding: .15rem .55rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .card-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .card-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .card-desc {
+      font-size: .82rem;
+      color: var(--gray-500);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .equip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+    }
+    .equip-tag {
+      font-size: .68rem;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      padding: .1rem .5rem;
+      border-radius: 99px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: auto;
+      padding-top: .25rem;
+    }
+    .btn-watch {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      background: var(--g);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: .82rem;
+      padding: .5rem .75rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .btn-watch:hover { background: #00e67a; }
+    .btn-watch.no-video { background: var(--gray-200); color: var(--gray-400); cursor: default; }
+
+    .btn-plan {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      border: 2px solid var(--navy);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: .82rem;
+      padding: .5rem .75rem;
+      border-radius: var(--radius-sm);
+      background: none;
+      text-decoration: none;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .btn-plan:hover { background: var(--navy); color: var(--g); }
+
+    /* ── Video Modal ── */
+    .vid-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .vid-overlay.open { display: flex; }
+
+    .vid-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .vid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 1;
+    }
+    .vid-header-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .vid-close {
+      background: none;
+      border: none;
+      font-size: 1.15rem;
+      color: var(--gray-400);
+      cursor: pointer;
+      padding: .2rem .5rem;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .vid-close:hover { background: var(--gray-100); }
+
+    .vid-player-wrap {
+      background: #000;
+    }
+    .vid-player-wrap video { display: block; width: 100%; max-height: 400px; }
+
+    .vid-body {
+      padding: 1.25rem;
+    }
+    .vid-chips {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      margin-bottom: .9rem;
+    }
+    .vid-chip {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .2rem .65rem;
+      border-radius: 99px;
+    }
+    .vc-cat { color: white; }
+    .vc-age { background: var(--gray-100); color: var(--gray-600); }
+    .vc-dur { background: var(--g-light); color: var(--g-dark); }
+
+    .vid-desc {
+      font-size: .88rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .vid-coaching-title {
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--gray-400);
+      margin-bottom: .5rem;
+    }
+    .vid-coaching ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .vid-coaching li {
+      font-size: .84rem;
+      color: var(--gray-600);
+      line-height: 1.55;
+      margin-bottom: .25rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>Drill Library</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<div class="lib-hero">
+  <div class="lib-hero-badge">The Indy Way</div>
+  <h2>Drill Library — <span>18 Drills</span></h2>
+  <p>Filter by category &nbsp;·&nbsp; click ▶ to preview any drill with video</p>
+</div>
+
+<div class="lib-controls">
+  <div class="filter-pills" id="filterPills"></div>
+  <div class="drill-count" id="drillCount"></div>
+</div>
+
+<div class="drill-grid" id="drillGrid"></div>
+
+<!-- Video Modal -->
+<div class="vid-overlay" id="vidOverlay">
+  <div class="vid-box">
+    <div class="vid-header">
+      <div class="vid-header-name" id="vidName"></div>
+      <button class="vid-close" id="vidClose">✕</button>
+    </div>
+    <div class="vid-player-wrap">
+      <video id="vidPlayer" controls></video>
+    </div>
+    <div class="vid-body">
+      <div class="vid-chips" id="vidChips"></div>
+      <div class="vid-desc" id="vidDesc"></div>
+      <div class="vid-coaching">
+        <div class="vid-coaching-title">Coaching Cues</div>
+        <ul id="vidCoaching"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+const DRILLS = [
+  // Warmup
+  { id: '4-person-movement-warmup', name: '4 Person Movement Warmup', icon: '🏃', category: 'Warmup', minAge: 'U8', duration: 10, videoFile: '4 person Movement Warmup.mp4', equipment: ['Balls'], desc: 'Four players move continuously for 1–2 minutes. Avoid circular patterns. Progress through: two-touch, one-touch, one-bounce juggle, then no-bounce juggle. Can evolve to headers or combination sequences such as chest to thigh to foot.', coaching: ['Keep moving — no standing still', 'Progress the difficulty each round', 'Head up to see teammates early'] },
+  { id: 'circle-passing-warmup', name: 'Circle Passing Warmup', icon: '⭕', category: 'Warmup', minAge: 'U8', duration: 10, videoFile: 'circlePassingWarmup.mp4', equipment: ['Cones', 'Balls (multiple)'], desc: 'The coach starts with 5 balls, feeding each one to a player around the circle. Each player controls the ball and passes in one direction; the next player controls and passes on, then sprints to the next cone. Add additional balls as rhythm develops.', coaching: ['Sprint to next cone after your pass', 'One or two touches max — keep the rhythm', 'Communicate before and after the ball'] },
+
+  // Technical
+  { id: '1v1-basic', name: '1v1 Attacking Duel', icon: '⚔️', category: 'Technical', minAge: 'U8', duration: 15, videoFile: null, equipment: ['Cones', 'Balls', 'Small goals or target gates'], desc: 'Set up two small goals 15–20 yards apart. Players alternate as attacker and defender. Attacker starts with the ball and tries to score; defender applies pressure. Switch roles after each duel.', coaching: ["Attacker: head up, read the defender's body shape", 'Defender: stay on your feet, force to the weak side', 'Change of pace is key — slow then fast'] },
+  { id: 'pass-tap-pass-back', name: 'Pass, Tap, Pass Back', icon: '👟', category: 'Technical', minAge: 'U8', duration: 10, videoFile: 'Pass, tap, pass back, 3 distances.mp4', equipment: ['Cones', 'Balls'], desc: 'Two players pass back and forth. One player has a cone in front of them and must receive on one side, drag the ball across the cone, and play it back. Work for about a minute, then switch. Repeat the sequence, removing the front cone each round until only one cone remains.', coaching: ["Sharp first touch across the cone — don't let the ball run", 'Use both feet on the drag', 'Communicate — call "ready" when set to receive'] },
+  { id: 'cone-passing', name: 'Cone Passing', icon: '🎯', category: 'Technical', minAge: 'U10', duration: 15, videoFile: 'cone passing.mp4', equipment: ['Many cones', 'Balls'], desc: 'Cones spread across half the field. Three groups (red/blue/yellow) rotate through. Player A performs a skill then passes to Player B following the color rotation; Player A moves to an open cone. Sets last 2–3 min with 1 min rest; run 5 sets. Change skill and pass type each set.', coaching: ["Sharp skill before the pass — don't rush the touch", 'Move immediately after passing', 'Awareness of color rotation'] },
+  { id: 'movement-skill-reset', name: 'Movement Skill Reset', icon: '🔄', category: 'Technical', minAge: 'U10', duration: 15, videoFile: 'MovementSkillResetFindTarget.mp4', equipment: ['Cones', 'Balls'], desc: "Players run through the gate and call a teammate's name to receive a pass. They play the ball back while calling their own name, then run through the gate again. Run each round for 1–2 minutes. Works across multiple skill sets: two-touch, volleys, headers, chest trap, thigh trap, foot trap, and turns.", coaching: ['Eye contact before the pass — use their name', 'First touch must be out of your feet', 'Receive, play, reset — stay alert'] },
+
+  // Passing
+  { id: 'gates-competition-passing', name: 'Gates Competition Passing', icon: '🚪', category: 'Passing', minAge: 'U10', duration: 12, videoFile: 'Gates competition passing.mp4', equipment: ['Many cones', 'Balls'], desc: 'Two evenly matched players pair up and pass to each other through as many gates as possible in 1 minute, tallying a combined score. Pairs compete against the rest of the group. Rest for 1 minute, then challenge another pair. Lower-scoring pair completes a brief exercise.', coaching: ['Communicate — pick the gate together before moving', 'Sharp, firm passes — let the ball do the work', 'Head up to spot the next available gate'] },
+  { id: 'long-passes-4', name: 'Long Passes (4 People)', icon: '↔️', category: 'Passing', minAge: 'U12', duration: 15, videoFile: 'long passes 4 people.mp4', equipment: ['Cones', 'Balls'], desc: 'Groups of four — two players on each side facing each other. Receive and trap, then play to the teammate beside you, who drives the ball across. Next, follow with a lofting pass or chip. Finally, add give-and-go combinations. Emphasize communication.', coaching: ["Open body to receive — don't receive across yourself", 'Lofted passes: follow through high, lean back', 'Communication: call before the pass arrives'] },
+  { id: 'get-open', name: 'Get Open', icon: '🏃', category: 'Passing', minAge: 'U10', duration: 12, videoFile: 'get open.mp4', equipment: ['Cones', 'Balls'], desc: 'One player starts in the middle as a defender. Two players run back and forth, attempting to get open and complete a pass through the middle. A cone can be placed in between to create a designated passing lane.', coaching: ["Change direction with purpose — don't just run sideways", 'Use a shoulder drop or change of pace to create separation', "Passer: wait for the right moment — don't force the pass"] },
+
+  // Dribbling
+  { id: 'gates-competition-dribbling', name: 'Gates Competition Dribbling', icon: '🚪', category: 'Dribbling', minAge: 'U10', duration: 12, videoFile: 'Gates competition dribbling.mp4', equipment: ['Many cones', 'Balls'], desc: 'Two evenly matched players pair up. One player dribbles through as many gates as possible in 1 minute while the other counts. Rest for 1 minute, then switch. The player with the lower total completes a brief exercise. Also works as a team competition.', coaching: ['Head up — scan for the next gate before finishing the current one', "Keep the ball tight — don't overrun gates", "Accelerate through the gate, don't slow before it"] },
+
+  // Possession
+  { id: 'bumper-keepaway', name: 'Bumper Keepaway', icon: '🔵', category: 'Possession', minAge: 'U10', duration: 15, videoFile: 'bumper Keepaway.mp4', equipment: ['Cones', 'Balls', 'Pinnies'], desc: 'Two teams play keep-away with 4 gates. Score a point by passing through a gate or dribbling through one. A neutral bumper player works the sideline for either team in possession. Keep score.', coaching: ["Move after your pass — don't stand still", "Use the bumper — they're always available", "Defenders: press as a unit, don't ball-watch"] },
+  { id: 'across-the-river', name: 'Across The River', icon: '🌊', category: 'Possession', minAge: 'U12', duration: 15, videoFile: 'across the river.mp4', equipment: ['Cones', 'Balls', 'Pinnies'], desc: "Two grids, two teams. E.g. 5 vs. 2 — the larger team plays keep-away while the pair tries to win the ball and pass it to the opposite grid. If the larger team wins it back, they continue. If the smaller team is struggling, they can call for reinforcements.", coaching: ["Play away from pressure — see the switch before it's needed", 'Quick first touch to beat the press', "Defenders: cut passing lanes, don't chase blindly"] },
+  { id: '3-team-keepaway', name: '3 Team Keep Away', icon: '🔄', category: 'Possession', minAge: 'U10', duration: 15, videoFile: '3 Team Keep Away.mp4', equipment: ['Cones', 'Balls', 'Pinnies (3 colors)'], desc: 'Set up four cone goals. Three teams wear different colors — e.g. with 13 players: 5 blue, 5 yellow, 3 red. Red plays for whichever team has possession. Teams score by completing a pass to a teammate through a gate. First to 5 wins.', coaching: ['Neutral team: read the game — which side needs you?', 'Scoring team: find the gates, create overloads', 'Communicate constantly — talk your team into position'] },
+  { id: 'pierce-the-circle', name: 'Pierce The Circle', icon: '🎯', category: 'Possession', minAge: 'U12', duration: 15, videoFile: 'tactics/Pierce the Circle.webm', equipment: ['Cones or center circle', 'Balls', 'Pinnies (2 colors)'], desc: 'A possession-and-vision game where both teams operate outside a central circle and score by completing a ground pass directly through it to a teammate on the opposite side.', coaching: ['Draw defenders to one flank before playing through the center', 'Weak-side players: always adjust your angle to create a passing lane', "Pass weight must be firm — don't let it stall inside the dead zone"], setup: ['Grid: Use the regulation center circle, or mark a circle with cones (10–18 yds diameter). Smaller circles increase technical difficulty.', 'Players: Two equal teams — 4v4 up to 7v7.', 'Equipment: 1 ball (plus spares nearby), cones/pinnies to mark boundaries and designate teams.'], howToPlay: ['Perimeter Possession: Both teams operate entirely outside the circle in a continuous keep-away game.', 'Scoring: A team scores 1 point by completing a ground pass directly through the circle to a teammate on the opposite side.', 'Restricted Zone: The central circle is a no-entry dead zone. Stepping inside = immediate turnover. Ball stops inside = possession to opposing team.', 'Game Length: Play to 5 points, or run timed intervals of 3–5 minutes per round.'], coachingPoints: ['Draw to Exploit: Bait defenders toward one flank with short passes before firing a line-breaking ball through the vacated central channel.', 'Off-Ball Movement: Players on the weak side must constantly adjust their angles to provide open passing lanes through the circle.', 'Pass Weight & Accuracy: Passes through the middle need firm pace to ensure they do not stall inside the dead zone.'] },
+
+  // Shooting
+  { id: 'block-or-one-time', name: 'Block Or One Time', icon: '🥅', category: 'Shooting', minAge: 'U12', duration: 15, videoFile: 'block or one time.mp4', equipment: ['Goal', 'Balls', 'Pinnies'], desc: 'Divide into three teams. One team at the goal post; the other two at the 18-yard box. The coach plays a ball in and the striking team attempts to score. The post team blocks. If strikers score, defenders touch the pole again. If defense wins the ball, they become the strikers.', coaching: ["Strikers: shoot early — don't wait for the perfect moment", 'Defenders: get in the shooting lane, be brave', 'Call "mine!" when taking the block'] },
+  { id: 'closing-fast-shot-fast', name: 'Closing Fast, Shot Fast', icon: '🏹', category: 'Shooting', minAge: 'U12', duration: 15, videoFile: 'closingFastShotFast.mp4', equipment: ['2 Goals', 'Balls', 'Goalkeepers'], desc: 'Two goals approximately 20–25 yards apart. Each goal has a goalkeeper. Defenders must close quickly to prevent shots. The offensive team should shoot quickly and frequently. Players use communication and movement to create and deny opportunities.', coaching: ["Attackers: shoot the moment you're in range — no extra touch", 'Defenders: close angle together, not solo', 'GK: set your feet before each shot — stay alert'] },
+  { id: '4-point-shooting', name: '4 Point Shooting', icon: '⚽', category: 'Shooting', minAge: 'U14', duration: 20, videoFile: '4 point shooting.mp4', equipment: ['Goal', 'Balls', 'Goalkeeper', 'Cones'], desc: 'Four lines rotate left to right. After each line shoots, they remain in play for rebounds. Line 1: receive pass, turn, shoot. Line 2: one-touch from coach. Line 3: move then shoot. Line 4: cross for finish. Keep good tempo throughout.', coaching: ['Anticipate the rebound — get in position before the shot', "Attack the ball on the cross, don't wait for it", 'Keep tempo high — reset quickly after each rep'] },
+
+  // Tactical
+  { id: '3v2-transition', name: '3v2 Transition', icon: '⚡', category: 'Tactical', minAge: 'U12', duration: 20, videoFile: '3v2 Transition.mp4', equipment: ['Cones', 'Balls', 'Pinnies'], desc: 'Three grids: the first runs a 3v2, the second is a transition zone, the third hosts a 2v2. One team holds pinnies. When a defender wins the ball, they drop their pinnie and drive into the transition zone to pass to teammates. A dropped pinnie is picked up by a waiting player to form the next 2v2.', coaching: ['When you win it, go immediately — no pause', 'Third man: check shoulder and be available in next grid', 'Defenders: deny the transition pass first, then recover'] },
+];
+
+const CATEGORIES = ['All', 'Warmup', 'Technical', 'Passing', 'Dribbling', 'Possession', 'Shooting', 'Tactical'];
+let activeFilter = 'All';
+
+function init() {
+  buildFilterPills();
+  buildCards();
+  updateCount();
+  wireModal();
+}
+
+function buildFilterPills() {
+  const container = document.getElementById('filterPills');
+  CATEGORIES.forEach(cat => {
+    const count = cat === 'All' ? DRILLS.length : DRILLS.filter(d => d.category === cat).length;
+    const btn = document.createElement('button');
+    btn.className = 'filter-pill' + (cat === 'All' ? ' active' : '');
+    btn.textContent = `${cat} (${count})`;
+    btn.dataset.cat = cat;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = cat;
+      filterCards();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function buildCards() {
+  const grid = document.getElementById('drillGrid');
+  DRILLS.forEach(drill => {
+    const card = document.createElement('div');
+    card.className = 'drill-card';
+    card.dataset.category = drill.category;
+
+    const equipHTML = drill.equipment.map(e => `<span class="equip-tag">${e}</span>`).join('');
+    const hasVideo = !!drill.videoFile;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="cat-badge cat-${drill.category}">${drill.category}</span>
+        <span class="age-chip">${drill.minAge}+</span>
+      </div>
+      <div class="card-name">
+        <span class="card-icon">${drill.icon}</span>
+        ${drill.name}
+      </div>
+      <div class="card-desc">${drill.desc}</div>
+      <div class="equip-row">${equipHTML}</div>
+      <div class="card-actions">
+        <button class="btn-watch${hasVideo ? '' : ' no-video'}" data-id="${drill.id}">
+          ${hasVideo ? '▶ Watch Video' : '— No Video'}
+        </button>
+        <a class="btn-plan" href="indy-practice-builder.html">→ Build Plan</a>
+      </div>
+    `;
+
+    if (hasVideo) {
+      card.querySelector('.btn-watch').addEventListener('click', () => openModal(drill));
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+function filterCards() {
+  document.querySelectorAll('.drill-card').forEach(card => {
+    const match = activeFilter === 'All' || card.dataset.category === activeFilter;
+    card.classList.toggle('hidden', !match);
+  });
+  updateCount();
+}
+
+function updateCount() {
+  const visible = activeFilter === 'All' ? DRILLS.length : DRILLS.filter(d => d.category === activeFilter).length;
+  document.getElementById('drillCount').textContent = `Showing ${visible} drill${visible !== 1 ? 's' : ''}`;
+}
+
+// ── Modal ──
+function wireModal() {
+  document.getElementById('vidClose').addEventListener('click', closeModal);
+  document.getElementById('vidOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('vidOverlay')) closeModal();
+  });
+}
+
+function openModal(drill) {
+  const player = document.getElementById('vidPlayer');
+  const src = drill.videoFile
+    ? (drill.videoFile.includes('/') ? drill.videoFile : `vid/${drill.videoFile}`)
+    : '';
+  player.src = src;
+  document.getElementById('vidName').textContent = `${drill.icon} ${drill.name}`;
+
+  // Chips
+  const chips = document.getElementById('vidChips');
+  chips.innerHTML = `
+    <span class="vid-chip vc-cat cat-${drill.category}">${drill.category}</span>
+    <span class="vid-chip vc-age">${drill.minAge}+</span>
+    <span class="vid-chip vc-dur">${drill.duration} min</span>
+  `;
+
+  // Structured sections (Setup / How to Play / Coaching Points) or fallback
+  const body = document.getElementById('vidDesc').parentElement;
+  document.getElementById('vidDesc').textContent = drill.desc;
+
+  const ul = document.getElementById('vidCoaching');
+  ul.innerHTML = drill.coaching.map(c => `<li>${c}</li>`).join('');
+
+  // Append structured sections if present
+  let structured = body.querySelector('.drill-structured');
+  if (structured) structured.remove();
+  if (drill.setup || drill.howToPlay || drill.coachingPoints) {
+    const sections = [];
+    if (drill.setup) sections.push({ icon: '⚙️', label: 'Setup & Equipment', items: drill.setup });
+    if (drill.howToPlay) sections.push({ icon: '🎮', label: 'How to Play', items: drill.howToPlay });
+    if (drill.coachingPoints) sections.push({ icon: '🎯', label: 'Key Coaching Points', items: drill.coachingPoints });
+    const div = document.createElement('div');
+    div.className = 'drill-structured';
+    div.innerHTML = sections.map(s => `
+      <div style="margin-top:1.1rem;padding-top:1rem;border-top:1px solid #edf2f7;">
+        <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:#a0aec0;margin-bottom:.5rem;">${s.icon} ${s.label}</div>
+        <ul style="margin:0;padding-left:1.2rem;">${s.items.map(i => `<li style="font-size:.86rem;color:#4a5568;line-height:1.6;margin-bottom:.3rem;">${i}</li>`).join('')}</ul>
+      </div>
+    `).join('');
+    body.appendChild(div);
+  }
+
+  document.getElementById('vidOverlay').classList.add('open');
+}
+
+function closeModal() {
+  const player = document.getElementById('vidPlayer');
+  player.pause();
+  player.src = '';
+  document.getElementById('vidOverlay').classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
