@@ -150,6 +150,8 @@ const MEALS = [
     fg: { protein: 3 } },
   { id: 'hotdog',        name: 'Hotdog',                    emoji: '🌭', mealType: 'dinner', protein: true,  carbs: true,  veggie: false, allDay: true,
     fg: { grains: 1, protein: 2 } },
+  { id: 'lasagna',       name: 'Lasagna',                   emoji: '🍝', mealType: 'dinner', protein: true,  carbs: true,  veggie: true,  dairy: true,
+    fg: { grains: 2, protein: 3, dairy: 1, veggies: 0.5 } },
   // ── Soups ────────────────────────────────────────────────────────────────────
   { id: 'chkn-paprikash', name: 'Chicken Paprikash',       emoji: '🍲', mealType: 'dinner', protein: true,  carbs: false, veggie: true,  allDay: true,
     note: 'Add Spaetzle as a side for a complete meal',
