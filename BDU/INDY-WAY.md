@@ -77,6 +77,7 @@ All drills live in the `DRILL_BANK` constant inside `indy-practice-builder.html`
 | **Possession** | Keep-away, rondos, maintaining the ball under pressure; team-based |
 | **Shooting** | Finishing, shooting under pressure, goalkeeper training included |
 | **Tactical** | Transitions, pressing, shape, numbers-up/down scenarios |
+| **Scrimmage** | Free play, small-sided games, overload scenarios, attack-vs-defense — applied game formats with minimal coaching stop-time |
 
 If a drill spans two categories (e.g. passing + possession), pick whichever is the **primary training outcome**. Don't create sub-categories.
 
@@ -132,8 +133,14 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `4-person-movement-warmup` | 4 Person Movement Warmup | Warmup | U8 | `4 person Movement Warmup.mp4` | `igs-takeaways.html` |
 | `circle-passing-warmup` | Circle Passing Warmup | Warmup | U8 | `circlePassingWarmup.mp4` | `igs-takeaways.html` |
 | `pierce-the-circle` | Pierce The Circle | Possession | U12 | `tactics/Pierce the Circle.webm` ¹ | `igs-takeaways.html` |
+| `small-sided-4v4` | 4v4 Small-Sided Game | Scrimmage | U8 | None | *(original)* |
+| `overload-scrimmage` | Overload Scrimmage | Scrimmage | U10 | None | *(original)* |
+| `attack-vs-defense` | Attack vs. Defense | Scrimmage | U10 | None | *(original)* |
+| `scrimmage-7v7` | 7v7 Scrimmage | Scrimmage | U10 | None | *(original)* |
+| `scrimmage-9v9` | 9v9 Scrimmage | Scrimmage | U12 | None | *(original)* |
+| `scrimmage-11v11` | 11v11 Full Field Scrimmage | Scrimmage | U14 | None | *(original)* |
 
-**Total: 18 drills**
+**Total: 24 drills**
 
 ¹ This drill's video lives in `BDU/tactics/` (webm), not `BDU/vid/` (mp4). The path resolver handles this: `videoFile.includes('/') ? videoFile : 'vid/' + videoFile`.
 

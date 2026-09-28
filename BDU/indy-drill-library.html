@@ -109,6 +109,41 @@
       font-weight: 600;
     }
 
+    /* ── Search ── */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .drill-search {
+      width: 100%;
+      padding: .55rem 2.5rem .55rem 1rem;
+      border: 2px solid var(--gray-300);
+      border-radius: 99px;
+      font-size: .9rem;
+      font-family: inherit;
+      color: var(--gray-600);
+      outline: none;
+      transition: border-color .15s;
+      box-sizing: border-box;
+    }
+    .drill-search:focus { border-color: var(--g-dark); }
+    .drill-search::placeholder { color: var(--gray-400); }
+    .search-clear {
+      position: absolute;
+      right: .75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--gray-400);
+      cursor: pointer;
+      font-size: .85rem;
+      display: none;
+      padding: .2rem;
+      line-height: 1;
+    }
+    .search-clear.visible { display: block; }
+
     /* ── Card grid ── */
     .drill-grid {
       display: grid;
@@ -159,6 +194,7 @@
     .cat-Possession{ background: #38b2ac; }
     .cat-Shooting  { background: #dc2626; }
     .cat-Tactical  { background: #d97706; }
+    .cat-Scrimmage { background: #f97316; }
 
     .age-chip {
       font-size: .67rem;
@@ -372,11 +408,15 @@
 
 <div class="lib-hero">
   <div class="lib-hero-badge">The Indy Way</div>
-  <h2>Drill Library — <span>18 Drills</span></h2>
+  <h2>Drill Library — <span>24 Drills</span></h2>
   <p>Filter by category &nbsp;·&nbsp; click ▶ to preview any drill with video</p>
 </div>
 
 <div class="lib-controls">
+  <div class="search-wrap">
+    <input type="text" id="drillSearch" class="drill-search" placeholder="Search drills…" autocomplete="off">
+    <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+  </div>
   <div class="filter-pills" id="filterPills"></div>
   <div class="drill-count" id="drillCount"></div>
 </div>
@@ -445,16 +485,26 @@ const DRILLS = [
 
   // Tactical
   { id: '3v2-transition', name: '3v2 Transition', icon: '⚡', category: 'Tactical', minAge: 'U12', duration: 20, videoFile: '3v2 Transition.mp4', equipment: ['Cones', 'Balls', 'Pinnies'], desc: 'Three grids: the first runs a 3v2, the second is a transition zone, the third hosts a 2v2. One team holds pinnies. When a defender wins the ball, they drop their pinnie and drive into the transition zone to pass to teammates. A dropped pinnie is picked up by a waiting player to form the next 2v2.', coaching: ['When you win it, go immediately — no pause', 'Third man: check shoulder and be available in next grid', 'Defenders: deny the transition pass first, then recover'] },
+
+  // Scrimmage
+  { id: 'small-sided-4v4', name: '4v4 Small-Sided Game', icon: '🏟️', category: 'Scrimmage', minAge: 'U8', duration: 20, videoFile: null, equipment: ['Cones', 'Balls', 'Pinnies', 'Small goals'], desc: 'Four players per team on a 30×20 yd grid with small goals. Free play — minimal coaching intervention. Rotate subs every 2–3 minutes. Great closer for applying what was trained in the session.', coaching: ['Apply the session theme — see it happen in a real game', 'Communicate — call names, call for the ball', 'Transition immediately when possession changes'] },
+  { id: 'overload-scrimmage', name: 'Overload Scrimmage', icon: '🔢', category: 'Scrimmage', minAge: 'U10', duration: 20, videoFile: null, equipment: ['Cones', 'Balls', 'Pinnies', 'Small goals'], desc: 'Set up a 6v4 (or 5v3) on a medium grid with small goals. The larger team maintains possession and finishes; the short-handed team presses to win the ball and score on transition. Swap the advantage every 3–4 min so both groups experience both roles.', coaching: ['Bigger team: switch the point of attack to exploit the overload', 'Smaller team: press as a unit — create turnovers with numbers', 'Transition: go the moment possession changes'] },
+  { id: 'attack-vs-defense', name: 'Attack vs. Defense', icon: '⚔️', category: 'Scrimmage', minAge: 'U10', duration: 20, videoFile: null, equipment: ['Cones', 'Balls', 'Pinnies', 'Full goal', 'Goalkeeper'], desc: 'Attackers set up in your team shape (e.g. 4-3-3 front third). Defenders hold a back line. Coach plays balls in; attack must combine and finish within 8 seconds of entry. Defenders win the ball and play to target cones on the sideline. Rotate lines every 4 minutes.', coaching: ["Attackers: combination play first — don't shoot early into the block", 'Defenders: hold the line, communicate, step together on the trigger', 'GK: organize the shape constantly — be the eyes behind'] },
+  { id: 'scrimmage-7v7', name: '7v7 Scrimmage', icon: '🟢', category: 'Scrimmage', minAge: 'U10', duration: 25, videoFile: null, equipment: ['Medium goals', 'Balls', 'Pinnies', 'Goalkeepers (2)'], desc: '7v7 on a medium field (~55×40 yds). One GK, two defenders, two mids, two forwards per side. Positional shape begins to emerge at this format — great for introducing team structure without the full-field complexity. Standard restart rules. Rotate GK each period.', coaching: ['Hold your position — resist the urge to all chase the ball', 'GK: claim your box and communicate the back line', 'Midfielders: connect defense to attack — be available both ways'] },
+  { id: 'scrimmage-9v9', name: '9v9 Scrimmage', icon: '🔵', category: 'Scrimmage', minAge: 'U12', duration: 30, videoFile: null, equipment: ['Large goals', 'Balls', 'Pinnies', 'Goalkeepers (2)'], desc: '9v9 on a reduced field (~70×50 yds). Standard rules with two goalkeepers. Natural format for U12–U14 groups to rehearse positional shape and team tactics without the demands of a full 11v11. Coach may freeze once or twice to address the session theme, then restart immediately.', coaching: ['Maintain your team shape — attack and defend as a unit', 'Switch the point of attack when the flank is crowded', 'Pressure, cover, balance — defensive shape starts with the front line'] },
+  { id: 'scrimmage-11v11', name: '11v11 Full Field Scrimmage', icon: '🏟️', category: 'Scrimmage', minAge: 'U14', duration: 35, videoFile: null, equipment: ['Full goals', 'Balls', 'Pinnies', 'Goalkeepers (2)'], desc: 'Full 11v11 on a regulation field with two goalkeepers. Minimal coaching stops — let the game run and teach itself. Coach may pause once per half to highlight the session theme, then restart with a free kick. Rotate GK each half. Ideal as the final block of a session.', coaching: ["Let the game breathe — don't over-coach from the sideline", 'GK: organize set pieces, command the box, be the loudest voice on the field', 'Captains: manage the game — call shape, call switches, lead'] },
 ];
 
-const CATEGORIES = ['All', 'Warmup', 'Technical', 'Passing', 'Dribbling', 'Possession', 'Shooting', 'Tactical'];
+const CATEGORIES = ['All', 'Warmup', 'Technical', 'Passing', 'Dribbling', 'Possession', 'Shooting', 'Tactical', 'Scrimmage'];
 let activeFilter = 'All';
+let searchQuery = '';
 
 function init() {
   buildFilterPills();
   buildCards();
   updateCount();
   wireModal();
+  wireSearch();
 }
 
 function buildFilterPills() {
@@ -481,6 +531,7 @@ function buildCards() {
     const card = document.createElement('div');
     card.className = 'drill-card';
     card.dataset.category = drill.category;
+    card.dataset.id = drill.id;
 
     const equipHTML = drill.equipment.map(e => `<span class="equip-tag">${e}</span>`).join('');
     const hasVideo = !!drill.videoFile;
@@ -513,16 +564,40 @@ function buildCards() {
 }
 
 function filterCards() {
+  const q = searchQuery.trim().toLowerCase();
   document.querySelectorAll('.drill-card').forEach(card => {
-    const match = activeFilter === 'All' || card.dataset.category === activeFilter;
-    card.classList.toggle('hidden', !match);
+    const drill = DRILLS.find(d => d.id === card.dataset.id);
+    const matchCat = activeFilter === 'All' || drill.category === activeFilter;
+    const matchSearch = !q ||
+      drill.name.toLowerCase().includes(q) ||
+      drill.desc.toLowerCase().includes(q) ||
+      drill.equipment.some(e => e.toLowerCase().includes(q)) ||
+      drill.category.toLowerCase().includes(q);
+    card.classList.toggle('hidden', !(matchCat && matchSearch));
   });
   updateCount();
 }
 
 function updateCount() {
-  const visible = activeFilter === 'All' ? DRILLS.length : DRILLS.filter(d => d.category === activeFilter).length;
+  const visible = document.querySelectorAll('.drill-card:not(.hidden)').length;
   document.getElementById('drillCount').textContent = `Showing ${visible} drill${visible !== 1 ? 's' : ''}`;
+}
+
+function wireSearch() {
+  const input = document.getElementById('drillSearch');
+  const clearBtn = document.getElementById('searchClear');
+  input.addEventListener('input', () => {
+    searchQuery = input.value;
+    clearBtn.classList.toggle('visible', searchQuery.length > 0);
+    filterCards();
+  });
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    searchQuery = '';
+    clearBtn.classList.remove('visible');
+    filterCards();
+    input.focus();
+  });
 }
 
 // ── Modal ──
