@@ -51,18 +51,19 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'cone', 'hoop', 'pinnie'])
+const COLORIZABLE = new Set(['player', 'cone', 'hoop', 'pinnie', 'popup-goal'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#ef4444', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444' }
+const DEFAULT_COLORS = { player: '#ef4444', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', 'popup-goal': '#f97316' }
 
 const CATALOG = [
-  { type: 'ball',   label: 'Soccer Ball', src: 'soccerball.png' },
-  { type: 'player', label: 'Player',      src: 'player1.png'    },
-  { type: 'cone',   label: 'Cone',        src: 'cone.png'       },
-  { type: 'hoop',   label: 'Hoop',        src: 'hoop.png'       },
-  { type: 'pinnie', label: 'Pinnie',      src: 'pinnie.png'     },
-  { type: 'pole',   label: 'Pole',        src: 'pole.png'       },
+  { type: 'ball',       label: 'Soccer Ball', src: 'soccerball.png'  },
+  { type: 'player',     label: 'Player',      src: 'player1.png'     },
+  { type: 'cone',       label: 'Cone',        src: 'cone.png'        },
+  { type: 'hoop',       label: 'Hoop',        src: 'hoop.png'        },
+  { type: 'pinnie',     label: 'Pinnie',      src: 'pinnie.png'      },
+  { type: 'pole',       label: 'Pole',        src: 'pole.png'        },
+  { type: 'popup-goal', label: 'Pop-up Goal', src: 'popup-goal.jpg'  },
 ]
 
 const FIELD_CATALOG = [
@@ -220,6 +221,7 @@ function processEquipmentImage(srcImg) {
   return canvas
 }
 
+
 // ── Jersey colorization ───────────────────────────────────────────────────────
 // Module-level cache — persists for the session, keyed by hex color
 const _playerColorCache = new Map()
@@ -366,6 +368,52 @@ function getColorizedEquipment(type, srcImg, hexColor) {
   return canvas
 }
 
+// ── Canvas flip helpers ───────────────────────────────────────────────────────
+const _flipHCache = new Map()
+function flipCanvasH(src) {
+  if (_flipHCache.has(src)) return _flipHCache.get(src)
+  const out = document.createElement('canvas')
+  out.width  = src.width
+  out.height = src.height
+  const ctx  = out.getContext('2d')
+  ctx.translate(src.width, 0)
+  ctx.scale(-1, 1)
+  ctx.drawImage(src, 0, 0)
+  _flipHCache.set(src, out)
+  return out
+}
+
+const _flipVCache = new Map()
+function flipCanvasV(src) {
+  if (_flipVCache.has(src)) return _flipVCache.get(src)
+  const out = document.createElement('canvas')
+  out.width  = src.width
+  out.height = src.height
+  const ctx  = out.getContext('2d')
+  ctx.translate(0, src.height)
+  ctx.scale(1, -1)
+  ctx.drawImage(src, 0, 0)
+  _flipVCache.set(src, out)
+  return out
+}
+
+// rotation + canvas transform per popup-goal position
+// imageKey overrides the source image (defaults to 'popup-goal')
+// C = FlipH(D) = FlipH(Rotate270(img)) = Rotate270(FlipV(img))
+// E = FlipH(A) = FlipH(Rotate0(img))   = FlipH(img) directly
+const POPUP_POS_MAP = {
+  A: { rotation: 0,   transformFn: null        },
+  B: { rotation: 0,   transformFn: null,       imageKey: 'popup-goal-rear'  },
+  C: { rotation: 270, transformFn: flipCanvasV },
+  D: { rotation: 270, transformFn: null        },
+  E: { rotation: 0,   transformFn: flipCanvasH },
+  F: { rotation: 0,   transformFn: null,       imageKey: 'popup-goal-front' },
+  G: { rotation: 0,   transformFn: null,        imageKey: 'popup-goal-dig'   },
+  H: { rotation: 0,   transformFn: flipCanvasH, imageKey: 'popup-goal-dig'   },
+}
+
+
+
 // ── Sidebar button ────────────────────────────────────────────────────────────
 function SidebarBtn({ label, icon, imgSrc, active, onClick, disabled }) {
   return (
@@ -449,6 +497,15 @@ export default function App() {
     1
   )
 
+  // ── History (undo) ───────────────────────────────────────────────────────────
+  const historyRef         = useRef([])
+  const placedObjectsRef   = useRef([])
+  const framesRef          = useRef([])
+  const freePathsRef       = useRef({})
+  placedObjectsRef.current = placedObjects
+  framesRef.current        = frames
+  freePathsRef.current     = freePaths
+
   const nextId           = useRef(0)
   const nextDrawId       = useRef(0)
   const recordingPath    = useRef(null)   // { objId, segKey, points } during free-path drag
@@ -471,9 +528,20 @@ export default function App() {
   // Load all catalog + field images once
   useEffect(() => {
     CATALOG.forEach(({ type, src }) => {
+      if (!src) return
       const img = new window.Image()
       img.src = `${import.meta.env.BASE_URL}${src}`
       img.onload = () => setImages(prev => ({ ...prev, [type]: img }))
+    })
+    // Extra images used by popup-goal positions (not in catalog palette)
+    ;[
+      ['popup-goal-front', 'popup-goal-front.jpg'],
+      ['popup-goal-rear',  'popup-goal-rear.png'],
+      ['popup-goal-dig',   'popup-goal-dig.png'],
+    ].forEach(([key, src]) => {
+      const img = new window.Image()
+      img.src = `${import.meta.env.BASE_URL}${src}`
+      img.onload = () => setImages(prev => ({ ...prev, [key]: img }))
     })
     // Deduplicate by src so halfield.png only loads once; both half and half-flip share the same image
     const seenSrcs = new Map()
@@ -544,6 +612,7 @@ export default function App() {
   // ── Object mutations ─────────────────────────────────────────────────────────
 
   const addToField = useCallback((type) => {
+    pushHistory()
     const id = nextId.current++
     const initPos = {
       x: aCX + (Math.random() - 0.5) * 120,
@@ -555,6 +624,7 @@ export default function App() {
       size: DEFAULT_SIZE,
       rotation: 0,
       ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
+      ...(type === 'popup-goal' ? { popupPos: 'A' } : {}),
     }])
     setFrames(prev => prev.map(f => ({
       ...f,
@@ -575,6 +645,7 @@ export default function App() {
   }, [currentFrame])
 
   const deleteObject = useCallback((id) => {
+    pushHistory()
     setPlacedObjects(prev => prev.filter(o => o.id !== id))
     setFrames(prev => prev.map(f => {
       const positions = { ...f.positions }
@@ -594,12 +665,33 @@ export default function App() {
   }, [])
 
   const rotateObject = useCallback((id) => {
+    pushHistory()
     setPlacedObjects(prev => prev.map(o =>
       o.id === id ? { ...o, rotation: (o.rotation + 90) % 360 } : o
     ))
   }, [])
 
+  const setPopupPos = useCallback((id, pos) => {
+    pushHistory()
+    setPlacedObjects(prev => prev.map(o =>
+      o.id === id ? { ...o, popupPos: pos } : o
+    ))
+  }, [])
+
+  const POPUP_CYCLE = ['A', 'B', 'E', 'D', 'G', 'F', 'H', 'C']
+  const rotatePopupGoal = useCallback((id) => {
+    pushHistory()
+    setPlacedObjects(prev => prev.map(o => {
+      if (o.id !== id) return o
+      const cur  = POPUP_CYCLE.indexOf(o.popupPos ?? 'A')
+      const next = POPUP_CYCLE[(cur + 1) % POPUP_CYCLE.length]
+      return { ...o, popupPos: next }
+    }))
+  }, [])
+
+
   const duplicateObject = useCallback((id) => {
+    pushHistory()
     const newId = nextId.current++
     setPlacedObjects(prev => {
       const src = prev.find(o => o.id === id)
@@ -613,10 +705,12 @@ export default function App() {
   }, [])
 
   const resizeObject = useCallback((id, size) => {
+    pushHistory()
     setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, size } : o))
   }, [])
 
   const setObjectColor = useCallback((id, color) => {
+    pushHistory()
     setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, color } : o))
   }, [])
 
@@ -658,6 +752,7 @@ export default function App() {
   }, [getLayerPos])
 
   const handleDrawEnd = useCallback(() => {
+    pushHistory()
     setCurrentDraw(prev => {
       if (!prev) return prev
       const pts = prev.points
@@ -791,6 +886,7 @@ export default function App() {
   // ── Free-path recording ──────────────────────────────────────────────────────
 
   const handleFreePathDragStart = useCallback((objId, x, y) => {
+    pushHistory()
     if (!freePathMode || currentFrame === 0) return
     recordingPath.current = {
       objId,
@@ -851,6 +947,28 @@ export default function App() {
     previewLineRef.current?.points([])
   }, [])
 
+  const pushHistory = useCallback(() => {
+    historyRef.current = [
+      ...historyRef.current.slice(-49),
+      {
+        placedObjects: placedObjectsRef.current,
+        frames:        framesRef.current,
+        freePaths:     freePathsRef.current,
+      },
+    ]
+  }, [])
+
+  const undo = useCallback(() => {
+    if (historyRef.current.length === 0) return
+    const snap = historyRef.current[historyRef.current.length - 1]
+    historyRef.current = historyRef.current.slice(0, -1)
+    setPlacedObjects(snap.placedObjects)
+    setFrames(snap.frames)
+    setFreePaths(snap.freePaths)
+    setCurrentFrame(0)
+    setContextMenu(null)
+  }, [])
+
   // ── Frame controls ───────────────────────────────────────────────────────────
 
   const selectFrame = useCallback((idx) => {
@@ -861,6 +979,7 @@ export default function App() {
   // New frame copies current frame's object positions
   const addFrame = useCallback(() => {
     if (isPlaying) return
+    pushHistory()
     const copy = { ...frames[currentFrame].positions }
     setFrames(prev => [...prev, { positions: copy }])
     setCurrentFrame(frames.length)   // frames.length is pre-update = new frame's index
@@ -868,6 +987,7 @@ export default function App() {
 
   const deleteFrame = useCallback((idx) => {
     if (frames.length <= 1 || isPlaying) return
+    pushHistory()
     const updated = frames.filter((_, i) => i !== idx)
     setFrames(updated)
     setCurrentFrame(prev => Math.min(prev, updated.length - 1))
@@ -1007,7 +1127,7 @@ export default function App() {
         fillPatternRepeat: 'no-repeat',
       }
     }
-    // Ball: non-uniform scale — image fills the full circle
+    // Ball: non-uniform scale so image fills the full circle
     if (obj.type === 'ball' && images.ball) {
       const img = images.ball
       return {
@@ -1018,15 +1138,18 @@ export default function App() {
       }
     }
     // Equipment — colorizable types use getColorizedEquipment, others use processEquipmentImage
-    const img = images[obj.type]
+    const posConfig = obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A'] ?? POPUP_POS_MAP.A) : null
+    const imgKey    = posConfig?.imageKey ?? obj.type
+    const img       = images[imgKey]
     if (img) {
       const canvas = COLORIZABLE.has(obj.type)
-        ? getColorizedEquipment(obj.type, img, obj.color ?? DEFAULT_COLORS[obj.type])
+        ? getColorizedEquipment(imgKey, img, obj.color ?? DEFAULT_COLORS[obj.type])
         : processEquipmentImage(img)
-      const s = (r * 2) / Math.max(canvas.width, canvas.height)
+      const finalCanvas = posConfig?.transformFn ? posConfig.transformFn(canvas) : canvas
+      const s = (r * 2) / Math.max(finalCanvas.width, finalCanvas.height)
       return {
-        fillPatternImage:  canvas,
-        fillPatternOffset: { x: canvas.width / 2, y: canvas.height / 2 },
+        fillPatternImage:  finalCanvas,
+        fillPatternOffset: { x: finalCanvas.width / 2, y: finalCanvas.height / 2 },
         fillPatternScale:  { x: s, y: s },
         fillPatternRepeat: 'no-repeat',
       }
@@ -1354,8 +1477,15 @@ export default function App() {
       {/* ── Main ── */}
       <div className="main">
         <header className="header">
-          <h1>Soccer Tactics Board</h1>
           <div className="header-right">
+            <button
+              className="undo-btn"
+              onClick={undo}
+              disabled={isPlaying}
+              title="Undo last action"
+            >
+              ↩ Undo
+            </button>
             <button
               className="export-btn"
               onClick={exportVideo}
@@ -1593,6 +1723,7 @@ export default function App() {
             {placedObjects.map(obj => {
               const pos = frames[currentFrame]?.positions[obj.id] ?? { x: CX, y: CY }
               const r   = getRadius(obj.size)
+
               return (
                 <Circle
                   key={obj.id}
@@ -1603,7 +1734,7 @@ export default function App() {
                   x={pos.x}
                   y={pos.y}
                   radius={r}
-                  rotation={obj.rotation}
+                  rotation={obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A']?.rotation ?? 0) : obj.rotation}
                   {...getObjectFill(obj, r)}
                   strokeEnabled={obj.type === 'ball'}
                   stroke="#1a1a1a"
@@ -1790,9 +1921,16 @@ export default function App() {
 
             <div className="ctx-divider" />
 
-            <button className="ctx-btn" onClick={() => rotateObject(contextMenu.objId)}>
-              <span className="ctx-icon">↻</span> Rotate 90°
-            </button>
+            {ctxObj?.type === 'popup-goal' ? (
+              <button className="ctx-btn" onClick={() => rotatePopupGoal(contextMenu.objId)}>
+                <span className="ctx-icon">↻</span> Rotate
+              </button>
+            ) : (
+              <button className="ctx-btn" onClick={() => rotateObject(contextMenu.objId)}>
+                <span className="ctx-icon">↻</span> Rotate 90°
+              </button>
+            )}
+
             <button className="ctx-btn" onClick={() => duplicateObject(contextMenu.objId)}>
               <span className="ctx-icon">⧉</span> Duplicate
             </button>
