@@ -7,7 +7,7 @@
     "dev": "cp index.src.html index.html && vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "cp index.src.html index.html && vite build && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && cp public/*.png . && echo 'Deployed!'"
+    "deploy": "cp index.src.html index.html && vite build && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && for f in public/*.png public/*.jpg public/*.jpeg public/*.webp; do [ -f \"$f\" ] && cp \"$f\" .; done && echo 'Deployed!'"
   },
   "dependencies": {
     "konva": "^10.2.3",
