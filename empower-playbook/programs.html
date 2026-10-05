@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programs — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Layout ── */
+    .pg { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── Home ── */
+    .pg-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .pg-title { font-size: 1.5rem; font-weight: 800; color: var(--blue); }
+    .pg-sub { color: var(--gray-400); font-size: .9rem; margin-top: .25rem; }
+
+    .btn-create {
+      background: var(--orange); color: #fff; border: none;
+      padding: .7rem 1.5rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit;
+      transition: all .15s; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0;
+    }
+    .btn-create:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    /* ── Setup dropdown ── */
+    .hdr-actions { display: flex; gap: .6rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+    .setup-wrap { position: relative; }
+    .btn-setup {
+      background: var(--white); color: var(--gray-700);
+      border: 2px solid var(--gray-200, #e5e7eb);
+      padding: .68rem 1.1rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit;
+      transition: all .15s; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .btn-setup:hover { border-color: var(--blue); color: var(--blue); background: #eff6ff; }
+    .btn-setup.open  { border-color: var(--blue); color: var(--blue); background: #eff6ff; }
+    .setup-menu {
+      display: none;
+      position: absolute; top: calc(100% + .4rem); right: 0;
+      background: var(--white); border-radius: var(--radius-sm);
+      box-shadow: 0 4px 20px rgba(0,0,0,.14);
+      border: 1.5px solid var(--gray-100, #f3f4f6);
+      min-width: 200px; z-index: 200; overflow: hidden;
+    }
+    .setup-menu.open { display: block; }
+    .setup-menu a {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .7rem 1.1rem; text-decoration: none;
+      color: var(--gray-700); font-size: .9rem; font-weight: 600;
+      transition: background .12s;
+    }
+    .setup-menu a:hover { background: var(--gray-50, #f9fafb); color: var(--blue); }
+    .setup-menu-divider { border: none; border-top: 1px solid var(--gray-100, #f3f4f6); margin: .2rem 0; }
+
+    /* search row */
+    .search-row {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .search-input-wrap { position: relative; flex: 1; min-width: 180px; max-width: 360px; }
+    .search-icon {
+      position: absolute; left: .75rem; top: 50%; transform: translateY(-50%);
+      font-size: .9rem; pointer-events: none; opacity: .45;
+    }
+    .search-input {
+      width: 100%; padding: .6rem .85rem .6rem 2.2rem;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .9rem; font-family: inherit; color: var(--gray-700);
+      transition: border-color .15s; background: var(--white);
+    }
+    .search-input:focus { outline: none; border-color: var(--orange); }
+    .search-clear {
+      position: absolute; right: .65rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--gray-400); cursor: pointer;
+      font-size: .85rem; padding: .1rem .3rem; line-height: 1; display: none;
+    }
+    .search-clear.visible { display: block; }
+    .search-clear:hover { color: var(--gray-700); }
+    .search-count { font-size: .82rem; color: var(--gray-400); font-weight: 500; white-space: nowrap; }
+
+    /* selection toolbar */
+    .selection-bar {
+      display: none; align-items: center; gap: .75rem; flex-wrap: wrap;
+      background: var(--blue); color: #fff;
+      padding: .75rem 1.25rem; border-radius: var(--radius-sm);
+      margin-bottom: 1rem; box-shadow: var(--shadow-md);
+    }
+    .selection-bar.visible { display: flex; }
+    .sel-count { font-weight: 700; font-size: .9rem; flex: 1; }
+    .btn-sel-delete {
+      background: #ef4444; color: #fff; border: none;
+      padding: .45rem 1rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .85rem; cursor: pointer; font-family: inherit;
+      transition: background .15s;
+    }
+    .btn-sel-delete:hover { background: #dc2626; }
+    .btn-sel-clear {
+      background: rgba(255,255,255,.15); color: #fff; border: 1.5px solid rgba(255,255,255,.3);
+      padding: .45rem .9rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .85rem; cursor: pointer; font-family: inherit;
+      transition: background .15s;
+    }
+    .btn-sel-clear:hover { background: rgba(255,255,255,.25); }
+
+    .programs-grid {
+      display: grid; gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    }
+    .prog-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--gray-100); padding: 1.25rem 1.35rem;
+      cursor: pointer; transition: all .15s; border-top: 4px solid var(--orange);
+      position: relative;
+    }
+    .prog-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .prog-card.checked {
+      border-color: var(--blue); background: var(--blue-light);
+      box-shadow: 0 0 0 2px var(--blue);
+    }
+    .prog-card.checked:hover { transform: none; }
+
+    /* per-card checkbox */
+    .prog-cb-wrap {
+      position: absolute; top: .75rem; right: .75rem;
+      width: 20px; height: 20px; cursor: pointer; z-index: 1;
+    }
+    .prog-cb-wrap input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .prog-cb-box {
+      width: 20px; height: 20px; border-radius: 5px;
+      border: 2px solid var(--gray-400); background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s; font-size: .7rem; color: #fff;
+    }
+    .prog-cb-wrap input:checked + .prog-cb-box { background: var(--blue); border-color: var(--blue); }
+    .prog-cb-wrap:hover .prog-cb-box { border-color: var(--blue); }
+
+    .prog-card-sport { font-size: 2rem; margin-bottom: .45rem; line-height: 1; }
+    .prog-card-name { font-weight: 800; color: var(--blue); font-size: 1rem; margin-bottom: .4rem; padding-right: 1.5rem; }
+    .prog-card-chips { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .5rem; }
+    .chip {
+      background: var(--blue-light); color: var(--blue);
+      font-size: .73rem; font-weight: 700; padding: .2rem .6rem; border-radius: 99px;
+    }
+    .chip.orange { background: var(--orange-light); color: var(--orange-dark); }
+    .prog-card-groups { font-size: .82rem; color: var(--gray-600); margin-bottom: .35rem; }
+    .prog-card-progress { font-size: .78rem; color: var(--gray-400); }
+    .no-results {
+      text-align: center; padding: 2.5rem 1rem;
+      background: var(--white); border-radius: var(--radius);
+      border: 2px dashed var(--gray-100); color: var(--gray-400); font-size: .92rem;
+    }
+
+    .empty-state {
+      text-align: center; padding: 4rem 2rem;
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      border: 2px dashed var(--gray-100);
+    }
+    .es-icon { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+    .es-title { font-weight: 800; color: var(--blue); font-size: 1.15rem; margin-bottom: .4rem; }
+    .es-sub { color: var(--gray-400); font-size: .9rem; margin-bottom: 1.5rem; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+    /* ── Wizard ── */
+    .wz-wrap { max-width: 700px; margin: 0 auto; }
+
+    .back-bar { margin-bottom: 1.5rem; }
+    .btn-text-back {
+      background: none; border: none; color: var(--gray-600); font-size: .9rem;
+      font-weight: 600; cursor: pointer; font-family: inherit; padding: 0;
+      display: inline-flex; align-items: center; gap: .35rem; transition: color .15s;
+    }
+    .btn-text-back:hover { color: var(--blue); }
+
+    .wz-steps { display: flex; gap: .5rem; align-items: center; margin-bottom: 2.5rem; }
+    .wz-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gray-100); color: var(--gray-400);
+      font-weight: 700; font-size: .85rem; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; transition: all .2s;
+    }
+    .wz-dot.active { background: var(--orange); color: #fff; }
+    .wz-dot.done { background: var(--green); color: #fff; }
+    .wz-line { flex: 1; height: 2px; background: var(--gray-100); }
+
+    .wz-panel { display: none; }
+    .wz-panel.active { display: block; }
+    .wz-heading { font-size: 1.3rem; font-weight: 800; color: var(--blue); margin-bottom: .3rem; }
+    .wz-sub { color: var(--gray-400); font-size: .9rem; margin-bottom: 1.75rem; line-height: 1.5; }
+
+    .field-label { font-weight: 600; font-size: .9rem; color: var(--gray-700); margin-bottom: .5rem; display: block; }
+    .field-input {
+      width: 100%; padding: .65rem .9rem;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .95rem; font-family: inherit; color: var(--gray-700);
+      transition: border-color .15s; margin-bottom: 1.5rem;
+    }
+    .field-input:focus { outline: none; border-color: var(--orange); }
+
+    /* sport picker */
+    .sport-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      gap: .85rem; margin-bottom: 2rem;
+    }
+    .sport-card-wz {
+      background: var(--white); border: 2.5px solid var(--gray-100);
+      border-radius: var(--radius); padding: 1.1rem .75rem;
+      text-align: center; cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm);
+    }
+    .sport-card-wz:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .sport-card-wz.selected { border-color: var(--orange); background: var(--orange-light); }
+    .sc-icon { font-size: 2.1rem; display: block; margin-bottom: .35rem; }
+    .sc-name { font-weight: 700; font-size: .85rem; color: var(--blue); }
+
+    /* sessions step */
+    .sessions-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+    .stepper {
+      display: flex; align-items: center;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm); overflow: hidden;
+    }
+    .stepper-btn {
+      background: var(--gray-50); border: none; width: 40px; height: 40px;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer; color: var(--gray-600);
+      font-family: inherit; transition: all .15s;
+    }
+    .stepper-btn:hover { background: var(--orange-light); color: var(--orange); }
+    .stepper-val {
+      width: 52px; text-align: center; font-weight: 800; font-size: 1.1rem; color: var(--blue);
+      border-left: 2px solid var(--gray-100); border-right: 2px solid var(--gray-100);
+      height: 40px; line-height: 40px; background: var(--white);
+    }
+    .sessions-label { font-weight: 600; color: var(--gray-600); font-size: .92rem; }
+
+    .toggle-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+    .toggle-sw { position: relative; width: 44px; height: 24px; cursor: pointer; display: inline-block; }
+    .toggle-sw input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0; background: var(--gray-100);
+      border-radius: 99px; transition: background .2s;
+    }
+    .toggle-sw input:checked + .toggle-track { background: var(--orange); }
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%; background: #fff;
+      transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); pointer-events: none;
+    }
+    .toggle-sw input:checked ~ .toggle-thumb { transform: translateX(20px); }
+    .toggle-label { font-size: .9rem; color: var(--gray-600); font-weight: 500; }
+
+    .dates-grid { display: grid; gap: .5rem; margin-bottom: 1.5rem; max-height: 300px; overflow-y: auto; }
+    .date-row { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: .75rem; }
+    .date-wk-lbl { font-weight: 600; font-size: .85rem; color: var(--blue); }
+    .date-input {
+      padding: .45rem .75rem; border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .88rem; font-family: inherit; color: var(--gray-700);
+    }
+    .date-input:focus { outline: none; border-color: var(--orange); }
+
+    /* groups step */
+    .gc-pills { display: flex; gap: .65rem; margin-bottom: 1.75rem; }
+    .gc-pill {
+      padding: .6rem 1.5rem; border-radius: 99px;
+      border: 2.5px solid var(--gray-100); background: var(--white);
+      font-weight: 700; font-size: .95rem; color: var(--gray-600);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .gc-pill:hover { border-color: var(--orange); color: var(--orange); }
+    .gc-pill.selected { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+    .group-names-editor { display: flex; flex-direction: column; gap: .65rem; margin-bottom: 1.5rem; }
+    .gn-row { display: flex; align-items: center; gap: .75rem; }
+    .gn-badge {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .8rem; color: var(--blue);
+    }
+    .gn-input {
+      flex: 1; padding: .55rem .85rem; border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .9rem; font-family: inherit; color: var(--gray-700); font-weight: 600;
+    }
+    .gn-input:focus { outline: none; border-color: var(--orange); }
+
+    /* review card */
+    .review-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.75rem; border-top: 5px solid var(--orange); margin-bottom: 1.5rem;
+    }
+    .rv-sport { font-size: 2.5rem; text-align: center; margin-bottom: .5rem; }
+    .rv-name { font-size: 1.3rem; font-weight: 800; color: var(--blue); text-align: center; margin-bottom: 1.25rem; }
+    .rv-rows { display: flex; flex-direction: column; }
+    .rv-row {
+      display: flex; justify-content: space-between;
+      padding: .65rem 0; border-bottom: 1px solid var(--gray-100); font-size: .92rem;
+    }
+    .rv-row:last-child { border-bottom: none; }
+    .rv-label { color: var(--gray-400); font-weight: 500; }
+    .rv-val { color: var(--blue); font-weight: 700; }
+
+    .btn-create-prog {
+      width: 100%; background: var(--blue); color: #fff; border: none;
+      padding: .9rem; border-radius: var(--radius-sm);
+      font-weight: 800; font-size: 1rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-create-prog:hover { background: var(--blue-mid); transform: translateY(-1px); }
+
+    /* wizard nav */
+    .wz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+    .btn-wz-back {
+      background: none; border: 2px solid var(--gray-100); color: var(--gray-600);
+      padding: .6rem 1.25rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-wz-back:hover { border-color: var(--gray-400); }
+    .btn-wz-next {
+      background: var(--orange); color: #fff; border: none;
+      padding: .7rem 1.75rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-wz-next:hover { background: var(--orange-dark); }
+    .btn-wz-next:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+
+    /* ── Dashboard ── */
+    .dash-hdr-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 1.5rem; border-top: 5px solid var(--orange);
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .dash-sport-icon { font-size: 2.5rem; flex-shrink: 0; line-height: 1; }
+    .dash-info { flex: 1; min-width: 0; }
+    .dash-prog-name { font-size: 1.35rem; font-weight: 800; color: var(--blue); margin-bottom: .4rem; }
+    .dash-chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .btn-dash-back {
+      background: none; border: 2px solid var(--gray-100); color: var(--gray-600);
+      padding: .55rem 1.1rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .85rem; cursor: pointer; font-family: inherit;
+      transition: all .15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-dash-back:hover { border-color: var(--blue); color: var(--blue); }
+
+    .dash-grid-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+    .dash-tbl { width: 100%; border-collapse: collapse; min-width: 400px; }
+    .dash-tbl thead tr { background: var(--blue); }
+    .dash-tbl th {
+      padding: .75rem 1rem; color: #fff;
+      font-weight: 700; font-size: .85rem; text-align: left;
+    }
+    .dash-tbl th:first-child { min-width: 110px; }
+    .dash-tbl td {
+      padding: .8rem 1rem; border-bottom: 1px solid var(--gray-100);
+      vertical-align: middle; background: var(--white);
+    }
+    .dash-tbl tr:last-child td { border-bottom: none; }
+    .dash-tbl tr:hover td { background: var(--gray-50); }
+    .wk-label { font-weight: 700; color: var(--blue); font-size: .88rem; }
+    .wk-date { font-size: .75rem; color: var(--gray-400); margin-top: .1rem; }
+
+    .plan-empty {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .4rem .85rem; border-radius: var(--radius-sm);
+      border: 1.5px dashed var(--gray-400); color: var(--gray-600);
+      font-size: .82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: all .15s; background: none;
+    }
+    .plan-empty:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+
+    .plan-ready {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .4rem .85rem; border-radius: var(--radius-sm);
+      background: var(--blue-light); border: 1.5px solid var(--blue);
+      font-size: .82rem; font-weight: 600; color: var(--blue);
+      text-decoration: none; transition: all .15s;
+    }
+    .plan-ready:hover { background: var(--blue); color: #fff; }
+    .plan-meta { font-size: .72rem; color: var(--gray-400); margin-top: .2rem; }
+    .plan-cell-actions {
+      display: flex; gap: .35rem; margin-top: .4rem; flex-wrap: wrap;
+    }
+    .pca-btn {
+      font-size: .73rem; font-weight: 700; padding: .2rem .55rem;
+      border-radius: var(--radius-sm); border: 1.5px solid var(--gray-200);
+      background: var(--white); color: var(--gray-600); cursor: pointer;
+      font-family: inherit; text-decoration: none; transition: all .12s;
+      display: inline-flex; align-items: center; gap: .25rem;
+    }
+    .pca-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .pca-remove:hover { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
+    .btn-all-groups {
+      display: inline-flex; align-items: center; gap: .3rem;
+      margin-top: .45rem; padding: .2rem .55rem;
+      font-size: .7rem; font-weight: 700; font-family: inherit;
+      border: 1.5px dashed var(--gray-300); border-radius: var(--radius-sm);
+      background: none; color: var(--gray-500); cursor: pointer;
+      transition: all .12s; white-space: nowrap;
+    }
+    .btn-all-groups:hover { border-color: var(--orange); color: var(--orange); border-style: solid; background: var(--orange-light); }
+
+    /* ── Add Plan Modal ── */
+    .ap-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 1000;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .ap-overlay.open { display: flex; }
+    .ap-box {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,.2);
+      width: 100%; max-width: 560px;
+      max-height: 82vh; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .ap-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.35rem; border-bottom: 1.5px solid var(--gray-100);
+      flex-shrink: 0;
+    }
+    .ap-title { font-weight: 800; color: var(--blue); font-size: 1rem; }
+    .ap-close {
+      background: none; border: none; font-size: 1.1rem; line-height: 1;
+      cursor: pointer; color: var(--gray-400); padding: .25rem .45rem;
+      border-radius: 4px; transition: all .15s; font-family: inherit;
+    }
+    .ap-close:hover { background: var(--gray-100); color: var(--gray-700); }
+    .ap-search-wrap {
+      padding: .8rem 1.25rem; border-bottom: 1px solid var(--gray-100);
+      flex-shrink: 0;
+    }
+    .ap-search {
+      width: 100%; padding: .6rem .9rem; box-sizing: border-box;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .9rem; font-family: inherit; color: var(--gray-700);
+    }
+    .ap-search:focus { outline: none; border-color: var(--orange); }
+    .ap-plan-list {
+      flex: 1; overflow-y: auto; padding: .75rem 1.25rem;
+      display: flex; flex-direction: column; gap: .55rem; min-height: 80px;
+    }
+    .ap-plan-card {
+      display: flex; align-items: center; gap: .9rem;
+      padding: .8rem 1rem; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-100); cursor: pointer;
+      transition: all .15s; background: var(--white);
+      text-align: left; width: 100%; font-family: inherit;
+    }
+    .ap-plan-card:hover { border-color: var(--orange); background: var(--orange-light); }
+    .ap-plan-icon { font-size: 1.65rem; flex-shrink: 0; line-height: 1; }
+    .ap-plan-info { flex: 1; min-width: 0; }
+    .ap-plan-name {
+      font-weight: 700; color: var(--blue); font-size: .9rem; margin-bottom: .12rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ap-plan-meta { font-size: .76rem; color: var(--gray-400); }
+    .ap-plan-arrow { font-size: .85rem; font-weight: 700; color: var(--orange); white-space: nowrap; flex-shrink: 0; }
+    .ap-empty { text-align: center; padding: 1.75rem 1rem; color: var(--gray-400); font-size: .88rem; line-height: 1.55; }
+    .ap-footer {
+      padding: .9rem 1.25rem; border-top: 1.5px solid var(--gray-100);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-shrink: 0; gap: .75rem;
+    }
+    .ap-footer-hint { font-size: .8rem; color: var(--gray-400); }
+  </style>
+</head>
+<body>
+  <script src="js/nav.js" data-page="programs"></script>
+
+  <section class="hero" style="padding: 2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">📁 Programs</div>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);">Manage Your <span>Programs</span></h1>
+    <p style="font-size:.97rem;">Organize practice plans by season, group, and week.</p>
+  </section>
+
+  <div class="container-wide">
+    <div class="pg">
+
+      <!-- ── View: Home ── -->
+      <div id="viewHome" class="view active">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">My Programs</div>
+            <div class="pg-sub">Create a program to manage plans across all groups and weeks.</div>
+          </div>
+          <div class="hdr-actions">
+            <div class="setup-wrap">
+              <button class="btn-setup" id="setupBtn">⚙️ Setup <span id="setupCaret">▾</span></button>
+              <div class="setup-menu" id="setupMenu">
+                <a href="locations.html">📍 Locations</a>
+                <a href="plan-library.html">📚 Plans</a>
+                <a href="practice-builder.html">📋 Plan Builder</a>
+                <hr class="setup-menu-divider">
+                <a href="drill-admin.html">🗂️ Drill Library</a>
+              </div>
+            </div>
+            <button class="btn-create" onclick="startWizard()">+ New Program</button>
+          </div>
+        </div>
+        <div class="search-row" id="searchRow" style="display:none;">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="progSearch" class="search-input" placeholder="Search programs…"
+                   oninput="filterPrograms()" />
+            <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear">✕</button>
+          </div>
+          <span class="search-count" id="searchCount"></span>
+        </div>
+        <div class="selection-bar" id="selectionBar">
+          <span class="sel-count" id="selCount"></span>
+          <button class="btn-sel-delete" onclick="deleteSelected()">🗑 Delete Selected</button>
+          <button class="btn-sel-clear" onclick="clearSelection()">✕ Clear</button>
+        </div>
+        <div id="programsList"></div>
+      </div>
+
+      <!-- ── View: Wizard ── -->
+      <div id="viewWizard" class="view">
+        <div class="wz-wrap">
+          <div class="back-bar">
+            <button class="btn-text-back" onclick="showHome()">← Back to Programs</button>
+          </div>
+
+          <div class="wz-steps">
+            <div class="wz-dot active" id="dot1">1</div>
+            <div class="wz-line"></div>
+            <div class="wz-dot" id="dot2">2</div>
+            <div class="wz-line"></div>
+            <div class="wz-dot" id="dot3">3</div>
+            <div class="wz-line"></div>
+            <div class="wz-dot" id="dot4">4</div>
+          </div>
+
+          <!-- Step 1: Name + Sport + Location -->
+          <div class="wz-panel active" id="wzPanel1">
+            <div class="wz-heading">Name your program</div>
+            <div class="wz-sub">Give this program a name, pick the sport, and optionally assign a location.</div>
+            <label class="field-label" for="progName">Program Name</label>
+            <input type="text" id="progName" class="field-input" placeholder="e.g. Fall 2026 Soccer" maxlength="80" oninput="checkStep1()" />
+            <label class="field-label">Sport</label>
+            <div class="sport-grid" id="wzSportGrid"></div>
+            <label class="field-label">Location <span style="font-weight:400;color:var(--gray-400);">(optional)</span></label>
+            <div style="display:flex; gap:.6rem; align-items:center; margin-bottom:1.5rem;">
+              <select id="wzLocSelect" class="field-input" style="flex:1; margin-bottom:0;" onchange="wz.locationId = this.value">
+                <option value="">— No location assigned —</option>
+              </select>
+              <a href="locations.html" target="_blank"
+                 style="flex-shrink:0; font-size:.82rem; font-weight:600; color:var(--blue); text-decoration:none; white-space:nowrap;"
+                 title="Open Locations manager in a new tab">Manage ↗</a>
+            </div>
+            <div class="wz-nav">
+              <div></div>
+              <button class="btn-wz-next" id="step1Next" onclick="goWzStep(2)" disabled>Next →</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Sessions -->
+          <div class="wz-panel" id="wzPanel2">
+            <div class="wz-heading">Sessions</div>
+            <div class="wz-sub">How many practice sessions in this program? You can assign dates now or later from the dashboard.</div>
+            <label class="field-label">Number of Sessions</label>
+            <div class="sessions-row">
+              <div class="stepper">
+                <button class="stepper-btn" onclick="adjustSessions(-1)">−</button>
+                <span class="stepper-val" id="sessionsVal">8</span>
+                <button class="stepper-btn" onclick="adjustSessions(1)">+</button>
+              </div>
+              <span class="sessions-label" id="sessionsLbl">sessions</span>
+            </div>
+            <div class="toggle-row">
+              <label class="toggle-sw">
+                <input type="checkbox" id="datesToggle" onchange="toggleDates()" />
+                <span class="toggle-track"></span>
+                <span class="toggle-thumb"></span>
+              </label>
+              <span class="toggle-label">Assign dates now (optional)</span>
+            </div>
+            <div id="datesGrid" class="dates-grid" style="display:none;"></div>
+            <div class="wz-nav">
+              <button class="btn-wz-back" onclick="goWzStep(1)">← Back</button>
+              <button class="btn-wz-next" onclick="goWzStep(3)">Next →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Groups -->
+          <div class="wz-panel" id="wzPanel3">
+            <div class="wz-heading">Groups</div>
+            <div class="wz-sub">How many groups does this program have? You can rename them to fit your program.</div>
+            <label class="field-label">Number of Groups</label>
+            <div class="gc-pills">
+              <button class="gc-pill selected" id="gc1" onclick="setGroupCount(1)">1</button>
+              <button class="gc-pill" id="gc2" onclick="setGroupCount(2)">2</button>
+              <button class="gc-pill" id="gc3" onclick="setGroupCount(3)">3</button>
+              <button class="gc-pill" id="gc4" onclick="setGroupCount(4)">4</button>
+              <button class="gc-pill" id="gcCustom" onclick="toggleCustomGroups()">Custom</button>
+            </div>
+            <div id="customGroupRow" style="display:none; align-items:center; gap:.75rem; margin-bottom:1.25rem;">
+              <label style="font-size:.88rem; font-weight:600; color:var(--gray-600); white-space:nowrap;">How many? (5–10)</label>
+              <input type="number" id="customGroupCount" min="5" max="10" value="5"
+                     style="width:70px; padding:.45rem .65rem; border:2px solid var(--gray-100); border-radius:var(--radius-sm); font-size:.95rem; font-family:inherit; color:var(--gray-700);"
+                     oninput="applyCustomGroupCount()" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--gray-100)'" />
+            </div>
+            <label class="field-label">Group Names</label>
+            <div class="group-names-editor" id="groupNamesEditor"></div>
+            <div class="wz-nav">
+              <button class="btn-wz-back" onclick="goWzStep(2)">← Back</button>
+              <button class="btn-wz-next" onclick="goWzStep(4)">Review →</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Review -->
+          <div class="wz-panel" id="wzPanel4">
+            <div class="wz-heading">Review &amp; Create</div>
+            <div class="wz-sub">Everything look right? You can assign session dates from the program dashboard.</div>
+            <div class="review-card" id="reviewCard"></div>
+            <button class="btn-create-prog" onclick="createProgram()">Create Program →</button>
+            <div class="wz-nav" style="margin-top:1rem;">
+              <button class="btn-wz-back" onclick="goWzStep(3)">← Back</button>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: Dashboard ── -->
+      <div id="viewDashboard" class="view">
+        <div id="dashContent"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add Plan Modal -->
+  <div id="addPlanOverlay" class="ap-overlay" onclick="if(event.target===this)closeAddPlanModal()">
+    <div class="ap-box">
+      <div class="ap-header">
+        <div id="apTitle" class="ap-title">Add Plan</div>
+        <button class="ap-close" onclick="closeAddPlanModal()">✕</button>
+      </div>
+      <div class="ap-search-wrap">
+        <input type="text" id="apSearch" class="ap-search" placeholder="Search existing plans…" oninput="apFilter()" />
+      </div>
+      <div id="apPlanList" class="ap-plan-list"></div>
+      <div class="ap-footer">
+        <span class="ap-footer-hint" id="apFooterHint"></span>
+        <a id="apNewPlanBtn" href="#" class="btn-create" style="text-decoration:none; flex-shrink:0;">+ Create New Plan</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
+
+  <script>
+  // ═══════════════════════════════════════
+  //  CONSTANTS
+  // ═══════════════════════════════════════
+  const SPORTS = [
+    { id: 'basketball', name: 'Basketball', icon: '🏀' },
+    { id: 'softball',   name: 'Softball',   icon: '🥎' },
+    { id: 'football',   name: 'Football',   icon: '🏈' },
+    { id: 'pickleball', name: 'Pickleball', icon: '🏓' },
+    { id: 'soccer',     name: 'Soccer',     icon: '⚽' },
+    { id: 'kickball',   name: 'Kickball',   icon: '🔴' },
+  ];
+
+  const DEFAULT_GROUPS = {
+    1: ['Skills'],
+    2: ['Competitive', 'Skills'],
+    3: ['Competitive', 'Skills A', 'Skills B'],
+    4: ['Competitive', 'Skills', 'Competitive B', 'Skills B'],
+  };
+
+  // ═══════════════════════════════════════
+  //  STATE CACHE
+  // ═══════════════════════════════════════
+  let _progsCache = [];
+  let _locsCache  = [];
+  let _plansCache = null; // loaded on first Add Plan modal open; null = stale
+
+  // Add Plan modal context
+  let _addPlanCtx = null; // { prog, weekNum, group }
+
+  // Plan metadata from localStorage (fallback / legacy)
+  function lsPlans() {
+    try { return JSON.parse(localStorage.getItem('empowerPlans') || '{}'); } catch { return {}; }
+  }
+
+  // ═══════════════════════════════════════
+  //  WIZARD STATE
+  // ═══════════════════════════════════════
+  const wz = {
+    step: 1,
+    name: '',
+    sport: null,
+    locationId: null,
+    numSessions: 8,
+    datesEnabled: false,
+    dates: {},
+    groupCount: 1,
+    groupNames: [...DEFAULT_GROUPS[1]],
+  };
+
+  function resetWizard() {
+    wz.step = 1; wz.name = ''; wz.sport = null; wz.locationId = null; wz.numSessions = 8;
+    wz.datesEnabled = false; wz.dates = {}; wz.groupCount = 1;
+    wz.groupNames = [...DEFAULT_GROUPS[1]];
+    document.getElementById('datesToggle').checked = false;
+    document.getElementById('datesGrid').style.display = 'none';
+  }
+
+  // ═══════════════════════════════════════
+  //  VIEW ROUTING
+  // ═══════════════════════════════════════
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  let selectedProgIds = new Set();
+
+  function showHome() {
+    selectedProgIds.clear();
+    showView('viewHome');
+    renderHome();
+  }
+  async function startWizard() {
+    resetWizard();
+    if (!_locsCache.length) _locsCache = await EP_DB.locations.list();
+    showView('viewWizard');
+    goWzStep(1);
+  }
+
+  // ═══════════════════════════════════════
+  //  HOME
+  // ═══════════════════════════════════════
+  async function renderHome() {
+    const el = document.getElementById('programsList');
+    el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gray-400);">Loading…</div>';
+    [_progsCache, _locsCache] = await Promise.all([
+      EP_DB.programs.list(),
+      EP_DB.locations.list(),
+    ]);
+    const searchRow = document.getElementById('searchRow');
+
+    if (!_progsCache.length) {
+      searchRow.style.display = 'none';
+      document.getElementById('selectionBar').classList.remove('visible');
+      el.innerHTML = `
+        <div class="empty-state">
+          <span class="es-icon">📁</span>
+          <div class="es-title">No programs yet</div>
+          <div class="es-sub">Create your first program to organize practice plans by week and group.</div>
+          <button class="btn-create" onclick="startWizard()">+ Create First Program</button>
+        </div>`;
+      return;
+    }
+
+    searchRow.style.display = 'flex';
+    renderHomeList();
+  }
+
+  function renderHomeList() {
+    const programs = _progsCache;
+    const q = (document.getElementById('progSearch').value || '').trim().toLowerCase();
+    const filtered = q
+      ? programs.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          (p.sportName || '').toLowerCase().includes(q)
+        )
+      : programs;
+
+    // Update clear button and count
+    const clearBtn = document.getElementById('searchClear');
+    clearBtn.classList.toggle('visible', q.length > 0);
+    document.getElementById('searchCount').textContent =
+      q ? `${filtered.length} of ${programs.length}` : '';
+
+    const el = document.getElementById('programsList');
+    if (!filtered.length) {
+      el.innerHTML = `<div class="no-results">No programs match "${escHtml(q)}"</div>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="programs-grid">${
+      filtered.map(p => {
+        const total = p.numWeeks * p.groups.length;
+        const filled = Object.keys(p.plans || {}).length;
+        const isChecked = selectedProgIds.has(p.id);
+        return `<div class="prog-card${isChecked ? ' checked' : ''}" data-id="${escAttr(p.id)}"
+                     onclick="cardClick('${escAttr(p.id)}', event)">
+          <label class="prog-cb-wrap" onclick="event.stopPropagation()">
+            <input type="checkbox" ${isChecked ? 'checked' : ''}
+                   onchange="toggleSelect('${escAttr(p.id)}')">
+            <span class="prog-cb-box">${isChecked ? '✓' : ''}</span>
+          </label>
+          <div class="prog-card-sport">${p.sportIcon}</div>
+          <div class="prog-card-name">${escHtml(p.name)}</div>
+          <div class="prog-card-chips">
+            <span class="chip">${escHtml(p.sportName)}</span>
+            <span class="chip">${p.numWeeks} week${p.numWeeks !== 1 ? 's' : ''}</span>
+            <span class="chip">${p.groups.length} group${p.groups.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="prog-card-groups">${p.groups.map(escHtml).join(' · ')}</div>
+          <div class="prog-card-progress">${filled} / ${total} plans created</div>
+        </div>`;
+      }).join('')
+    }</div>`;
+  }
+
+  function cardClick(id, evt) {
+    if (evt.target.closest('.prog-cb-wrap')) return;
+    openDashboard(id);
+  }
+
+  // ── Search ──
+  function filterPrograms() { renderHomeList(); }
+  function clearSearch() {
+    document.getElementById('progSearch').value = '';
+    renderHomeList();
+  }
+
+  // ── Select / Delete ──
+  function toggleSelect(id) {
+    if (selectedProgIds.has(id)) selectedProgIds.delete(id);
+    else selectedProgIds.add(id);
+    // Update this card's visual state without full re-render
+    const card = document.querySelector(`.prog-card[data-id="${id}"]`);
+    if (card) {
+      const checked = selectedProgIds.has(id);
+      card.classList.toggle('checked', checked);
+      const box = card.querySelector('.prog-cb-box');
+      if (box) box.textContent = checked ? '✓' : '';
+    }
+    updateSelectionBar();
+  }
+
+  function updateSelectionBar() {
+    const bar = document.getElementById('selectionBar');
+    const n = selectedProgIds.size;
+    if (n === 0) { bar.classList.remove('visible'); return; }
+    bar.classList.add('visible');
+    document.getElementById('selCount').textContent = `${n} program${n !== 1 ? 's' : ''} selected`;
+  }
+
+  function clearSelection() {
+    selectedProgIds.clear();
+    document.querySelectorAll('.prog-card.checked').forEach(c => {
+      c.classList.remove('checked');
+      const box = c.querySelector('.prog-cb-box');
+      if (box) box.textContent = '';
+      const cb = c.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = false;
+    });
+    document.getElementById('selectionBar').classList.remove('visible');
+  }
+
+  async function deleteSelected() {
+    const n = selectedProgIds.size;
+    if (!n) return;
+    if (!confirm(`Delete ${n} program${n !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+
+    // Clean up associated plan entries from localStorage too
+    const plans = lsPlans();
+    selectedProgIds.forEach(id => {
+      const prog = _progsCache.find(p => p.id === id);
+      if (prog) Object.values(prog.plans || {}).forEach(planId => { delete plans[planId]; });
+    });
+    localStorage.setItem('empowerPlans', JSON.stringify(plans));
+
+    await EP_DB.programs.delete([...selectedProgIds]);
+    selectedProgIds.clear();
+    document.getElementById('selectionBar').classList.remove('visible');
+    await renderHome();
+  }
+
+  // ═══════════════════════════════════════
+  //  ADD PLAN MODAL
+  // ═══════════════════════════════════════
+  async function openAddPlanModal(progId, weekNum, group, allGroups) {
+    const prog = _progsCache.find(p => p.id === progId);
+    if (!prog) return;
+    _addPlanCtx = { prog, weekNum, group, allGroups: !!allGroups };
+
+    const overlay = document.getElementById('addPlanOverlay');
+    overlay.classList.add('open');
+    document.getElementById('apSearch').value = '';
+    const titleSuffix = allGroups ? 'All Groups' : escHtml(group);
+    document.getElementById('apTitle').textContent = `Add Plan — Week ${weekNum} · ${titleSuffix}`;
+    document.getElementById('apPlanList').innerHTML = '<div class="ap-empty">Loading…</div>';
+    document.getElementById('apFooterHint').textContent = '';
+
+    // "Create New Plan" goes straight to the builder with program context
+    const url = `practice-builder.html?programId=${enc(prog.id)}&week=${weekNum}&group=${enc(group)}&sport=${enc(prog.sport)}&programName=${enc(prog.name)}`;
+    document.getElementById('apNewPlanBtn').href = url;
+
+    if (!_plansCache) _plansCache = await EP_DB.plans.list();
+    apRenderList();
+  }
+
+  function apFilter() { apRenderList(); }
+
+  function apRenderList() {
+    if (!_addPlanCtx || !_plansCache) return;
+    const { prog } = _addPlanCtx;
+    const q = (document.getElementById('apSearch').value || '').trim().toLowerCase();
+
+    // Filter to matching sport; include plans with no sport set
+    let plans = _plansCache.filter(p => !p.sport || p.sport === prog.sport);
+    if (q) plans = plans.filter(p => (p.name || '').toLowerCase().includes(q) || (p.sportName || '').toLowerCase().includes(q));
+
+    document.getElementById('apFooterHint').textContent = `${plans.length} plan${plans.length !== 1 ? 's' : ''}`;
+
+    const list = document.getElementById('apPlanList');
+    if (!plans.length) {
+      const msg = q
+        ? `No plans match "${escHtml(q)}".`
+        : `No saved ${escHtml(prog.sportName)} plans yet.`;
+      list.innerHTML = `<div class="ap-empty">${msg}<br>Use "Create New Plan" to build one.</div>`;
+      return;
+    }
+
+    list.innerHTML = plans.map(p => {
+      const bc = (p.blocks || []).length;
+      const parts = [escHtml(p.sportName || ''), `${bc} block${bc !== 1 ? 's' : ''}`, p.durationMinutes ? `${p.durationMinutes} min` : ''].filter(Boolean);
+      return `<button class="ap-plan-card" onclick="selectPlanForSlot('${escAttr(p.id)}')">
+        <div class="ap-plan-icon">${p.sportIcon || '📋'}</div>
+        <div class="ap-plan-info">
+          <div class="ap-plan-name">${escHtml(p.name || 'Untitled Plan')}</div>
+          <div class="ap-plan-meta">${parts.join(' · ')}</div>
+        </div>
+        <div class="ap-plan-arrow">Select →</div>
+      </button>`;
+    }).join('');
+  }
+
+  async function selectPlanForSlot(planId) {
+    if (!_addPlanCtx) return;
+    const { prog, weekNum, group } = _addPlanCtx;
+
+    // Store a reference — the same plan can appear in multiple slots
+    prog.plans = prog.plans || {};
+    if (_addPlanCtx.allGroups) {
+      prog.groups.forEach(g => { prog.plans[`w${weekNum}-${g}`] = planId; });
+    } else {
+      prog.plans[`w${weekNum}-${group}`] = planId;
+    }
+    await EP_DB.programs.save(prog);
+
+    _plansCache = null;
+    _progsCache = await EP_DB.programs.list();
+    closeAddPlanModal();
+    openDashboard(prog.id);
+  }
+
+  async function removePlanFromSlot(progId, slotKey) {
+    if (!confirm('Remove this plan from the slot?')) return;
+
+    const prog = _progsCache.find(p => p.id === progId);
+    if (!prog || !prog.plans) return;
+
+    delete prog.plans[slotKey];
+    await EP_DB.programs.save(prog);
+
+    _plansCache = null;
+    _progsCache = await EP_DB.programs.list();
+    openDashboard(progId);
+  }
+
+  function closeAddPlanModal() {
+    document.getElementById('addPlanOverlay').classList.remove('open');
+    _addPlanCtx = null;
+  }
+
+  // ═══════════════════════════════════════
+  //  WIZARD RENDERING
+  // ═══════════════════════════════════════
+  function goWzStep(n) {
+    wz.step = n;
+    [1,2,3,4].forEach(i => {
+      const dot = document.getElementById('dot' + i);
+      dot.classList.toggle('active', i === n);
+      dot.classList.toggle('done', i < n);
+    });
+    document.querySelectorAll('.wz-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('wzPanel' + n).classList.add('active');
+    if (n === 1) renderStep1();
+    if (n === 2) renderStep2();
+    if (n === 3) renderStep3();
+    if (n === 4) renderStep4();
+  }
+
+  function renderStep1() {
+    document.getElementById('progName').value = wz.name;
+    const grid = document.getElementById('wzSportGrid');
+    grid.innerHTML = SPORTS.map(s => `
+      <div class="sport-card-wz ${wz.sport && wz.sport.id === s.id ? 'selected' : ''}"
+           onclick="selectSport('${s.id}')">
+        <span class="sc-icon">${s.icon}</span>
+        <span class="sc-name">${s.name}</span>
+      </div>`).join('');
+    // Populate location dropdown from cache
+    const sel = document.getElementById('wzLocSelect');
+    const locs = _locsCache;
+    const opts = locs.map(l => `<option value="${escHtml(l.id)}" ${wz.locationId === l.id ? 'selected' : ''}>${escHtml(l.name)}${l.address ? ' — ' + escHtml(l.address) : ''}</option>`).join('');
+    sel.innerHTML = `<option value="">— No location assigned —</option>${opts}`;
+    sel.value = wz.locationId || '';
+    checkStep1();
+  }
+  function selectSport(id) {
+    wz.sport = SPORTS.find(s => s.id === id) || null;
+    renderStep1();
+  }
+  function checkStep1() {
+    wz.name = document.getElementById('progName').value.trim();
+    document.getElementById('step1Next').disabled = !(wz.name && wz.sport);
+  }
+
+  function renderStep2() {
+    document.getElementById('sessionsVal').textContent = wz.numSessions;
+    document.getElementById('sessionsLbl').textContent = 'session' + (wz.numSessions !== 1 ? 's' : '');
+    if (wz.datesEnabled) renderDatesGrid();
+  }
+  function adjustSessions(delta) {
+    wz.numSessions = Math.max(1, Math.min(26, wz.numSessions + delta));
+    Object.keys(wz.dates).forEach(k => { if (+k > wz.numSessions) delete wz.dates[k]; });
+    document.getElementById('sessionsVal').textContent = wz.numSessions;
+    document.getElementById('sessionsLbl').textContent = 'session' + (wz.numSessions !== 1 ? 's' : '');
+    if (wz.datesEnabled) renderDatesGrid();
+  }
+  function toggleDates() {
+    wz.datesEnabled = document.getElementById('datesToggle').checked;
+    const grid = document.getElementById('datesGrid');
+    grid.style.display = wz.datesEnabled ? 'grid' : 'none';
+    if (wz.datesEnabled) renderDatesGrid();
+  }
+  function renderDatesGrid() {
+    const grid = document.getElementById('datesGrid');
+    grid.innerHTML = Array.from({length: wz.numSessions}, (_, i) => {
+      const w = i + 1;
+      return `<div class="date-row">
+        <span class="date-wk-lbl">Week ${w}</span>
+        <input type="date" class="date-input" value="${wz.dates[w] || ''}"
+               onchange="wz.dates[${w}] = this.value" />
+      </div>`;
+    }).join('');
+  }
+
+  function renderStep3() {
+    const isCustom = wz.groupCount > 4;
+    [1,2,3,4].forEach(n => document.getElementById('gc' + n).classList.toggle('selected', !isCustom && n === wz.groupCount));
+    document.getElementById('gcCustom').classList.toggle('selected', isCustom);
+    document.getElementById('customGroupRow').style.display = isCustom ? 'flex' : 'none';
+    if (isCustom) document.getElementById('customGroupCount').value = wz.groupCount;
+    const ed = document.getElementById('groupNamesEditor');
+    ed.innerHTML = wz.groupNames.map((name, i) => `
+      <div class="gn-row">
+        <span class="gn-badge">${i + 1}</span>
+        <input type="text" class="gn-input" value="${escHtml(name)}" maxlength="40"
+               oninput="wz.groupNames[${i}] = this.value" />
+      </div>`).join('');
+  }
+  function setGroupCount(n) {
+    wz.groupCount = n;
+    wz.groupNames = DEFAULT_GROUPS[n]
+      ? [...DEFAULT_GROUPS[n]]
+      : Array.from({length: n}, (_, i) => i === 0 ? 'Competitive' : `Group ${i + 1}`);
+    renderStep3();
+  }
+  function toggleCustomGroups() {
+    const wasCustom = wz.groupCount > 4;
+    if (wasCustom) {
+      setGroupCount(1);
+    } else {
+      setGroupCount(5);
+      document.getElementById('customGroupCount').value = 5;
+    }
+  }
+  function applyCustomGroupCount() {
+    const inp = document.getElementById('customGroupCount');
+    const n = Math.max(5, Math.min(10, parseInt(inp.value, 10) || 5));
+    inp.value = n;
+    // Preserve existing names when growing/shrinking
+    const prev = [...wz.groupNames];
+    wz.groupCount = n;
+    wz.groupNames = Array.from({length: n}, (_, i) =>
+      prev[i] !== undefined ? prev[i] : `Group ${i + 1}`
+    );
+    const ed = document.getElementById('groupNamesEditor');
+    ed.innerHTML = wz.groupNames.map((name, i) => `
+      <div class="gn-row">
+        <span class="gn-badge">${i + 1}</span>
+        <input type="text" class="gn-input" value="${escHtml(name)}" maxlength="40"
+               oninput="wz.groupNames[${i}] = this.value" />
+      </div>`).join('');
+  }
+
+  function renderStep4() {
+    const datesLine = wz.datesEnabled
+      ? `${Object.values(wz.dates).filter(Boolean).length} of ${wz.numSessions} dates assigned`
+      : 'No dates assigned — can add from dashboard';
+    const locs = _locsCache;
+    const loc = wz.locationId ? locs.find(l => l.id === wz.locationId) : null;
+    const locLine = loc ? escHtml(loc.name) : 'None assigned';
+    document.getElementById('reviewCard').innerHTML = `
+      <div class="rv-sport">${wz.sport.icon}</div>
+      <div class="rv-name">${escHtml(wz.name)}</div>
+      <div class="rv-rows">
+        <div class="rv-row"><span class="rv-label">Sport</span><span class="rv-val">${wz.sport.name}</span></div>
+        <div class="rv-row"><span class="rv-label">Location</span><span class="rv-val">${locLine}</span></div>
+        <div class="rv-row"><span class="rv-label">Sessions</span><span class="rv-val">${wz.numSessions}</span></div>
+        <div class="rv-row"><span class="rv-label">Dates</span><span class="rv-val">${datesLine}</span></div>
+        <div class="rv-row"><span class="rv-label">Groups</span><span class="rv-val">${wz.groupNames.map(escHtml).join(', ')}</span></div>
+      </div>`;
+  }
+
+  // ═══════════════════════════════════════
+  //  CREATE PROGRAM
+  // ═══════════════════════════════════════
+  async function createProgram() {
+    document.querySelectorAll('#groupNamesEditor .gn-input').forEach((inp, i) => {
+      if (inp.value.trim()) wz.groupNames[i] = inp.value.trim();
+    });
+    const btn = document.querySelector('.btn-create-prog');
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+    try {
+      const weeks = Array.from({length: wz.numSessions}, (_, i) => ({
+        weekNum: i + 1,
+        date: wz.dates[i + 1] || null,
+      }));
+      const saved = await EP_DB.programs.save({
+        name:       wz.name,
+        sport:      wz.sport.id,
+        sportIcon:  wz.sport.icon,
+        sportName:  wz.sport.name,
+        locationId: wz.locationId || null,
+        numWeeks:   wz.numSessions,
+        weeks,
+        groups:     [...wz.groupNames],
+        plans:      {},
+      });
+      _progsCache = await EP_DB.programs.list();
+      openDashboard(saved.id);
+    } catch (err) {
+      console.error('[programs] createProgram:', err);
+      btn.disabled = false;
+      btn.textContent = 'Create Program →';
+      alert('Could not create program — please try again.');
+    }
+  }
+
+  // ═══════════════════════════════════════
+  //  DASHBOARD
+  // ═══════════════════════════════════════
+  async function openDashboard(progId) {
+    let prog = _progsCache.find(p => p.id === progId);
+    if (!prog) {
+      [_progsCache, _locsCache] = await Promise.all([
+        EP_DB.programs.list(),
+        EP_DB.locations.list(),
+      ]);
+      prog = _progsCache.find(p => p.id === progId);
+    }
+    if (!prog) { showHome(); return; }
+
+    // Ensure plan data is loaded (needed to render ✅ Plan Ready cells)
+    if (!_plansCache) _plansCache = await EP_DB.plans.list();
+
+    // Build plan map: localStorage fallback merged with Supabase (Supabase wins)
+    const lsData = lsPlans();
+    const planMap = { ...lsData };
+    _plansCache.forEach(p => { planMap[p.id] = p; });
+
+    const progLoc = prog.locationId ? _locsCache.find(l => l.id === prog.locationId) : null;
+
+    const thCols = prog.groups.map(g => `<th>${escHtml(g)}</th>`).join('');
+    const rows = prog.weeks.map(w => {
+      const cells = prog.groups.map(g => {
+        const key = `w${w.weekNum}-${g}`;
+        const planId = (prog.plans || {})[key];
+        const plan = planId ? planMap[planId] : null;
+        if (plan) {
+          const bc = (plan.blocks || []).length;
+          const url = `practice-builder.html?programId=${enc(prog.id)}&week=${w.weekNum}&group=${enc(g)}&planId=${enc(planId)}&sport=${enc(prog.sport)}&programName=${enc(prog.name)}`;
+          return `<td>
+            <a class="plan-ready" href="${url}">✅ ${escHtml(plan.name || 'Untitled Plan')}</a>
+            <div class="plan-cell-actions">
+              <a class="pca-btn" href="${url}">👁 View</a>
+              <button class="pca-btn pca-remove" onclick="removePlanFromSlot('${escAttr(prog.id)}','${escAttr(key)}')">✕ Remove</button>
+            </div>
+            <div class="plan-meta">${bc} block${bc !== 1 ? 's' : ''} · ${plan.durationMinutes || '?'} min</div>
+          </td>`;
+        }
+        return `<td><button class="plan-empty" onclick="openAddPlanModal('${escAttr(prog.id)}',${w.weekNum},'${escAttr(g)}')">+ Add Plan</button></td>`;
+      }).join('');
+      const dateStr = w.date ? fmtDate(w.date) : '';
+      const allGroupsBtn = prog.groups.length > 1
+        ? `<button class="btn-all-groups" onclick="openAddPlanModal('${escAttr(prog.id)}',${w.weekNum},null,true)">📋 Same plan for all</button>`
+        : '';
+      return `<tr>
+        <td>
+          <div class="wk-label">Week ${w.weekNum}</div>
+          ${dateStr ? `<div class="wk-date">${dateStr}</div>` : ''}
+          ${allGroupsBtn}
+        </td>
+        ${cells}
+      </tr>`;
+    }).join('');
+
+    const total = prog.numWeeks * prog.groups.length;
+    const filled = Object.keys(prog.plans || {}).length;
+
+    document.getElementById('dashContent').innerHTML = `
+      <div class="dash-hdr-card">
+        <div class="dash-sport-icon">${prog.sportIcon}</div>
+        <div class="dash-info">
+          <div class="dash-prog-name">${escHtml(prog.name)}</div>
+          <div class="dash-chips">
+            <span class="chip">${prog.sportName}</span>
+            ${progLoc ? `<span class="chip">📍 ${escHtml(progLoc.name)}</span>` : ''}
+            <span class="chip">${prog.numWeeks} week${prog.numWeeks !== 1 ? 's' : ''}</span>
+            <span class="chip">${prog.groups.length} group${prog.groups.length !== 1 ? 's' : ''}</span>
+            <span class="chip orange">${filled} / ${total} plans</span>
+          </div>
+        </div>
+        <button class="btn-dash-back" onclick="showHome()">← All Programs</button>
+      </div>
+      <div class="dash-grid-wrap">
+        <table class="dash-tbl">
+          <thead><tr><th>Session</th>${thCols}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+
+    showView('viewDashboard');
+  }
+
+  // ═══════════════════════════════════════
+  //  UTILS
+  // ═══════════════════════════════════════
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escAttr(s) { return escHtml(s); }
+  function enc(s) { return encodeURIComponent(s); }
+  function fmtDate(iso) {
+    if (!iso) return '';
+    const [, m, d] = iso.split('-');
+    const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${mon[+m - 1]} ${+d}`;
+  }
+
+  // ═══════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════
+  (async function init() {
+    const params = new URLSearchParams(location.search);
+    const openId = params.get('openProgram');
+    if (openId) {
+      [_progsCache, _locsCache] = await Promise.all([
+        EP_DB.programs.list(),
+        EP_DB.locations.list(),
+      ]);
+      openDashboard(openId);
+      return;
+    }
+    renderHome();
+  })();
+
+  // Escape closes Add Plan modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeAddPlanModal();
+  });
+
+  // Setup dropdown
+  (function() {
+    var btn  = document.getElementById('setupBtn');
+    var menu = document.getElementById('setupMenu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = menu.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      document.getElementById('setupCaret').textContent = open ? '▴' : '▾';
+    });
+    document.addEventListener('click', function() {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      document.getElementById('setupCaret').textContent = '▾';
+    });
+  })();
+  </script>
+
+</body>
+</html>

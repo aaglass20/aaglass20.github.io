@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Locations — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Layout ── */
+    .pg { max-width: 960px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    .pg-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .pg-title { font-size: 1.5rem; font-weight: 800; color: var(--blue); }
+    .pg-sub { color: var(--gray-400); font-size: .9rem; margin-top: .25rem; }
+
+    .btn-add {
+      background: var(--orange); color: #fff; border: none;
+      padding: .7rem 1.5rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit;
+      transition: all .15s; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0;
+    }
+    .btn-add:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    /* ── Locations grid ── */
+    .locs-grid {
+      display: grid; gap: 1.1rem;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    .loc-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--gray-100); overflow: hidden;
+      transition: box-shadow .15s, transform .15s;
+      display: flex; flex-direction: column;
+    }
+    .loc-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .loc-img {
+      width: 100%; height: 140px; object-fit: cover; display: block;
+    }
+    .loc-img-placeholder {
+      width: 100%; height: 140px;
+      background: linear-gradient(135deg, var(--blue) 0%, #1a4fa0 60%, #1a5cc4 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; color: rgba(255,255,255,.4);
+    }
+    .loc-body { padding: 1.1rem 1.25rem; flex: 1; display: flex; flex-direction: column; gap: .3rem; }
+    .loc-name { font-weight: 800; color: var(--blue); font-size: 1rem; }
+    .loc-address { font-size: .82rem; color: var(--gray-600); display: flex; align-items: flex-start; gap: .3rem; line-height: 1.4; }
+    .loc-notes {
+      font-size: .8rem; color: var(--gray-600); line-height: 1.45;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      margin-top: .15rem;
+    }
+    .loc-footer {
+      display: flex; gap: .5rem; padding: .75rem 1.25rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    .btn-loc-edit, .btn-loc-delete {
+      flex: 1; padding: .45rem .5rem; border-radius: var(--radius-sm);
+      font-size: .82rem; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all .15s; border: 1.5px solid;
+    }
+    .btn-loc-edit { background: var(--white); border-color: var(--blue); color: var(--blue); }
+    .btn-loc-edit:hover { background: var(--blue-light); }
+    .btn-loc-delete { background: var(--white); border-color: #fca5a5; color: var(--red); }
+    .btn-loc-delete:hover { background: #fee2e2; }
+
+    .empty-state {
+      text-align: center; padding: 4rem 2rem;
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      border: 2px dashed var(--gray-100);
+    }
+    .es-icon { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+    .es-title { font-weight: 800; color: var(--blue); font-size: 1.15rem; margin-bottom: .4rem; }
+    .es-sub { color: var(--gray-400); font-size: .9rem; margin-bottom: 1.5rem; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      z-index: 300; display: none; align-items: flex-start; justify-content: center;
+      padding: 1.5rem 1rem; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 600px; position: relative; margin: auto;
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .modal-title { font-weight: 800; color: var(--blue); font-size: 1.05rem; }
+    .modal-close {
+      background: none; border: none; font-size: 1.2rem; color: var(--gray-400);
+      cursor: pointer; padding: .25rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+    }
+    .modal-close:hover { background: var(--gray-100); }
+    .modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.1rem; }
+
+    .field-label { font-weight: 600; font-size: .88rem; color: var(--gray-700); margin-bottom: .35rem; display: block; }
+    .field-note { font-size: .78rem; color: var(--gray-400); margin-top: .2rem; }
+    .field-input, .field-textarea, .field-select {
+      width: 100%; padding: .65rem .9rem;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .92rem; font-family: inherit; color: var(--gray-700);
+      transition: border-color .15s;
+    }
+    .field-input:focus, .field-textarea:focus { outline: none; border-color: var(--orange); }
+    .field-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+    /* address + geocode */
+    .addr-row { display: flex; gap: .6rem; align-items: flex-start; }
+    .addr-row .field-input { flex: 1; }
+    .btn-geocode {
+      flex-shrink: 0; background: var(--blue); color: #fff; border: none;
+      padding: .65rem 1rem; border-radius: var(--radius-sm);
+      font-size: .85rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      transition: background .15s; white-space: nowrap;
+    }
+    .btn-geocode:hover { background: var(--blue-mid); }
+    .btn-geocode:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+
+    .map-wrap {
+      border-radius: var(--radius-sm); overflow: hidden;
+      border: 2px solid var(--gray-100); background: var(--gray-50);
+      display: none; position: relative;
+    }
+    .map-wrap.visible { display: block; }
+    .map-wrap iframe { display: block; width: 100%; height: 220px; border: none; }
+    .map-status {
+      font-size: .8rem; padding: .5rem .75rem; border-radius: var(--radius-sm);
+      display: none; align-items: center; gap: .4rem;
+    }
+    .map-status.visible { display: flex; }
+    .map-status.ok { background: var(--green-light); color: #166534; }
+    .map-status.err { background: #fee2e2; color: var(--red); }
+    .map-status.loading { background: var(--blue-light); color: var(--blue); }
+
+    /* image upload */
+    .img-upload-area {
+      border: 2px dashed var(--gray-100); border-radius: var(--radius-sm);
+      padding: 1.25rem; text-align: center; cursor: pointer;
+      transition: all .15s; position: relative;
+    }
+    .img-upload-area:hover { border-color: var(--orange); background: var(--orange-light); }
+    .img-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .img-upload-icon { font-size: 1.75rem; display: block; margin-bottom: .4rem; }
+    .img-upload-label { font-size: .85rem; font-weight: 600; color: var(--gray-600); }
+    .img-upload-sub { font-size: .75rem; color: var(--gray-400); margin-top: .15rem; }
+    .img-preview-wrap { display: none; position: relative; }
+    .img-preview-wrap.visible { display: block; }
+    .img-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: var(--radius-sm); display: block; }
+    .btn-img-remove {
+      position: absolute; top: .5rem; right: .5rem;
+      background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 99px;
+      width: 26px; height: 26px; font-size: .8rem; cursor: pointer; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── View modal ── */
+    .view-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      z-index: 400; display: none; align-items: flex-start; justify-content: center;
+      padding: 1.5rem 1rem; overflow-y: auto;
+    }
+    .view-overlay.open { display: flex; }
+    .view-box {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 560px; position: relative; margin: auto;
+      overflow: hidden;
+    }
+    .view-img { width: 100%; height: auto; display: block; }
+    .view-img-placeholder {
+      width: 100%; height: 160px;
+      background: linear-gradient(135deg, var(--blue) 0%, #1a4fa0 60%, #1a5cc4 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: rgba(255,255,255,.35);
+    }
+    .view-header {
+      padding: 1.1rem 1.4rem .6rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .view-title { font-weight: 800; color: var(--blue); font-size: 1.15rem; }
+    .view-close-btn {
+      background: none; border: none; font-size: 1.2rem; color: var(--gray-400);
+      cursor: pointer; padding: .25rem .5rem; border-radius: var(--radius-xs); line-height: 1;
+      flex-shrink: 0;
+    }
+    .view-close-btn:hover { background: var(--gray-100); }
+    .view-body { padding: 0 1.4rem 1.2rem; display: flex; flex-direction: column; gap: .65rem; }
+    .view-row { display: flex; gap: .5rem; align-items: flex-start; }
+    .view-row-icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+    .view-row-text { font-size: .9rem; color: var(--gray-700); line-height: 1.5; white-space: pre-wrap; }
+    .view-map-wrap { border-radius: var(--radius-sm); overflow: hidden; border: 1.5px solid var(--gray-100); }
+    .view-map-wrap iframe { display: block; width: 100%; height: 200px; border: none; }
+    .view-footer {
+      padding: .9rem 1.4rem; border-top: 1px solid var(--gray-100);
+      display: flex; justify-content: flex-end; gap: .6rem;
+    }
+    .btn-view-edit {
+      background: var(--blue); color: #fff; border: none;
+      padding: .6rem 1.3rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit;
+    }
+    .btn-view-edit:hover { background: var(--blue-mid); }
+    .btn-view-close {
+      background: none; border: 2px solid var(--gray-100); color: var(--gray-600);
+      padding: .6rem 1.25rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .9rem; cursor: pointer; font-family: inherit;
+    }
+    .btn-view-close:hover { border-color: var(--gray-400); }
+
+    /* modal footer */
+    .modal-footer {
+      padding: 1.1rem 1.5rem; border-top: 1px solid var(--gray-100);
+      display: flex; justify-content: flex-end; gap: .65rem;
+    }
+    .btn-cancel {
+      background: none; border: 2px solid var(--gray-100); color: var(--gray-600);
+      padding: .6rem 1.25rem; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-cancel:hover { border-color: var(--gray-400); }
+    .btn-save {
+      background: var(--blue); color: #fff; border: none;
+      padding: .65rem 1.5rem; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .btn-save:hover { background: var(--blue-mid); }
+    .btn-save:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <script src="js/nav.js" data-page="locations"></script>
+
+  <section class="hero" style="padding: 2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">📍 Locations</div>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);">Manage <span>Locations</span></h1>
+    <p style="font-size:.97rem;">Save facilities and fields used across your programs.</p>
+  </section>
+
+  <div class="container-wide">
+    <div class="pg">
+
+      <div class="pg-header">
+        <div>
+          <div class="pg-title">Locations</div>
+          <div class="pg-sub">Add facilities, fields, and courts — then assign them to programs.</div>
+        </div>
+        <button class="btn-add" onclick="openModal()">+ Add Location</button>
+      </div>
+
+      <div id="locationsList"></div>
+
+    </div>
+  </div>
+
+  <!-- ══ View Modal ══ -->
+  <div class="view-overlay" id="viewOverlay">
+    <div class="view-box">
+      <div id="viewImgArea"></div>
+      <div class="view-header">
+        <div class="view-title" id="viewTitle"></div>
+        <button class="view-close-btn" id="viewCloseBtn" aria-label="Close">✕</button>
+      </div>
+      <div class="view-body" id="viewBody"></div>
+      <div class="view-footer">
+        <button class="btn-view-close" id="viewFooterClose">Close</button>
+        <button class="btn-view-edit" id="viewEditBtn">✏️ Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Add / Edit Modal ══ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Add Location</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Name -->
+        <div>
+          <label class="field-label" for="locName">Location Name *</label>
+          <input type="text" id="locName" class="field-input" placeholder="e.g. Lincoln Rec Center" maxlength="100"
+                 oninput="checkSaveBtn()" />
+        </div>
+
+        <!-- Address + geocode -->
+        <div>
+          <label class="field-label" for="locAddress">Address</label>
+          <div class="addr-row">
+            <input type="text" id="locAddress" class="field-input"
+                   placeholder="e.g. 123 Main St, Springfield, IL"
+                   oninput="onAddressInput()" />
+            <button class="btn-geocode" id="geocodeBtn" onclick="geocodeAddress()" disabled>📍 Find</button>
+          </div>
+          <div class="map-status" id="mapStatus"></div>
+          <div class="map-wrap" id="mapWrap" style="margin-top:.6rem;">
+            <iframe id="mapFrame" title="Location map" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="field-label" for="locNotes">Notes</label>
+          <textarea id="locNotes" class="field-textarea"
+                    placeholder="e.g. 2 basketball courts, 1 soccer field, 20 cones, 12 pinnies available on-site&#10;Entrance: rear parking lot door"></textarea>
+        </div>
+
+        <!-- Image -->
+        <div>
+          <label class="field-label">Photo <span style="font-weight:400;color:var(--gray-400);">(optional)</span></label>
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <img id="imgPreview" class="img-preview" src="" alt="Location photo" />
+            <button class="btn-img-remove" onclick="removeImage()" title="Remove photo">✕</button>
+          </div>
+          <div class="img-upload-area" id="imgUploadArea">
+            <input type="file" id="locImageFile" accept="image/*" onchange="handleImageUpload(event)" />
+            <span class="img-upload-icon">📷</span>
+            <div class="img-upload-label">Click to upload a photo</div>
+            <div class="img-upload-sub">JPG, PNG, GIF — stored locally for now</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" id="saveBtn" onclick="saveLocation()" disabled>Save Location</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
+
+  <script>
+  // ═══════════════════════════════════════
+  //  STATE
+  // ═══════════════════════════════════════
+  let _locsCache = [];  // refreshed on every renderList()
+  let editing = null;   // null = new, locId = edit
+  let editLat = null;
+  let editLon = null;
+  let editImageData = null;
+  let geocodeTimer = null;
+
+  // ═══════════════════════════════════════
+  //  RENDER LIST
+  // ═══════════════════════════════════════
+  async function renderList() {
+    const el = document.getElementById('locationsList');
+    el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gray-400);">Loading…</div>';
+    _locsCache = await EP_DB.locations.list();
+    const locs = _locsCache;
+    if (!locs.length) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <span class="es-icon">📍</span>
+          <div class="es-title">No locations yet</div>
+          <div class="es-sub">Add your first facility so you can assign it to a program.</div>
+          <button class="btn-add" onclick="openModal()">+ Add Location</button>
+        </div>`;
+      return;
+    }
+    el.innerHTML = `<div class="locs-grid">${
+      locs.map(loc => {
+        const imgHtml = loc.image
+          ? `<img class="loc-img" src="${loc.image}" alt="" loading="lazy" />`
+          : `<div class="loc-img-placeholder">📍</div>`;
+        const addrHtml = loc.address
+          ? `<div class="loc-address"><span>📍</span><span>${escHtml(loc.address)}</span></div>`
+          : '';
+        const notesHtml = loc.notes
+          ? `<div class="loc-notes">${escHtml(loc.notes)}</div>`
+          : '';
+        return `<div class="loc-card">
+          ${imgHtml}
+          <div class="loc-body">
+            <div class="loc-name">${escHtml(loc.name)}</div>
+            ${addrHtml}
+            ${notesHtml}
+          </div>
+          <div class="loc-footer">
+            <button class="btn-loc-edit" onclick="viewLocation('${escAttr(loc.id)}')">👁 View</button>
+            <button class="btn-loc-edit" onclick="openModal('${escAttr(loc.id)}')">✏️ Edit</button>
+            <button class="btn-loc-delete" onclick="deleteLocation('${escAttr(loc.id)}')">🗑 Delete</button>
+          </div>
+        </div>`;
+      }).join('')
+    }</div>`;
+  }
+
+  // ═══════════════════════════════════════
+  //  VIEW MODAL
+  // ═══════════════════════════════════════
+  let _viewingLocId = null;
+
+  function viewLocation(locId) {
+    const loc = _locsCache.find(l => l.id === locId);
+    if (!loc) return;
+    _viewingLocId = locId;
+
+    // Image
+    document.getElementById('viewImgArea').innerHTML = loc.image
+      ? `<img class="view-img" src="${escHtml(loc.image)}" alt="" loading="lazy" />`
+      : `<div class="view-img-placeholder">📍</div>`;
+
+    document.getElementById('viewTitle').textContent = loc.name;
+
+    // Body rows
+    let rows = '';
+    if (loc.address) {
+      rows += `<div class="view-row"><span class="view-row-icon">📍</span><span class="view-row-text">${escHtml(loc.address)}</span></div>`;
+    }
+    if (loc.notes) {
+      rows += `<div class="view-row"><span class="view-row-icon">📝</span><span class="view-row-text">${escHtml(loc.notes)}</span></div>`;
+    }
+    if (loc.lat && loc.lon) {
+      const d = 0.009;
+      const bbox = `${loc.lon - d},${loc.lat - d},${loc.lon + d},${loc.lat + d}`;
+      const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${loc.lat},${loc.lon}`;
+      rows += `<div class="view-map-wrap"><iframe src="${escHtml(mapUrl)}" title="Map" loading="lazy"></iframe></div>`;
+    }
+    if (!rows) {
+      rows = `<div style="color:var(--gray-400);font-size:.9rem;">No additional details saved.</div>`;
+    }
+    document.getElementById('viewBody').innerHTML = rows;
+
+    document.getElementById('viewOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    _viewingLocId = null;
+  }
+
+  document.getElementById('viewCloseBtn').addEventListener('click', closeViewModal);
+  document.getElementById('viewFooterClose').addEventListener('click', closeViewModal);
+  document.getElementById('viewEditBtn').addEventListener('click', () => {
+    const id = _viewingLocId;
+    closeViewModal();
+    openModal(id);
+  });
+  document.getElementById('viewOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeViewModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewModal(); });
+
+  // ═══════════════════════════════════════
+  //  MODAL OPEN / CLOSE
+  // ═══════════════════════════════════════
+  function openModal(locId) {
+    editing = locId || null;
+    editLat = null; editLon = null; editImageData = null;
+
+    document.getElementById('modalTitle').textContent = editing ? 'Edit Location' : 'Add Location';
+    document.getElementById('saveBtn').textContent = editing ? 'Save Changes' : 'Save Location';
+
+    // Reset fields
+    document.getElementById('locName').value = '';
+    document.getElementById('locAddress').value = '';
+    document.getElementById('locNotes').value = '';
+    document.getElementById('locImageFile').value = '';
+    setMapStatus('');
+    hideMap();
+    hideImagePreview();
+
+    if (editing) {
+      const loc = _locsCache.find(l => l.id === locId);
+      if (loc) {
+        document.getElementById('locName').value = loc.name || '';
+        document.getElementById('locAddress').value = loc.address || '';
+        document.getElementById('locNotes').value = loc.notes || '';
+        editLat = loc.lat || null;
+        editLon = loc.lon || null;
+        if (loc.image) { editImageData = loc.image; showImagePreview(loc.image); }
+        if (editLat && editLon) showMap(editLat, editLon);
+      }
+    }
+
+    checkSaveBtn();
+    document.getElementById('geocodeBtn').disabled = !document.getElementById('locAddress').value.trim();
+    document.getElementById('modalOverlay').classList.add('open');
+    document.getElementById('locName').focus();
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  // ═══════════════════════════════════════
+  //  GEOCODING (OpenStreetMap Nominatim)
+  // ═══════════════════════════════════════
+  function onAddressInput() {
+    const val = document.getElementById('locAddress').value.trim();
+    document.getElementById('geocodeBtn').disabled = !val;
+    clearTimeout(geocodeTimer);
+    if (val.length >= 6) {
+      geocodeTimer = setTimeout(geocodeAddress, 1400);
+    } else {
+      hideMap();
+      setMapStatus('');
+    }
+  }
+
+  async function geocodeAddress() {
+    const addr = document.getElementById('locAddress').value.trim();
+    if (!addr) return;
+    clearTimeout(geocodeTimer);
+    setMapStatus('loading', '🔍 Looking up address…');
+    try {
+      const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q='
+                  + encodeURIComponent(addr);
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en-US,en' } });
+      const data = await res.json();
+      if (!data.length) {
+        setMapStatus('err', '❌ Address not found — try a more specific address');
+        hideMap();
+        return;
+      }
+      editLat = parseFloat(data[0].lat);
+      editLon = parseFloat(data[0].lon);
+      setMapStatus('ok', '✅ ' + data[0].display_name);
+      showMap(editLat, editLon);
+    } catch {
+      setMapStatus('err', '⚠️ Could not reach map service — check your connection');
+    }
+  }
+
+  function showMap(lat, lon) {
+    const d = 0.009;
+    const bbox = `${lon - d},${lat - d},${lon + d},${lat + d}`;
+    const url = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+    document.getElementById('mapFrame').src = url;
+    document.getElementById('mapWrap').classList.add('visible');
+  }
+  function hideMap() {
+    document.getElementById('mapWrap').classList.remove('visible');
+    document.getElementById('mapFrame').src = '';
+  }
+  function setMapStatus(type, msg) {
+    const el = document.getElementById('mapStatus');
+    el.className = 'map-status';
+    if (!type) { el.classList.remove('visible'); el.textContent = ''; return; }
+    el.classList.add('visible', type);
+    el.textContent = msg;
+  }
+
+  // ═══════════════════════════════════════
+  //  IMAGE UPLOAD
+  // ═══════════════════════════════════════
+  function handleImageUpload(evt) {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      editImageData = e.target.result;
+      showImagePreview(editImageData);
+    };
+    reader.readAsDataURL(file);
+  }
+  function showImagePreview(src) {
+    document.getElementById('imgPreview').src = src;
+    document.getElementById('imgPreviewWrap').classList.add('visible');
+    document.getElementById('imgUploadArea').style.display = 'none';
+  }
+  function hideImagePreview() {
+    document.getElementById('imgPreviewWrap').classList.remove('visible');
+    document.getElementById('imgUploadArea').style.display = '';
+    document.getElementById('imgPreview').src = '';
+  }
+  function removeImage() {
+    editImageData = null;
+    hideImagePreview();
+    document.getElementById('locImageFile').value = '';
+  }
+
+  // ═══════════════════════════════════════
+  //  SAVE / DELETE
+  // ═══════════════════════════════════════
+  function checkSaveBtn() {
+    const ok = document.getElementById('locName').value.trim().length > 0;
+    document.getElementById('saveBtn').disabled = !ok;
+  }
+
+  async function saveLocation() {
+    const name = document.getElementById('locName').value.trim();
+    if (!name) return;
+    const address = document.getElementById('locAddress').value.trim();
+    const notes = document.getElementById('locNotes').value.trim();
+
+    const btn = document.getElementById('saveBtn');
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    try {
+      await EP_DB.locations.save({
+        id:    editing || undefined,
+        name, address, notes,
+        lat:   editLat,
+        lon:   editLon,
+        image: editImageData,
+      });
+      closeModal();
+      await renderList();
+    } catch (err) {
+      console.error('[locations] save error:', err);
+      alert('Could not save — please try again.');
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+  }
+
+  async function deleteLocation(locId) {
+    const loc = _locsCache.find(l => l.id === locId);
+    if (!loc) return;
+    if (!confirm(`Delete "${loc.name}"? Programs using this location will not be affected.`)) return;
+    await EP_DB.locations.delete(locId);
+    await renderList();
+  }
+
+  // ═══════════════════════════════════════
+  //  UTILS
+  // ═══════════════════════════════════════
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escAttr(s) { return escHtml(s); }
+
+  // ═══════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════
+  renderList();
+  </script>
+
+</body>
+</html>

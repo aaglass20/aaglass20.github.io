@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Practice Plans — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Filter / search bar ── */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      align-items: center;
+      margin-bottom: 1.4rem;
+    }
+    .sport-tab {
+      padding: .4rem .9rem;
+      border: 1.5px solid var(--gray-200, #e5e7eb);
+      border-radius: 2rem;
+      background: var(--white);
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--gray-600, #4b5563);
+      cursor: pointer;
+      transition: background .13s, color .13s, border-color .13s;
+    }
+    .sport-tab.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    .sport-tab:hover:not(.active) { background: var(--gray-100, #f3f4f6); }
+
+    .search-wrap {
+      margin-left: auto;
+    }
+    .search-input {
+      padding: .42rem .8rem;
+      border: 1.5px solid var(--gray-200, #e5e7eb);
+      border-radius: .5rem;
+      font-family: inherit;
+      font-size: .88rem;
+      width: 200px;
+      outline: none;
+      transition: border-color .13s;
+    }
+    .search-input:focus { border-color: var(--blue); }
+
+    /* ── Plan cards grid ── */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .plan-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--gray-100, #f3f4f6);
+      padding: 1rem 1.1rem .85rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      transition: box-shadow .13s, transform .13s;
+    }
+    .plan-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+    .plan-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+    .plan-card-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
+    .plan-card-name {
+      font-weight: 800;
+      color: var(--blue);
+      font-size: 1rem;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .plan-card-meta {
+      font-size: .75rem;
+      color: var(--gray-400, #9ca3af);
+    }
+    .plan-card-updated {
+      font-size: .72rem;
+      color: var(--gray-300, #d1d5db);
+    }
+    .plan-card-actions {
+      display: flex;
+      gap: .45rem;
+      margin-top: .2rem;
+      flex-wrap: wrap;
+    }
+    .plan-card-actions button {
+      padding: .34rem .75rem;
+      border: 1.5px solid var(--gray-200, #e5e7eb);
+      border-radius: .4rem;
+      background: var(--white);
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .13s, border-color .13s;
+    }
+    .view-btn  { color: var(--gray-600, #4b5563); }
+    .view-btn:hover  { background: var(--gray-100, #f3f4f6); }
+    .edit-btn  { color: var(--blue); }
+    .edit-btn:hover  { background: #eff6ff; border-color: var(--blue); }
+    .copy-btn  { color: var(--gray-600, #4b5563); }
+    .copy-btn:hover  { background: var(--gray-100, #f3f4f6); }
+    .del-btn   { color: #dc2626; }
+    .del-btn:hover   { background: #fef2f2; border-color: #dc2626; }
+
+    /* ── Empty / loading states ── */
+    .empty-plans {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400, #9ca3af);
+    }
+    .empty-plans span { font-size: 2.5rem; display: block; margin-bottom: .6rem; }
+    .loading-plans {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-400, #9ca3af);
+      font-size: .9rem;
+    }
+
+    /* ── Page header row ── */
+    .lib-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+    .lib-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin: 0;
+    }
+    .btn-new-plan {
+      padding: .55rem 1.2rem;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: .5rem;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      transition: background .13s;
+    }
+    .btn-new-plan:hover { background: #1e40af; }
+
+    /* ── View modal ── */
+    .view-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 1000;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .view-overlay.open { display: flex; }
+    .view-panel {
+      background: #fff;
+      border-radius: var(--radius, .75rem);
+      box-shadow: 0 8px 40px rgba(0,0,0,.22);
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 4rem);
+      overflow: hidden;
+    }
+    .view-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 1.1rem 1.25rem .9rem;
+      border-bottom: 1.5px solid var(--gray-100, #f3f4f6);
+      flex-shrink: 0;
+    }
+    .view-header-icon { font-size: 2rem; line-height: 1; }
+    .view-header-info { flex: 1; min-width: 0; }
+    .view-header-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--blue);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .view-header-meta { font-size: .78rem; color: var(--gray-400, #9ca3af); margin-top: .1rem; }
+    .view-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--gray-400, #9ca3af);
+      cursor: pointer;
+      padding: .2rem .4rem;
+      border-radius: .3rem;
+      flex-shrink: 0;
+    }
+    .view-close:hover { background: var(--gray-100, #f3f4f6); color: var(--gray-700); }
+    .view-body {
+      overflow-y: auto;
+      padding: 1rem 1.25rem 1.5rem;
+      flex: 1;
+    }
+    .view-actions {
+      display: flex;
+      gap: .5rem;
+      padding: .85rem 1.25rem;
+      border-top: 1.5px solid var(--gray-100, #f3f4f6);
+      flex-shrink: 0;
+    }
+    .view-actions a,
+    .view-actions button {
+      padding: .5rem 1.1rem;
+      border-radius: .45rem;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .13s;
+    }
+    .view-btn-edit { background: var(--blue); color: #fff; border: none; }
+    .view-btn-edit:hover { background: #1e40af; }
+    .view-btn-copy { background: var(--white); color: var(--gray-700); border: 1.5px solid var(--gray-200, #e5e7eb); }
+    .view-btn-copy:hover { background: var(--gray-100, #f3f4f6); }
+
+    /* ── Plan block (read-only) ── */
+    .vb-block {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      padding: .8rem 1rem;
+      border-radius: .55rem;
+      border: 1.5px solid var(--gray-100, #f3f4f6);
+      border-left-width: 4px;
+      margin-bottom: .6rem;
+      background: #fff;
+    }
+    .vb-block.type-warmup  { border-left-color: #f97316; }
+    .vb-block.type-drill   { border-left-color: var(--blue); }
+    .vb-block.type-rotation { border-left-color: #7c3aed; }
+    .vb-block.type-break   { border-left-color: #0d9488; }
+    .vb-block.type-closing { border-left-color: #16a34a; }
+    .vb-icon { font-size: 1.25rem; line-height: 1; flex-shrink: 0; margin-top: .1rem; }
+    .vb-body { flex: 1; min-width: 0; }
+    .vb-name { font-weight: 700; color: var(--blue); font-size: .95rem; margin-bottom: .15rem; }
+    .vb-desc { font-size: .82rem; color: var(--gray-600, #4b5563); margin-bottom: .3rem; }
+    .vb-dur  { font-size: .78rem; font-weight: 700; color: var(--gray-400, #9ca3af); background: var(--gray-100, #f3f4f6); padding: .2rem .55rem; border-radius: 1rem; flex-shrink: 0; align-self: flex-start; }
+    .vb-steps { list-style: none; padding: 0; margin: .3rem 0 0; }
+    .vb-steps li { font-size: .8rem; color: var(--gray-700); padding: .18rem 0; display: flex; gap: .4rem; }
+    .vb-steps li .si { flex-shrink: 0; }
+    .vb-tip  { font-size: .78rem; padding: .25rem .6rem; border-radius: .35rem; margin-top: .3rem; display: flex; gap: .4rem; }
+    .vb-tip-why  { background: #eff6ff; color: #1d4ed8; }
+    .vb-tip-vol  { background: #f0fdf4; color: #15803d; }
+    .vb-tip-fac  { background: #fefce8; color: #92400e; }
+    .vb-stations { margin-top: .5rem; display: flex; flex-direction: column; gap: .4rem; }
+    .vb-station  { background: var(--gray-50, #f9fafb); border-radius: .4rem; padding: .5rem .7rem; }
+    .vb-station-title { font-weight: 700; font-size: .82rem; color: var(--blue); margin-bottom: .2rem; display: flex; justify-content: space-between; }
+    .vb-empty { text-align: center; color: var(--gray-400, #9ca3af); padding: 2rem 1rem; font-size: .9rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4rem);
+      background: var(--blue);
+      color: #fff;
+      padding: .65rem 1.4rem;
+      border-radius: 2rem;
+      font-size: .9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      transition: transform .25s ease;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <script src="js/nav.js" data-page="plan-library"></script>
+
+  <section class="hero" style="padding:2.5rem 1.5rem 3rem;">
+    <div class="hero-badge">📚 Plan Management</div>
+    <h1>Practice <span>Plans</span></h1>
+    <p style="font-size:.97rem;">View, edit, copy, and organize all your saved practice plans. Filter by sport or search by name.</p>
+  </section>
+
+  <div class="container-wide">
+
+    <div class="lib-header">
+      <h2>All Plans</h2>
+      <a href="practice-builder.html" class="btn-new-plan">＋ New Plan</a>
+    </div>
+
+    <!-- Filter row -->
+    <div class="filter-row" id="filterRow">
+      <button class="sport-tab active" data-sport="all">All Sports</button>
+      <!-- sport tabs injected by JS -->
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search plans…" />
+      </div>
+    </div>
+
+    <!-- Plans grid -->
+    <div class="plans-grid" id="plansGrid">
+      <div class="loading-plans">Loading plans…</div>
+    </div>
+
+  </div>
+
+  <!-- View modal -->
+  <div class="view-overlay" id="viewOverlay">
+    <div class="view-panel">
+      <div class="view-header">
+        <span class="view-header-icon" id="viewIcon"></span>
+        <div class="view-header-info">
+          <div class="view-header-name" id="viewName"></div>
+          <div class="view-header-meta" id="viewMeta"></div>
+        </div>
+        <button class="view-close" id="viewClose" aria-label="Close">✕</button>
+      </div>
+      <div class="view-body" id="viewBody"></div>
+      <div class="view-actions">
+        <a class="view-btn-edit" id="viewEditBtn" href="#">✏️ Edit Plan</a>
+        <button class="view-btn-copy" id="viewCopyBtn">📋 Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
+  <script>
+  const SPORTS = [
+    { id: 'soccer',     name: 'Soccer',     icon: '⚽' },
+    { id: 'basketball', name: 'Basketball', icon: '🏀' },
+    { id: 'softball',   name: 'Softball',   icon: '🥎' },
+    { id: 'football',   name: 'Football',   icon: '🏈' },
+    { id: 'pickleball', name: 'Pickleball', icon: '🏓' },
+    { id: 'kickball',   name: 'Kickball',   icon: '🔴' },
+  ];
+
+  let allPlans   = [];
+  let filterSport = 'all';
+  let searchQuery = '';
+
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function relativeDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffDays === 0) return 'Updated today';
+    if (diffDays === 1) return 'Updated yesterday';
+    if (diffDays < 7)  return `Updated ${diffDays} days ago`;
+    return 'Updated ' + d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: diffDays > 365 ? 'numeric' : undefined });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function renderFilterTabs() {
+    const row = document.getElementById('filterRow');
+    // Remove existing sport tabs (keep "All Sports" + search wrap)
+    row.querySelectorAll('.sport-tab:not([data-sport="all"])').forEach(el => el.remove());
+
+    const sportsInUse = new Set(allPlans.map(p => p.sport));
+    const searchWrap = row.querySelector('.search-wrap');
+
+    SPORTS.filter(s => sportsInUse.has(s.id)).forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'sport-tab' + (filterSport === s.id ? ' active' : '');
+      btn.dataset.sport = s.id;
+      btn.textContent = s.icon + ' ' + s.name;
+      btn.addEventListener('click', () => { filterSport = s.id; renderAll(); });
+      row.insertBefore(btn, searchWrap);
+    });
+
+    row.querySelector('[data-sport="all"]').classList.toggle('active', filterSport === 'all');
+  }
+
+  function filteredPlans() {
+    let list = allPlans;
+    if (filterSport !== 'all') list = list.filter(p => p.sport === filterSport);
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p => (p.name || '').toLowerCase().includes(q) || (p.sportName || p.sport || '').toLowerCase().includes(q));
+    }
+    return list;
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('plansGrid');
+    const plans = filteredPlans();
+
+    if (!plans.length) {
+      grid.innerHTML = `<div class="empty-plans"><span>📋</span><p>${allPlans.length === 0 ? 'No plans yet — click <strong>New Plan</strong> to build your first.' : 'No plans match your filter.'}</p></div>`;
+      return;
+    }
+
+    grid.innerHTML = '';
+    plans.forEach(p => {
+      const sport = SPORTS.find(s => s.id === p.sport) || { icon: '⚽', name: p.sport };
+      const blockCount = (p.blocks || []).length;
+      const card = document.createElement('div');
+      card.className = 'plan-card';
+      card.innerHTML = `
+        <div class="plan-card-head">
+          <span class="plan-card-icon">${sport.icon}</span>
+          <div class="plan-card-name">${escHtml(p.name || 'Untitled Plan')}</div>
+        </div>
+        <div class="plan-card-meta">${escHtml(sport.name)} · ${p.durationMinutes || 75} min · ${blockCount} block${blockCount !== 1 ? 's' : ''}</div>
+        <div class="plan-card-updated">${relativeDate(p.updatedAt || p.createdAt)}</div>
+        <div class="plan-card-actions">
+          <button class="view-btn">👁 View</button>
+          <button class="edit-btn">✏️ Edit</button>
+          <button class="copy-btn">📋 Copy</button>
+          <button class="del-btn">🗑 Delete</button>
+        </div>
+      `;
+
+      card.querySelector('.view-btn').addEventListener('click', () => viewPlan(p));
+      card.querySelector('.edit-btn').addEventListener('click', () => editPlan(p.id));
+      card.querySelector('.copy-btn').addEventListener('click', () => copyPlan(p));
+      card.querySelector('.del-btn').addEventListener('click', () => deletePlan(p));
+
+      grid.appendChild(card);
+    });
+  }
+
+  function renderAll() {
+    renderFilterTabs();
+    renderGrid();
+  }
+
+  // ── View modal ──────────────────────────────────────────────
+
+  let _viewingPlan = null;
+
+  function renderBlockHtml(block) {
+    const iconMap = { warmup: block.icon || '🌟', drill: block.icon || '🏃', rotation: '🔄', break: '💧', closing: '🏁' };
+    const icon = iconMap[block.type] || '📌';
+    let inner = `<div class="vb-name">${escHtml(block.name)}</div>`;
+
+    if (block.type === 'rotation' && block.drills && block.drills.length) {
+      const stations = block.drills.map(d => {
+        let sd = `<div class="vb-station-title"><span>${escHtml(d.icon || '🏃')} ${escHtml(d.name)}</span><span style="font-weight:500;color:#888;">${block.timePerDrill || '?'} min</span></div>`;
+        if (d.description) sd += `<div style="font-size:.78rem;color:var(--gray-600,#4b5563);">${escHtml(d.description)}</div>`;
+        if (d.steps && d.steps.length) {
+          sd += '<ul class="vb-steps">' + d.steps.map(s => `<li><span class="si">${s.icon || '▸'}</span>${escHtml(s.text)}</li>`).join('') + '</ul>';
+        }
+        if (d.volunteerTip) sd += `<div class="vb-tip vb-tip-vol">🙌 <span>${escHtml(d.volunteerTip)}</span></div>`;
+        return `<div class="vb-station">${sd}</div>`;
+      }).join('');
+      inner += `<div class="vb-stations">${stations}</div>`;
+    } else {
+      if (block.description) inner += `<div class="vb-desc">${escHtml(block.description)}</div>`;
+      if (block.steps && block.steps.length) {
+        inner += '<ul class="vb-steps">' + block.steps.map(s => `<li><span class="si">${s.icon || '▸'}</span>${escHtml(s.text)}</li>`).join('') + '</ul>';
+      }
+      if (block.why) inner += `<div class="vb-tip vb-tip-why">🤔 <span>${escHtml(block.why)}</span></div>`;
+      if (block.volunteerTip) inner += `<div class="vb-tip vb-tip-vol">🙌 <span>${escHtml(block.volunteerTip)}</span></div>`;
+      if (block.facilitatorTip) inner += `<div class="vb-tip vb-tip-fac">💡 <span>${escHtml(block.facilitatorTip)}</span></div>`;
+    }
+
+    return `<div class="vb-block type-${block.type}">
+      <span class="vb-icon">${icon}</span>
+      <div class="vb-body">${inner}</div>
+      <span class="vb-dur">${block.durationMinutes} min</span>
+    </div>`;
+  }
+
+  function viewPlan(p) {
+    _viewingPlan = p;
+    const sport = SPORTS.find(s => s.id === p.sport) || { icon: '⚽', name: p.sport };
+    const blockCount = (p.blocks || []).length;
+
+    document.getElementById('viewIcon').textContent = sport.icon;
+    document.getElementById('viewName').textContent = p.name || 'Untitled Plan';
+    document.getElementById('viewMeta').textContent =
+      `${sport.name} · ${p.durationMinutes || 75} min · ${blockCount} block${blockCount !== 1 ? 's' : ''}` +
+      (p.hasWarmup ? ' · Warmup included' : '');
+
+    document.getElementById('viewEditBtn').href = `practice-builder.html?planId=${encodeURIComponent(p.id)}`;
+
+    const body = document.getElementById('viewBody');
+    if (!blockCount) {
+      body.innerHTML = '<div class="vb-empty">📋 This plan has no blocks yet.</div>';
+    } else {
+      body.innerHTML = p.blocks.map(renderBlockHtml).join('');
+    }
+
+    document.getElementById('viewOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    _viewingPlan = null;
+  }
+
+  document.getElementById('viewClose').addEventListener('click', closeViewModal);
+  document.getElementById('viewOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeViewModal(); });
+  document.getElementById('viewCopyBtn').addEventListener('click', () => {
+    if (_viewingPlan) { closeViewModal(); copyPlan(_viewingPlan); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewModal(); });
+
+  // ── End view modal ───────────────────────────────────────────
+
+  function editPlan(id) {
+    window.location.href = `practice-builder.html?planId=${encodeURIComponent(id)}`;
+  }
+
+  async function copyPlan(p) {
+    const copy = {
+      ...p,
+      id: null,
+      name: 'Copy of ' + (p.name || 'Untitled Plan'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      const saved = await EP_DB.plans.save(copy);
+      allPlans.unshift(saved);
+      renderAll();
+      showToast('📋 Plan copied!');
+    } catch(e) {
+      console.error('[plan-library] copyPlan:', e);
+      showToast('Copy failed — try again');
+    }
+  }
+
+  async function deletePlan(p) {
+    const name = p.name || 'this plan';
+    if (!confirm(`Delete "${name}"?\n\nThis cannot be undone.`)) return;
+    try {
+      await EP_DB.plans.delete(p.id);
+      allPlans = allPlans.filter(x => x.id !== p.id);
+      renderAll();
+      showToast('🗑 Plan deleted');
+    } catch(e) {
+      console.error('[plan-library] deletePlan:', e);
+      showToast('Delete failed — try again');
+    }
+  }
+
+  // Filter tab — All Sports
+  document.querySelector('[data-sport="all"]').addEventListener('click', () => { filterSport = 'all'; renderAll(); });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', function() {
+    searchQuery = this.value.trim();
+    renderGrid();
+  });
+
+  // Init
+  (async function init() {
+    try {
+      allPlans = await EP_DB.plans.list();
+    } catch(e) {
+      console.error('[plan-library] init:', e);
+      allPlans = [];
+    }
+    renderAll();
+  })();
+  </script>
+</body>
+</html>

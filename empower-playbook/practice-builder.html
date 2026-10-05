@@ -444,31 +444,43 @@
       /* ── Tip strips: tighter on mobile ── */
       .why-tip, .vol-tip, .fac-tip, .block-equip { padding: .35rem .5rem; font-size: .79rem; }
     }
+
+    /* ── Program Context Banner ── */
+    .prog-ctx-banner {
+      display: none; background: var(--blue-light); border-top: 3px solid var(--blue);
+      padding: .6rem 1.5rem; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .prog-ctx-banner.visible { display: flex; }
+    .prog-ctx-left { display: flex; align-items: center; gap: .6rem; font-size: .88rem; color: var(--blue); }
+    .prog-ctx-title { font-weight: 700; }
+    .prog-ctx-sep { opacity: .4; }
+    .prog-ctx-sub { font-weight: 500; opacity: .8; }
+    .btn-back-prog {
+      background: var(--blue); color: #fff; border: none;
+      padding: .38rem .9rem; border-radius: var(--radius-sm);
+      font-size: .82rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      text-decoration: none; display: inline-flex; align-items: center; gap: .3rem;
+      transition: background .15s; white-space: nowrap;
+    }
+    .btn-back-prog:hover { background: var(--blue-mid); }
   </style>
 </head>
 <body>
 
   <!-- NAV -->
-  <nav class="nav">
-    <a href="index.html" class="nav-brand">
-      <span class="nav-brand-icon">⚡</span>
-      <span>Empower Sports<br><small>Program Playbook</small></span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html">🏠 <span class="link-label">Home</span></a>
-      <a href="basketball.html">🏀 <span class="link-label">Basketball</span></a>
-      <a href="softball.html">🥎 <span class="link-label">Softball</span></a>
-      <a href="football.html">🏈 <span class="link-label">Football</span></a>
-      <a href="pickleball.html">🏓 <span class="link-label">Pickleball</span></a>
-      <a href="soccer.html">⚽ <span class="link-label">Soccer</span></a>
-      <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
-      <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
-      <a href="practice-builder.html" class="active">📋 <span class="link-label">Plan Builder</span></a>
+  <script src="js/nav.js" data-page="practice-builder"></script>
+
+  <!-- Program context banner (visible only when launched from a program) -->
+  <div class="prog-ctx-banner" id="progCtxBanner">
+    <div class="prog-ctx-left">
+      <span>📁</span>
+      <span class="prog-ctx-title" id="progCtxTitle"></span>
+      <span class="prog-ctx-sep">·</span>
+      <span class="prog-ctx-sub" id="progCtxSub"></span>
     </div>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+    <a class="btn-back-prog" id="progCtxBack" href="programs.html">← Back to Program</a>
+  </div>
 
   <!-- HERO -->
   <section class="hero" style="padding: 2.5rem 1.5rem 3rem;">
@@ -552,6 +564,11 @@
         <div class="wizard-heading">Ready to build!</div>
         <div class="wizard-sub">Here's your session setup — click below to start filling in your plan.</div>
         <div class="summary-card" id="summaryCard"></div>
+        <div style="margin-top:1rem;">
+          <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-600,#4b5563);margin-bottom:.35rem;">Plan name</label>
+          <input type="text" id="planNameInput" placeholder="e.g. Soccer Practice"
+            style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--gray-200,#e5e7eb);border-radius:.5rem;font-size:.95rem;box-sizing:border-box;" />
+        </div>
         <div class="wizard-nav">
           <button class="btn-wiz-back" id="back4">← Back</button>
           <button class="btn-wiz-next" id="startBuild" style="background:var(--blue);">🏗️ Build My Plan →</button>
@@ -569,6 +586,10 @@
           <div class="time-chips" id="timeChips"></div>
           <button class="btn-print" onclick="printPlan()">🖨️ Print Plan</button>
           <button class="btn-new-plan" id="newPlanBtn">↩ New Plan</button>
+        </div>
+        <div style="padding:.3rem .1rem .1rem;">
+          <input type="text" id="bhPlanName" placeholder="Plan name…"
+            style="width:100%;max-width:380px;padding:.4rem .65rem;border:1.5px solid var(--gray-200,#e5e7eb);border-radius:.5rem;font-size:.9rem;font-weight:600;color:var(--blue);background:transparent;box-sizing:border-box;" />
         </div>
         <div class="bh-opts">
           <span class="bh-opts-label">Show:</span>
@@ -697,6 +718,10 @@
       </div>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/db.js"></script>
 
   <script>
   // ═══════════════════════════════════════
@@ -1615,25 +1640,25 @@
     );
   }
 
-  // ─── Merge user-created drills from drill-admin localStorage ───
-  (function mergeLocalDrills() {
+  // ─── Merge custom drills from Supabase/localStorage into DRILL_BANK ───
+  async function mergeDrills() {
     try {
-      const raw = localStorage.getItem('empowerDrillBank');
-      if (!raw) return;
-      JSON.parse(raw).forEach(d => {
+      const customs = await EP_DB.drills.list();
+      customs.forEach(d => {
         if (!d.sport || !d.id) return;
         if (!DRILL_BANK[d.sport]) DRILL_BANK[d.sport] = [];
         const idx = DRILL_BANK[d.sport].findIndex(x => x.id === d.id);
         if (idx >= 0) DRILL_BANK[d.sport][idx] = d; else DRILL_BANK[d.sport].push(d);
       });
-    } catch(e) {}
-  })();
+    } catch(e) { console.warn('[practice-builder] mergeDrills:', e); }
+  }
 
   // ═══════════════════════════════════════
   //  STATE
   // ═══════════════════════════════════════
   let wiz = { sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true };
   let plan = null;
+  let progCtx = null; // set from URL params when launched from a program dashboard
   let selectedWarmup = null;
   let selectedDrill = null;
   let selectedRotDrills = [];
@@ -1714,17 +1739,36 @@
       <div class="summary-row"><span class="summary-label">Session Length</span><span class="summary-value">${wiz.durationMinutes} minutes</span></div>
       <div class="summary-row"><span class="summary-label">Includes Warmup</span><span class="summary-value">${wiz.hasWarmup ? '✅ Yes' : '❌ No, jump straight to drills'}</span></div>
     `;
+    const ni = document.getElementById('planNameInput');
+    if (ni && !wiz.planName) ni.value = wiz.sportName + ' Practice';
   }
+
+  document.getElementById('planNameInput').addEventListener('input', function() { wiz.planName = this.value; });
 
   // ═══════════════════════════════════════
   //  BUILDER
   // ═══════════════════════════════════════
   function startBuilder() {
-    plan = { sport: wiz.sport, sportName: wiz.sportName, sportIcon: wiz.sportIcon, durationMinutes: wiz.durationMinutes, hasWarmup: wiz.hasWarmup, blocks: [] };
+    plan = {
+      id: progCtx ? (progCtx.planId || null) : null,
+      name: wiz.planName || (wiz.sportName + ' Practice'),
+      sport: wiz.sport, sportName: wiz.sportName, sportIcon: wiz.sportIcon,
+      durationMinutes: wiz.durationMinutes, hasWarmup: wiz.hasWarmup, blocks: [],
+      programId: progCtx ? progCtx.programId : null,
+      weekNum:   progCtx ? progCtx.weekNum   : null,
+      group:     progCtx ? progCtx.group     : null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    document.getElementById('bhPlanName').value = plan.name;
     document.getElementById('wizard').style.display = 'none';
     document.getElementById('builder').classList.add('active');
     renderBuilder();
     savePlan();
+  }
+
+  function genPlanId() {
+    return 'plan_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
   }
 
   function minsUsed() { return plan.blocks.reduce((s, b) => s + (b.durationMinutes || 0), 0); }
@@ -1736,9 +1780,12 @@
     const over = left < 0;
     const pct = Math.min((used / plan.durationMinutes) * 100, 100);
 
+    const planSubLabel = plan.programId
+      ? `Week ${plan.weekNum} · ${plan.group}`
+      : 'Practice Plan';
     document.getElementById('bhSport').innerHTML = `
       <span class="bh-sport-icon">${plan.sportIcon}</span>
-      <div><div class="bh-sport-name">${plan.sportName}</div><div class="bh-sport-sub">Practice Plan</div></div>
+      <div><div class="bh-sport-name">${plan.sportName}</div><div class="bh-sport-sub">${planSubLabel}</div></div>
     `;
     document.getElementById('timeChips').innerHTML = `
       <span class="time-chip tc-total">⏱ ${plan.durationMinutes} min</span>
@@ -1895,6 +1942,13 @@
     document.getElementById('pillEquip').classList.toggle('active', showEquipment);
     renderBuilder();
   });
+
+  // Plan name input in builder header — update plan.name and auto-save on blur
+  (function() {
+    const inp = document.getElementById('bhPlanName');
+    inp.addEventListener('input', function() { if (plan) plan.name = this.value; });
+    inp.addEventListener('change', function() { if (plan) savePlan(); });
+  })();
 
   document.getElementById('newPlanBtn').addEventListener('click', () => {
     if (!confirm('Start a new plan? Your current plan will be cleared.')) return;
@@ -2383,39 +2437,99 @@
   // ═══════════════════════════════════════
   //  LOCALSTORAGE
   // ═══════════════════════════════════════
-  function savePlan() {
-    if (plan) localStorage.setItem('empowerPracticePlan', JSON.stringify(plan));
+  async function savePlan() {
+    if (!plan) return;
+    plan.updatedAt = new Date().toISOString();
+    try {
+      const saved = await EP_DB.plans.save(plan);
+      plan.id = saved.id; // capture UUID assigned by Supabase on first insert
+    } catch (err) {
+      console.error('[practice-builder] savePlan:', err);
+    }
+    // Keep standalone plan in localStorage for quick page-restore on reload
+    if (!plan.programId) {
+      localStorage.setItem('empowerPracticePlan', JSON.stringify(plan));
+    }
   }
 
-  (function init() {
+  (async function init() {
+    // Merge custom drills into DRILL_BANK (Supabase → localStorage fallback)
+    await mergeDrills();
+
+    const params = new URLSearchParams(location.search);
+    const programId = params.get('programId');
+
+    if (programId) {
+      // Launched from a program dashboard cell
+      progCtx = {
+        programId,
+        weekNum: parseInt(params.get('week') || '1', 10),
+        group:   params.get('group')       || '',
+        planId:  params.get('planId')      || null,
+        sport:   params.get('sport')       || null,
+      };
+
+      // Show context banner — programName passed as URL param to avoid extra fetch
+      const progName = params.get('programName') || 'Program';
+      document.getElementById('progCtxTitle').textContent = progName;
+      document.getElementById('progCtxSub').textContent = `Week ${progCtx.weekNum} — ${progCtx.group}`;
+      document.getElementById('progCtxBack').href = `programs.html?openProgram=${encodeURIComponent(programId)}`;
+      document.getElementById('progCtxBanner').classList.add('visible');
+
+      // Load existing plan for this cell if planId provided
+      if (progCtx.planId) {
+        const savedPlan = await EP_DB.plans.get(progCtx.planId);
+        if (savedPlan) {
+          plan = savedPlan;
+          document.getElementById('bhPlanName').value = plan.name || '';
+          document.getElementById('wizard').style.display = 'none';
+          document.getElementById('builder').classList.add('active');
+          renderBuilder();
+          return;
+        }
+      }
+
+      // Pre-select sport and skip to step 2
+      if (progCtx.sport) {
+        const s = SPORTS.find(sp => sp.id === progCtx.sport);
+        if (s) {
+          wiz.sport = s.id; wiz.sportName = s.name; wiz.sportIcon = s.icon;
+          setTimeout(function() {
+            document.querySelectorAll('.sport-pick-card').forEach(function(c, i) {
+              c.classList.toggle('selected', SPORTS[i] && SPORTS[i].id === progCtx.sport);
+            });
+            document.getElementById('next1').disabled = false;
+            goStep(2);
+          }, 0);
+        }
+      }
+      return;
+    }
+
+    // Standalone load by planId — from plan-library Edit button
+    const standaloneId = params.get('planId');
+    if (standaloneId) {
+      const savedPlan = await EP_DB.plans.get(standaloneId);
+      if (savedPlan) {
+        plan = savedPlan;
+        document.getElementById('bhPlanName').value = plan.name || '';
+        document.getElementById('wizard').style.display = 'none';
+        document.getElementById('builder').classList.add('active');
+        renderBuilder();
+        return;
+      }
+    }
+
+    // Normal standalone flow — restore last saved plan from localStorage cache
     const raw = localStorage.getItem('empowerPracticePlan');
     if (!raw) return;
     try {
       plan = JSON.parse(raw);
+      document.getElementById('bhPlanName').value = plan.name || '';
       document.getElementById('wizard').style.display = 'none';
       document.getElementById('builder').classList.add('active');
       renderBuilder();
     } catch { localStorage.removeItem('empowerPracticePlan'); }
-  })();
-  </script>
-
-  <script>
-  (function() {
-    var btn = document.getElementById('navHamburger');
-    var links = document.querySelector('.nav-links');
-    if (!btn || !links) return;
-    btn.addEventListener('click', function() {
-      var open = links.classList.toggle('open');
-      btn.classList.toggle('open', open);
-      btn.setAttribute('aria-expanded', open);
-    });
-    links.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        links.classList.remove('open');
-        btn.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      });
-    });
   })();
   </script>
 </body>

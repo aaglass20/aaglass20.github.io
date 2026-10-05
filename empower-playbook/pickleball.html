@@ -12,27 +12,7 @@
 <body>
 
   <!-- NAV -->
-  <nav class="nav">
-    <a href="index.html" class="nav-brand">
-      <span class="nav-brand-icon">⚡</span>
-      <span>Empower Sports<br><small>Program Playbook</small></span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html">🏠 <span class="link-label">Home</span></a>
-      <a href="basketball.html">🏀 <span class="link-label">Basketball</span></a>
-      <a href="softball.html">🥎 <span class="link-label">Softball</span></a>
-      <a href="football.html">🏈 <span class="link-label">Football</span></a>
-      <a href="pickleball.html" class="active">🏓 <span class="link-label">Pickleball</span></a>
-      <a href="soccer.html">⚽ <span class="link-label">Soccer</span></a>
-      <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
-      <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
-      <a href="practice-builder.html">📋 <span class="link-label">Plan Builder</span></a>
-      <a href="drill-admin.html">🗂️ <span class="link-label">Drill Library</span></a>
-    </div>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+  <script src="js/nav.js" data-page="pickleball"></script>
 
   <!-- HERO -->
   <section class="hero">
@@ -702,26 +682,6 @@
           tab.setAttribute('aria-selected','true');
           document.querySelector(`.tab-panel[data-group="${groupName}"][data-panel="${tab.dataset.panel}"]`).classList.add('active');
         });
-      });
-    });
-  })();
-  </script>
-
-  <script>
-  (function() {
-    var btn = document.getElementById('navHamburger');
-    var links = document.querySelector('.nav-links');
-    if (!btn || !links) return;
-    btn.addEventListener('click', function() {
-      var open = links.classList.toggle('open');
-      btn.classList.toggle('open', open);
-      btn.setAttribute('aria-expanded', open);
-    });
-    links.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        links.classList.remove('open');
-        btn.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
       });
     });
   })();

@@ -426,27 +426,7 @@
 <body>
 
   <!-- NAV -->
-  <nav class="nav">
-    <a href="index.html" class="nav-brand">
-      <span class="nav-brand-icon">⚡</span>
-      <span>Empower Sports<br><small>Program Playbook</small></span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html">🏠 <span class="link-label">Home</span></a>
-      <a href="basketball.html">🏀 <span class="link-label">Basketball</span></a>
-      <a href="softball.html">🥎 <span class="link-label">Softball</span></a>
-      <a href="football.html">🏈 <span class="link-label">Football</span></a>
-      <a href="pickleball.html">🏓 <span class="link-label">Pickleball</span></a>
-      <a href="soccer.html">⚽ <span class="link-label">Soccer</span></a>
-      <a href="kickball.html">🔴 <span class="link-label">Kickball</span></a>
-      <a href="volunteer.html">🤝 <span class="link-label">Volunteer Guide</span></a>
-      <a href="practice-builder.html">📋 <span class="link-label">Plan Builder</span></a>
-      <a href="drill-admin.html" class="active">🗂️ <span class="link-label">Drill Library</span></a>
-    </div>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+  <script src="js/nav.js" data-page="drill-admin"></script>
 
   <!-- HERO -->
   <section class="hero" style="padding:2.5rem 1.5rem 3rem;">
@@ -609,6 +589,10 @@
   <footer class="page-footer">
     <strong>Empower Sports</strong> Program Playbook — Adapted Athletic, Fitness &amp; Recreational Programs
   </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
 
 <script>
 // ═══════════════════════════════════════
@@ -971,20 +955,9 @@ const SPORT_CATEGORIES = {
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let userDrills = [];   // from localStorage
+let dbDrills   = [];   // loaded from Supabase (→ localStorage fallback)
 let editingId  = null; // null = add mode, id string = edit mode
 let filterSport = 'all';
-
-const LS_KEY = 'empowerDrillBank';
-
-function loadUserDrills() {
-  try { userDrills = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); }
-  catch(e) { userDrills = []; }
-}
-
-function saveUserDrills() {
-  localStorage.setItem(LS_KEY, JSON.stringify(userDrills));
-}
 
 // ═══════════════════════════════════════
 //  CATEGORY SELECT
@@ -998,7 +971,7 @@ function updateCategorySelect(sport, currentVal) {
 
 function allDrills() {
   const merged = [...BUILTIN_DRILLS];
-  userDrills.forEach(ud => {
+  dbDrills.forEach(ud => {
     const idx = merged.findIndex(d => d.id === ud.id);
     if (idx >= 0) merged[idx] = ud; else merged.push(ud);
   });
@@ -1162,18 +1135,26 @@ function showMsg(msg, ok) {
   setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
-document.getElementById('saveBtn').addEventListener('click', () => {
+document.getElementById('saveBtn').addEventListener('click', async () => {
   const d = collectForm();
   if (!d.name) { showMsg('Please enter a drill title.', false); return; }
   if (!d.sport) { showMsg('Please select a sport.', false); return; }
 
-  const idx = userDrills.findIndex(ud => ud.id === d.id);
-  if (idx >= 0) userDrills[idx] = d; else userDrills.push(d);
-  saveUserDrills();
-  showMsg(editingId ? '✓ Drill updated!' : '✓ Drill saved!', true);
-  clearForm();
-  renderLibrary();
-  switchTab('library');
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  try {
+    await EP_DB.drills.save(d);
+    dbDrills = await EP_DB.drills.list();
+    showMsg(editingId ? '✓ Drill updated!' : '✓ Drill saved!', true);
+    clearForm();
+    renderLibrary();
+    switchTab('library');
+  } catch(err) {
+    console.error('[drill-admin] save:', err);
+    showMsg('Could not save — please try again.', false);
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('cancelBtn').addEventListener('click', clearForm);
@@ -1182,13 +1163,9 @@ document.getElementById('addStepBtn').addEventListener('click', () => addStepRow
 document.getElementById('addEquipBtn').addEventListener('click', () => addEquipRow(''));
 
 // ═══════════════════════════════════════
-//  EDIT / DELETE
+//  EDIT / COPY / DELETE
 // ═══════════════════════════════════════
-function editDrill(id) {
-  const d = allDrills().find(x => x.id === id);
-  if (!d) return;
-  editingId = d.id;
-
+function _fillForm(d) {
   document.getElementById('f-name').value = d.name || '';
   document.getElementById('f-sport').value = d.sport || 'soccer';
   updateCategorySelect(d.sport || 'soccer', d.category || '');
@@ -1197,31 +1174,48 @@ function editDrill(id) {
   document.getElementById('f-why').value = d.why || '';
   document.getElementById('f-vol').value = d.volunteerTip || '';
   document.getElementById('f-fac').value = d.facilitatorTip || '';
-
   document.getElementById('stepsList').innerHTML = '';
   (d.steps || []).forEach(s => addStepRow(s));
   document.getElementById('equipList').innerHTML = '';
   (d.equipment || []).forEach(e => addEquipRow(e));
+}
 
+function editDrill(id) {
+  const d = allDrills().find(x => x.id === id);
+  if (!d) return;
+  editingId = d.id;
+  _fillForm(d);
   document.getElementById('formTitle').textContent = '✏️ Edit Drill';
   document.getElementById('saveBtn').textContent = 'Update Drill';
   document.getElementById('cancelBtn').style.display = '';
-
-  // If it's a builtin drill, make a user copy
-  if (!userDrills.find(ud => ud.id === d.id)) {
-    editingId = 'user-' + d.id.replace(/^d-/, '');
-    document.getElementById('saveBtn').textContent = 'Save as Custom';
-  }
-
   updatePreview();
   switchTab('form');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function deleteDrill(id) {
-  if (!confirm('Delete this custom drill?')) return;
-  userDrills = userDrills.filter(ud => ud.id !== id);
-  saveUserDrills();
+function copyDrill(id) {
+  const d = allDrills().find(x => x.id === id);
+  if (!d) return;
+  editingId = null; // new entry — gets a fresh ID on save
+  _fillForm(d);
+  document.getElementById('f-name').value = 'Copy of ' + (d.name || '');
+  document.getElementById('formTitle').textContent = '📋 Copy Drill';
+  document.getElementById('saveBtn').textContent = 'Save as Copy';
+  document.getElementById('cancelBtn').style.display = '';
+  updatePreview();
+  switchTab('form');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deleteDrill(id) {
+  const drill = dbDrills.find(d => d.id === id);
+  const isBuiltin = drill && drill.source === 'builtin';
+  const msg = isBuiltin
+    ? `"${drill.name}" is a built-in drill.\n\nDeleting it removes it from the library permanently — it won't return unless you re-run the seed migration in Supabase.\n\nDelete anyway?`
+    : `Delete "${drill ? drill.name : 'this drill'}"? This cannot be undone.`;
+  if (!confirm(msg)) return;
+  await EP_DB.drills.delete(id);
+  dbDrills = await EP_DB.drills.list();
   renderLibrary();
 }
 
@@ -1262,7 +1256,9 @@ function renderLibrary() {
   }
 
   drills.forEach(d => {
-    const isUser = !!userDrills.find(ud => ud.id === d.id);
+    const dbEntry  = dbDrills.find(ud => ud.id === d.id);
+    const isInDB   = !!dbEntry;
+    const isCustom = isInDB && dbEntry.source !== 'builtin';
     const sportName = (SPORTS.find(s => s.id === d.sport) || {}).name || d.sport;
 
     const card = document.createElement('div');
@@ -1275,20 +1271,21 @@ function renderLibrary() {
     card.innerHTML = `
       <div class="lib-card-head">
         <span>${escHtml(d.icon || '⚽')} ${escHtml(d.name)}</span>
-        ${isUser ? '<span class="user-badge">Custom</span>' : ''}
         <span class="cat-badge">${escHtml(d.category || '')}</span>
       </div>
       <div class="lib-card-body">
         <div style="font-size:.72rem;color:var(--gray-400,#9ca3af);margin-bottom:.4rem;">${sportName} · ${d.defaultTime || 12} min</div>
         ${bodyInner}
         <div class="lib-card-actions">
-          <button class="edit-btn">✏️ Edit${isUser ? '' : ' (save as custom)'}</button>
-          ${isUser ? '<button class="del-btn">🗑 Delete</button>' : ''}
+          <button class="edit-btn">✏️ Edit</button>
+          <button class="copy-btn">📋 Copy</button>
+          <button class="del-btn">🗑 Delete</button>
         </div>
       </div>
     `;
 
     card.querySelector('.edit-btn').addEventListener('click', () => editDrill(d.id));
+    card.querySelector('.copy-btn').addEventListener('click', () => copyDrill(d.id));
     const delBtn = card.querySelector('.del-btn');
     if (delBtn) delBtn.addEventListener('click', () => deleteDrill(d.id));
 
@@ -1300,8 +1297,8 @@ function renderLibrary() {
 //  EXPORT
 // ═══════════════════════════════════════
 document.getElementById('exportBtn').addEventListener('click', () => {
-  if (!userDrills.length) { alert('No custom drills to export yet.'); return; }
-  const json = JSON.stringify(userDrills, null, 2);
+  if (!dbDrills.length) { alert('No drills in the library yet.'); return; }
+  const json = JSON.stringify(dbDrills, null, 2);
   navigator.clipboard.writeText(json).then(() => {
     alert('Custom drills JSON copied to clipboard!');
   }).catch(() => {
@@ -1349,33 +1346,14 @@ document.getElementById('previewModal').addEventListener('click', function(e) {
 });
 
 // ═══════════════════════════════════════
-//  NAV HAMBURGER
-// ═══════════════════════════════════════
-(function() {
-  const btn = document.getElementById('navHamburger');
-  const links = document.querySelector('.nav-links');
-  if (!btn || !links) return;
-  btn.addEventListener('click', function() {
-    const open = links.classList.toggle('open');
-    btn.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', open);
-  });
-  links.querySelectorAll('a').forEach(function(a) {
-    a.addEventListener('click', function() {
-      links.classList.remove('open');
-      btn.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
-    });
-  });
-})();
-
-// ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
-loadUserDrills();
-updateCategorySelect('soccer');
-updatePreview();
-renderLibrary();
+(async function() {
+  dbDrills = await EP_DB.drills.list();
+  updateCategorySelect('soccer');
+  updatePreview();
+  renderLibrary();
+})();
 </script>
 </body>
 </html>
