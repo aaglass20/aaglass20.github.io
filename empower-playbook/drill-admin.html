@@ -405,6 +405,83 @@
     .edit-btn:hover { background: var(--blue); color: var(--white); }
     .del-btn { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
     .del-btn:hover { background: #dc2626; color: var(--white); }
+    .watch-btn { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+    .watch-btn:hover { background: #10b981; color: var(--white); border-color: #10b981; }
+    /* Watch link inside station card body */
+    .card-watch-link {
+      display: inline-flex; align-items: center; gap: .3rem;
+      color: #059669; font-size: .78rem; font-weight: 700;
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: inherit; margin-top: .6rem; transition: color .15s;
+    }
+    .card-watch-link:hover { color: #065f46; text-decoration: underline; }
+    /* Video player modal */
+    .vid-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.8);
+      z-index: 2000; display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .vid-modal-overlay.open { display: flex; }
+    .vid-modal-box {
+      background: #000; border-radius: var(--radius);
+      width: 100%; max-width: 760px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6); overflow: hidden;
+    }
+    .vid-modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .7rem 1rem; background: var(--blue); color: #fff;
+    }
+    .vid-modal-title { font-weight: 700; font-size: .92rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .vid-modal-close {
+      flex-shrink: 0; margin-left: .75rem;
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      border-radius: 4px; padding: .28rem .6rem; cursor: pointer;
+      font-size: .9rem; transition: background .12s; font-family: inherit; line-height: 1;
+    }
+    .vid-modal-close:hover { background: rgba(255,255,255,.3); }
+    .vid-modal-body video { display: block; width: 100%; max-height: 72vh; background: #000; }
+    /* Library search */
+    .lib-search-row {
+      display: flex; align-items: center; gap: .65rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .lib-search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 340px; }
+    .lib-search-icon {
+      position: absolute; left: .7rem; top: 50%; transform: translateY(-50%);
+      font-size: .85rem; pointer-events: none; opacity: .45;
+    }
+    .lib-search-input {
+      width: 100%; padding: .55rem .85rem .55rem 2.1rem; box-sizing: border-box;
+      border: 2px solid var(--gray-100); border-radius: var(--radius-sm);
+      font-size: .88rem; font-family: inherit; color: var(--gray-700);
+      transition: border-color .15s;
+    }
+    .lib-search-input:focus { outline: none; border-color: var(--orange); }
+    .lib-search-clear {
+      position: absolute; right: .55rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--gray-400); cursor: pointer;
+      font-size: .8rem; padding: .1rem .3rem; display: none; line-height: 1;
+    }
+    .lib-search-clear.visible { display: block; }
+    .lib-search-clear:hover { color: var(--gray-700); }
+    .lib-search-count { font-size: .8rem; color: var(--gray-400); font-weight: 500; white-space: nowrap; }
+    .video-upload-row { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+    .video-or { font-size: .78rem; color: var(--gray-400); font-weight: 500; }
+    .btn-upload-video {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .35rem .8rem; border-radius: var(--radius-sm);
+      border: 1.5px dashed var(--gray-300); background: var(--white);
+      font-size: .8rem; font-weight: 600; color: var(--gray-600);
+      cursor: pointer; transition: all .12s; font-family: inherit;
+    }
+    .btn-upload-video:hover { border-color: var(--blue); color: var(--blue); border-style: solid; }
+    .video-upload-status { font-size: .78rem; font-weight: 600; }
+    .video-clear-btn {
+      flex-shrink: 0; background: none; border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm); color: var(--gray-400); cursor: pointer;
+      font-size: .8rem; font-family: inherit; padding: .35rem .55rem;
+      transition: all .12s; line-height: 1;
+    }
+    .video-clear-btn:hover { border-color: #fca5a5; color: #dc2626; background: #fef2f2; }
     .user-badge {
       font-size: .66rem;
       font-weight: 700;
@@ -538,6 +615,23 @@
               <textarea id="f-fac" placeholder="Equipment setup, spacing, ability-level adjustments…"></textarea>
             </div>
 
+            <div class="form-row">
+              <label>🎬 Video</label>
+              <small class="field-hint">Paste a URL or upload a file — YouTube, Vimeo, MP4, etc.</small>
+              <div style="display:flex; gap:.5rem; align-items:center; margin-bottom:.4rem;">
+                <input type="url" id="f-video-url" placeholder="https://youtube.com/watch?v=…" style="flex:1; margin-bottom:0;" />
+                <button type="button" id="videoClearBtn" class="video-clear-btn" title="Clear video">✕</button>
+              </div>
+              <div class="video-upload-row">
+                <span class="video-or">or</span>
+                <label class="btn-upload-video" for="f-video-file">
+                  📁 Upload file
+                  <input type="file" id="f-video-file" accept="video/*" style="display:none;" />
+                </label>
+                <span id="videoUploadStatus" class="video-upload-status"></span>
+              </div>
+            </div>
+
           </div>
 
           <!-- SECTION: Equipment -->
@@ -574,6 +668,15 @@
         <p>All drills — built-in and custom — shown in the station-card format used in practice plans</p>
       </div>
 
+      <div class="lib-search-row">
+        <div class="lib-search-wrap">
+          <span class="lib-search-icon">🔍</span>
+          <input type="text" id="libSearch" class="lib-search-input" placeholder="Search drills…" oninput="onLibSearch()" />
+          <button class="lib-search-clear" id="libSearchClear" onclick="clearLibSearch()">✕</button>
+        </div>
+        <span class="lib-search-count" id="libSearchCount"></span>
+      </div>
+
       <div class="library-header">
         <div class="sport-filter-tabs" id="sportFilterTabs"></div>
         <button class="btn btn-outline export-btn" id="exportBtn">⬇️ Export Custom Drills (JSON)</button>
@@ -584,6 +687,19 @@
 
     </div><!-- /tabContent-library -->
 
+  </div>
+
+  <!-- Video Player Modal -->
+  <div id="videoModal" class="vid-modal-overlay" onclick="if(event.target===this)closeVideoModal()">
+    <div class="vid-modal-box">
+      <div class="vid-modal-head">
+        <span id="vidModalTitle" class="vid-modal-title"></span>
+        <button class="vid-modal-close" onclick="closeVideoModal()">✕ Close</button>
+      </div>
+      <div class="vid-modal-body">
+        <video id="vidModalPlayer" controls playsinline></video>
+      </div>
+    </div>
   </div>
 
   <footer class="page-footer">
@@ -1059,6 +1175,7 @@ function stationCardHtml(d) {
   if (d.why) html += `<div class="why-tip"><span class="tip-icon">🤔</span><div><strong>Why we do this</strong> — ${escHtml(d.why)}</div></div>`;
   if (d.volunteerTip) html += `<div class="vol-tip"><span class="tip-icon">🙌</span><div><strong>Volunteer tip</strong> — ${escHtml(d.volunteerTip)}</div></div>`;
   if (d.facilitatorTip) html += `<div class="fac-tip"><span class="tip-icon">💡</span><div><strong>Facilitator tip</strong> — ${escHtml(d.facilitatorTip)}</div></div>`;
+  if (d.videoUrl) html += `<button class="card-watch-link" onclick="watchVideo(${JSON.stringify(d.videoUrl)},${JSON.stringify(d.name||'')})">▶ Watch Video</button>`;
 
   html += `</div>`;
   return html;
@@ -1078,6 +1195,7 @@ function updatePreview() {
     why: document.getElementById('f-why').value.trim(),
     volunteerTip: document.getElementById('f-vol').value.trim(),
     facilitatorTip: document.getElementById('f-fac').value.trim(),
+    videoUrl: document.getElementById('f-video-url').value.trim(),
   };
 
   const el = document.getElementById('livePreview');
@@ -1106,6 +1224,7 @@ function collectForm() {
     volunteerTip: document.getElementById('f-vol').value.trim(),
     facilitatorTip: document.getElementById('f-fac').value.trim(),
     defaultTime: parseInt(document.getElementById('f-time').value) || 12,
+    videoUrl: document.getElementById('f-video-url').value.trim(),
     source: 'user',
   };
 }
@@ -1117,6 +1236,8 @@ function clearForm() {
   document.getElementById('f-why').value = '';
   document.getElementById('f-vol').value = '';
   document.getElementById('f-fac').value = '';
+  document.getElementById('f-video-url').value = '';
+  document.getElementById('videoUploadStatus').textContent = '';
   document.getElementById('stepsList').innerHTML = '';
   document.getElementById('equipList').innerHTML = '';
   editingId = null;
@@ -1174,6 +1295,7 @@ function _fillForm(d) {
   document.getElementById('f-why').value = d.why || '';
   document.getElementById('f-vol').value = d.volunteerTip || '';
   document.getElementById('f-fac').value = d.facilitatorTip || '';
+  document.getElementById('f-video-url').value = d.videoUrl || '';
   document.getElementById('stepsList').innerHTML = '';
   (d.steps || []).forEach(s => addStepRow(s));
   document.getElementById('equipList').innerHTML = '';
@@ -1248,10 +1370,28 @@ function renderLibrary() {
   const grid = document.getElementById('libraryGrid');
   grid.innerHTML = '';
 
-  const drills = allDrills().filter(d => filterSport === 'all' || d.sport === filterSport);
+  const q = (document.getElementById('libSearch') ? document.getElementById('libSearch').value : '').trim().toLowerCase();
+  const clearBtn = document.getElementById('libSearchClear');
+  if (clearBtn) clearBtn.classList.toggle('visible', q.length > 0);
+
+  const allFiltered = allDrills().filter(d => filterSport === 'all' || d.sport === filterSport);
+  const drills = q
+    ? allFiltered.filter(d =>
+        (d.name || '').toLowerCase().includes(q) ||
+        (d.category || '').toLowerCase().includes(q) ||
+        (d.description || '').toLowerCase().includes(q)
+      )
+    : allFiltered;
+
+  const countEl = document.getElementById('libSearchCount');
+  if (countEl) {
+    countEl.textContent = q ? `${drills.length} of ${allFiltered.length}` : (allFiltered.length ? `${allFiltered.length} drills` : '');
+  }
 
   if (!drills.length) {
-    grid.innerHTML = `<div class="empty-library"><span style="font-size:2.5rem;">🏃</span><p>No drills yet. Fill in the form to add your first drill!</p></div>`;
+    grid.innerHTML = q
+      ? `<div class="empty-library"><span style="font-size:2.5rem;">🔍</span><p>No drills match "${escHtml(q)}"</p></div>`
+      : `<div class="empty-library"><span style="font-size:2.5rem;">🏃</span><p>No drills yet. Fill in the form to add your first drill!</p></div>`;
     return;
   }
 
@@ -1280,6 +1420,7 @@ function renderLibrary() {
           <button class="edit-btn">✏️ Edit</button>
           <button class="copy-btn">📋 Copy</button>
           <button class="del-btn">🗑 Delete</button>
+          ${d.videoUrl ? `<button class="watch-btn">▶ Watch</button>` : ''}
         </div>
       </div>
     `;
@@ -1288,6 +1429,8 @@ function renderLibrary() {
     card.querySelector('.copy-btn').addEventListener('click', () => copyDrill(d.id));
     const delBtn = card.querySelector('.del-btn');
     if (delBtn) delBtn.addEventListener('click', () => deleteDrill(d.id));
+    const watchBtn = card.querySelector('.watch-btn');
+    if (watchBtn) watchBtn.addEventListener('click', () => watchVideo(d.videoUrl, d.name));
 
     grid.appendChild(card);
   });
@@ -1320,6 +1463,79 @@ document.getElementById('exportBtn').addEventListener('click', () => {
 document.getElementById('f-sport').addEventListener('change', function() {
   updateCategorySelect(this.value);
   updatePreview();
+});
+
+function onLibSearch() { renderLibrary(); }
+function clearLibSearch() {
+  document.getElementById('libSearch').value = '';
+  renderLibrary();
+}
+
+function isVideoFile(url) {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('supabase.co')) return true;
+  } catch (_) {}
+  return /\.(mp4|mov|webm|ogg|m4v|avi)(\?|$)/i.test(url);
+}
+
+function watchVideo(url, title) {
+  if (!url) return;
+  if (isVideoFile(url)) {
+    const modal = document.getElementById('videoModal');
+    document.getElementById('vidModalTitle').textContent = title || 'Drill Video';
+    const player = document.getElementById('vidModalPlayer');
+    player.src = url;
+    modal.classList.add('open');
+    player.focus();
+  } else {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
+
+function closeVideoModal() {
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('vidModalPlayer');
+  player.pause();
+  player.src = '';
+  modal.classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeVideoModal();
+});
+
+// ─── Video upload to Supabase Storage ────────────────────
+document.getElementById('f-video-file').addEventListener('change', async function () {
+  const file = this.files[0];
+  if (!file) return;
+  const status = document.getElementById('videoUploadStatus');
+  status.style.color = 'var(--gray-400)';
+  status.textContent = '⏳ Uploading…';
+  try {
+    if (!window.supabase || !window.EP_CONFIG) throw new Error('Supabase not configured');
+    const sb = window.supabase.createClient(EP_CONFIG.SUPABASE_URL, EP_CONFIG.SUPABASE_ANON_KEY);
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const { data, error } = await sb.storage
+      .from('drill-videos')
+      .upload(Date.now() + '-' + safeName, file, { cacheControl: '3600', upsert: false });
+    if (error) throw error;
+    const { data: { publicUrl } } = sb.storage.from('drill-videos').getPublicUrl(data.path);
+    document.getElementById('f-video-url').value = publicUrl;
+    status.style.color = '#166534';
+    status.textContent = '✓ Uploaded';
+  } catch (err) {
+    console.error('[drill-admin] video upload:', err);
+    status.style.color = '#dc2626';
+    status.textContent = '❌ Upload failed — ensure drill-videos bucket exists and is public';
+  }
+  this.value = ''; // reset file input so same file can be re-selected
+});
+
+document.getElementById('videoClearBtn').addEventListener('click', function () {
+  document.getElementById('f-video-url').value = '';
+  document.getElementById('videoUploadStatus').textContent = '';
 });
 
 // ═══════════════════════════════════════

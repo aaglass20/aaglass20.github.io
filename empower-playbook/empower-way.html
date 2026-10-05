@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Empower Way — Empower Sports Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .ew-hero {
+      text-align: center;
+      padding: 3.5rem 1.5rem 3rem;
+      background: linear-gradient(135deg, #003B8E 0%, #1a5cc4 60%, #0f7fe8 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .ew-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 72% 45%, rgba(249,115,22,.22) 0%, transparent 58%);
+      pointer-events: none;
+    }
+    .ew-hero-badge {
+      display: inline-block;
+      background: rgba(249,115,22,.18);
+      border: 1px solid rgba(249,115,22,.45);
+      color: #fed7aa;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem 1.1rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .ew-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin: 0 0 .8rem;
+      line-height: 1.1;
+      position: relative;
+      z-index: 1;
+    }
+    .ew-hero h1 span { color: #F97316; }
+    .ew-hero p {
+      font-size: 1.05rem;
+      opacity: .88;
+      max-width: 540px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      line-height: 1.65;
+    }
+
+    .ew-intro {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 2.75rem 1.5rem .5rem;
+      text-align: center;
+    }
+    .ew-intro h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: .55rem;
+    }
+    .ew-intro p {
+      color: var(--gray-600);
+      font-size: .97rem;
+      line-height: 1.7;
+    }
+
+    .ew-chips {
+      display: flex;
+      gap: .7rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.75rem auto 0;
+      max-width: 740px;
+      padding: 0 1.5rem 2.25rem;
+    }
+    .ew-chip {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      background: var(--blue);
+      color: white;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: .45rem 1rem;
+      border-radius: 99px;
+    }
+    .ew-chip-icon { color: #F97316; font-size: .92rem; }
+
+    .ew-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4.5rem;
+    }
+
+    .ew-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      padding: 2rem;
+      border-top: 5px solid var(--orange);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform .22s, box-shadow .22s;
+    }
+    .ew-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .ew-card-icon {
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .ew-card h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin: 0 0 .5rem;
+    }
+    .ew-card p {
+      color: var(--gray-600);
+      font-size: .93rem;
+      line-height: 1.6;
+      margin: 0 0 1.35rem;
+    }
+    .ew-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 700;
+      font-size: .88rem;
+      padding: .55rem 1.15rem;
+      border-radius: 8px;
+      transition: background .18s;
+    }
+    .ew-card:hover .ew-card-cta { background: var(--orange-dark); }
+  </style>
+</head>
+<body>
+<script src="js/nav.js" data-page="empower-way"></script>
+
+<div class="ew-hero">
+  <div class="ew-hero-badge">Event Management</div>
+  <h1>Build It <span>The Empower Way</span></h1>
+  <p>Build Programs, Create Plans, add Drills, and set up a successful Empower Sports event — everything you need in one place.</p>
+</div>
+
+<div class="ew-intro">
+  <h2>Your Complete Event Toolkit</h2>
+  <p>Great events are built on great structure. The Empower Way gives every coordinator a clear starting point: organized programs, purpose-built plans, a drill library tailored to adaptive sports, and easy location management.</p>
+</div>
+
+<div class="ew-grid">
+
+  <a href="programs.html" class="ew-card">
+    <span class="ew-card-icon">📁</span>
+    <h2>Programs</h2>
+    <p>Organize your season into programs — set groups, assign weekly plans, and track everything from one dashboard.</p>
+    <span class="ew-card-cta">→ Open Programs</span>
+  </a>
+
+  <a href="practice-builder.html?new=1" class="ew-card">
+    <span class="ew-card-icon">📋</span>
+    <h2>Plan Builder</h2>
+    <p>Pick a sport and session length, then assemble drills into a timed practice plan you can share with your team.</p>
+    <span class="ew-card-cta">→ Open Builder</span>
+  </a>
+
+  <a href="drill-admin.html" class="ew-card">
+    <span class="ew-card-icon">🗂️</span>
+    <h2>Drill Library</h2>
+    <p>Browse and manage all adaptive sports drills by category. Add videos, tips, and volunteer cues to each drill.</p>
+    <span class="ew-card-cta">→ Browse Drills</span>
+  </a>
+
+  <a href="locations.html" class="ew-card">
+    <span class="ew-card-icon">📍</span>
+    <h2>Locations</h2>
+    <p>Save and manage your event venues — fields, gyms, and courts. Attach locations to programs for quick reference.</p>
+    <span class="ew-card-cta">→ Manage Locations</span>
+  </a>
+
+</div>
+
+<footer class="footer"></footer>
+</body>
+</html>

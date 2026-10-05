@@ -392,6 +392,7 @@ const EP_DB = (function () {
       facilitatorTip: r.facilitator_tip || '',
       defaultTime:    r.default_time    || 12,
       source:         r.source          || 'user',
+      videoUrl:       r.video_url       || '',
     };
   }
   function drillToRow(d) {
@@ -408,6 +409,7 @@ const EP_DB = (function () {
       facilitator_tip: d.facilitatorTip || null,
       default_time:   d.defaultTime     || 12,
       source:         d.source          || 'user',
+      video_url:      d.videoUrl        || null,
     };
     if (d.id) row.id = d.id;
     return row;

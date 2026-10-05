@@ -6,35 +6,36 @@
 //
 //  data-page values:
 //    home, basketball, softball, football, pickleball,
-//    soccer, kickball, volunteer, programs,
-//    locations, practice-builder, plan-library, drill-admin
+//    soccer, kickball, volunteer, empower-way,
+//    programs, locations, practice-builder, plan-library, drill-admin
 //
-//  Setup sub-pages (locations, practice-builder, etc.) show
-//  Programs as the active nav item since they live under it.
+//  Setup sub-pages (programs, locations, practice-builder, etc.) show
+//  Empower Way as the active nav item since they live under it.
 // ============================================================
 (function () {
   var script = document.currentScript;
   var page   = script ? (script.dataset.page || '') : '';
 
-  // Sub-pages that live under Programs show Programs as active
+  // Sub-pages that live under Empower Way show it as active
   var parentOf = {
-    'locations':        'programs',
-    'practice-builder': 'programs',
-    'plan-library':     'programs',
-    'drill-admin':      'programs',
+    'programs':         'empower-way',
+    'locations':        'empower-way',
+    'practice-builder': 'empower-way',
+    'plan-library':     'empower-way',
+    'drill-admin':      'empower-way',
   };
   var active = parentOf[page] || page;
 
   var NAV_LINKS = [
-    { href: 'index.html',      icon: '🏠', label: 'Home',           id: 'home' },
-    { href: 'basketball.html', icon: '🏀', label: 'Basketball',     id: 'basketball' },
-    { href: 'softball.html',   icon: '🥎', label: 'Softball',       id: 'softball' },
-    { href: 'football.html',   icon: '🏈', label: 'Football',       id: 'football' },
-    { href: 'pickleball.html', icon: '🏓', label: 'Pickleball',     id: 'pickleball' },
-    { href: 'soccer.html',     icon: '⚽', label: 'Soccer',         id: 'soccer' },
-    { href: 'kickball.html',   icon: '🔴', label: 'Kickball',       id: 'kickball' },
-    { href: 'volunteer.html',  icon: '🤝', label: 'Volunteer Guide', id: 'volunteer' },
-    { href: 'programs.html',   icon: '📁', label: 'Programs',       id: 'programs' },
+    { href: 'index.html',       icon: '🏠', label: 'Home',           id: 'home' },
+    { href: 'basketball.html',  icon: '🏀', label: 'Basketball',     id: 'basketball' },
+    { href: 'softball.html',    icon: '🥎', label: 'Softball',       id: 'softball' },
+    { href: 'football.html',    icon: '🏈', label: 'Football',       id: 'football' },
+    { href: 'pickleball.html',  icon: '🏓', label: 'Pickleball',     id: 'pickleball' },
+    { href: 'soccer.html',      icon: '⚽', label: 'Soccer',         id: 'soccer' },
+    { href: 'kickball.html',    icon: '🔴', label: 'Kickball',       id: 'kickball' },
+    { href: 'volunteer.html',   icon: '🤝', label: 'Volunteer Guide', id: 'volunteer' },
+    { href: 'empower-way.html', icon: '⚡', label: 'Empower Way',    id: 'empower-way' },
   ];
 
   var linksHtml = NAV_LINKS.map(function (l) {
@@ -46,8 +47,7 @@
   document.write(
     '<nav class="nav">' +
     '<a href="index.html" class="nav-brand">' +
-      '<span class="nav-brand-icon">⚡</span>' +
-      '<span>Empower Sports<br><small>Program Playbook</small></span>' +
+      '<img src="images/empower-logo.png" alt="Empower Sports" class="nav-brand-logo">' +
     '</a>' +
     '<button class="nav-hamburger" id="navHamburger" aria-expanded="false" aria-label="Toggle menu">' +
       '<span></span><span></span><span></span>' +

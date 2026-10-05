@@ -59,7 +59,8 @@ body {
   align-items: center;
   gap: .6rem;
   text-decoration: none;
-  margin-right: auto;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
 }
 
 .nav-brand-icon {
@@ -80,6 +81,13 @@ body {
   opacity: .75;
   display: block;
   color: var(--orange);
+}
+
+.nav-brand-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .nav-links {
