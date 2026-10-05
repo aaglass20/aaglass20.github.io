@@ -35,6 +35,11 @@
     /* ── Setup dropdown ── */
     .hdr-actions { display: flex; gap: .6rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
     .setup-wrap { position: relative; }
+    /* Keep action buttons right-aligned when they wrap to a new line on mobile */
+    @media (max-width: 640px) {
+      .hdr-actions { margin-left: auto; }
+      .setup-menu { max-width: calc(100vw - 2rem); }
+    }
     .btn-setup {
       background: var(--white); color: var(--gray-700);
       border: 2px solid var(--gray-200, #e5e7eb);
@@ -468,6 +473,68 @@
       flex-shrink: 0; gap: .75rem;
     }
     .ap-footer-hint { font-size: .8rem; color: var(--gray-400); }
+
+    /* ── Mobile: dashboard card layout ── */
+    @media (max-width: 640px) {
+      /* Header card */
+      .dash-hdr-card { padding: 1rem; gap: .75rem; }
+      .dash-prog-name { font-size: 1.05rem; }
+      .dash-chips { gap: .35rem; }
+      .btn-dash-back { width: 100%; justify-content: center; }
+
+      /* Convert table → card-per-week */
+      .dash-grid-wrap { box-shadow: none; background: transparent; overflow: visible; }
+      .dash-tbl { min-width: 0; }
+      .dash-tbl, .dash-tbl tbody { display: block; }
+      .dash-tbl thead { display: none; }
+
+      .dash-tbl tr {
+        display: block;
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        border: 1.5px solid var(--gray-100);
+        margin-bottom: .85rem;
+        overflow: hidden;
+      }
+      .dash-tbl tr:hover td { background: var(--white); }
+
+      /* Week label cell → blue card header */
+      .dash-tbl td:first-child {
+        display: flex; align-items: center; flex-wrap: wrap;
+        justify-content: space-between; gap: .5rem;
+        background: var(--blue); padding: .7rem 1rem;
+        border-bottom: none;
+      }
+      .dash-tbl td:first-child .wk-label { color: #fff; font-size: .92rem; }
+      .dash-tbl td:first-child .wk-date  { color: rgba(255,255,255,.7); }
+      .dash-tbl td:first-child .btn-all-groups {
+        border-color: rgba(255,255,255,.4); color: #fff;
+        background: rgba(255,255,255,.1); border-style: dashed; margin-top: 0;
+      }
+      .dash-tbl td:first-child .btn-all-groups:hover {
+        background: rgba(255,255,255,.22); border-style: solid;
+      }
+
+      /* Group plan cells — stacked rows with group label */
+      .dash-tbl td[data-group] {
+        display: block; padding: .75rem 1rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .dash-tbl td[data-group]:last-child { border-bottom: none; }
+      .dash-tbl td[data-group]::before {
+        content: attr(data-group);
+        display: block;
+        font-size: .68rem; font-weight: 800; color: var(--gray-400);
+        text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem;
+      }
+
+      /* Make action buttons easier to tap */
+      .plan-empty { width: 100%; justify-content: center; padding: .55rem .85rem; }
+      .plan-ready { width: 100%; justify-content: flex-start; }
+      .plan-cell-actions { gap: .5rem; }
+      .pca-btn { padding: .35rem .75rem; font-size: .8rem; }
+    }
   </style>
 </head>
 <body>
@@ -495,7 +562,6 @@
               <div class="setup-menu" id="setupMenu">
                 <a href="locations.html">📍 Locations</a>
                 <a href="plan-library.html">📚 Plans</a>
-                <a href="practice-builder.html">📋 Plan Builder</a>
                 <hr class="setup-menu-divider">
                 <a href="drill-admin.html">🗂️ Drill Library</a>
               </div>
@@ -1189,7 +1255,7 @@
         if (plan) {
           const bc = (plan.blocks || []).length;
           const url = `practice-builder.html?programId=${enc(prog.id)}&week=${w.weekNum}&group=${enc(g)}&planId=${enc(planId)}&sport=${enc(prog.sport)}&programName=${enc(prog.name)}`;
-          return `<td>
+          return `<td data-group="${escAttr(g)}">
             <a class="plan-ready" href="${url}">✅ ${escHtml(plan.name || 'Untitled Plan')}</a>
             <div class="plan-cell-actions">
               <a class="pca-btn" href="${url}">👁 View</a>
@@ -1198,7 +1264,7 @@
             <div class="plan-meta">${bc} block${bc !== 1 ? 's' : ''} · ${plan.durationMinutes || '?'} min</div>
           </td>`;
         }
-        return `<td><button class="plan-empty" onclick="openAddPlanModal('${escAttr(prog.id)}',${w.weekNum},'${escAttr(g)}')">+ Add Plan</button></td>`;
+        return `<td data-group="${escAttr(g)}"><button class="plan-empty" onclick="openAddPlanModal('${escAttr(prog.id)}',${w.weekNum},'${escAttr(g)}')">+ Add Plan</button></td>`;
       }).join('');
       const dateStr = w.date ? fmtDate(w.date) : '';
       const allGroupsBtn = prog.groups.length > 1
