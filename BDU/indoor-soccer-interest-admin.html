@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indoor Soccer Interest — Admin View</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:   #003366;
+      --gold:   #FFD700;
+      --blue-lt:#E8EFF7;
+      --gray:   #64748b;
+      --green:  #16a34a;
+      --radius: 10px;
+      --shadow: 0 4px 20px rgba(0,51,102,.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--blue-lt);
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--blue);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .nav-logo { width: 36px; height: 36px; object-fit: contain; }
+    .nav-brand span { font-weight: 700; font-size: .95rem; line-height: 1.3; }
+    .nav-brand small { font-weight: 400; opacity: .8; font-size: .8rem; }
+    .nav-link {
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      padding: .4rem .85rem;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .nav-link:hover { background: rgba(255,255,255,.12); }
+
+    /* ── Header bar ── */
+    .page-header {
+      background: var(--blue);
+      color: #fff;
+      padding: 1.75rem 1.5rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; }
+    .page-header p { font-size: .9rem; opacity: .8; margin-top: .4rem; }
+
+    /* ── Stats ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .stat-num { font-size: 2.2rem; font-weight: 800; color: var(--blue); line-height: 1; }
+    .stat-label { font-size: .8rem; color: var(--gray); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-top: .35rem; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .filter-bar label { font-size: .85rem; font-weight: 600; color: #374151; }
+    .filter-bar select {
+      padding: .45rem .85rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 7px;
+      font-size: .88rem;
+      font-family: inherit;
+      background: #fff;
+      color: #1e293b;
+      cursor: pointer;
+    }
+    .filter-bar select:focus { outline: none; border-color: var(--blue); }
+
+    .refresh-btn {
+      margin-left: auto;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: .45rem .9rem;
+      font-size: .85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .refresh-btn:hover { background: #004080; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    thead {
+      background: var(--blue);
+      color: #fff;
+    }
+    thead th {
+      padding: .75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: .78rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid #e2e8f0; transition: background .1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--blue-lt); }
+    tbody td { padding: .75rem 1rem; vertical-align: top; }
+    tbody td.name { font-weight: 600; }
+
+    .badge {
+      display: inline-block;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+      margin: .15rem .15rem 0 0;
+    }
+    .badge-s2 { background: #DBEAFE; color: #1d4ed8; }
+    .badge-s3 { background: #D1FAE5; color: #065f46; }
+
+    .empty-state {
+      text-align: center;
+      padding: 3.5rem 1rem;
+      color: var(--gray);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: .75rem; }
+
+    .loading { text-align: center; padding: 2.5rem; color: var(--gray); font-size: .9rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: #1e293b;
+      color: #fff;
+      padding: .85rem 1.5rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      transition: transform .3s ease;
+      z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #dc2626; }
+
+    .page-footer {
+      text-align: center;
+      font-size: .82rem;
+      color: var(--gray);
+      padding: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      thead th:nth-child(3), tbody td:nth-child(3) { display: none; } /* hide phone on small */
+      .stats-row { gap: .75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">
+      <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE.png" class="nav-logo" alt="BDU Shield">
+      <span>Blue Devil United<br><small>Indoor Soccer — Admin</small></span>
+    </a>
+    <a href="indoor-soccer-interest.html" class="nav-link">+ Add Entry</a>
+  </nav>
+
+  <div class="page-header">
+    <h1>Indoor Soccer Interest List</h1>
+    <p>All submissions &mdash; Session 1 (begins Nov 1) &amp; Session 2 (Early 2027)</p>
+  </div>
+
+  <div class="container">
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">—</div>
+        <div class="stat-label">Total Signups</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-s2">—</div>
+        <div class="stat-label">Session 1 Interest</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-s3">—</div>
+        <div class="stat-label">Session 2 Interest</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-both">—</div>
+        <div class="stat-label">Both Sessions</div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label for="filter-session">Filter:</label>
+      <select id="filter-session">
+        <option value="all">All Signups</option>
+        <option value="s2">Session 1 only</option>
+        <option value="s3">Session 2 only</option>
+        <option value="both">Both Sessions</option>
+      </select>
+      <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <div id="table-container">
+        <div class="loading">Loading signups…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast" role="alert"></div>
+
+  <footer class="page-footer">
+    BDU Indoor Soccer Interest &mdash; Admin View
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (function () {
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allRows = [];
+
+    async function load() {
+      document.getElementById('table-container').innerHTML = '<div class="loading">Loading signups…</div>';
+      try {
+        const { data, error } = await sb
+          .from('bdu_indoor_soccer_interest')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        allRows = data || [];
+        updateStats();
+        render();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('table-container').innerHTML =
+          '<div class="empty-state"><div class="icon">⚠️</div><p>Could not load data. Check connection and refresh.</p></div>';
+      }
+    }
+
+    function updateStats() {
+      const s2   = allRows.filter(r => r.session_1).length;
+      const s3   = allRows.filter(r => r.session_2).length;
+      const both = allRows.filter(r => r.session_1 && r.session_2).length;
+      document.getElementById('stat-total').textContent = allRows.length;
+      document.getElementById('stat-s2').textContent    = s2;
+      document.getElementById('stat-s3').textContent    = s3;
+      document.getElementById('stat-both').textContent  = both;
+    }
+
+    function render() {
+      const filter = document.getElementById('filter-session').value;
+      let rows = allRows;
+      if (filter === 's2')   rows = allRows.filter(r => r.session_1);
+      if (filter === 's3')   rows = allRows.filter(r => r.session_2);
+      if (filter === 'both') rows = allRows.filter(r => r.session_1 && r.session_2);
+
+      if (rows.length === 0) {
+        document.getElementById('table-container').innerHTML =
+          '<div class="empty-state"><div class="icon">📋</div><p>No entries match this filter.</p></div>';
+        return;
+      }
+
+      const tbody = rows.map(r => {
+        const date = r.created_at
+          ? new Date(r.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+          : '—';
+        const sessions = [
+          r.session_1 ? '<span class="badge badge-s2">Session 1</span>' : '',
+          r.session_2 ? '<span class="badge badge-s3">Session 2</span>' : '',
+        ].join('');
+        return `<tr>
+          <td class="name">${esc(r.player_name)}</td>
+          <td>${gradeLabel(r.grade)}</td>
+          <td>${r.phone ? esc(r.phone) : '<span style="color:#94a3b8">—</span>'}</td>
+          <td>${r.email ? `<a href="mailto:${esc(r.email)}" style="color:var(--blue)">${esc(r.email)}</a>` : '<span style="color:#94a3b8">—</span>'}</td>
+          <td>${sessions}</td>
+          <td style="color:var(--gray); font-size:.82rem; white-space:nowrap;">${date}</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('table-container').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Grade</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Session(s)</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody>${tbody}</tbody>
+        </table>`;
+    }
+
+    function gradeLabel(g) {
+      const map = { K:'Kindergarten', '1':'1st', '2':'2nd', '3':'3rd', '4':'4th', '5':'5th',
+        '6':'6th', '7':'7th', '8':'8th', '9':'9th', '10':'10th', '11':'11th', '12':'12th' };
+      return map[g] || g || '—';
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.getElementById('filter-session').addEventListener('change', render);
+    document.getElementById('refresh-btn').addEventListener('click', load);
+
+    load();
+  })();
+  </script>
+</body>
+</html>

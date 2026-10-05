@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indoor Soccer Interest — BDU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:   #003366;
+      --gold:   #FFD700;
+      --gold-dk:#C9A800;
+      --blue-lt:#E8EFF7;
+      --gray:   #64748b;
+      --gray-lt:#f1f5f9;
+      --red:    #dc2626;
+      --green:  #16a34a;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,51,102,.12);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--blue-lt);
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--blue);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .nav-logo { width: 36px; height: 36px; object-fit: contain; }
+    .nav-brand span { font-weight: 700; font-size: .95rem; line-height: 1.3; }
+    .nav-brand small { font-weight: 400; opacity: .8; font-size: .8rem; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--blue) 0%, #004080 100%);
+      color: #fff;
+      text-align: center;
+      padding: 3rem 1.5rem 3.5rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--blue);
+      font-weight: 700;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p { font-size: .97rem; opacity: .88; max-width: 520px; margin: 0 auto; }
+
+    /* ── Sessions strip ── */
+    .sessions-strip {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.75rem;
+    }
+    .session-pill {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 10px;
+      padding: .65rem 1.1rem;
+      min-width: 170px;
+      text-align: center;
+    }
+    .session-pill .sp-label { font-weight: 700; font-size: .82rem; color: var(--gold); letter-spacing: .05em; text-transform: uppercase; }
+    .session-pill .sp-date  { font-size: .85rem; opacity: .9; margin-top: .2rem; }
+
+    /* ── Form card ── */
+    .container { max-width: 580px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--blue-lt);
+    }
+
+    .form-row { display: flex; gap: 1rem; }
+    .form-row .form-group { flex: 1; }
+
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: .4rem;
+    }
+    .form-group label .req { color: var(--red); margin-left: 2px; }
+
+    input[type=text], input[type=email], input[type=tel], select {
+      width: 100%;
+      padding: .65rem .9rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: .95rem;
+      font-family: inherit;
+      color: #1e293b;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+      appearance: none;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,51,102,.12);
+    }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23555' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .85rem center; padding-right: 2.2rem; }
+
+    /* ── Session checkboxes ── */
+    .session-options { display: flex; flex-direction: column; gap: .75rem; }
+    .session-check-label {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .session-check-label:hover { border-color: var(--blue); background: var(--blue-lt); }
+    .session-check-label input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+    .session-check-label.checked { border-color: var(--blue); background: var(--blue-lt); }
+    .sc-text .sc-name { font-weight: 700; font-size: .95rem; color: var(--blue); }
+    .sc-text .sc-date { font-size: .82rem; color: var(--gray); margin-top: .1rem; }
+
+    /* ── Submit ── */
+    .btn-submit {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .9rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      margin-top: .5rem;
+    }
+    .btn-submit:hover:not(:disabled) { background: #004080; }
+    .btn-submit:active:not(:disabled) { transform: scale(.99); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: #1e293b;
+      color: #fff;
+      padding: .85rem 1.5rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      transition: transform .3s ease;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+
+    /* ── Success state ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+    .success-screen .check-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    .success-screen h2 { font-size: 1.5rem; font-weight: 800; color: var(--blue); margin-bottom: .5rem; }
+    .success-screen p { color: var(--gray); font-size: .95rem; }
+    .btn-another {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: .65rem 1.5rem;
+      background: var(--blue-lt);
+      color: var(--blue);
+      border: none;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-another:hover { background: #d0dff0; }
+
+    /* ── Footer ── */
+    .page-footer {
+      text-align: center;
+      font-size: .82rem;
+      color: var(--gray);
+      padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .form-row { flex-direction: column; gap: 0; }
+      .card { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">
+      <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE.png" class="nav-logo" alt="BDU Shield">
+      <span>Blue Devil United<br><small>Indoor Soccer</small></span>
+    </a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">⚽ Interest Form</div>
+    <h1>BDU <span>Indoor Soccer</span></h1>
+    <p>Let us know you're interested and which session works for your player.</p>
+
+    <div class="sessions-strip">
+      <div class="session-pill">
+        <div class="sp-label">Session 1</div>
+        <div class="sp-date">Begins November 1</div>
+      </div>
+      <div class="session-pill">
+        <div class="sp-label">Session 2</div>
+        <div class="sp-date">Early 2027</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-title">Player & Contact Information</div>
+
+      <div id="form-section">
+        <form id="interest-form" novalidate>
+
+          <div class="form-group">
+            <label for="player-name">Player Name <span class="req">*</span></label>
+            <input type="text" id="player-name" placeholder="First and last name" maxlength="100" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" placeholder="(555) 555-5555" maxlength="20">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="you@example.com" maxlength="120">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="grade">Current Grade <span class="req">*</span></label>
+            <select id="grade" required>
+              <option value="">-- Select grade --</option>
+              <option value="5">5th Grade</option>
+              <option value="6">6th Grade</option>
+              <option value="7">7th Grade</option>
+              <option value="8">8th Grade</option>
+              <option value="9">9th Grade (Freshman)</option>
+              <option value="10">10th Grade (Sophomore)</option>
+              <option value="11">11th Grade (Junior)</option>
+              <option value="12">12th Grade (Senior)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Session Interest <span class="req">*</span></label>
+            <div class="session-options">
+              <label class="session-check-label" id="label-s2">
+                <input type="checkbox" id="session-2" value="session1">
+                <div class="sc-text">
+                  <div class="sc-name">Session 1</div>
+                  <div class="sc-date">Begins November 1</div>
+                </div>
+              </label>
+              <label class="session-check-label" id="label-s3">
+                <input type="checkbox" id="session-3" value="session2">
+                <div class="sc-text">
+                  <div class="sc-name">Session 2</div>
+                  <div class="sc-date">Early 2027</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submit-btn">
+            <span id="submit-text">Submit Interest</span>
+          </button>
+
+        </form>
+      </div>
+
+      <div class="success-screen" id="success-screen">
+        <div class="check-icon">✅</div>
+        <h2>You're on the list!</h2>
+        <p>We'll reach out when registration opens for your selected session(s).<br>Questions? Contact Aaron Glass at <strong>(440) 796-9861</strong>.</p>
+        <button class="btn-another" id="btn-another">Submit another response</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <footer class="page-footer">
+    Blue Devil United Indoor Soccer &mdash; Interest Registration
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (function () {
+    const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Checkbox visual state
+    ['session-2', 'session-3'].forEach((id, i) => {
+      const cb = document.getElementById(id);
+      const lbl = document.getElementById(i === 0 ? 'label-s2' : 'label-s3');
+      cb.addEventListener('change', () => lbl.classList.toggle('checked', cb.checked));
+    });
+
+    const form      = document.getElementById('interest-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitTxt = document.getElementById('submit-text');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name    = document.getElementById('player-name').value.trim();
+      const phone   = document.getElementById('phone').value.trim();
+      const email   = document.getElementById('email').value.trim();
+      const grade   = document.getElementById('grade').value;
+      const session2 = document.getElementById('session-2').checked;
+      const session3 = document.getElementById('session-3').checked;
+
+      if (!name) { showToast('Player name is required.', 'error'); return; }
+      if (!grade) { showToast('Please select a grade.', 'error'); return; }
+      if (!session2 && !session3) { showToast('Please select at least one session.', 'error'); return; }
+      if (!phone && !email) { showToast('Please provide a phone number or email.', 'error'); return; }
+
+      submitBtn.disabled = true;
+      submitTxt.textContent = 'Submitting…';
+
+      try {
+        const { error } = await sb.from('bdu_indoor_soccer_interest').insert({
+          player_name: name,
+          phone:       phone || null,
+          email:       email || null,
+          grade,
+          session_1:   session2,
+          session_2:   session3,
+        });
+
+        if (error) throw error;
+
+        document.getElementById('form-section').style.display = 'none';
+        document.getElementById('success-screen').style.display = 'block';
+
+      } catch (err) {
+        console.error(err);
+        showToast('Something went wrong. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitTxt.textContent = 'Submit Interest';
+      }
+    });
+
+    document.getElementById('btn-another').addEventListener('click', () => {
+      form.reset();
+      ['label-s2', 'label-s3'].forEach(id => document.getElementById(id).classList.remove('checked'));
+      document.getElementById('success-screen').style.display = 'none';
+      document.getElementById('form-section').style.display = 'block';
+    });
+
+    let toastTimer;
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show${type ? ' ' + type : ''}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+  })();
+  </script>
+</body>
+</html>
