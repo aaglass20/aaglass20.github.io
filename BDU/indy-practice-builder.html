@@ -728,6 +728,13 @@ const WARMUP_BANK = [
     videoFile: 'circlePassingWarmup.mp4',
     desc: 'Coach feeds 5 balls into a cone circle. Players receive, pass one direction, and sprint to the next cone. Add balls as rhythm builds.',
   },
+  {
+    id: 'shadow-dribbling',
+    name: 'Shadow Dribbling',
+    icon: '👥',
+    videoFile: null,
+    desc: 'In pairs, the leader dribbles freely while the follower mirrors their movements as closely as possible. Roles swap on the whistle.',
+  },
 ];
 
 const CLOSING_BANK = [
@@ -1088,6 +1095,100 @@ const DRILL_BANK = [
       default: {
         desc: 'Three grids: the first runs a 3v2, the second is a transition zone, the third hosts a 2v2. One team holds pinnies. When a defender wins the ball, they drop their pinnie and drive into the transition zone to pass to teammates. A dropped pinnie is picked up by a waiting player to form the next 2v2.',
         coaching: ['When you win it, go immediately — no pause', 'Third man: check shoulder and be available in next grid', 'Defenders: deny the transition pass first, then recover'],
+      },
+    },
+  },
+  {
+    id: 'around-the-horn',
+    name: 'Around the Horn',
+    icon: '↔️',
+    category: 'Tactical',
+    skillLevel: 'Advanced',
+    minAge: 'U12',
+    defaultDuration: 20,
+    videoFile: 'The Spine.mp4',
+    equipment: ['Full-size goals (2)', 'Goalkeepers (2)', 'Cones', 'Balls', 'Pinnies (2 colors)'],
+    purpose: 'Train wide build-up, switching the point of attack, and timing blind-side runs into the box against a shape that clogs the central channel.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two teams defend side-by-side goals on the end line, separated by a cone spine that the ball cannot cross — possession must travel the full loop around the far end of the cones to switch flanks and attack, while players can cross the line freely.',
+        coaching: [
+          'Ball carrier: commit defenders to one flank before driving the long switch around the cone tip',
+          'Runners: time your cross-spine run for when the ball swings wide — arrive late, not early',
+          'Defenders: shift as a unit when the ball crosses the halfway point — no one stays ball-side',
+        ],
+        setup: [
+          'Goals: Two full-size or intermediate goals placed side-by-side on the end line, each with a goalkeeper.',
+          'Spine: A line of cones runs from the end line, between the two goals, straight down the center of the pitch to midfield or three-quarter field.',
+          'Players: Two equal teams (7v7 to 11v11) — each team defends one goal.',
+          'Equipment: Cones for the spine, multiple balls near each goal, pinnies in two colors.',
+        ],
+        howToPlay: [
+          'The Ball Rule: The ball may NOT cross or pass through the cone spine at any point — teams must circulate around the far tip of the cones to switch flanks.',
+          'The Player Rule: Attacking and defending players CAN cross the spine freely at any time — use this for blind-side overlaps, crosses, and defensive recovery.',
+          'Scoring: A team scores by finishing past the opposing goalkeeper in their assigned goal.',
+          'Turnovers: If the ball crosses the spine, possession transfers immediately to the opposing team at the point of infringement.',
+          'Game Length: Play in 8–10 minute periods, or first to 5 goals.',
+        ],
+        coachingPoints: [
+          'Width Before Penetration: The spine forces the ball wide, teaching players to build in the channels and create crossing opportunities before attempting to score.',
+          'Blind-Side Timing: Because the ball must travel the long route, central runners have time to check defenders, cross the spine, and arrive in the box from an unexpected angle — cross late, arrive fast.',
+          'Defensive Shape: Defenders must actively shift from one side of the spine to the other as the attack changes flanks — static defenders will be pulled apart by the wide circulation.',
+        ],
+        modifications: [
+          'U12/Introductory: Shorten the cone spine to just past the 18-yard box to reduce circulation distance. Add a 3-touch rule to slow tempo.',
+          'U14–U16 standard: Full spine to midfield as described. No touch restrictions.',
+          'Advanced/U16+: Add a second ball — coach feeds a fresh ball to either goalkeeper while a goal is being contested, creating continuous two-goal attack pressure.',
+          'Small groups (6v6 or fewer): Use smaller intermediate goals and shorten the spine to two-thirds field.',
+        ],
+      },
+    },
+  },
+  {
+    id: 'king-of-the-end-zones',
+    name: 'King of the End Zones',
+    icon: '👑',
+    category: 'Tactical',
+    skillLevel: 'Advanced',
+    minAge: 'U12',
+    defaultDuration: 20,
+    videoFile: 'King of the End Zones.mp4',
+    equipment: ['Cones', 'Balls', 'Pinnies (4 colors)'],
+    purpose: 'Train vertical passing lanes, rapid role transitions, and the composure to reorganize instantly after winning or losing possession.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Four equal teams compete with a central grid and an end zone at each end — two teams battle in the middle while one waits in each end zone; the team that plays a penetrating pass into their target end zone immediately swaps places with the waiting team there, creating a relentless cycle of transition.',
+        coaching: [
+          'In possession: head up early — find the vertical pass before the defense gets set',
+          'Swapping team: sprint into the grid and attack immediately — no walking in',
+          'Defending team: press together on the turnover, don\'t wait for the attack to organize',
+        ],
+        setup: [
+          'Grid: Central playing area approximately 25×20 yds with an end zone (5–8 yds deep) marked at each end.',
+          'Players: 4 equal teams of 3–4 players, each in distinct colored pinnies (Red, Blue, Yellow, Green).',
+          'Starting positions: Two teams in the central grid (e.g., Red vs. Blue); one team in each end zone (Yellow north, Green south).',
+          'Equipment: Cones to mark grid and end zones, one ball in play, extra balls nearby for quick restarts.',
+        ],
+        howToPlay: [
+          'Objective: The two teams in the middle each attack the opposite end zone — Red attacks south (Green\'s zone), Blue attacks north (Yellow\'s zone).',
+          'Scoring / Swap: A team scores by completing a controlled pass into their target end zone. The scoring team immediately enters that end zone; the waiting team sprints into the central grid and attacks in the opposite direction.',
+          'Turnover Rule: If possession is lost, the defending team takes over immediately and attacks their end zone. Coach can feed a fresh ball to the team that wins possession.',
+          'Out of Bounds: Ball goes out → opposing team restarts with a kick-in. Coach may feed a fresh ball to maintain tempo.',
+          'Game Length: Play continuously for 10–15 minutes, or first team to 5 swaps wins.',
+        ],
+        coachingPoints: [
+          'Vertical Penetration: The end zones reward teams that look forward first — players must scan and play the vertical pass as soon as it opens rather than recycling possession sideways.',
+          'Instant Transition: The moment a swap happens, the incoming team must shift from passive waiting to full-speed attack in the opposite direction — the window between swap and organization is where goals are conceded.',
+          'Defensive Pressure: The defending team must press immediately after a swap — the new attacking team is temporarily disorganized, and that is the window to win possession back.',
+        ],
+        modifications: [
+          'U12/Introductory: Reduce to 3v3 in the middle and use a 2-touch rule to slow the game and help players recognize passing lanes.',
+          'U14 standard: 4v4 in the middle, no touch restrictions, full-speed swaps as described.',
+          'U16+/Advanced: Allow the end-zone team one "target player" who can receive inside the zone and play back out — creating a wall-pass / lay-off scoring option alongside the direct pass.',
+          'Large groups (20+): Run two grids simultaneously; top team from each grid meets in a challenge round.',
+        ],
       },
     },
   },

@@ -139,8 +139,11 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `scrimmage-7v7` | 7v7 Scrimmage | Scrimmage | U10 | None | *(original)* |
 | `scrimmage-9v9` | 9v9 Scrimmage | Scrimmage | U12 | None | *(original)* |
 | `scrimmage-11v11` | 11v11 Full Field Scrimmage | Scrimmage | U14 | None | *(original)* |
+| `shadow-dribbling` | Shadow Dribbling | Warmup | U8 | None | *(original)* |
+| `around-the-horn` | Around the Horn | Tactical | U12 | `The Spine.mp4` | *(original)* |
+| `king-of-the-end-zones` | King of the End Zones | Tactical | U12 | `King of the End Zones.mp4` | *(original)* |
 
-**Total: 24 drills**
+**Total: 27 drills**
 
 ¹ This drill's video lives in `BDU/tactics/` (webm), not `BDU/vid/` (mp4). The path resolver handles this: `videoFile.includes('/') ? videoFile : 'vid/' + videoFile`.
 
