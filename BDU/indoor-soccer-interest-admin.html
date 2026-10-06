@@ -130,10 +130,12 @@
       background: #fff;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     table {
       width: 100%;
+      min-width: 600px;
       border-collapse: collapse;
       font-size: .88rem;
     }
