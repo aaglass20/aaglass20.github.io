@@ -3,20 +3,19 @@ import { Link } from 'react-router-dom'
 export default function EmpowerWay() {
   return (
     <main>
-      <section className="hero">
+      <section className="hero" style={{ padding: '3.5rem 1.5rem 3rem' }}>
         <div className="hero-badge">Event Management</div>
         <h1>Build It <span>The Empower Way</span></h1>
         <p>Build Programs, Create Plans, add Drills, and set up a successful Empower Sports event — everything you need in one place.</p>
       </section>
 
-      <div className="container-wide" data-testid="empower-way-home">
-        <div className="section-header" style={{ marginTop: '2.75rem' }}>
+      <div data-testid="empower-way-home">
+        <div className="ew-intro">
           <h2>Your Complete Event Toolkit</h2>
-          <div className="section-divider"></div>
           <p>Great events are built on great structure. The Empower Way gives every coordinator a clear starting point: organized programs, purpose-built plans, a drill library tailored to adaptive sports, and easy location management.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', maxWidth: '1000px', margin: '2rem auto 0', padding: '0 0 4.5rem' }}>
+        <div className="ew-grid">
 
           <Link to="/programs" className="ew-card" data-testid="nav-card-programs">
             <span className="ew-card-icon">📁</span>

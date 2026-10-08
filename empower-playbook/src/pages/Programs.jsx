@@ -29,6 +29,7 @@ function fmtDate(d) {
 function HomeView({ programs, locations, onOpenDashboard, onStartWizard, onDeleteSelected }) {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(new Set())
+  const [setupOpen, setSetupOpen] = useState(false)
 
   const q = search.trim().toLowerCase()
   const filtered = q
@@ -63,65 +64,76 @@ function HomeView({ programs, locations, onOpenDashboard, onStartWizard, onDelet
 
   return (
     <div data-testid="programs-home">
-      <div style={{ display: 'flex', gap: '.75rem', marginBottom: '1.25rem', alignItems: 'center' }}>
-        <div style={{ flex: 1, position: 'relative' }}>
+      <div className="pg-header">
+        <div>
+          <div className="pg-title">My Programs</div>
+          <div className="pg-sub">Create a program to manage plans across all groups and weeks.</div>
+        </div>
+        <div className="hdr-actions">
+          <div className="setup-wrap">
+            <button className="btn-setup" onClick={() => setSetupOpen(o => !o)}>⚙️ Setup {setupOpen ? '▴' : '▾'}</button>
+            {setupOpen && (
+              <div className="setup-menu">
+                <a href="#/locations" onClick={() => setSetupOpen(false)}>📍 Locations</a>
+                <a href="#/plan-library" onClick={() => setSetupOpen(false)}>📚 Plans</a>
+                <hr className="setup-menu-divider" />
+                <a href="#/drill-admin" onClick={() => setSetupOpen(false)}>🗂️ Drill Library</a>
+              </div>
+            )}
+          </div>
+          <button className="btn-create" data-testid="create-program-btn" onClick={onStartWizard}>+ New Program</button>
+        </div>
+      </div>
+
+      <div className="prog-search-row">
+        <div className="prog-search-wrap">
+          <span className="prog-search-icon">🔍</span>
           <input
             type="text" placeholder="Search programs…"
-            style={{ width: '100%', padding: '.55rem .9rem', border: '2px solid var(--gray-100)', borderRadius: 'var(--radius-sm)', fontSize: '.9rem' }}
+            className="prog-search-input"
             value={search} onChange={e => setSearch(e.target.value)}
           />
           {search && (
-            <button onClick={() => setSearch('')}
-              style={{ position: 'absolute', right: '.5rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)' }}>
-              ✕
-            </button>
+            <button className="prog-search-clear" onClick={() => setSearch('')}>✕</button>
           )}
         </div>
-        <button className="btn-create" data-testid="create-program-btn" onClick={onStartWizard}>+ New Program</button>
       </div>
 
       {selected.size > 0 && (
-        <div style={{ background: 'var(--blue-light)', padding: '.65rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontWeight: 600, color: 'var(--blue)', fontSize: '.88rem' }}>{selected.size} program{selected.size !== 1 ? 's' : ''} selected</span>
-          <div style={{ display: 'flex', gap: '.5rem' }}>
-            <button onClick={() => setSelected(new Set())}
-              style={{ background: 'none', border: '1.5px solid var(--blue)', color: 'var(--blue)', padding: '.35rem .8rem', borderRadius: 'var(--radius-sm)', fontSize: '.82rem', fontWeight: 600, cursor: 'pointer' }}>
-              Clear
-            </button>
-            <button onClick={handleDelete}
-              style={{ background: 'var(--red)', color: '#fff', border: 'none', padding: '.35rem .8rem', borderRadius: 'var(--radius-sm)', fontSize: '.82rem', fontWeight: 600, cursor: 'pointer' }}>
-              🗑 Delete
-            </button>
+        <div className="prog-selection-bar">
+          <span className="prog-sel-count">{selected.size} program{selected.size !== 1 ? 's' : ''} selected</span>
+          <div className="prog-sel-actions">
+            <button className="btn-sel-clear" onClick={() => setSelected(new Set())}>Clear</button>
+            <button className="btn-sel-delete" onClick={handleDelete}>🗑 Delete</button>
           </div>
         </div>
       )}
 
       {!filtered.length ? (
-        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--gray-400)' }}>No programs match "{search}"</div>
+        <div className="no-results">No programs match "{search}"</div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+        <div className="progs-grid">
           {filtered.map(p => {
             const total = p.numWeeks * p.groups.length
             const filled = Object.keys(p.plans || {}).length
             const isChecked = selected.has(p.id)
             return (
               <div key={p.id}
-                className={'prog-card' + (isChecked ? ' checked' : '')}
-                style={{ background: 'var(--white)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)', padding: '1.25rem 1.4rem', cursor: 'pointer', border: isChecked ? '2px solid var(--orange)' : '2px solid transparent', position: 'relative' }}
+                className={`prog-card${isChecked ? ' checked' : ''}`}
                 onClick={() => onOpenDashboard(p.id)}
               >
-                <label style={{ position: 'absolute', top: '.75rem', right: '.75rem' }} onClick={e => e.stopPropagation()}>
+                <label className="prog-card-cb" onClick={e => e.stopPropagation()}>
                   <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(p.id)} />
                 </label>
-                <div style={{ fontSize: '2rem', marginBottom: '.35rem' }}>{p.sportIcon}</div>
-                <div style={{ fontWeight: 800, color: 'var(--blue)', fontSize: '1rem', marginBottom: '.4rem' }}>{p.name}</div>
-                <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginBottom: '.4rem' }}>
+                <div className="prog-card-sport">{p.sportIcon}</div>
+                <div className="prog-card-name">{p.name}</div>
+                <div className="prog-card-chips">
                   <span className="chip">{p.sportName}</span>
                   <span className="chip">{p.numWeeks} week{p.numWeeks !== 1 ? 's' : ''}</span>
                   <span className="chip">{p.groups.length} group{p.groups.length !== 1 ? 's' : ''}</span>
                 </div>
-                <div style={{ fontSize: '.82rem', color: 'var(--gray-400)', marginBottom: '.25rem' }}>{p.groups.join(' · ')}</div>
-                <div style={{ fontSize: '.82rem', color: 'var(--orange)', fontWeight: 600 }}>{filled} / {total} plans created</div>
+                <div className="prog-card-groups">{p.groups.join(' · ')}</div>
+                <div className="prog-card-progress">{filled} / {total} plans created</div>
               </div>
             )
           })}
@@ -192,21 +204,15 @@ function WizardView({ locations, onComplete, onCancel }) {
     ? `${Object.values(wz.dates).filter(Boolean).length} of ${wz.numSessions} dates assigned`
     : 'No dates assigned — can add from dashboard'
 
-  const dotStyle = (n) => ({
-    width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontWeight: 700, fontSize: '.85rem', flexShrink: 0,
-    background: n === step ? 'var(--orange)' : n < step ? 'var(--green)' : 'var(--gray-100)',
-    color: n <= step ? '#fff' : 'var(--gray-400)',
-  })
-
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto' }} data-testid="wizard-view">
-      {/* Step dots */}
-      <div style={{ display: 'flex', gap: '.5rem', marginBottom: '2.5rem', alignItems: 'center' }}>
+    <div className="wz-wrap" data-testid="wizard-view">
+      <div className="wz-steps">
         {[1,2,3,4].map((n, i) => (
           <React.Fragment key={n}>
-            {i > 0 && <div style={{ flex: 1, height: 2, background: 'var(--gray-100)' }} />}
-            <div style={dotStyle(n)}>{n < step ? '✓' : n}</div>
+            {i > 0 && <div className="wz-line" />}
+            <div className={`wz-dot${n === step ? ' active' : ''}${n < step ? ' done' : ''}`}>
+              {n < step ? '✓' : n}
+            </div>
           </React.Fragment>
         ))}
       </div>
@@ -250,17 +256,21 @@ function WizardView({ locations, onComplete, onCancel }) {
           <div className="wizard-heading">Sessions</div>
           <div className="wizard-sub">How many practice sessions in this program?</div>
           <label className="field-label">Number of Sessions</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1.25rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+          <div className="sessions-row">
+            <div className="stepper">
               <button className="stepper-btn" onClick={() => adjustSessions(-1)}>−</button>
-              <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--blue)', minWidth: 32, textAlign: 'center' }}>{wz.numSessions}</span>
+              <span className="stepper-val">{wz.numSessions}</span>
               <button className="stepper-btn" onClick={() => adjustSessions(1)}>+</button>
             </div>
-            <span style={{ color: 'var(--gray-400)', fontSize: '.9rem' }}>session{wz.numSessions !== 1 ? 's' : ''}</span>
+            <span className="sessions-label">session{wz.numSessions !== 1 ? 's' : ''}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1.25rem' }}>
-            <input type="checkbox" id="datesToggle" checked={wz.datesEnabled} onChange={e => upd({ datesEnabled: e.target.checked })} />
-            <label htmlFor="datesToggle" style={{ fontSize: '.9rem', fontWeight: 500, cursor: 'pointer' }}>Assign dates now (optional)</label>
+          <div className="toggle-row">
+            <label className="toggle-sw">
+              <input type="checkbox" checked={wz.datesEnabled} onChange={e => upd({ datesEnabled: e.target.checked })} />
+              <span className="toggle-track" />
+              <span className="toggle-thumb" />
+            </label>
+            <span className="toggle-label">Assign dates now (optional)</span>
           </div>
           {wz.datesEnabled && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '.5rem', marginBottom: '1.25rem' }}>
@@ -286,14 +296,14 @@ function WizardView({ locations, onComplete, onCancel }) {
           <div className="wizard-heading">Groups</div>
           <div className="wizard-sub">How many groups does this program have?</div>
           <label className="field-label">Number of Groups</label>
-          <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          <div className="gc-pills">
             {[1,2,3,4].map(n => (
               <button key={n}
-                style={{ padding: '.45rem 1rem', borderRadius: 99, border: `2px solid ${!isCustom && wz.groupCount === n ? 'var(--orange)' : 'var(--gray-100)'}`, background: !isCustom && wz.groupCount === n ? 'var(--orange)' : 'var(--white)', color: !isCustom && wz.groupCount === n ? '#fff' : 'var(--gray-600)', fontWeight: 700, cursor: 'pointer' }}
+                className={`gc-pill${!isCustom && wz.groupCount === n ? ' selected' : ''}`}
                 onClick={() => setGroupCount(n)}>{n}</button>
             ))}
             <button
-              style={{ padding: '.45rem 1rem', borderRadius: 99, border: `2px solid ${isCustom ? 'var(--orange)' : 'var(--gray-100)'}`, background: isCustom ? 'var(--orange)' : 'var(--white)', color: isCustom ? '#fff' : 'var(--gray-600)', fontWeight: 700, cursor: 'pointer' }}
+              className={`gc-pill${isCustom ? ' selected' : ''}`}
               onClick={() => isCustom ? setGroupCount(1) : setGroupCount(5)}>Custom</button>
           </div>
           {isCustom && (
@@ -304,12 +314,11 @@ function WizardView({ locations, onComplete, onCancel }) {
             </div>
           )}
           <label className="field-label">Group Names</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '1.5rem' }}>
+          <div className="group-names-editor">
             {wz.groupNames.map((name, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-                <span style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--orange)', color: '#fff', fontWeight: 700, fontSize: '.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
-                <input type="text" value={name} maxLength={40} onChange={e => setGroupName(i, e.target.value)}
-                  style={{ flex: 1, padding: '.45rem .7rem', border: '2px solid var(--gray-100)', borderRadius: 'var(--radius-sm)', fontSize: '.9rem' }} />
+              <div key={i} className="gn-row">
+                <span className="gn-badge">{i + 1}</span>
+                <input type="text" className="gn-input" value={name} maxLength={40} onChange={e => setGroupName(i, e.target.value)} />
               </div>
             ))}
           </div>
@@ -326,28 +335,29 @@ function WizardView({ locations, onComplete, onCancel }) {
           <div className="wizard-heading">Review &amp; Create</div>
           <div className="wizard-sub">Everything look right?</div>
           {wz.sport && (
-            <div style={{ background: 'var(--white)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-md)', padding: '1.75rem 2rem', marginBottom: '1.5rem', borderTop: '5px solid var(--orange)' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '.35rem' }}>{wz.sport.icon}</div>
-              <div style={{ fontWeight: 800, color: 'var(--blue)', fontSize: '1.15rem', marginBottom: '1rem' }}>{wz.name}</div>
-              {[
-                ['Sport', wz.sport.name],
-                ['Location', loc ? loc.name : 'None assigned'],
-                ['Sessions', String(wz.numSessions)],
-                ['Dates', datesLine],
-                ['Groups', wz.groupNames.join(', ')],
-              ].map(([label, val]) => (
-                <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '.55rem 0', borderBottom: '1px solid var(--gray-100)', fontSize: '.93rem' }}>
-                  <span style={{ color: 'var(--gray-400)', fontWeight: 500 }}>{label}</span>
-                  <span style={{ color: 'var(--blue)', fontWeight: 700 }}>{val}</span>
-                </div>
-              ))}
+            <div className="review-card">
+              <div className="rv-sport">{wz.sport.icon}</div>
+              <div className="rv-name">{wz.name}</div>
+              <div className="rv-rows">
+                {[
+                  ['Sport', wz.sport.name],
+                  ['Location', loc ? loc.name : 'None assigned'],
+                  ['Sessions', String(wz.numSessions)],
+                  ['Dates', datesLine],
+                  ['Groups', wz.groupNames.join(', ')],
+                ].map(([label, val]) => (
+                  <div key={label} className="rv-row">
+                    <span className="rv-label">{label}</span>
+                    <span className="rv-val">{val}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-          <button className="btn-wiz-next" style={{ width: '100%', padding: '.85rem', marginBottom: '1rem', fontSize: '.95rem' }}
-            disabled={creating} onClick={handleCreate}>
+          <button className="btn-create-prog" disabled={creating} onClick={handleCreate}>
             {creating ? 'Creating…' : 'Create Program →'}
           </button>
-          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
             <button className="btn-wiz-back" onClick={() => setStep(3)}>← Back</button>
           </div>
         </div>
@@ -412,40 +422,37 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate }) {
 
   return (
     <div data-testid="dashboard-view">
-      <div style={{ background: 'var(--white)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-md)', padding: '1.25rem 1.5rem', marginBottom: '1.5rem', borderTop: '5px solid var(--blue)', display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
-        <div style={{ fontSize: '2.5rem' }}>{prog.sportIcon}</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 800, color: 'var(--blue)', fontSize: '1.15rem', marginBottom: '.4rem' }}>{prog.name}</div>
-          <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap' }}>
+      <div className="dash-prog-header">
+        <div className="dash-prog-sport">{prog.sportIcon}</div>
+        <div className="dash-prog-info">
+          <div className="dash-prog-name">{prog.name}</div>
+          <div className="dash-chips">
             <span className="chip">{prog.sportName}</span>
             {progLoc && <span className="chip">📍 {progLoc.name}</span>}
             <span className="chip">{prog.numWeeks} week{prog.numWeeks !== 1 ? 's' : ''}</span>
             <span className="chip">{prog.groups.length} group{prog.groups.length !== 1 ? 's' : ''}</span>
-            <span className="chip" style={{ background: 'var(--orange-light)', color: 'var(--orange-dark)' }}>{filled} / {total} plans</span>
+            <span className="chip orange">{filled} / {total} plans</span>
           </div>
         </div>
-        <button className="btn-wiz-back" onClick={onBack}>← All Programs</button>
+        <button className="btn-dash-back" onClick={onBack}>← All Programs</button>
       </div>
 
-      <div style={{ overflowX: 'auto' }}>
-        <table data-testid="dashboard-table" style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--white)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)' }}>
+      <div className="dash-grid-wrap">
+        <table data-testid="dashboard-table" className="dash-tbl">
           <thead>
-            <tr style={{ borderBottom: '2px solid var(--gray-100)' }}>
-              <th style={{ padding: '.75rem 1rem', textAlign: 'left', fontWeight: 700, fontSize: '.85rem', color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.05em' }}>Week</th>
-              {prog.groups.map(g => (
-                <th key={g} style={{ padding: '.75rem 1rem', textAlign: 'left', fontWeight: 700, fontSize: '.85rem', color: 'var(--blue)' }}>{g}</th>
-              ))}
+            <tr>
+              <th>Week</th>
+              {prog.groups.map(g => <th key={g}>{g}</th>)}
             </tr>
           </thead>
           <tbody>
             {prog.weeks.map(w => (
-              <tr key={w.weekNum} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                <td style={{ padding: '.75rem 1rem', verticalAlign: 'top', minWidth: 120 }}>
-                  <div style={{ fontWeight: 700, color: 'var(--blue)', fontSize: '.9rem' }}>Week {w.weekNum}</div>
-                  {w.date && <div style={{ fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '.2rem' }}>{fmtDate(w.date)}</div>}
+              <tr key={w.weekNum}>
+                <td>
+                  <div className="wk-label">Week {w.weekNum}</div>
+                  {w.date && <div className="wk-date">{fmtDate(w.date)}</div>}
                   {prog.groups.length > 1 && (
-                    <button onClick={() => openAddPlan(w.weekNum, null, true)}
-                      style={{ marginTop: '.4rem', background: 'none', border: '1.5px solid var(--blue)', color: 'var(--blue)', padding: '.25rem .6rem', borderRadius: 'var(--radius-sm)', fontSize: '.72rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    <button className="btn-all-groups" onClick={() => openAddPlan(w.weekNum, null, true)}>
                       📋 Same plan for all
                     </button>
                   )}
@@ -458,25 +465,19 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate }) {
                     const bc = (plan.blocks || []).length
                     const url = `#/practice-builder?programId=${encodeURIComponent(prog.id)}&week=${w.weekNum}&group=${encodeURIComponent(g)}&planId=${encodeURIComponent(planId)}&sport=${encodeURIComponent(prog.sport)}&programName=${encodeURIComponent(prog.name)}`
                     return (
-                      <td key={g} style={{ padding: '.75rem 1rem', verticalAlign: 'top' }}>
-                        <a href={url} style={{ display: 'block', fontWeight: 700, color: 'var(--blue)', fontSize: '.88rem', marginBottom: '.25rem', textDecoration: 'none' }}>✅ {plan.name || 'Untitled Plan'}</a>
-                        <div style={{ display: 'flex', gap: '.35rem', marginBottom: '.25rem' }}>
-                          <a href={url} style={{ fontSize: '.75rem', color: 'var(--blue)', fontWeight: 600, textDecoration: 'none' }}>👁 View</a>
-                          <button onClick={() => removePlan(key)}
-                            style={{ background: 'none', border: 'none', fontSize: '.75rem', color: 'var(--red)', fontWeight: 600, cursor: 'pointer', padding: 0 }}>
-                            ✕ Remove
-                          </button>
+                      <td key={g}>
+                        <a href={url} className="plan-ready">✅ {plan.name || 'Untitled Plan'}</a>
+                        <div className="plan-cell-actions">
+                          <a href={url} className="pca-btn">👁 View</a>
+                          <button className="pca-btn pca-remove" onClick={() => removePlan(key)}>✕ Remove</button>
                         </div>
-                        <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{bc} block{bc !== 1 ? 's' : ''} · {plan.durationMinutes || '?'} min</div>
+                        <div className="plan-meta">{bc} block{bc !== 1 ? 's' : ''} · {plan.durationMinutes || '?'} min</div>
                       </td>
                     )
                   }
                   return (
-                    <td key={g} style={{ padding: '.75rem 1rem', verticalAlign: 'top' }}>
-                      <button onClick={() => openAddPlan(w.weekNum, g)}
-                        style={{ border: '2px dashed var(--gray-100)', borderRadius: 'var(--radius-sm)', background: 'none', color: 'var(--gray-400)', padding: '.5rem .9rem', fontSize: '.82rem', fontWeight: 600, cursor: 'pointer', width: '100%' }}>
-                        + Add Plan
-                      </button>
+                    <td key={g}>
+                      <button className="plan-empty" onClick={() => openAddPlan(w.weekNum, g)}>+ Add Plan</button>
                     </td>
                   )
                 })}

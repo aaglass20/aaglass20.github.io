@@ -220,7 +220,7 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
                 </label>
               </div>
               <div className="cat-tabs">
-                {cats.map(c => <button key={c} className={`tab-btn${activeCat === c ? ' active' : ''}`} onClick={() => setActiveCat(c)}>{c}</button>)}
+                {cats.map(c => <button key={c} className={`cat-btn${activeCat === c ? ' active' : ''}`} onClick={() => setActiveCat(c)}>{c}</button>)}
               </div>
               <div className="bank-grid">
                 {filteredDrills.map(d => {
@@ -581,7 +581,7 @@ export default function PracticeBuilder() {
               </div>
             </div>
             <div className="progress-bar">
-              <div className={`progress-fill${over ? ' over' : ''}`} style={{ width: `${pct}%` }} />
+              <div className={`progress-bar-fill${over ? ' over' : ''}`} style={{ width: `${pct}%` }} />
             </div>
             <div className="timeline">
               {plan.blocks.length === 0 && (

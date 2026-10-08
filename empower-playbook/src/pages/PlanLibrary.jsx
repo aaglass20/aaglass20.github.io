@@ -149,18 +149,46 @@ export default function PlanLibrary() {
             <div className="view-scroll-body">
               {!(viewPlan.blocks || []).length
                 ? <div className="vb-empty">📋 This plan has no blocks yet.</div>
-                : (viewPlan.blocks || []).map((block, i) => (
-                    <div key={i} className={`vb-block type-${block.type}`}>
-                      <span className="vb-icon">{block.icon || '📌'}</span>
-                      <div className="vb-body">
-                        <div className="vb-name">{block.name}</div>
-                        {block.description && <div className="vb-desc">{block.description}</div>}
-                        {block.why && <div className="vb-tip vb-tip-why">🤔 <span>{block.why}</span></div>}
-                        {block.volunteerTip && <div className="vb-tip vb-tip-vol">🙌 <span>{block.volunteerTip}</span></div>}
+                : (viewPlan.blocks || []).map((block, i) => {
+                    const blockIcon = block.type === 'rotation' ? '🔄' : (block.icon || '📌')
+                    return (
+                      <div key={i} className={`vb-block type-${block.type}`}>
+                        <span className="vb-icon">{blockIcon}</span>
+                        <div className="vb-body">
+                          <div className="vb-name">{block.name}</div>
+                          {block.type === 'rotation' && (block.drills || []).length > 0 && (
+                            <div className="vb-stations">
+                              {(block.drills || []).map((d, di) => (
+                                <div key={di} className="vb-station">
+                                  <div className="vb-station-title">
+                                    <span>{d.icon || '🏃'} {d.name}</span>
+                                    <span>{block.timePerDrill} min</span>
+                                  </div>
+                                  {d.description && <div className="vb-desc" style={{ fontSize: '.78rem' }}>{d.description}</div>}
+                                  {d.steps && d.steps.length > 0 && (
+                                    <ul className="vb-steps">{d.steps.map((s, si) => <li key={si}><span className="si">{s.icon || '▸'}</span>{s.text}</li>)}</ul>
+                                  )}
+                                  {d.volunteerTip && <div className="vb-tip vb-tip-vol">🙌 <span>{d.volunteerTip}</span></div>}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {block.type !== 'rotation' && (
+                            <>
+                              {block.description && <div className="vb-desc">{block.description}</div>}
+                              {block.steps && block.steps.length > 0 && (
+                                <ul className="vb-steps">{block.steps.map((s, si) => <li key={si}><span className="si">{s.icon || '▸'}</span>{s.text}</li>)}</ul>
+                              )}
+                              {block.why && <div className="vb-tip vb-tip-why">🤔 <span>{block.why}</span></div>}
+                              {block.volunteerTip && <div className="vb-tip vb-tip-vol">🙌 <span>{block.volunteerTip}</span></div>}
+                              {block.facilitatorTip && <div className="vb-tip vb-tip-fac">💡 <span>{block.facilitatorTip}</span></div>}
+                            </>
+                          )}
+                        </div>
+                        <span className="vb-dur">{block.durationMinutes} min</span>
                       </div>
-                      <span className="vb-dur">{block.durationMinutes} min</span>
-                    </div>
-                  ))
+                    )
+                  })
               }
             </div>
             <div className="view-actions">

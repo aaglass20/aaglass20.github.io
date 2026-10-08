@@ -90,6 +90,7 @@ function DrillForm({ initial, onSave, onCancel }) {
   const [equipment, setEquipment] = useState(initial?.equipment || [])
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [uploadStatus, setUploadStatus] = useState('')
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })) }
 
@@ -189,20 +190,6 @@ function DrillForm({ initial, onSave, onCancel }) {
         </div>
 
         <div className="form-section">
-          <div className="section-label">🎒 Equipment</div>
-          <small className="field-hint" style={{ marginBottom: '.55rem', display: 'block' }}>Each item flows to the Practice Builder equipment checklist</small>
-          <div className="equip-list">
-            {equipment.map((e, i) => (
-              <div key={i} className="equip-row">
-                <input className="equip-text-in" type="text" placeholder="e.g. 4 cones, 1 ball per pair" value={e} onChange={ev => updateEquip(i, ev.target.value)} />
-                <button className="step-del" onClick={() => removeEquip(i)}>✕</button>
-              </div>
-            ))}
-          </div>
-          <button type="button" className="btn-add-row" onClick={addEquip}>+ Add item</button>
-        </div>
-
-        <div className="form-section">
           <div className="section-label">Context</div>
           <div className="form-row">
             <label>🤔 Why We Do This</label>
@@ -220,10 +207,40 @@ function DrillForm({ initial, onSave, onCancel }) {
             <textarea rows={2} value={form.facilitatorTip} onChange={e => set('facilitatorTip', e.target.value)} placeholder="Equipment setup, spacing, ability-level adjustments…" />
           </div>
           <div className="form-row">
-            <label>🎬 Video URL</label>
-            <small className="field-hint">YouTube, Vimeo, or direct MP4 link</small>
-            <input type="url" value={form.videoUrl} onChange={e => set('videoUrl', e.target.value)} placeholder="https://youtube.com/watch?v=…" />
+            <label>🎬 Video</label>
+            <small className="field-hint">Paste a URL or upload a file — YouTube, Vimeo, MP4, etc.</small>
+            <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', marginBottom: '.4rem' }}>
+              <input type="url" value={form.videoUrl} onChange={e => set('videoUrl', e.target.value)} placeholder="https://youtube.com/watch?v=…" style={{ flex: 1, marginBottom: 0 }} />
+              {form.videoUrl && <button type="button" style={{ background: 'none', border: '1.5px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', padding: '.35rem .6rem', cursor: 'pointer', color: 'var(--gray-400)', fontSize: '.82rem' }} onClick={() => { set('videoUrl', ''); setUploadStatus('') }}>✕</button>}
+            </div>
+            <div className="video-upload-row">
+              <span className="video-or">or</span>
+              <label className="btn-upload-video">
+                📁 Upload file
+                <input type="file" accept="video/*" style={{ display: 'none' }} onChange={e => {
+                  const file = e.target.files[0]
+                  if (!file) return
+                  setUploadStatus(`📎 ${file.name}`)
+                  set('videoUrl', URL.createObjectURL(file))
+                }} />
+              </label>
+              {uploadStatus && <span className="video-upload-status">{uploadStatus}</span>}
+            </div>
           </div>
+        </div>
+
+        <div className="form-section">
+          <div className="section-label">🎒 Equipment</div>
+          <small className="field-hint" style={{ marginBottom: '.55rem', display: 'block' }}>Each item flows to the Practice Builder equipment checklist</small>
+          <div className="equip-list">
+            {equipment.map((e, i) => (
+              <div key={i} className="equip-row">
+                <input className="equip-text-in" type="text" placeholder="e.g. 4 cones, 1 ball per pair" value={e} onChange={ev => updateEquip(i, ev.target.value)} />
+                <button className="step-del" onClick={() => removeEquip(i)}>✕</button>
+              </div>
+            ))}
+          </div>
+          <button type="button" className="btn-add-row" onClick={addEquip}>+ Add item</button>
         </div>
       </div>
 
@@ -382,9 +399,6 @@ export default function DrillAdmin() {
                   </button>
                 ))}
               </div>
-              <button className="btn btn-outline export-btn" onClick={handleExport}>
-                ⬇️ Export Custom Drills (JSON)
-              </button>
             </div>
 
             {loading && <div className="loading-plans">Loading drills…</div>}
