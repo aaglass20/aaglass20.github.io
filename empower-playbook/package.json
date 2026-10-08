@@ -1,0 +1,26 @@
+{
+  "name": "empower-playbook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cp index.src.html index.html && vite",
+    "build": "cp index.src.html index.html && vite build",
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "deploy": "npm run build && npm run test && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && echo 'Deployed!'",
+    "restore": "cp index.src.html index.html"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.1"
+  }
+}
