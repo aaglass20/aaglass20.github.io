@@ -296,3 +296,5 @@ Future additions (not yet built):
 | 2026-08-30 | v0.2 — rich drill schema; soccer 16 drills; drill-admin.html |
 | 2026-09-05 | v0.3 — equipment checklist |
 | 2026-10-01 | Programs arch — programs.html (wizard + dashboard); practice-builder updated with program context (URL params, empowerPlans, context banner); Programs nav link added to all pages |
+| 2026-10-07 | React+Vite scaffold — package.json, vite.config.js, HashRouter, 14 page stubs, Nav/Layout components, Playwright smoke suite (5 tests); dev port 5177, preview port 4177; legacy HTML preserved as *.legacy.html |
+| 2026-10-07 | Soccer page converted — DrillCard, SectionHeader, TabGroup, PlanRow shared components; src/data/soccer.js; 10 soccer Playwright tests (drill tabs, plan week tabs, equipment, scrimmage card); 15/15 green |
