@@ -14,6 +14,7 @@ import Locations from './pages/Locations.jsx'
 import PracticeBuilder from './pages/PracticeBuilder.jsx'
 import PlanLibrary from './pages/PlanLibrary.jsx'
 import DrillAdmin from './pages/DrillAdmin.jsx'
+import SocialStory from './pages/SocialStory.jsx'
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="practice-builder" element={<PracticeBuilder />} />
           <Route path="plan-library" element={<PlanLibrary />} />
           <Route path="drill-admin" element={<DrillAdmin />} />
+          <Route path="social-story" element={<SocialStory />} />
         </Route>
       </Routes>
     </HashRouter>

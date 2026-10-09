@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import * as db from '../lib/db.js'
+import PracticeBuilder from './PracticeBuilder.jsx'
 
 const SPORTS = [
   { id: 'basketball', name: 'Basketball', icon: '🏀' },
@@ -368,10 +369,22 @@ function WizardView({ locations, onComplete, onCancel }) {
 
 // ── Dashboard View ─────────────────────────────────────────────
 
-function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate }) {
+function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onEditPlan }) {
+  const navigate = useNavigate()
   const [addPlanModal, setAddPlanModal] = useState(null)
   const [plansCache, setPlansCache] = useState(null)
   const [planSearch, setPlanSearch] = useState('')
+  const [viewPlan, setViewPlan] = useState(null)
+  const [vpOpen, setVpOpen] = useState(false)
+
+  useEffect(() => {
+    if (viewPlan) requestAnimationFrame(() => setVpOpen(true))
+  }, [viewPlan])
+
+  function closeVp() {
+    setVpOpen(false)
+    setTimeout(() => setViewPlan(null), 320)
+  }
 
   const progLoc = prog.locationId ? locations.find(l => l.id === prog.locationId) : null
   const planMap = {}
@@ -463,12 +476,14 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate }) {
                   const plan = planId ? planMap[planId] : null
                   if (plan) {
                     const bc = (plan.blocks || []).length
-                    const url = `#/practice-builder?programId=${encodeURIComponent(prog.id)}&week=${w.weekNum}&group=${encodeURIComponent(g)}&planId=${encodeURIComponent(planId)}&sport=${encodeURIComponent(prog.sport)}&programName=${encodeURIComponent(prog.name)}`
+                    const editPath = `/practice-builder?programId=${encodeURIComponent(prog.id)}&week=${w.weekNum}&group=${encodeURIComponent(g)}&planId=${encodeURIComponent(planId)}&sport=${encodeURIComponent(prog.sport)}&programName=${encodeURIComponent(prog.name)}`
                     return (
                       <td key={g}>
-                        <a href={url} className="plan-ready">✅ {plan.name || 'Untitled Plan'}</a>
+                        <button className="plan-ready" onClick={() => setViewPlan({ ...plan, _editPath: editPath })}>
+                          ✅ {plan.name || 'Untitled Plan'}
+                        </button>
                         <div className="plan-cell-actions">
-                          <a href={url} className="pca-btn">👁 View</a>
+                          <button className="pca-btn" onClick={() => setViewPlan({ ...plan, _editPath: editPath })}>👁 View</button>
                           <button className="pca-btn pca-remove" onClick={() => removePlan(key)}>✕ Remove</button>
                         </div>
                         <div className="plan-meta">{bc} block{bc !== 1 ? 's' : ''} · {plan.durationMinutes || '?'} min</div>
@@ -536,6 +551,79 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate }) {
           </div>
         </div>
       )}
+
+      {/* Plan preview slide-in panel */}
+      {viewPlan && (
+        <div className={`view-overlay${vpOpen ? ' open' : ''}`} style={{ zIndex: 401 }}
+          onClick={e => { if (e.target === e.currentTarget) closeVp() }}>
+          <div className="view-panel">
+            <div className="plan-view-header">
+              <span className="view-header-icon">
+                {SPORTS.find(s => s.id === (viewPlan.sport || prog.sport))?.icon || prog.sportIcon || '📋'}
+              </span>
+              <div className="view-header-info">
+                <div className="view-header-name">{viewPlan.name || 'Untitled Plan'}</div>
+                <div className="view-header-meta">
+                  {prog.sportName} · {viewPlan.durationMinutes || 75} min · {(viewPlan.blocks || []).length} blocks
+                  {viewPlan.hasWarmup ? ' · Warmup included' : ''}
+                </div>
+              </div>
+              <button className="view-close" onClick={closeVp} aria-label="Close">✕</button>
+            </div>
+            <div className="view-scroll-body">
+              {!(viewPlan.blocks || []).length
+                ? <div className="vb-empty">📋 This plan has no blocks yet.</div>
+                : (viewPlan.blocks || []).map((block, i) => {
+                    const blockIcon = block.type === 'rotation' ? '🔄' : (block.icon || '📌')
+                    return (
+                      <div key={i} className={`vb-block type-${block.type}`}>
+                        <span className="vb-icon">{blockIcon}</span>
+                        <div className="vb-body">
+                          <div className="vb-name-row">
+                            <div className="vb-name">{block.name}</div>
+                            <span className="vb-dur">{block.durationMinutes} min</span>
+                          </div>
+                          {block.type === 'rotation' && (block.drills || []).length > 0 && (
+                            <div className="vb-stations">
+                              {(block.drills || []).map((d, di) => (
+                                <div key={di} className="vb-station">
+                                  <div className="vb-station-title">
+                                    <span>{d.icon || '🏃'} {d.name}</span>
+                                    <span>{block.timePerDrill} min</span>
+                                  </div>
+                                  {d.description && <div className="vb-desc" style={{ fontSize: '.78rem' }}>{d.description}</div>}
+                                  {d.steps && d.steps.length > 0 && (
+                                    <ul className="vb-steps">{d.steps.map((s, si) => <li key={si}><span className="si">{s.icon || '▸'}</span>{s.text}</li>)}</ul>
+                                  )}
+                                  {d.volunteerTip && <div className="vb-tip vb-tip-vol">🙌 <span>{d.volunteerTip}</span></div>}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {block.type !== 'rotation' && (
+                            <>
+                              {block.description && <div className="vb-desc">{block.description}</div>}
+                              {block.steps && block.steps.length > 0 && (
+                                <ul className="vb-steps">{block.steps.map((s, si) => <li key={si}><span className="si">{s.icon || '▸'}</span>{s.text}</li>)}</ul>
+                              )}
+                              {block.why && <div className="vb-tip vb-tip-why">🤔 <span>{block.why}</span></div>}
+                              {block.volunteerTip && <div className="vb-tip vb-tip-vol">🙌 <span>{block.volunteerTip}</span></div>}
+                              {block.facilitatorTip && <div className="vb-tip vb-tip-fac">💡 <span>{block.facilitatorTip}</span></div>}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })
+              }
+            </div>
+            <div className="view-actions">
+              <button className="view-btn-edit" onClick={() => { closeVp(); onEditPlan && onEditPlan(viewPlan.id) }}>✏️ Edit Plan</button>
+              <button className="view-btn-copy" onClick={closeVp}>← Back</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -549,6 +637,9 @@ export default function Programs() {
   const [locations, setLocations] = useState([])
   const [plans, setPlans] = useState(null)
   const [dashProg, setDashProg] = useState(null)
+  const [dashOpen, setDashOpen] = useState(false)
+  const [editPlanId, setEditPlanId] = useState(null)
+  const [editOverlayOpen, setEditOverlayOpen] = useState(false)
 
   const loadData = useCallback(async () => {
     const [progs, locs] = await Promise.all([db.programs.list(), db.locations.list()])
@@ -576,6 +667,14 @@ export default function Programs() {
     init()
   }, [])
 
+  useEffect(() => {
+    if (view === 'dashboard') requestAnimationFrame(() => setDashOpen(true))
+  }, [view])
+
+  useEffect(() => {
+    if (editPlanId) requestAnimationFrame(() => setEditOverlayOpen(true))
+  }, [editPlanId])
+
   async function openDashboard(progId) {
     const prog = programs.find(p => p.id === progId)
     if (!prog) return
@@ -584,7 +683,25 @@ export default function Programs() {
       setPlans(pl)
     }
     setDashProg(prog)
+    setDashOpen(false)
     setView('dashboard')
+  }
+
+  function closeDash() {
+    setDashOpen(false)
+    setTimeout(() => {
+      setDashProg(null)
+      setView('home')
+    }, 320)
+  }
+
+  function openEditOverlay(planId) {
+    setEditPlanId(planId)
+  }
+
+  function closeEditOverlay() {
+    setEditOverlayOpen(false)
+    setTimeout(() => setEditPlanId(null), 320)
   }
 
   async function handleDeleteSelected(ids) {
@@ -599,6 +716,7 @@ export default function Programs() {
       const pl = await db.plans.list()
       setPlans(pl)
       setDashProg(prog)
+      setDashOpen(false)
       setView('dashboard')
     }
   }
@@ -623,7 +741,7 @@ export default function Programs() {
       </section>
 
       <div className="container-wide" style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem 1rem 4rem' }}>
-        {view === 'home' && (
+        {(view === 'home' || view === 'dashboard') && (
           <HomeView
             programs={programs}
             locations={locations}
@@ -639,16 +757,35 @@ export default function Programs() {
             onCancel={() => setView('home')}
           />
         )}
-        {view === 'dashboard' && dashProg && (
-          <DashboardView
-            prog={dashProg}
-            locations={locations}
-            plans={plans}
-            onBack={() => setView('home')}
-            onUpdate={handleDashUpdate}
-          />
-        )}
       </div>
+
+      {/* Program dashboard slide-in panel */}
+      {dashProg && (
+        <div className={`view-overlay${dashOpen ? ' open' : ''}`}
+          onClick={e => { if (e.target === e.currentTarget) closeDash() }}>
+          <div className="view-panel prog-dash-panel">
+            <div className="prog-dash-scroll">
+              <DashboardView
+                prog={dashProg}
+                locations={locations}
+                plans={plans}
+                onBack={closeDash}
+                onUpdate={handleDashUpdate}
+                onEditPlan={openEditOverlay}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Practice Builder overlay */}
+      {editPlanId && (
+        <div className={`pb-overlay${editOverlayOpen ? ' open' : ''}`}>
+          <div className="pb-overlay-scroll">
+            <PracticeBuilder initPlanId={editPlanId} onExit={closeEditOverlay} />
+          </div>
+        </div>
+      )}
     </>
   )
 }

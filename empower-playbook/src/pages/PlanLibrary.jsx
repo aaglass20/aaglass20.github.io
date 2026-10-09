@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { plans } from '../lib/db.js'
+import { plans, socialStories } from '../lib/db.js'
+import PracticeBuilder from './PracticeBuilder.jsx'
 
 const SPORTS = [
   { id: 'soccer',     name: 'Soccer',     icon: '⚽' },
@@ -28,15 +29,44 @@ export default function PlanLibrary() {
   const [filterSport, setFilterSport] = useState('all')
   const [search, setSearch] = useState('')
   const [viewPlan, setViewPlan] = useState(null)
+  const [viewOpen, setViewOpen] = useState(false)
+  const [editPlanId, setEditPlanId] = useState(null)
+  const [editOverlayOpen, setEditOverlayOpen] = useState(false)
   const [toast, setToast] = useState('')
 
   useEffect(() => {
     plans.list().then(data => { setAllPlans(data); setLoading(false) }).catch(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    if (viewPlan) requestAnimationFrame(() => setViewOpen(true))
+  }, [viewPlan])
+
+  useEffect(() => {
+    if (editPlanId) requestAnimationFrame(() => setEditOverlayOpen(true))
+  }, [editPlanId])
+
   function showToast(msg) {
     setToast(msg)
     setTimeout(() => setToast(''), 2400)
+  }
+
+  function closePanel() {
+    setViewOpen(false)
+    setTimeout(() => setViewPlan(null), 320)
+  }
+
+  function closeEdit() {
+    setEditOverlayOpen(false)
+    setTimeout(() => {
+      setEditPlanId(null)
+      plans.list().then(data => setAllPlans(data))
+    }, 320)
+  }
+
+  function openEdit(planId) {
+    setEditPlanId(planId)
+    closePanel()
   }
 
   const sportsInUse = new Set(allPlans.map(p => p.sport))
@@ -60,6 +90,23 @@ export default function PlanLibrary() {
     showToast('🗑 Plan deleted')
   }
 
+  async function handleClearStory(p) {
+    if (!confirm(`Clear the saved social story for "${p.name || 'this plan'}"?\n\nThe story will be rebuilt from the plan next time you open it.`)) return
+    try {
+      const existing = await socialStories.getByPlanId(p.id)
+      if (existing?.id) await socialStories.delete(existing.id)
+      // also purge localStorage copy
+      try {
+        const arr = JSON.parse(localStorage.getItem('empowerSocialStories') || '[]')
+        localStorage.setItem('empowerSocialStories', JSON.stringify(arr.filter(s => s.planId !== p.id)))
+      } catch { /* ignore */ }
+      showToast('✅ Story cleared — will regenerate on next open')
+    } catch (e) {
+      console.warn('[PlanLibrary] clearStory:', e)
+      showToast('❌ Could not clear story')
+    }
+  }
+
   return (
     <>
       <section className="hero" style={{ padding: '2.5rem 1.5rem 3rem' }}>
@@ -71,7 +118,7 @@ export default function PlanLibrary() {
       <div className="container-wide" data-testid="plan-library-home">
         <div className="lib-header">
           <h2>All Plans</h2>
-          <button className="btn-new-plan" data-testid="new-plan-btn" onClick={() => navigate('/practice-builder')}>
+          <button className="btn-new-plan" data-testid="new-plan-btn" onClick={() => { localStorage.removeItem('empowerPracticePlan'); navigate('/practice-builder') }}>
             ＋ New Plan
           </button>
         </div>
@@ -121,8 +168,10 @@ export default function PlanLibrary() {
                 <div className="plan-card-updated">{relativeDate(p.updatedAt || p.createdAt)}</div>
                 <div className="plan-card-actions">
                   <button className="view-btn" onClick={() => setViewPlan(p)}>👁 View</button>
-                  <button className="edit-btn" onClick={() => navigate(`/practice-builder?planId=${encodeURIComponent(p.id)}`)}>✏️ Edit</button>
+                  <button className="edit-btn" onClick={() => openEdit(p.id)}>✏️ Edit</button>
                   <button className="copy-btn" onClick={() => handleCopy(p)}>📋 Copy</button>
+                  <button className="story-btn" onClick={() => navigate(`/social-story?planId=${encodeURIComponent(p.id)}`)}>📖 Story</button>
+                  <button className="story-clear-btn" onClick={() => handleClearStory(p)} title="Clear saved story — rebuilds fresh on next open">✕ Story</button>
                   <button className="del-btn" onClick={() => handleDelete(p)}>🗑 Delete</button>
                 </div>
               </div>
@@ -131,9 +180,9 @@ export default function PlanLibrary() {
         </div>
       </div>
 
-      {/* View modal */}
+      {/* View panel */}
       {viewPlan && (
-        <div className="view-overlay open" onClick={e => { if (e.target === e.currentTarget) setViewPlan(null) }}>
+        <div className={`view-overlay${viewOpen ? ' open' : ''}`} onClick={e => { if (e.target === e.currentTarget) closePanel() }}>
           <div className="view-panel">
             <div className="plan-view-header">
               <span className="view-header-icon">{SPORTS.find(s => s.id === viewPlan.sport)?.icon || '⚽'}</span>
@@ -144,7 +193,7 @@ export default function PlanLibrary() {
                   {viewPlan.hasWarmup ? ' · Warmup included' : ''}
                 </div>
               </div>
-              <button className="view-close" onClick={() => setViewPlan(null)} aria-label="Close">✕</button>
+              <button className="view-close" onClick={closePanel} aria-label="Close">✕</button>
             </div>
             <div className="view-scroll-body">
               {!(viewPlan.blocks || []).length
@@ -155,7 +204,10 @@ export default function PlanLibrary() {
                       <div key={i} className={`vb-block type-${block.type}`}>
                         <span className="vb-icon">{blockIcon}</span>
                         <div className="vb-body">
-                          <div className="vb-name">{block.name}</div>
+                          <div className="vb-name-row">
+                            <div className="vb-name">{block.name}</div>
+                            <span className="vb-dur">{block.durationMinutes} min</span>
+                          </div>
                           {block.type === 'rotation' && (block.drills || []).length > 0 && (
                             <div className="vb-stations">
                               {(block.drills || []).map((d, di) => (
@@ -185,15 +237,15 @@ export default function PlanLibrary() {
                             </>
                           )}
                         </div>
-                        <span className="vb-dur">{block.durationMinutes} min</span>
                       </div>
                     )
                   })
               }
             </div>
             <div className="view-actions">
-              <button className="view-btn-edit" onClick={() => { navigate(`/practice-builder?planId=${encodeURIComponent(viewPlan.id)}`); setViewPlan(null) }}>✏️ Edit Plan</button>
-              <button className="view-btn-copy" onClick={() => { handleCopy(viewPlan); setViewPlan(null) }}>📋 Copy</button>
+              <button className="view-btn-edit" onClick={() => openEdit(viewPlan.id)}>✏️ Edit Plan</button>
+              <button className="view-btn-copy" onClick={() => { handleCopy(viewPlan); closePanel() }}>📋 Copy</button>
+              <button className="view-btn-story" onClick={() => { navigate(`/social-story?planId=${encodeURIComponent(viewPlan.id)}`); closePanel() }}>📖 Social Story</button>
             </div>
           </div>
         </div>
@@ -201,6 +253,15 @@ export default function PlanLibrary() {
 
       {/* Toast */}
       {toast && <div className="toast show">{toast}</div>}
+
+      {/* Practice Builder overlay */}
+      {editPlanId && (
+        <div className={`pb-overlay${editOverlayOpen ? ' open' : ''}`}>
+          <div className="pb-overlay-scroll">
+            <PracticeBuilder initPlanId={editPlanId} onExit={closeEdit} />
+          </div>
+        </div>
+      )}
     </>
   )
 }

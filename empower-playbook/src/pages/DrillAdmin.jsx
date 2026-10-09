@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { DRILL_BANK } from '../data/practiceBuilderData.js'
 import { drills as drillsDb } from '../lib/db.js'
+import { iconsForSport, iconUrl, matchIcon } from '../lib/socialStoryIcons.js'
 
 const SPORTS = [
   { id: 'soccer',     name: '⚽ Soccer' },
@@ -29,7 +30,7 @@ const BUILTIN_DRILLS = Object.entries(DRILL_BANK).flatMap(([sport, dArr]) =>
 const EMPTY_FORM = {
   id: null, sport: 'soccer', category: '', icon: '', name: '', description: '',
   steps: [], equipment: [], why: '', volunteerTip: '', facilitatorTip: '',
-  defaultTime: 12, videoUrl: '', source: 'user',
+  defaultTime: 12, videoUrl: '', source: 'user', socialIcon: '',
 }
 
 function mergeDrills(dbDrills) {
@@ -91,6 +92,8 @@ function DrillForm({ initial, onSave, onCancel }) {
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
   const [uploadStatus, setUploadStatus] = useState('')
+  const [ssPickerOpen, setSsPickerOpen] = useState(false)
+  const [ssSearch, setSsSearch] = useState('')
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })) }
 
@@ -230,6 +233,40 @@ function DrillForm({ initial, onSave, onCancel }) {
         </div>
 
         <div className="form-section">
+          <div className="section-label">📖 Social Story Icon</div>
+          <small className="field-hint" style={{ marginBottom: '.75rem', display: 'block' }}>Auto-matched from drill name — lock in a specific icon to override</small>
+          {(() => {
+            const suggested = matchIcon(form.name, form.sport)
+            const locked = form.socialIcon
+            const displayFile = locked || suggested
+            const isLocked = !!locked
+            return (
+              <div className="drill-ss-icon-row">
+                <div className="drill-ss-preview-wrap">
+                  <img src={iconUrl(displayFile, form.sport)} className="drill-ss-preview" alt={displayFile} />
+                  <span className={`drill-ss-badge${isLocked ? ' locked' : ' suggested'}`}>
+                    {isLocked ? '✓ Locked' : '💡 Suggested'}
+                  </span>
+                </div>
+                <div className="drill-ss-actions">
+                  {!isLocked && (
+                    <button type="button" className="btn-pick-ss-icon" onClick={() => { set('socialIcon', suggested) }}>
+                      Lock this in
+                    </button>
+                  )}
+                  <button type="button" className="btn-pick-ss-icon" onClick={() => setSsPickerOpen(true)}>
+                    {isLocked ? '🔄 Change' : 'Pick different'}
+                  </button>
+                  {isLocked && (
+                    <button type="button" className="btn-clear-ss" onClick={() => set('socialIcon', '')}>✕ Use auto</button>
+                  )}
+                </div>
+              </div>
+            )
+          })()}
+        </div>
+
+        <div className="form-section">
           <div className="section-label">🎒 Equipment</div>
           <small className="field-hint" style={{ marginBottom: '.55rem', display: 'block' }}>Each item flows to the Practice Builder equipment checklist</small>
           <div className="equip-list">
@@ -257,6 +294,39 @@ function DrillForm({ initial, onSave, onCancel }) {
           {onCancel && <button className="btn btn-outline" onClick={onCancel}>Cancel</button>}
         </div>
       </div>
+
+      {ssPickerOpen && (
+        <div className="ss-picker-overlay" onClick={e => { if (e.target === e.currentTarget) { setSsPickerOpen(false); setSsSearch('') } }}>
+          <div className="ss-picker-panel">
+            <div className="ss-picker-head">
+              <span>Choose Social Story Icon</span>
+              <button className="view-close" onClick={() => { setSsPickerOpen(false); setSsSearch('') }}>✕</button>
+            </div>
+            <input
+              className="ss-picker-search"
+              type="text"
+              placeholder="🔍 Search icons…"
+              value={ssSearch}
+              onChange={e => setSsSearch(e.target.value)}
+              autoFocus
+            />
+            <div className="ss-picker-grid">
+              {iconsForSport(form.sport)
+                .filter(i => !ssSearch || i.label.toLowerCase().includes(ssSearch.toLowerCase()))
+                .map(icon => (
+                  <div
+                    key={icon.id}
+                    className={`ss-picker-icon${form.socialIcon === icon.file ? ' selected' : ''}`}
+                    onClick={() => { set('socialIcon', icon.file); setSsPickerOpen(false); setSsSearch('') }}
+                  >
+                    <img src={iconUrl(icon.file, form.sport)} alt={icon.label} />
+                    <span>{icon.label}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -412,12 +482,10 @@ export default function DrillAdmin() {
               )}
               {filteredDrills.map(d => {
                 const sportMeta = SPORTS.find(s => s.id === d.sport) || { name: d.sport }
-                const isCustom = d.source === 'user'
                 return (
                   <div key={d.id} className="lib-card">
                     <div className="lib-card-head">
                       <span>{d.icon || SPORT_ICON[d.sport] || '⚽'} {d.name}</span>
-                      {isCustom && <span className="user-badge">Custom</span>}
                       <span className="cat-badge">{d.category || ''}</span>
                     </div>
                     <div className="lib-card-body">
