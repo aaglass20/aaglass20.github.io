@@ -2196,9 +2196,9 @@ body {
 .ss-add-icon-btn { width: 130px; height: 130px; border: 2px dashed var(--gray-200); border-radius: var(--radius-sm); background: var(--gray-50); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-400); font-size: .78rem; font-weight: 600; gap: .2rem; transition: all .15s; flex-shrink: 0; }
 .ss-add-icon-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
 
-.ss-line-text { width: 100%; border: 1.5px solid var(--gray-100); border-radius: var(--radius-sm); padding: .65rem .85rem; font-size: 1.2rem; line-height: 1.55; font-family: 'Comic Sans MS', 'Comic Sans', cursive; resize: none; color: var(--gray-700); background: var(--gray-50); transition: border-color .15s; box-sizing: border-box; }
+.ss-line-text { width: 100%; border: 1.5px solid var(--gray-100); border-radius: var(--radius-sm); padding: .65rem .85rem; font-size: 1.2rem; line-height: 1.55; font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive; resize: none; color: var(--gray-700); background: var(--gray-50); transition: border-color .15s; box-sizing: border-box; }
 .ss-line-text:focus { outline: none; border-color: var(--blue); background: #fff; }
-.ss-line-text-print { display: none; font-size: 1.2rem; color: #333; line-height: 1.55; margin: .5rem 0 0; font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
+.ss-line-text-print { display: none; font-size: 1.2rem; color: #333; line-height: 1.55; margin: .5rem 0 0; font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive; }
 
 .ss-line-del { position: absolute; top: .65rem; right: .75rem; background: none; border: none; cursor: pointer; color: var(--gray-300); padding: .2rem .5rem; border-radius: 4px; font-size: .78rem; font-weight: 600; opacity: 0; transition: all .15s; font-family: inherit; }
 .ss-line:hover .ss-line-del { opacity: 1; }
