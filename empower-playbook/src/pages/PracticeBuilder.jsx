@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import * as db from '../lib/db.js'
 import { SPORTS, WARMUP_BANK, DRILL_BANK as BASE_DRILL_BANK, DRILL_EQUIPMENT } from '../data/practiceBuilderData.js'
 
@@ -288,7 +288,8 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
   )
 }
 
-export default function PracticeBuilder() {
+export default function PracticeBuilder({ initPlanId, onExit } = {}) {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [view, setView] = useState('wizard')
   const [step, setStep] = useState(1)
@@ -300,6 +301,11 @@ export default function PracticeBuilder() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editIdx, setEditIdx] = useState(null)
   const [progCtx, setProgCtx] = useState(null)
+  const [isDirty, setIsDirty] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState('')
+  const [showLeaveModal, setShowLeaveModal] = useState(false)
+  const [pendingNav, setPendingNav] = useState(null)
 
   useEffect(() => {
     async function init() {
@@ -320,7 +326,7 @@ export default function PracticeBuilder() {
       const programId = searchParams.get('programId')
       const weekNum = searchParams.get('week')
       const group = searchParams.get('group')
-      const planId = searchParams.get('planId')
+      const planId = initPlanId || searchParams.get('planId')
       const sport = searchParams.get('sport')
       const programName = searchParams.get('programName')
 
@@ -346,6 +352,21 @@ export default function PracticeBuilder() {
     init()
   }, [])
 
+  useEffect(() => {
+    function onBeforeUnload(e) {
+      if (isDirty) { e.preventDefault(); e.returnValue = '' }
+    }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [isDirty])
+
+  function showToast(msg) { setToast(msg); setTimeout(() => setToast(''), 2400) }
+
+  function guardNav(fn) {
+    if (isDirty) { setPendingNav(() => fn); setShowLeaveModal(true) }
+    else fn()
+  }
+
   function savePlanToStorage(p) { try { localStorage.setItem('empowerPracticePlan', JSON.stringify(p)) } catch (e) { /* ignore */ } }
 
   async function savePlanToDB(p) {
@@ -357,14 +378,14 @@ export default function PracticeBuilder() {
       const next = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater }
       next.updatedAt = new Date().toISOString()
       savePlanToStorage(next)
-      savePlanToDB(next)
       return next
     })
+    setIsDirty(true)
   }
 
-  function startBuilder() {
+  async function startBuilder() {
     const p = {
-      id: progCtx?.planId || genId(),
+      id: progCtx?.planId || null,
       name: wiz.planName || (wiz.sportName + ' Practice'),
       sport: wiz.sport, sportName: wiz.sportName, sportIcon: wiz.sportIcon,
       durationMinutes: wiz.durationMinutes, hasWarmup: wiz.hasWarmup, blocks: [],
@@ -374,13 +395,34 @@ export default function PracticeBuilder() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    setPlan(p); savePlanToStorage(p); savePlanToDB(p); setView('builder')
+    const saved = await savePlanToDB(p)
+    savePlanToStorage(saved)
+    setPlan(saved)
+    setIsDirty(false)
+    setView('builder')
+  }
+
+  async function handleSave() {
+    if (!plan) return
+    setSaving(true)
+    try {
+      const saved = await savePlanToDB(plan)
+      setPlan(saved)
+      savePlanToStorage(saved)
+      setIsDirty(false)
+      showToast('✅ Plan saved!')
+    } catch (e) {
+      console.warn('[PracticeBuilder] save:', e)
+      showToast('❌ Save failed — check connection')
+    }
+    setSaving(false)
   }
 
   function resetWizard() {
-    if (!window.confirm('Start a new plan? Your current plan will be cleared.')) return
-    localStorage.removeItem('empowerPracticePlan')
-    setPlan(null); setWiz({ sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true, planName: '' }); setStep(1); setView('wizard')
+    guardNav(() => {
+      localStorage.removeItem('empowerPracticePlan')
+      setPlan(null); setWiz({ sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true, planName: '' }); setStep(1); setView('wizard')
+    })
   }
 
   function openModal(idx = null) { setEditIdx(idx); setModalOpen(true) }
@@ -433,21 +475,23 @@ export default function PracticeBuilder() {
     ))
     return (
       <main>
-        {progCtx && (
+        {!onExit && progCtx && (
           <div className="prog-ctx-banner visible">
             <div className="prog-ctx-left">
               <span>📁</span><span className="prog-ctx-title">{progCtx.programName || 'Program'}</span>
               <span className="prog-ctx-sep">·</span><span className="prog-ctx-sub">Week {progCtx.weekNum} · {progCtx.group}</span>
             </div>
-            <Link className="btn-back-prog" to="/programs">← Back to Program</Link>
+            <button className="btn-back-prog" onClick={() => { navigate('/programs') }}>← Back to Program</button>
           </div>
         )}
-        <section className="hero" style={{ padding: '2.5rem 1.5rem 3rem' }}>
-          <div className="hero-badge">📋 Practice Builder</div>
-          <h1 style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)' }}>Build Your <span>Practice Plan</span></h1>
-          <p style={{ fontSize: '.97rem' }}>Set up your session in seconds — pick drills, set timing, and go.</p>
-        </section>
-        <div className="container-wide">
+        {!onExit && (
+          <section className="hero" style={{ padding: '2.5rem 1.5rem 3rem' }}>
+            <div className="hero-badge">📋 Practice Builder</div>
+            <h1 style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)' }}>Build Your <span>Practice Plan</span></h1>
+            <p style={{ fontSize: '.97rem' }}>Set up your session in seconds — pick drills, set timing, and go.</p>
+          </section>
+        )}
+        <div className="container-wide pb-container">
           <div className="pb-wizard">
             <div className="wizard-steps">{stepDots}</div>
             <div className={`wizard-panel${step === 1 ? ' active' : ''}`} data-testid="wizard-step-1">
@@ -541,16 +585,22 @@ export default function PracticeBuilder() {
 
     return (
       <main data-testid="builder-view">
-        {progCtx && (
+        {onExit && (
+          <div className="pb-overlay-bar">
+            <button className="btn-pb-overlay-close" onClick={() => guardNav(onExit)}>← Close Editor</button>
+            <span className="pb-overlay-plan-name">{plan?.name || 'Edit Plan'}</span>
+          </div>
+        )}
+        {!onExit && progCtx && (
           <div className="prog-ctx-banner visible">
             <div className="prog-ctx-left">
               <span>📁</span><span className="prog-ctx-title">{progCtx.programName || 'Program'}</span>
               <span className="prog-ctx-sep">·</span><span className="prog-ctx-sub">Week {progCtx.weekNum} · {progCtx.group}</span>
             </div>
-            <Link className="btn-back-prog" to="/programs">← Back to Program</Link>
+            <button className="btn-back-prog" onClick={() => guardNav(() => navigate('/programs'))}>← Back to Program</button>
           </div>
         )}
-        <div className="container-wide">
+        <div className="container-wide pb-container">
           <div className="pb-builder active">
             <div className="builder-header">
               <div className="bh-top">
@@ -563,7 +613,12 @@ export default function PracticeBuilder() {
                   <span className="time-chip tc-used">Used: {used} min</span>
                   <span className={`time-chip ${over ? 'tc-over' : 'tc-left'}`}>{over ? `⚠️ Over by ${Math.abs(left)} min` : `${left} min left`}</span>
                 </div>
+                {isDirty && <span className="pb-dirty-badge">● Unsaved</span>}
+                <button className="btn-pb-save" onClick={handleSave} disabled={saving || !isDirty}>
+                  {saving ? 'Saving…' : 'Save Plan'}
+                </button>
                 <button className="btn-print" onClick={printPlan}>🖨️ Print Plan</button>
+                {plan?.id && <button className="btn-story" onClick={() => guardNav(() => navigate(`/social-story?planId=${encodeURIComponent(plan.id)}`))}>📖 Social Story</button>}
                 <button className="btn-new-plan" onClick={resetWizard}>↩ New Plan</button>
               </div>
               <div style={{ padding: '.3rem .1rem .1rem' }}>
@@ -627,6 +682,22 @@ export default function PracticeBuilder() {
           </div>
         </div>
         <Modal open={modalOpen} onClose={closeModal} plan={plan} drillBank={drillBank} editIdx={editIdx} onUpsert={handleUpsert} />
+
+        {showLeaveModal && (
+          <div className="ss-blocker-overlay" onClick={e => { if (e.target === e.currentTarget) setShowLeaveModal(false) }}>
+            <div className="ss-blocker-modal">
+              <div className="ss-blocker-icon">⚠️</div>
+              <h3>Unsaved Changes</h3>
+              <p>You have unsaved changes to this plan. If you leave now they will be lost.</p>
+              <div className="ss-blocker-actions">
+                <button className="btn-blocker-leave" onClick={() => { setShowLeaveModal(false); if (pendingNav) { pendingNav(); setPendingNav(null) } }}>Leave without saving</button>
+                <button className="btn-blocker-stay" onClick={() => { setShowLeaveModal(false); setPendingNav(null) }}>Stay and save</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {toast && <div className="toast show">{toast}</div>}
       </main>
     )
   }

@@ -276,6 +276,49 @@ Future additions (not yet built):
 
 ---
 
+## Test Coverage
+
+All tests use `window.__EMPOWER_NO_SUPABASE__ = true` (set via `addInitScript`) to force db.js to skip Supabase and use localStorage. No test ever hits the real database.
+
+### Covered
+
+| Spec | Scenarios |
+|---|---|
+| `smoke.spec.js` | Nav links, hero renders for every page |
+| `sports.spec.js` | Hero + drills rendering for Basketball, Softball, Football, Pickleball |
+| `soccer.spec.js` | Drills, plan week tabs, equipment, scrimmage card |
+| `volunteer.spec.js` | Hero |
+| `empower-way.spec.js` | Hero |
+| `locations.spec.js` | Hero, page loads, add-location form (name, save btn, cancel) |
+| `drill-admin.spec.js` | Hero, page loads, add-drill button |
+| `practice-builder.spec.js` | Hero, wizard steps 1–4, builder view, Add Block modal |
+| `plan-library.spec.js` | Hero, page loads, New Plan → navigate; seeded: card visible, view panel, edit overlay, close editor, plan name in bar |
+| `programs.spec.js` | Hero, page loads, create button, wizard steps 1–2; seeded: program card, dashboard slide-in, assigned plan cell, plan view panel, pb-overlay via Edit Plan |
+
+### Gaps — Tests to Write
+
+**Programs**
+- [ ] `programs — wizard creates program (mocked)` — complete steps 1-4 → click Create → expect program card on home; uses localStorage save (no network needed)
+- [ ] `programs — plan assignment via Add Plan` — open dashboard, click empty slot "+ Add Plan", pick from list, verify cell fills; requires seeded plan + program
+- [ ] `programs — delete program` — check a card, click Delete, confirm, verify card removed
+- [ ] `programs — wizard steps 3 & 4 render` — navigate to groups step and review step to verify UI
+
+**Plan Library**
+- [ ] `plan-library — delete plan` — seeded card visible, click Delete, confirm, verify card removed
+
+**Practice Builder**
+- [ ] `practice-builder — edit existing plan (mocked)` — seed a plan in localStorage, open builder with `?planId=`, verify builder loads with correct plan name and blocks
+- [ ] `practice-builder — save plan` — reach builder view, click Save button, verify success toast
+
+**Locations**
+- [ ] `locations — edit and delete (mocked)` — seed a location, verify edit form pre-fills, verify delete removes it
+
+**Drill Admin**
+- [ ] `drill-admin — create drill (mocked)` — fill add-drill form, save, verify drill card appears
+- [ ] `drill-admin — edit/delete drill (mocked)` — seed a drill, edit name, delete, verify state
+
+---
+
 ## Open Questions / To-Do
 
 - [ ] Add more drills for basketball, softball, football, pickleball, kickball
@@ -298,3 +341,4 @@ Future additions (not yet built):
 | 2026-10-01 | Programs arch — programs.html (wizard + dashboard); practice-builder updated with program context (URL params, empowerPlans, context banner); Programs nav link added to all pages |
 | 2026-10-07 | React+Vite scaffold — package.json, vite.config.js, HashRouter, 14 page stubs, Nav/Layout components, Playwright smoke suite (5 tests); dev port 5177, preview port 4177; legacy HTML preserved as *.legacy.html |
 | 2026-10-07 | Soccer page converted — DrillCard, SectionHeader, TabGroup, PlanRow shared components; src/data/soccer.js; 10 soccer Playwright tests (drill tabs, plan week tabs, equipment, scrimmage card); 15/15 green |
+| 2026-10-09 | pb-overlay — edit-in-place PracticeBuilder overlay on Programs page (editPlanId/editOverlayOpen state, .pb-overlay CSS, overlay bar with Close Editor + plan name); Supabase dual-persistence + try-catch fallback in db.js; mocked Playwright tests for plan-library and programs (dashboard, plan view, pb-overlay); all tests switched to window.__EMPOWER_NO_SUPABASE__ test flag in getSb() to prevent any real DB connections |

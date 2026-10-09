@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Locations', () => {
-  test.beforeEach(async ({ page }) => { await page.goto('./#/locations') })
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => { window.__EMPOWER_NO_SUPABASE__ = true })
+    await page.goto('./#/locations')
+  })
 
   test('hero renders', async ({ page }) => {
     await expect(page.locator('h1')).toContainText('Location')

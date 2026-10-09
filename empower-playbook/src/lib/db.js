@@ -5,6 +5,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih'
 
 let _sb = null
 function getSb() {
+  if (typeof window !== 'undefined' && window.__EMPOWER_NO_SUPABASE__) return null
   if (_sb) return _sb
   try {
     const fetchWithTimeout = (url, options) => {
@@ -57,9 +58,11 @@ export const locations = {
   async list() {
     const sb = getSb()
     if (!sb) return lsListLocations()
-    const { data, error } = await sb.from('ep_locations').select('*').order('created_at', { ascending: false })
-    if (error) { console.warn('[db] locations.list:', error); return lsListLocations() }
-    return data.map(rowToLocation)
+    try {
+      const { data, error } = await sb.from('ep_locations').select('*').order('created_at', { ascending: false })
+      if (error) { console.warn('[db] locations.list:', error); return lsListLocations() }
+      return data.map(rowToLocation)
+    } catch (e) { console.warn('[db] locations.list:', e); return lsListLocations() }
   },
   async save(loc) {
     const sb = getSb()
@@ -107,12 +110,14 @@ export const programs = {
   async list() {
     const sb = getSb()
     if (!sb) return lsListPrograms()
-    const { data: progRows, error } = await sb.from('ep_programs').select('*').order('created_at', { ascending: false })
-    if (error) { console.warn('[db] programs.list:', error); return lsListPrograms() }
-    const progIds = progRows.map(p => p.id)
-    const { data: weekData } = await sb.from('ep_program_weeks').select('*').in('program_id', progIds)
-    const weeksByProg = groupBy(weekData || [], 'program_id')
-    return progRows.map(r => rowToProgram(r, weeksByProg[r.id]))
+    try {
+      const { data: progRows, error } = await sb.from('ep_programs').select('*').order('created_at', { ascending: false })
+      if (error) { console.warn('[db] programs.list:', error); return lsListPrograms() }
+      const progIds = progRows.map(p => p.id)
+      const { data: weekData } = await sb.from('ep_program_weeks').select('*').in('program_id', progIds)
+      const weeksByProg = groupBy(weekData || [], 'program_id')
+      return progRows.map(r => rowToProgram(r, weeksByProg[r.id]))
+    } catch (e) { console.warn('[db] programs.list:', e); return lsListPrograms() }
   },
   async save(prog) {
     const sb = getSb()
@@ -170,16 +175,20 @@ export const plans = {
   async list() {
     const sb = getSb()
     if (!sb) return lsListPlans()
-    const { data, error } = await sb.from('ep_plans').select('*').order('updated_at', { ascending: false })
-    if (error) { console.warn('[db] plans.list:', error); return lsListPlans() }
-    return data.map(rowToPlan)
+    try {
+      const { data, error } = await sb.from('ep_plans').select('*').order('updated_at', { ascending: false })
+      if (error) { console.warn('[db] plans.list:', error); return lsListPlans() }
+      return data.map(rowToPlan)
+    } catch (e) { console.warn('[db] plans.list:', e); return lsListPlans() }
   },
   async get(planId) {
     const sb = getSb()
     if (!sb) return lsGetPlan(planId)
-    const { data, error } = await sb.from('ep_plans').select('*').eq('id', planId).single()
-    if (error) { console.warn('[db] plans.get:', error); return lsGetPlan(planId) }
-    return rowToPlan(data)
+    try {
+      const { data, error } = await sb.from('ep_plans').select('*').eq('id', planId).single()
+      if (error) { console.warn('[db] plans.get:', error); return lsGetPlan(planId) }
+      return rowToPlan(data)
+    } catch (e) { console.warn('[db] plans.get:', e); return lsGetPlan(planId) }
   },
   async save(plan) {
     const sb = getSb()
@@ -209,10 +218,10 @@ export const plans = {
 // ── Drills (custom) ────────────────────────────────────────────
 
 function rowToDrill(r) {
-  return { id: r.id, sport: r.sport, category: r.category || '', icon: r.icon || '⚽', name: r.name, description: r.description || '', steps: r.steps || [], equipment: r.equipment || [], why: r.purpose || '', volunteerTip: r.volunteer_tip || '', facilitatorTip: r.facilitator_tip || '', defaultTime: r.default_time || 12, source: r.source || 'user', videoUrl: r.video_url || '' }
+  return { id: r.id, sport: r.sport, category: r.category || '', icon: r.icon || '⚽', name: r.name, description: r.description || '', steps: r.steps || [], equipment: r.equipment || [], why: r.purpose || '', volunteerTip: r.volunteer_tip || '', facilitatorTip: r.facilitator_tip || '', defaultTime: r.default_time || 12, source: r.source || 'user', videoUrl: r.video_url || '', socialIcon: r.social_icon || '' }
 }
 function drillToRow(d) {
-  const row = { sport: d.sport, category: d.category || null, icon: d.icon || null, name: d.name, description: d.description || null, steps: d.steps || [], equipment: d.equipment || [], purpose: d.why || null, volunteer_tip: d.volunteerTip || null, facilitator_tip: d.facilitatorTip || null, default_time: d.defaultTime || 12, source: d.source || 'user', video_url: d.videoUrl || null }
+  const row = { sport: d.sport, category: d.category || null, icon: d.icon || null, name: d.name, description: d.description || null, steps: d.steps || [], equipment: d.equipment || [], purpose: d.why || null, volunteer_tip: d.volunteerTip || null, facilitator_tip: d.facilitatorTip || null, default_time: d.defaultTime || 12, source: d.source || 'user', video_url: d.videoUrl || null, social_icon: d.socialIcon || null }
   if (d.id) row.id = d.id
   return row
 }
@@ -222,11 +231,13 @@ export const drills = {
   async list(sport) {
     const sb = getSb()
     if (!sb) { const all = lsListDrills(); return sport ? all.filter(d => d.sport === sport) : all }
-    let q = sb.from('ep_drills').select('*').order('created_at', { ascending: true })
-    if (sport) q = q.eq('sport', sport)
-    const { data, error } = await q
-    if (error) { console.warn('[db] drills.list:', error); return lsListDrills() }
-    return data.map(rowToDrill)
+    try {
+      let q = sb.from('ep_drills').select('*').order('created_at', { ascending: true })
+      if (sport) q = q.eq('sport', sport)
+      const { data, error } = await q
+      if (error) { console.warn('[db] drills.list:', error); return lsListDrills() }
+      return data.map(rowToDrill)
+    } catch (e) { console.warn('[db] drills.list:', e); const all = lsListDrills(); return sport ? all.filter(d => d.sport === sport) : all }
   },
   async save(drill) {
     const sb = getSb()
@@ -247,5 +258,49 @@ export const drills = {
     if (!sb) return
     const { error } = await sb.from('ep_drills').delete().eq('id', id)
     if (error) console.warn('[db] drills.delete:', error)
+  },
+}
+
+// ── Social Stories ────────────────────────────────────────────
+
+function lsListStories() { return lsLoad('empowerSocialStories', []) }
+function lsSaveStory(story) {
+  const arr = lsListStories()
+  if (story.id) { const i = arr.findIndex(s => s.id === story.id); if (i >= 0) arr[i] = story; else arr.unshift(story) }
+  else { story.id = lsGenId('story'); arr.unshift(story) }
+  lsSave('empowerSocialStories', arr); return story
+}
+
+function rowToStory(data) {
+  return { id: data.id, planId: data.plan_id, title: data.title, sport: data.sport, lines: data.frames || [], createdAt: data.created_at, updatedAt: data.updated_at }
+}
+
+export const socialStories = {
+  async getByPlanId(planId) {
+    const sb = getSb()
+    if (!sb) return lsListStories().find(s => s.planId === planId) || null
+    const { data, error } = await sb.from('ep_social_stories').select('*').eq('plan_id', planId).order('created_at', { ascending: false }).limit(1).single()
+    if (error) { return lsListStories().find(s => s.planId === planId) || null }
+    return rowToStory(data)
+  },
+  async save(story) {
+    const sb = getSb()
+    if (!sb) return lsSaveStory({ ...story })
+    const row = { plan_id: story.planId, title: story.title || null, sport: story.sport || null, frames: story.lines || [] }
+    if (story.id) {
+      const { data, error } = await sb.from('ep_social_stories').update({ ...row, updated_at: new Date().toISOString() }).eq('id', story.id).select().single()
+      if (error) { console.warn('[db] stories.update:', error); return lsSaveStory({ ...story }) }
+      return rowToStory(data)
+    } else {
+      const { data, error } = await sb.from('ep_social_stories').insert(row).select().single()
+      if (error) { console.warn('[db] stories.insert:', error); return lsSaveStory({ ...story }) }
+      return rowToStory(data)
+    }
+  },
+  async delete(id) {
+    const sb = getSb()
+    if (!sb) { lsSave('empowerSocialStories', lsListStories().filter(s => s.id !== id)); return }
+    const { error } = await sb.from('ep_social_stories').delete().eq('id', id)
+    if (error) console.warn('[db] stories.delete:', error)
   },
 }
