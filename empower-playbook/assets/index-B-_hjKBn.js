@@ -99,12 +99,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:#fff;padding:1.5rem 2re
 .hdr-label{font-size:.68rem;font-weight:700;color:#F97316;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;}
 .hdr-title{font-size:1.5rem;font-weight:800;color:#003B8E;}
 .hdr-meta{font-size:.75rem;color:#aaa;margin-top:.25rem;}
-.cards{display:flex;flex-direction:column;gap:.85rem;}
-.card{border:2px solid #e5e7eb;border-radius:12px;padding:1rem;display:flex;flex-direction:row;align-items:center;gap:1rem;break-inside:avoid;page-break-inside:avoid;}
-.card-icons{display:flex;gap:.4rem;flex-wrap:wrap;flex-shrink:0;min-width:80px;align-items:center;justify-content:center;}
-.card-icons img{width:72px;height:72px;object-fit:contain;}
-.card-text{font-family:'Comic Neue',cursive;font-weight:700;font-size:1.1rem;color:#1e293b;line-height:1.5;}
-@media print{body{padding:.4in .5in;max-width:100%;}.cards{flex-direction:column;}.card{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+.cards{display:flex;flex-direction:column;gap:1rem;}
+.card{border:2px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.75rem;break-inside:avoid;page-break-inside:avoid;}
+.card-icons{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+.card-icons img{width:130px;height:130px;object-fit:contain;}
+.card-text{font-family:'Comic Neue',cursive;font-weight:700;font-size:1.2rem;color:#1e293b;line-height:1.55;text-align:center;width:100%;}
+@media print{body{padding:.4in .5in;max-width:100%;}.card{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
 </style></head><body>
 <div class="hdr"><div class="hdr-label">📖 Social Story — Empower Sports</div><div class="hdr-title">${t.title}</div><div class="hdr-meta">${e.sportName} · ${i}</div></div>
 <div class="cards">${a}</div>
