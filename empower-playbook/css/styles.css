@@ -2302,8 +2302,58 @@ body {
   .ss-hero { padding: .5rem 1rem; }
   .ss-hero h1 { cursor: default; font-size: 1.4rem; }
   .ss-edit-icon, .ss-hero-sub { display: none; }
-  .ss-line { border: 1.5px solid #ccc; page-break-inside: avoid; cursor: default; margin-bottom: .5rem; }
+  .ss-lines { display: block; }
+  .ss-line { display: block; width: 100%; border: 1.5px solid #ccc; break-inside: avoid; page-break-inside: avoid; cursor: default; margin-bottom: .75rem; }
   .ss-line:hover { box-shadow: none; border-color: #ccc; }
   .ss-line-icon-del { display: none !important; }
   .container-wide { padding: 0 .5rem; }
+}
+
+/* ── Print Options Modal ── */
+.print-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 500;
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.print-modal-box {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: 0 8px 40px rgba(0,0,0,.22);
+  width: 100%; max-width: 560px; overflow: hidden;
+}
+.print-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 1.35rem; border-bottom: 1.5px solid var(--gray-100);
+}
+.print-modal-title { font-weight: 800; color: var(--blue); font-size: 1.05rem; }
+.print-modal-close {
+  background: none; border: none; font-size: 1.1rem; line-height: 1;
+  cursor: pointer; color: var(--gray-400); padding: .25rem .45rem;
+  border-radius: 4px; transition: all .15s; font-family: inherit;
+}
+.print-modal-close:hover { background: var(--gray-100); color: var(--gray-700); }
+.print-modal-ctx {
+  padding: .65rem 1.35rem; background: var(--blue-light);
+  font-size: .83rem; font-weight: 600; color: var(--blue);
+  border-bottom: 1px solid var(--gray-100);
+}
+.print-options {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: .75rem; padding: 1.25rem;
+}
+.print-opt-card {
+  display: flex; flex-direction: column; align-items: center; gap: .45rem;
+  padding: 1.15rem .75rem; border-radius: var(--radius);
+  border: 2px solid var(--gray-100); background: var(--white);
+  cursor: pointer; font-family: inherit; transition: all .15s; text-align: center;
+}
+.print-opt-card:hover {
+  border-color: var(--blue); background: var(--blue-light);
+  transform: translateY(-2px); box-shadow: var(--shadow-md);
+}
+.poc-icon { font-size: 1.9rem; display: block; line-height: 1; }
+.poc-name { font-weight: 800; color: var(--blue); font-size: .88rem; }
+.poc-desc { font-size: .72rem; color: var(--gray-400); line-height: 1.45; }
+
+@media (max-width: 520px) {
+  .print-options { grid-template-columns: 1fr; }
+  .print-modal-box { max-height: 90vh; overflow-y: auto; }
 }

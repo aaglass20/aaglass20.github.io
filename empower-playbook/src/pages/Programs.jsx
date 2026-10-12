@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import * as db from '../lib/db.js'
 import PracticeBuilder from './PracticeBuilder.jsx'
+import { buildSocialStory } from '../lib/socialStoryIcons.js'
 
 const SPORTS = [
   { id: 'basketball', name: 'Basketball', icon: '🏀' },
@@ -367,6 +368,200 @@ function WizardView({ locations, onComplete, onCancel }) {
   )
 }
 
+// ── Print Utilities ────────────────────────────────────────────
+
+function openPrintWindow(html) {
+  const win = window.open('', '_blank', 'width=900,height=700')
+  if (!win) { alert('Please allow pop-ups for this page to use Print.'); return }
+  win.document.write(html)
+  win.document.close()
+}
+
+const PRINT_TYPE_COLORS = { warmup: '#F97316', drill: '#003B8E', rotation: '#7c3aed', break: '#0d9488', closing: '#22c55e' }
+const PRINT_TYPE_ICONS  = { warmup: '🌟', drill: '🏃', rotation: '🔄', break: '💧', closing: '🏁' }
+const PRINT_FONT_LINK   = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">'
+
+function printFullPlan(plan, ctx) {
+  if (!(plan.blocks || []).length) { alert('This plan has no blocks to print.'); return }
+
+  const date = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  let cursor = 0
+
+  function drillDetail(d) {
+    let h = ''
+    if (d.steps && d.steps.length)
+      h += `<ul class="dlist">${d.steps.map(s => `<li><span class="dic">${s.icon || '▸'}</span> ${s.text}</li>`).join('')}</ul>`
+    else if (d.description)
+      h += `<div class="s-desc">${d.description}</div>`
+    if (d.equipment && d.equipment.length) h += `<div class="s-equip"><span>🎒</span><div><strong>Equipment</strong> — ${d.equipment.join(', ')}</div></div>`
+    if (d.why)            h += `<div class="s-why"><span>🤔</span><div><strong>Why</strong> — ${d.why}</div></div>`
+    if (d.volunteerTip)   h += `<div class="s-vol"><span>🙌</span><div><strong>Volunteer tip</strong> — ${d.volunteerTip}</div></div>`
+    if (d.facilitatorTip) h += `<div class="s-fac"><span>💡</span><div><strong>Facilitator tip</strong> — ${d.facilitatorTip}</div></div>`
+    return h
+  }
+
+  const blocksHtml = (plan.blocks || []).map(block => {
+    const s = cursor; cursor += block.durationMinutes
+    const color = PRINT_TYPE_COLORS[block.type] || '#aaa'
+    const icon  = block.icon || PRINT_TYPE_ICONS[block.type] || '📌'
+    let inner = block.type === 'rotation'
+      ? `<div class="stations">${(block.drills || []).map(d => `<div class="station"><div class="station-hd"><span class="station-name">${d.icon || '🏃'} ${d.name}</span><span class="station-t">${block.timePerDrill} min each</span></div>${drillDetail(d)}</div>`).join('')}</div>`
+      : ((!block.steps && block.description && block.type !== 'drill') ? `<div class="b-desc">${block.description}</div>` : '') + drillDetail(block)
+    return `<div class="block ${block.type}" style="border-left-color:${color};"><div class="block-hd"><span class="block-title">${icon} ${block.name}</span><span class="block-badges"><span class="badge-range">min ${s}–${cursor}</span><span class="badge-dur" style="background:${color}20;color:${color};">${block.durationMinutes} min</span></span></div>${inner}</div>`
+  }).join('')
+
+  const used = (plan.blocks || []).reduce((sum, b) => sum + b.durationMinutes, 0)
+  const ctxHtml = ctx ? `<div style="font-size:.78rem;color:#888;margin-top:.25rem;">${ctx}</div>` : ''
+
+  openPrintWindow(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${plan.sportName} Practice Plan</title>${PRINT_FONT_LINK}<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#222;padding:2rem 2.5rem;max-width:820px;margin:0 auto;font-size:14px;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #003B8E;padding-bottom:1rem;margin-bottom:1.25rem;}
+.hdr-label{font-size:.72rem;font-weight:700;color:#F97316;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
+.hdr-title{font-size:1.7rem;font-weight:800;color:#003B8E;line-height:1.1;}
+.hdr-meta{text-align:right;font-size:.78rem;color:#aaa;line-height:1.8;}
+.summary{background:#f0f4ff;border-radius:8px;padding:.7rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:2rem;flex-wrap:wrap;}
+.si-lbl{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;}
+.si-val{font-size:1rem;font-weight:800;color:#003B8E;}
+.blocks{display:flex;flex-direction:column;gap:.6rem;}
+.block{border-left:4px solid #ccc;padding:.85rem 1.1rem;border-radius:0 8px 8px 0;box-shadow:0 1px 5px rgba(0,0,0,.07);}
+.block.warmup,.block.drill,.block.break,.block.closing{break-inside:avoid;page-break-inside:avoid;}
+.block-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.35rem;}
+.block-title{font-weight:800;font-size:.98rem;color:#111;}
+.block-badges{display:flex;gap:.35rem;align-items:center;flex-shrink:0;}
+.badge-range{font-size:.72rem;color:#aaa;white-space:nowrap;}
+.badge-dur{font-size:.75rem;font-weight:700;padding:.18rem .6rem;border-radius:99px;white-space:nowrap;}
+.b-desc{font-size:.8rem;color:#555;line-height:1.5;margin-bottom:.22rem;}
+.stations{margin-top:.65rem;display:flex;flex-direction:column;gap:.5rem;}
+.station{background:#f5f0ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;padding:.65rem .95rem;break-inside:avoid;}
+.station-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;}
+.station-name{font-weight:700;font-size:.9rem;color:#5b21b6;}
+.station-t{font-size:.73rem;color:#7c3aed;opacity:.7;font-weight:500;}
+.s-desc{font-size:.78rem;color:#555;line-height:1.4;margin-bottom:.14rem;}
+.dlist{list-style:none;display:flex;flex-direction:column;gap:.3rem;margin:.3rem 0 .2rem;}
+.dlist li{display:flex;align-items:flex-start;gap:.4rem;font-size:.8rem;line-height:1.45;color:#444;}
+.dic{flex-shrink:0;}
+.s-equip,.s-why,.s-vol,.s-fac{border-radius:0 5px 5px 0;padding:.45rem .7rem;margin-top:.4rem;font-size:.77rem;display:flex;align-items:flex-start;gap:.35rem;line-height:1.45;}
+.s-equip{background:#f8fafc;border-left:3px solid #9ca3af;color:#374151;}
+.s-equip strong{font-weight:700;}
+.s-why{background:#dbeafe;border-left:3px solid #60a5fa;color:#1e3a8a;}
+.s-vol{background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f;}
+.s-fac{background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d;}
+.ftr{margin-top:2rem;padding-top:.65rem;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:.72rem;color:#bbb;}
+@media print{body{padding:.5in .75in;max-width:100%;}.block{box-shadow:none;border:1px solid #e0e0e0;}.summary,.station,.s-equip,.s-why,.s-vol,.s-fac{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style></head><body>
+<div class="hdr"><div><div class="hdr-label">⚡ Empower Sports Program Playbook</div><div class="hdr-title">${plan.sportIcon} ${plan.sportName} — ${plan.name || 'Practice Plan'}</div>${ctxHtml}</div><div class="hdr-meta"><div>${date}</div><div>${(plan.blocks || []).length} blocks &middot; ${used} min</div></div></div>
+<div class="summary"><div class="si"><span class="si-lbl">Sport</span><span class="si-val">${plan.sportIcon} ${plan.sportName}</span></div><div class="si"><span class="si-lbl">Session Length</span><span class="si-val">${plan.durationMinutes} min</span></div><div class="si"><span class="si-lbl">Scheduled</span><span class="si-val">${used} min</span></div></div>
+<div class="blocks">${blocksHtml}</div>
+<div class="ftr"><span>Empower Sports Program Playbook</span><span>${plan.sportName} &middot; ${plan.durationMinutes}-minute session</span></div>
+<script>window.onload=function(){window.print();};<\/script></body></html>`)
+}
+
+function printCheatSheet(plan, ctx) {
+  if (!(plan.blocks || []).length) { alert('This plan has no blocks to print.'); return }
+
+  const date = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  let cursor = 0
+
+  const rowsHtml = (plan.blocks || []).map(block => {
+    const s = cursor; cursor += block.durationMinutes
+    const color = PRINT_TYPE_COLORS[block.type] || '#aaa'
+    const icon  = block.icon || PRINT_TYPE_ICONS[block.type] || '📌'
+    let cue = ''
+    if (block.type === 'rotation') {
+      cue = (block.drills || []).map(d => d.name).join(' · ')
+    } else if (block.steps && block.steps.length) {
+      cue = block.steps[0].text || ''
+    } else if (block.description) {
+      cue = block.description.length > 110 ? block.description.slice(0, 108) + '…' : block.description
+    } else if (block.why) {
+      cue = block.why.length > 110 ? block.why.slice(0, 108) + '…' : block.why
+    }
+    return `<tr><td class="td-time">min ${s}–${cursor}</td><td class="td-type" style="color:${color}">${icon}</td><td class="td-name">${block.name}</td><td class="td-dur" style="background:${color}18;color:${color};">${block.durationMinutes} min</td><td class="td-cue">${cue}</td></tr>`
+  }).join('')
+
+  const equipSet = new Set()
+  ;(plan.blocks || []).forEach(b => {
+    if (b.equipment) b.equipment.forEach(e => equipSet.add(e))
+    if (b.drills)    b.drills.forEach(d => { if (d.equipment) d.equipment.forEach(e => equipSet.add(e)) })
+  })
+  const equipItems = [...equipSet]
+  const used = (plan.blocks || []).reduce((sum, b) => sum + b.durationMinutes, 0)
+  const ctxHtml = ctx ? `<div class="hdr-ctx">${ctx}</div>` : ''
+  const equipHtml = equipItems.length
+    ? `<div class="equip-section"><div class="equip-hd">🎒 Equipment Needed</div><ul class="equip-list">${equipItems.map(e => `<li class="equip-li"><span class="equip-box"></span>${e}</li>`).join('')}</ul></div>`
+    : ''
+
+  openPrintWindow(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Coach Quick Reference — ${plan.sportName}</title>${PRINT_FONT_LINK}<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#222;padding:1.5rem 2rem;max-width:850px;margin:0 auto;font-size:13px;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #003B8E;padding-bottom:.85rem;margin-bottom:1rem;}
+.hdr-badge{display:inline-flex;align-items:center;gap:.4rem;background:#003B8E;color:#fff;border-radius:4px;padding:.2rem .65rem;font-size:.7rem;font-weight:700;margin-bottom:.3rem;}
+.hdr-title{font-size:1.5rem;font-weight:800;color:#003B8E;line-height:1.15;}
+.hdr-ctx{font-size:.75rem;color:#888;margin-top:.22rem;}
+.hdr-meta{text-align:right;font-size:.73rem;color:#aaa;line-height:1.85;}
+.summary-bar{display:flex;gap:1.5rem;background:#f0f4ff;border-radius:6px;padding:.6rem 1rem;margin-bottom:.9rem;flex-wrap:wrap;}
+.si-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;display:block;}
+.si-val{font-size:.92rem;font-weight:800;color:#003B8E;}
+table{width:100%;border-collapse:collapse;}
+thead{background:#003B8E;}
+thead th{color:#fff;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem;text-align:left;}
+tbody tr{border-bottom:1px solid #f0f0f0;}
+tbody tr:nth-child(even){background:#fafbff;}
+td{padding:.55rem .75rem;vertical-align:top;}
+.td-time{font-size:.68rem;color:#aaa;white-space:nowrap;width:85px;}
+.td-type{font-size:1.05rem;width:30px;text-align:center;padding-top:.42rem;}
+.td-name{font-weight:700;color:#111;font-size:.86rem;}
+.td-dur{font-size:.73rem;font-weight:700;white-space:nowrap;width:52px;border-radius:4px;text-align:center;padding:.42rem .5rem;}
+.td-cue{font-size:.78rem;color:#555;line-height:1.4;}
+.equip-section{margin-top:.85rem;padding-top:.75rem;border-top:2px solid #0d9488;}
+.equip-hd{font-weight:700;font-size:.8rem;color:#003B8E;margin-bottom:.4rem;}
+.equip-list{display:flex;flex-wrap:wrap;gap:.3rem .75rem;list-style:none;}
+.equip-li{display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:#444;}
+.equip-box{width:11px;height:11px;border:1.5px solid #0d9488;border-radius:2px;flex-shrink:0;display:inline-block;}
+.ftr{margin-top:1.25rem;padding-top:.5rem;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:.66rem;color:#bbb;}
+@media print{body{padding:.4in .6in;max-width:100%;}.summary-bar,.equip-section,.td-dur{-webkit-print-color-adjust:exact;print-color-adjust:exact;}thead{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style></head><body>
+<div class="hdr"><div><div class="hdr-badge">📋 Coach Quick Reference</div><div class="hdr-title">${plan.sportIcon} ${plan.sportName} — ${plan.name || 'Practice Plan'}</div>${ctxHtml}</div><div class="hdr-meta"><div>${date}</div><div>${(plan.blocks || []).length} blocks</div><div>${used} min scheduled</div></div></div>
+<div class="summary-bar"><div><span class="si-lbl">Session Length</span><span class="si-val">${plan.durationMinutes} min</span></div><div><span class="si-lbl">Scheduled</span><span class="si-val">${used} min</span></div><div><span class="si-lbl">Blocks</span><span class="si-val">${(plan.blocks || []).length}</span></div></div>
+<table><thead><tr><th>Time</th><th></th><th>Block</th><th>Dur</th><th>Key Cue</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+${equipHtml}
+<div class="ftr"><span>Empower Sports Program Playbook — Coach Quick Reference</span><span>${plan.sportName} &middot; ${plan.durationMinutes}-minute session</span></div>
+<script>window.onload=function(){window.print();};<\/script></body></html>`)
+}
+
+function printStory(plan) {
+  const story = buildSocialStory(plan)
+  const sport = plan.sport || 'soccer'
+  const base  = window.location.origin + '/empower-playbook'
+  const date  = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+  const cardsHtml = story.lines.map(line => {
+    const iconsHtml = line.icons.map(file =>
+      `<img src="${base}/icons/${sport}/${encodeURIComponent(file)}" alt="${file.replace('.png','')}" onerror="this.style.display='none'" />`
+    ).join('')
+    return `<div class="card"><div class="card-icons">${iconsHtml || '<span style="font-size:2.5rem;opacity:.25">🖼️</span>'}</div><p class="card-text">${line.text}</p></div>`
+  }).join('')
+
+  openPrintWindow(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${story.title}</title><link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Inter:wght@600;700;800&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;padding:1.5rem 2rem;max-width:850px;margin:0 auto;}
+.hdr{border-bottom:3px solid #003B8E;padding-bottom:.85rem;margin-bottom:1.25rem;}
+.hdr-label{font-size:.68rem;font-weight:700;color:#F97316;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;}
+.hdr-title{font-size:1.5rem;font-weight:800;color:#003B8E;}
+.hdr-meta{font-size:.75rem;color:#aaa;margin-top:.25rem;}
+.cards{display:flex;flex-direction:column;gap:.85rem;}
+.card{border:2px solid #e5e7eb;border-radius:12px;padding:1rem;display:flex;flex-direction:row;align-items:center;gap:1rem;break-inside:avoid;page-break-inside:avoid;}
+.card-icons{display:flex;gap:.4rem;flex-wrap:wrap;flex-shrink:0;min-width:80px;align-items:center;justify-content:center;}
+.card-icons img{width:72px;height:72px;object-fit:contain;}
+.card-text{font-family:'Comic Neue',cursive;font-weight:700;font-size:1.1rem;color:#1e293b;line-height:1.5;}
+@media print{body{padding:.4in .5in;max-width:100%;}.cards{flex-direction:column;}.card{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style></head><body>
+<div class="hdr"><div class="hdr-label">📖 Social Story — Empower Sports</div><div class="hdr-title">${story.title}</div><div class="hdr-meta">${plan.sportName} · ${date}</div></div>
+<div class="cards">${cardsHtml}</div>
+<script>window.onload=function(){window.print();};<\/script></body></html>`)
+}
+
 // ── Dashboard View ─────────────────────────────────────────────
 
 function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onEditPlan }) {
@@ -376,6 +571,7 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
   const [planSearch, setPlanSearch] = useState('')
   const [viewPlan, setViewPlan] = useState(null)
   const [vpOpen, setVpOpen] = useState(false)
+  const [printTarget, setPrintTarget] = useState(null)
 
   useEffect(() => {
     if (viewPlan) requestAnimationFrame(() => setVpOpen(true))
@@ -485,6 +681,7 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
                         <div className="plan-cell-actions">
                           <button className="pca-btn" onClick={() => setViewPlan({ ...plan, _editPath: editPath })}>👁 View</button>
                           <button className="pca-btn pca-remove" onClick={() => removePlan(key)}>✕ Remove</button>
+                          <button className="pca-btn" onClick={() => setPrintTarget({ plan, weekNum: w.weekNum, group: g })}>🖨 Print</button>
                         </div>
                         <div className="plan-meta">{bc} block{bc !== 1 ? 's' : ''} · {plan.durationMinutes || '?'} min</div>
                       </td>
@@ -547,6 +744,49 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
                 className="btn-wiz-next" style={{ textDecoration: 'none', padding: '.5rem 1rem', fontSize: '.85rem' }}>
                 + Create New Plan
               </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Print Options Modal */}
+      {printTarget && (
+        <div className="print-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setPrintTarget(null) }}>
+          <div className="print-modal-box">
+            <div className="print-modal-header">
+              <div className="print-modal-title">🖨 Print Options</div>
+              <button className="print-modal-close" onClick={() => setPrintTarget(null)}>✕</button>
+            </div>
+            <div className="print-modal-ctx">
+              {printTarget.plan.sportIcon} {printTarget.plan.name || 'Untitled Plan'}
+              <span style={{ opacity: .5, margin: '0 .4rem' }}>·</span>
+              Week {printTarget.weekNum} · {printTarget.group}
+            </div>
+            <div className="print-options">
+              <button className="print-opt-card" onClick={() => {
+                printFullPlan(printTarget.plan, `${prog.name} · Week ${printTarget.weekNum} · ${printTarget.group}`)
+                setPrintTarget(null)
+              }}>
+                <span className="poc-icon">📄</span>
+                <div className="poc-name">Print Plan</div>
+                <div className="poc-desc">Full plan with all block details, tips, and equipment checklist</div>
+              </button>
+              <button className="print-opt-card" onClick={() => {
+                printStory(printTarget.plan)
+                setPrintTarget(null)
+              }}>
+                <span className="poc-icon">📖</span>
+                <div className="poc-name">Print Story</div>
+                <div className="poc-desc">Visual step-by-step social story for athletes and families</div>
+              </button>
+              <button className="print-opt-card" onClick={() => {
+                printCheatSheet(printTarget.plan, `${prog.name} · Week ${printTarget.weekNum} · ${printTarget.group}`)
+                setPrintTarget(null)
+              }}>
+                <span className="poc-icon">📋</span>
+                <div className="poc-name">Cheat Sheet</div>
+                <div className="poc-desc">Condensed coach reference — block names, durations &amp; key cues only</div>
+              </button>
             </div>
           </div>
         </div>
