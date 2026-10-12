@@ -20,6 +20,11 @@ const DEFAULT_SIZE = 3
 const getRadius    = (size) => SIZE_RADII[(size ?? DEFAULT_SIZE) - 1]
 
 const FRAME_MS  = 900
+const SPEED_OPTIONS = [
+  { label: 'Normal', value: 1 },
+  { label: 'Slow',   value: 0.55 },
+  { label: 'V. Slow', value: 0.32 },
+]
 const easeInOut = (t) => t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t
 
 // Walk a flat [x0,y0, x1,y1,...] polyline at progress t (0→1), returning {x,y}.
@@ -439,6 +444,7 @@ export default function App() {
   const [frames, setFrames]             = useState([{ positions: {} }])
   const [currentFrame, setCurrentFrame] = useState(0)
   const [isPlaying, setIsPlaying]       = useState(false)
+  const [playSpeed, setPlaySpeed]       = useState(1)
 
   // UI state
   const [activePanel, setActivePanel] = useState(null)
@@ -1046,7 +1052,7 @@ export default function App() {
       const ids = [...new Set([...Object.keys(fromPos), ...Object.keys(toPos)])].map(Number)
 
       const tick = (now) => {
-        const t = Math.min((now - startTime) / FRAME_MS, 1)
+        const t = Math.min((now - startTime) / (FRAME_MS / playSpeed), 1)
         const e = easeInOut(t)
 
         ids.forEach(id => {
@@ -1075,7 +1081,7 @@ export default function App() {
     }
 
     rafRef.current = requestAnimationFrame(runSegment)
-  }, [frames, isPlaying, freePaths])
+  }, [frames, isPlaying, freePaths, playSpeed])
 
   const stop = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -1792,6 +1798,17 @@ export default function App() {
           <div className="playback">
             <button className="play-btn" onClick={play}  disabled={!canPlay}   title="Play">▶</button>
             <button className="stop-btn" onClick={stop}  disabled={!isPlaying} title="Stop">■</button>
+          </div>
+
+          <div className="speed-select">
+            {SPEED_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                className={`speed-btn${playSpeed === opt.value ? ' active' : ''}`}
+                onClick={() => setPlaySpeed(opt.value)}
+                disabled={isPlaying}
+              >{opt.label}</button>
+            ))}
           </div>
 
           <button
