@@ -77,7 +77,8 @@ All drills live in the `DRILL_BANK` constant inside `indy-practice-builder.html`
 | **Possession** | Keep-away, rondos, maintaining the ball under pressure; team-based |
 | **Shooting** | Finishing, shooting under pressure, goalkeeper training included |
 | **Tactical** | Transitions, pressing, shape, numbers-up/down scenarios |
-| **Scrimmage** | Free play, small-sided games, overload scenarios, attack-vs-defense — applied game formats with minimal coaching stop-time |
+| **Games** | Competitive game formats with unique rules or themes (Soccer Baseball, Attack vs. Defense) — distinct structure beyond a standard scrimmage |
+| **Scrimmage** | Standard free-play formats: 4v4 through 11v11, overload scrimmages — minimal rules, applied game time |
 
 If a drill spans two categories (e.g. passing + possession), pick whichever is the **primary training outcome**. Don't create sub-categories.
 
@@ -118,7 +119,8 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `1v1-basic` | 1v1 Attacking Duel | Technical | U8 | None | *(original example)* |
 | `pass-tap-pass-back` | Pass, Tap, Pass Back | Technical | U8 | `Pass, tap, pass back, 3 distances.mp4` | `igs-takeaways.html` |
 | `cone-passing` | Cone Passing | Technical | U10 | `cone passing.mp4` | `igs-takeaways.html` |
-| `movement-skill-reset` | Movement Skill Reset | Technical | U10 | `MovementSkillResetFindTarget.mp4` | `igs-takeaways.html` |
+| `movement-skill-reset` | 10 Person Continuous | Technical | U10 | `MovementSkillResetFindTarget.mp4` | `igs-takeaways.html` |
+| `three-group-continuous` | Three-Group Continuous | Technical | U10 | `10 Person Continuous - 3 way.webm` | *(user-submitted)* |
 | `gates-competition-passing` | Gates Competition Passing | Passing | U10 | `Gates competition passing.mp4` | `igs-takeaways.html` |
 | `long-passes-4` | Long Passes (4 People) | Passing | U12 | `long passes 4 people.mp4` | `igs-takeaways.html` |
 | `get-open` | Get Open | Passing | U10 | `get open.mp4` | `igs-takeaways.html` |
@@ -135,16 +137,18 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `pierce-the-circle` | Pierce The Circle | Possession | U12 | `tactics/Pierce the Circle.webm` ¹ | `igs-takeaways.html` |
 | `small-sided-4v4` | 4v4 Small-Sided Game | Scrimmage | U8 | None | *(original)* |
 | `overload-scrimmage` | Overload Scrimmage | Scrimmage | U10 | None | *(original)* |
-| `attack-vs-defense` | Attack vs. Defense | Scrimmage | U10 | None | *(original)* |
+| `attack-vs-defense` | Attack vs. Defense | Games | U10 | None | *(original)* |
 | `scrimmage-7v7` | 7v7 Scrimmage | Scrimmage | U10 | None | *(original)* |
 | `scrimmage-9v9` | 9v9 Scrimmage | Scrimmage | U12 | None | *(original)* |
 | `scrimmage-11v11` | 11v11 Full Field Scrimmage | Scrimmage | U14 | None | *(original)* |
 | `shadow-dribbling` | Shadow Dribbling | Warmup | U8 | None | *(original)* |
 | `around-the-horn` | Around the Horn | Tactical | U12 | `The Spine.mp4` | *(original)* |
 | `king-of-the-end-zones` | King of the End Zones | Tactical | U12 | `King of the End Zones.mp4` | *(original)* |
-o| `receive-turn-finish` | Receive, Turn & Finish | Shooting | U12 | `Charge Touch Shoot.mp4` | *(user-submitted)* |
+| `receive-turn-finish` | Receive, Turn & Finish | Shooting | U12 | `Charge Touch Shoot.mp4` | *(user-submitted)* |
+| `rock-the-river` | Rock the River | Tactical | U12 | `tactics/Rock the River.webm` | *(user-submitted)* |
+| `soccer-baseball` | Soccer Baseball | Games | U10 | `tactics/baseball.webm` | *(user-submitted)* |
 
-**Total: 28 drills**
+**Total: 31 drills**
 
 ¹ This drill's video lives in `BDU/tactics/` (webm), not `BDU/vid/` (mp4). The path resolver handles this: `videoFile.includes('/') ? videoFile : 'vid/' + videoFile`.
 
