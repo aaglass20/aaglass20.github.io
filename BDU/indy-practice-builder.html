@@ -1481,6 +1481,137 @@ const DRILL_BANK = [
 
   // ── Fitness ──
   {
+    id: 'beep-test',
+    name: 'Beep Test',
+    icon: '📡',
+    category: 'Fitness',
+    skillLevel: 'Intermediate',
+    minAge: 'U10',
+    defaultDuration: 20,
+    videoFile: null,
+    equipment: ['Cones (2 lines 20m apart)', 'Beep Test audio app or recording', 'Stopwatch', 'Score sheet'],
+    purpose: 'Assess aerobic capacity and establish VO₂max benchmarks — track improvement by repeating the same test each season.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    shuttleData: [
+      { level: 1,  kmh: 8.5,  secPerLap: 8.47, shuttles: 7  },
+      { level: 2,  kmh: 9.0,  secPerLap: 8.00, shuttles: 8  },
+      { level: 3,  kmh: 9.5,  secPerLap: 7.58, shuttles: 8  },
+      { level: 4,  kmh: 10.0, secPerLap: 7.20, shuttles: 9  },
+      { level: 5,  kmh: 10.5, secPerLap: 6.86, shuttles: 9  },
+      { level: 6,  kmh: 11.0, secPerLap: 6.55, shuttles: 10 },
+      { level: 7,  kmh: 11.5, secPerLap: 6.26, shuttles: 10 },
+      { level: 8,  kmh: 12.0, secPerLap: 6.00, shuttles: 11 },
+      { level: 9,  kmh: 12.5, secPerLap: 5.76, shuttles: 11 },
+      { level: 10, kmh: 13.0, secPerLap: 5.54, shuttles: 11 },
+      { level: 11, kmh: 13.5, secPerLap: 5.33, shuttles: 12 },
+      { level: 12, kmh: 14.0, secPerLap: 5.14, shuttles: 12 },
+      { level: 13, kmh: 14.5, secPerLap: 4.97, shuttles: 13 },
+      { level: 14, kmh: 15.0, secPerLap: 4.80, shuttles: 13 },
+      { level: 15, kmh: 15.5, secPerLap: 4.65, shuttles: 13 },
+      { level: 16, kmh: 16.0, secPerLap: 4.50, shuttles: 14 },
+      { level: 17, kmh: 16.5, secPerLap: 4.36, shuttles: 14 },
+      { level: 18, kmh: 17.0, secPerLap: 4.24, shuttles: 15 },
+      { level: 19, kmh: 17.5, secPerLap: 4.11, shuttles: 15 },
+      { level: 20, kmh: 18.0, secPerLap: 4.00, shuttles: 16 },
+      { level: 21, kmh: 18.5, secPerLap: 3.89, shuttles: 16 },
+    ],
+    variants: {
+      default: {
+        desc: 'Players run 20m back-and-forth shuttles in time with an audio beep track that increases speed each level — they continue until they miss two consecutive beeps, and their final level/shuttle score is recorded as their aerobic fitness benchmark.',
+        coaching: [
+          'All: stay composed at the start — Level 1 feels easy, save the effort for Levels 8 and beyond',
+          'All: pivot on or just before the line, not three steps past it — every step of overshoot costs you on the return',
+          'All: when you get a warning, dig in and catch up immediately — you have one more miss before you\'re out',
+        ],
+        setup: [
+          'Course: Two parallel lines of cones exactly 20 meters apart on a flat, non-slip surface.',
+          'Audio: Load the standard 20m Multi-Stage Fitness Test (MSFT) audio on a phone or speaker. Calibrate to the course before testing.',
+          'Players: All participants line up along one starting line.',
+          'Recording: Coach or assistant has a score sheet to record each player\'s last completed level and shuttle (e.g., "8.6" = Level 8, Shuttle 6).',
+        ],
+        howToPlay: [
+          'Start: All players begin at the start line. On the first beep, sprint to the far line and touch it before the next beep.',
+          'Shuttle Rule: Players must reach and cross the opposite 20m line with at least one foot before or exactly on the beep, then wait and sprint back on the next beep. No early starts.',
+          'Warnings: First miss = warning; player turns immediately and sprints to catch up. Second consecutive miss = eliminated. Score is the last fully completed shuttle.',
+          'Levels: Each level lasts approximately 1 minute (see Shuttle Reference Table). A triple-beep signals the level change — speed increases 0.5 km/h per level (starts at 8.5 km/h).',
+          'Scoring: Record as Level.Shuttle (e.g., 10.4 = Level 10, Shuttle 4). Higher scores indicate greater aerobic capacity. Repeat each season to track improvement.',
+        ],
+        coachingPoints: [
+          'Pacing Strategy: Players who sprint from beep 1 exhaust themselves by Level 6–7; encourage a controlled, rhythmic stride in the early levels — the test is a marathon that turns into a sprint.',
+          'Line Discipline: Touching the line before the beep (not stopping on it, not three steps past it) is a learnable skill — players who practice pivoting efficiently add 1–2 levels to their score without any fitness gain.',
+          'Mental Toughness: Levels 9–12 are where most youth players drop out — coach should call out encouragement by name; many players can extend 1–2 more levels past the point where they think they\'re done.',
+        ],
+        modifications: [
+          'U10 standard: Run to Level 5–7 as a target range. Focus on understanding the rules and pacing, not maximum score.',
+          'U12 standard: Full test to exhaustion. Record and compare scores each season.',
+          'U14+/Advanced: Set age-specific benchmarks (e.g., Level 10+ for field players, Level 8+ for goalkeepers). Use score as part of seasonal fitness assessment.',
+          'Mixed groups: All ages can run simultaneously — slower players are eliminated earlier and cheer on teammates; no separate heat needed.',
+        ],
+      },
+      U10: {
+        desc: 'Players run the standard beep test but stop at Level 5 regardless of whether they\'ve been eliminated — focus is on learning the protocol and pacing, not maximum effort.',
+        coaching: [
+          'All: run at a comfortable rhythm — we\'re learning the test today, not racing',
+          'All: touch the line and pivot smoothly — practice the turn, it matters on the real test',
+          'All: listen for the beep and stay in rhythm with it, not ahead of it',
+        ],
+      },
+    },
+  },
+  {
+    id: 'one-mile-run',
+    name: '1 Mile Run',
+    icon: '🏃',
+    category: 'Fitness',
+    skillLevel: 'Beginner',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: null,
+    equipment: ['None (field perimeter or marked course)'],
+    purpose: 'Build aerobic base and establish individual time benchmarks for tracking fitness progress over a season.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Players run one full mile (4 laps of a standard 400m track, or an equivalent course marked on the field) at a self-selected sustainable pace, with the coach recording finish times to track improvement across the season.',
+        coaching: [
+          'All: find your pace in the first quarter mile — going out too fast means walking at the end',
+          'All: breathe in through the nose, out through the mouth — steady rhythm keeps the effort sustainable',
+          'All: push on the final lap — finish strong even when tired, that\'s where fitness gains happen',
+        ],
+        setup: [
+          'Course: 4 laps of a 400m track = 1 mile. On a full-size soccer field, 4 perimeter laps ≈ 1 mile (field dimensions vary — measure once and use the same course each test).',
+          'Players: All players run together. Pair faster and slower runners — faster runners can pace a second lap before easing off.',
+          'Equipment: Stopwatch or phone timer; record each player\'s finish time individually.',
+        ],
+        howToPlay: [
+          'Objective: Complete 1 mile (4 laps of the marked course) as fast as possible at a pace you can sustain.',
+          'Pacing: Coach calls out split times at each lap to help players self-regulate. Encourage players to run their own race, not to sprint out with the leader.',
+          'Finish: All players finish regardless of time — no one stops early. Coach records each finish time.',
+          'Tracking: Repeat the same course at regular intervals (start, mid, end of season) and compare times. Improvement is the goal, not beating teammates.',
+        ],
+        coachingPoints: [
+          'Pace Awareness: Most youth players go out too hard in the first 200 meters — coach should walk the field and remind players to slow down early; a controlled first half produces a faster overall time than an aggressive start followed by a walk.',
+          'Breathing Rhythm: Linking breathing to stride cadence (e.g., inhale every 2 strides, exhale every 2 strides) helps players maintain effort at aerobic intensity without hyperventilating — teach this before the run starts.',
+          'Progress Tracking: Record every finish time and share personal bests each test — competing against your own previous time is more motivating than comparing with teammates, and it removes the discouragement for players who finish last.',
+        ],
+        modifications: [
+          'U10 standard: Run ¾ mile (3 laps) or set a 10-minute time limit — whichever comes first. Full mile is developmentally appropriate from U12 onward.',
+          'U12 standard: Full 1 mile as described.',
+          'U14+/Advanced: Set a time goal (e.g., under 8 min for U14, under 7:30 for U16) in addition to recording finish times.',
+          'Mixed groups: Send faster runners 30 seconds earlier so the field stays spread out and slower runners aren\'t lapped repeatedly.',
+        ],
+      },
+      U10: {
+        desc: 'Players run ¾ mile (3 laps of the marked course) or run for 10 minutes — whichever comes first — at a comfortable, conversational pace.',
+        coaching: [
+          'All: if you can\'t talk while running, you\'re going too fast — slow down to a pace you can hold',
+          'All: arms loose and low, not clenched at the chest — relaxed arms mean a relaxed body',
+          'All: finishing matters more than time — don\'t stop, even if you need to slow to a jog',
+        ],
+      },
+    },
+  },
+  {
     id: 'parallel-corridor-footwork',
     name: 'Parallel Corridor Footwork',
     icon: '↔️',
@@ -1568,6 +1699,100 @@ const DRILL_BANK = [
           'U10 standard: Phases 1–4 as described. Skip the soccer exit ball work.',
           'U14+/Advanced: All 5 phases including sprint exit with partner ball serve. Add In-In-Out with 180° hip flip for recovery mechanics.',
           'Large groups (12+): Set up 2–3 ladders running simultaneously; players rotate between ladders on the coach\'s signal.',
+        ],
+      },
+    },
+  },
+  {
+    id: 'circular-pyramid-intervals',
+    name: 'Circular Pyramid Intervals',
+    icon: '🔄',
+    category: 'Fitness',
+    skillLevel: 'Intermediate',
+    minAge: 'U10',
+    defaultDuration: 20,
+    videoFile: null,
+    equipment: ['Cones (6–10)'],
+    purpose: 'Build aerobic and anaerobic capacity through a partner-paced pyramid interval circuit that self-regulates traffic on a shared loop.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Matched pairs start at evenly spaced cones around a large circle and run a pyramid interval sequence together — increasing the number of cone-lengths run each rep from 1 up to 5, then back down — with brief recovery pauses between each rep and a longer rest at the peak.',
+        coaching: [
+          'Pairs: stay shoulder-to-shoulder through each rep — your partner is your pacer, not your competitor',
+          'All: the recovery pause is real recovery — walk it, don\'t jog; your effort on the next rep depends on it',
+          'All: maintain your pace through the full cone length, don\'t sprint the first half and die at the end',
+        ],
+        setup: [
+          'Circle: Place 6–10 cones evenly spaced around a large circle or indoor track perimeter (roughly 20–30 yd diameter).',
+          'Pairs: Match players by similar fitness/pace — one matched pair per cone station.',
+          'All pairs start simultaneously from their home cone facing the same direction around the loop.',
+        ],
+        howToPlay: [
+          'Rep 1: Each pair sprints 1 cone length → brief recovery pause at the destination cone (30–45 sec).',
+          'Rep 2: Run 2 cone lengths → pause (45 sec).',
+          'Rep 3: Run 3 cone lengths → pause (60 sec).',
+          'Rep 4: Run 4 cone lengths → pause (60 sec).',
+          'Peak Rep 5: Run 5 cone lengths → longer mid-ladder recovery (90 sec).',
+          'Descend: Run back down the ladder (4, 3, 2, 1 cone lengths) with matching recovery pauses.',
+          'Because pairs start at different stations and run simultaneously, the circle never gets crowded and each pair stays spatially oriented throughout.',
+        ],
+        coachingPoints: [
+          'Partner Accountability: The matched-pair structure creates natural accountability — players self-regulate pace together rather than chasing the fastest runner, which improves work-rate consistency across all fitness levels.',
+          'Structured Recovery: Rest periods are not optional — shorter reps get shorter rests, but longer reps need longer recovery to maintain quality effort on the next interval. Coaches should call the rest time aloud.',
+          'Traffic Flow: Because all pairs move in the same direction and start at different points, collisions are avoided organically — remind players to return to their home cone after each rep so the spacing stays consistent.',
+        ],
+        modifications: [
+          'U10/Beginners: Use a 5-cone circle with a 1-3-1 pyramid (up to 3 cone lengths at the peak) instead of 1-5-1. Longer recovery pauses between each rep.',
+          'U12 standard: Full 1-5-1 pyramid as described on a 6–8 cone circle.',
+          'U14+/Advanced: Run the pyramid twice with a 3-minute rest between pyramids, or compress recovery pauses to increase metabolic demand.',
+          'Large groups (16+): Use a 10-cone circle with two pairs per cone; stagger start times by 10 seconds to prevent bunching.',
+        ],
+      },
+    },
+  },
+  {
+    id: 'tag-and-release-relay',
+    name: 'Tag-and-Release Relay',
+    icon: '⚡',
+    category: 'Fitness',
+    skillLevel: 'Intermediate',
+    minAge: 'U10',
+    defaultDuration: 15,
+    videoFile: null,
+    equipment: ['Cones (5, 7, or 9 — odd number)'],
+    purpose: 'Develop explosive acceleration, sprint conditioning, and anaerobic capacity through a continuous rolling relay that keeps every player working on a timed interval basis.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Pairs stationed at an odd-numbered cone circle sprint one cone length on a rolling "tag-and-release" trigger — as each arriving pair touches the destination cone, the waiting pair immediately explodes to the next cone — creating a continuous pursuit wave that runs for a set time block before a shared recovery rest.',
+        coaching: [
+          'Sprinting pair: max effort every rep — your rest is coming; the wave only stays alive if everyone goes hard',
+          'Waiting pair: eyes on the incoming runner — explode the instant they hit your cone, not a half-second after',
+          'Traffic: finishers peel outside to recover; starters launch on the inside lane — never cut across each other',
+        ],
+        setup: [
+          'Circle: Place an odd number of cones (5, 7, or 9 recommended) evenly spaced around a large circle or track loop.',
+          'Pairs: One matched pair stationed at each cone facing the same direction around the loop.',
+          'Cone count determines rest ratio: 5 cones = ~1:4 work-to-rest per pair; 7 cones = ~1:6; 9 cones = ~1:8.',
+        ],
+        howToPlay: [
+          '1-Cone Relay (standard): One designated pair starts and sprints to the next cone. The moment they arrive and touch the cone, the waiting pair there immediately sprints to the following cone. The wave rolls continuously around the circle.',
+          'Traffic Management: Arriving runners peel to the outside of the cone to decelerate and recover. Departing runners launch on the inside lane. No crossing paths.',
+          'Duration: Run continuously for 4–5 minutes, then all pairs take a 2–3 minute active recovery walk. Repeat for 2–3 sets.',
+          '2-Cone Leapfrog (progression): Each pair runs 2 cone lengths. With an odd cone count, the target cones rotate naturally so every station cycles through work and rest without a fixed "dead" cone.',
+          '3–4 Cone Stages (advanced): Each pair runs 3–4 cone lengths per rep, shifting the energy system from anaerobic acceleration toward lactate tolerance and speed endurance.',
+        ],
+        coachingPoints: [
+          'Immediate Release: The relay only simulates game-speed decision-making if the waiting pair explodes on contact — a half-second delay breaks the wave and gives false rest. Coach should call out slow releases immediately.',
+          'Odd Cone Count is Not Arbitrary: An odd number of cones prevents a permanent "resting" cone when running 2-cone leapfrog — it forces the load to rotate through every pair evenly. Switching to an even number creates an imbalanced circuit.',
+          'Traffic Lane Discipline: Inside-lane launches and outside-lane finishes must be drilled from the first rep — once players develop the habit it runs automatically, but one collision early in training can stop the session.',
+        ],
+        modifications: [
+          'U10/Beginners: Use 5 cones, 1-cone relay only. Reduce set duration to 2–3 minutes. Emphasize the traffic lane rule before starting.',
+          'U12 standard: 7 cones, 1-cone relay for set 1, 2-cone leapfrog for set 2.',
+          'U14+/Advanced: 9 cones, 2-cone leapfrog for sets 1–2, 3-cone stages for set 3. Compress rest to 90 sec between sets.',
+          'Large groups (16+): Run two separate relay circles simultaneously — same start cue, coach monitors both.',
         ],
       },
     },
@@ -1878,6 +2103,7 @@ function wireModal() {
       setup: variant.setup || null,
       howToPlay: variant.howToPlay || null,
       coachingPoints: variant.coachingPoints || null,
+      shuttleData: drill.shuttleData || null,
     });
     closeModal();
     renderTimeline();
@@ -2114,6 +2340,10 @@ function openInfoModal(block) {
   if (block.coachingPoints && block.coachingPoints.length) {
     sections.push({ icon: '🎯', label: 'Key Coaching Points', items: block.coachingPoints });
   }
+  if (block.shuttleData && block.shuttleData.length) {
+    const rows = block.shuttleData.map(l => `<tr><td>${l.level}</td><td>${l.kmh}</td><td>${l.secPerLap}</td><td>${l.shuttles}</td></tr>`).join('');
+    sections.push({ icon: '📊', label: 'Shuttle Reference Table', html: `<div style="overflow-x:auto;margin-top:.25rem;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr style="background:#f7fafc;"><th style="padding:.35rem .6rem;text-align:left;border-bottom:2px solid #e2e8f0;color:#718096;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Level</th><th style="padding:.35rem .6rem;text-align:left;border-bottom:2px solid #e2e8f0;color:#718096;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Speed (km/h)</th><th style="padding:.35rem .6rem;text-align:left;border-bottom:2px solid #e2e8f0;color:#718096;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Sec / 20m</th><th style="padding:.35rem .6rem;text-align:left;border-bottom:2px solid #e2e8f0;color:#718096;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Shuttles</th></tr></thead><tbody>${rows.replace(/<tr>/g, '<tr style="border-bottom:1px solid #edf2f7;">').replace(/<td>/g, '<td style="padding:.3rem .6rem;color:#4a5568;">')}</tbody></table></div>` });
+  }
   // Fallback to desc + coaching if no structured data
   if (!sections.length) {
     if (block.desc) sections.push({ icon: '📋', label: 'Description', items: [block.desc] });
@@ -2123,7 +2353,7 @@ function openInfoModal(block) {
   document.getElementById('infoBody').innerHTML = sections.map(s => `
     <div class="info-section">
       <div class="info-section-head"><span>${s.icon}</span>${s.label}</div>
-      <ul>${s.items.map(item => `<li>${item}</li>`).join('')}</ul>
+      ${s.html ? s.html : `<ul>${s.items.map(item => `<li>${item}</li>`).join('')}</ul>`}
     </div>
   `).join('');
 

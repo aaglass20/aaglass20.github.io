@@ -152,8 +152,12 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `lateral-shadow` | Lateral Shadow | Tactical | U12 | `Lateral Shadow.webm` | *(user-submitted)* |
 | `soccer-baseball` | Soccer Baseball | Games | U10 | `tactics/baseball.webm` | *(user-submitted)* |
 | `agility-ladder` | Agility Ladder | Fitness | U8 | None | *(user-submitted)* |
+| `one-mile-run` | 1 Mile Run | Fitness | U10 | None | *(user-submitted)* |
+| `circular-pyramid-intervals` | Circular Pyramid Intervals | Fitness | U10 | None | *(user-submitted)* |
+| `tag-and-release-relay` | Tag-and-Release Relay | Fitness | U10 | None | *(user-submitted)* |
+| `beep-test` | Beep Test | Fitness | U10 | None | *(user-submitted)* |
 
-**Total: 35 drills**
+**Total: 39 drills**
 
 ¹ This drill's video lives in `BDU/tactics/` (webm), not `BDU/vid/` (mp4). The path resolver handles this: `videoFile.includes('/') ? videoFile : 'vid/' + videoFile`.
 
