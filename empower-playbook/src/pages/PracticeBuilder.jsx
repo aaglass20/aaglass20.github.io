@@ -291,7 +291,7 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
 export default function PracticeBuilder({ initPlanId, onExit } = {}) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [view, setView] = useState('wizard')
+  const [view, setView] = useState(() => (initPlanId || searchParams.get('planId')) ? 'loading' : 'wizard')
   const [step, setStep] = useState(1)
   const [wiz, setWiz] = useState({ sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true, planName: '' })
   const [plan, setPlan] = useState(null)
@@ -348,6 +348,9 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
         const saved = JSON.parse(localStorage.getItem('empowerPracticePlan') || 'null')
         if (saved && saved.sport && !planId) { setPlan(saved); setView('builder') }
       } catch (e) { /* ignore */ }
+
+      // If we started in loading state but the plan wasn't found, fall back to wizard
+      setView(v => v === 'loading' ? 'wizard' : v)
     }
     init()
   }, [])
@@ -463,6 +466,26 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
     const html = `<!DOCTYPE html><html><head><title>${plan.name}</title><style>body{font-family:system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1rem;color:#1f2937;}@media print{button{display:none}}</style></head><body><h1>${plan.sportIcon} ${plan.name}</h1><p style="color:#6b7280;">${plan.durationMinutes} min · ${plan.sport}</p>${plan.programId ? `<p style="color:#2563eb;">Week ${plan.weekNum} · ${plan.group}</p>` : ''}${plan.blocks.map(blockHtml).join('')}${equipHtml}<script>window.print();<\/script></body></html>`
     const w = window.open('', '_blank')
     if (w) { w.document.write(html); w.document.close() }
+  }
+
+  // ── Loading ────────────────────────────────────────────────
+  if (view === 'loading') {
+    return (
+      <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+        {onExit && (
+          <div className="pb-overlay-bar">
+            <button className="btn-pb-overlay-close" onClick={onExit}>← Close Editor</button>
+            <span className="pb-overlay-plan-name">Loading plan…</span>
+          </div>
+        )}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4rem 1rem', color: 'var(--gray-400)' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '.75rem', opacity: .5 }}>📋</div>
+            <div style={{ fontWeight: 600, fontSize: '.95rem' }}>Loading plan…</div>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   // ── Wizard ─────────────────────────────────────────────────
