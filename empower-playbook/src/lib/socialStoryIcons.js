@@ -395,7 +395,7 @@ export function buildSocialStory(plan) {
     if (!hasWater) line(['water break.png'], 'We take a water break.')
     line(['good game.png', 'high five.png', 'celebrate.png'], 'Good game! I give high fives and celebrate with my friends!')
   } else {
-    line(['empower sports.png', 'soccer.png'], `Today I am going to Empower Sports to play ${sportName}!`)
+    line(['empower sports.png', sport + '.png'], `Today I am going to Empower Sports to play ${sportName}!`)
     if (sport === 'soccer') {
       line(['get readt.png', 'shin guards.png'], 'I get ready and put on my shin guards.')
     } else {
