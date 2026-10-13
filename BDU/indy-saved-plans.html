@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Plans — The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    :root {
+      --navy: #003366;
+      --green: #00ff88;
+      --white: #ffffff;
+      --gray-100: #f7fafc;
+      --gray-200: #e2e8f0;
+      --gray-400: #a0aec0;
+      --gray-500: #718096;
+      --gray-700: #4a5568;
+      --dark: #1a1a2e;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    /* ── Hero ── */
+    .sp-hero {
+      text-align: center;
+      padding: 3rem 1.5rem 2.5rem;
+      background: linear-gradient(135deg, #003366 0%, #0779e4 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .sp-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 50%, rgba(0,255,136,.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .sp-hero-badge {
+      display: inline-block;
+      background: rgba(0,255,136,.15);
+      border: 1px solid rgba(0,255,136,.4);
+      color: #00ff88;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .sp-hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      font-weight: 700;
+      margin: 0 0 .75rem;
+      position: relative;
+      z-index: 1;
+    }
+    .sp-hero h1 span { color: #00ff88; }
+    .sp-hero p {
+      font-size: 1rem;
+      opacity: .85;
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      line-height: 1.6;
+    }
+    .sp-hero-back {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      color: rgba(255,255,255,.7);
+      font-size: .82rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 1;
+      transition: color .15s;
+    }
+    .sp-hero-back:hover { color: #fff; }
+
+    /* ── Toolbar ── */
+    .sp-toolbar {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.75rem 1.5rem 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .sp-search-wrap {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+    .sp-search-wrap i {
+      position: absolute;
+      left: .9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: .88rem;
+    }
+    .sp-search {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .6rem .9rem .6rem 2.4rem;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .sp-search:focus { border-color: var(--navy); }
+
+    .sp-filters {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+    .sp-filter-btn {
+      padding: .32rem .8rem;
+      border-radius: 99px;
+      border: 2px solid var(--gray-200);
+      background: var(--white);
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .sp-filter-btn.active,
+    .sp-filter-btn:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+
+    /* ── Plan count ── */
+    .sp-count {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem .75rem;
+      font-size: .82rem;
+      color: var(--gray-400);
+      font-weight: 600;
+    }
+
+    /* ── Grid ── */
+    .sp-grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .sp-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400);
+      font-size: .95rem;
+    }
+    .sp-empty i { font-size: 2rem; margin-bottom: .75rem; display: block; }
+
+    /* ── Plan card ── */
+    .plan-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.07);
+      border-top: 5px solid var(--green);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .plan-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.11);
+    }
+    .plan-card-body { padding: 1.5rem 1.5rem 1rem; flex: 1; }
+
+    .plan-card-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 .6rem;
+    }
+
+    .plan-meta {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      margin-bottom: .85rem;
+    }
+    .plan-chip {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .15rem .6rem;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .chip-age  { background: #dbeafe; color: #1d4ed8; }
+    .chip-dur  { background: #f3f4f6; color: #374151; }
+    .chip-fit  { background: #d1fae5; color: #065f46; }
+    .chip-tac  { background: #fef3c7; color: #92400e; }
+    .chip-tech { background: #dbeafe; color: #1e40af; }
+    .chip-pass { background: #d1fae5; color: #065f46; }
+    .chip-poss { background: #e0f2fe; color: #0369a1; }
+    .chip-shot { background: #fee2e2; color: #991b1b; }
+    .chip-game { background: #ffedd5; color: #9a3412; }
+    .chip-warm { background: #fef9c3; color: #854d0e; }
+
+    .plan-desc {
+      font-size: .88rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 1.1rem;
+    }
+
+    /* Block timeline mini-preview */
+    .plan-timeline {
+      display: flex;
+      gap: .3rem;
+      flex-wrap: wrap;
+      margin-bottom: .9rem;
+    }
+    .ptl-block {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+      font-size: .75rem;
+      background: var(--gray-100);
+      border-radius: 6px;
+      padding: .22rem .5rem;
+      color: var(--gray-700);
+    }
+    .ptl-block.ptl-warmup  { background: #fef9c3; color: #854d0e; }
+    .ptl-block.ptl-drill   { background: #dbeafe; color: #1d4ed8; }
+    .ptl-block.ptl-break   { background: #e0f7fa; color: #00695c; }
+    .ptl-block.ptl-closing { background: #f3e8ff; color: #6b21a8; }
+
+    .plan-stats {
+      font-size: .78rem;
+      color: var(--gray-400);
+      margin-bottom: .25rem;
+    }
+
+    .plan-card-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+    .plan-author {
+      font-size: .75rem;
+      color: var(--gray-400);
+    }
+    .btn-load-plan {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--navy);
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: .55rem 1.1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s, transform .1s;
+      text-decoration: none;
+    }
+    .btn-load-plan:hover { background: #002244; transform: scale(1.03); }
+    .btn-load-plan i { font-size: .78rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>Saved Plans</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<div class="sp-hero">
+  <a href="indy-way.html" class="sp-hero-back"><i class="fas fa-arrow-left"></i> The Indy Way</a>
+  <div class="sp-hero-badge">Practice Plans</div>
+  <h1>Saved <span>Practice Plans</span></h1>
+  <p>Pre-built practice plans ready to load and print. Click any plan to open it in the builder and make it your own.</p>
+</div>
+
+<div class="sp-toolbar">
+  <div class="sp-search-wrap">
+    <i class="fas fa-search"></i>
+    <input type="search" class="sp-search" id="planSearch" placeholder="Search plans…" autocomplete="off" oninput="filterPlans()">
+  </div>
+  <div class="sp-filters" id="filterRow"></div>
+</div>
+
+<div class="sp-count" id="planCount"></div>
+
+<div class="sp-grid" id="planGrid"></div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+
+<script>
+// ══════════════════════════════════════════════
+//  SAVED PLANS DATA
+// ══════════════════════════════════════════════
+
+const SAVED_PLANS = [
+  {
+    id: 'lateral-movement',
+    name: 'Lateral Movement Focus',
+    description: 'A 90-minute mixed-age session built around footwork, agility, and 1v1 defending. Opens with movement warmups, develops athleticism through two Fitness drills, then transitions into tactical defending and live 3v2 play.',
+    focus: ['Fitness', 'Tactical'],
+    ageGroup: 'Mixed',
+    duration: 90,
+    author: 'BDU Coaching Staff',
+    state: {
+      ageGroup: 'Mixed',
+      duration: 90,
+      plan: [
+        {
+          type: 'warmup',
+          id: 'dynamic-warmup',
+          name: 'Dynamic Movement Warmup',
+          icon: '🏃',
+          desc: 'Jogging, high knees, butt kicks, lateral shuffles, and light stretching to prepare the body for training.',
+          duration: 10,
+          hasVariant: false
+        },
+        {
+          type: 'warmup',
+          id: 'shadow-dribbling',
+          name: 'Shadow Dribbling',
+          icon: '👥',
+          desc: 'In pairs, the leader dribbles freely while the follower mirrors their movements as closely as possible. Roles swap on the whistle.',
+          duration: 10,
+          hasVariant: false
+        },
+        {
+          type: 'break',
+          id: 'break',
+          name: 'Water Break',
+          icon: '💧',
+          desc: 'Rest and hydration.',
+          duration: 5,
+          hasVariant: false
+        },
+        {
+          type: 'drill',
+          id: 'agility-ladder',
+          name: 'Agility Ladder',
+          icon: '🏃',
+          desc: 'Players work through a progression of agility ladder patterns — from single-leg runs and 2-in to lateral shuffles, Ickey Shuffle, Carioca, plyometric hops, and a ladder-to-sprint exit — building foot speed, coordination, and movement fluency.',
+          coaching: [
+            'Quiet Feet: slapping or heavy stomping means flat feet — cue players to stay light on the balls of their feet',
+            'Pump the Pockets: arms drive the feet; elbows at 90 degrees, hands moving cheek-to-pocket — lazy hands = slow feet',
+            'Eyes Up: once the foot pattern is learned, players should look slightly forward rather than straight down at the rungs'
+          ],
+          duration: 10,
+          hasVariant: false,
+          videoFile: null,
+          setup: [
+            'Equipment: One agility ladder laid flat on the ground (10–12 rungs).',
+            'Players: Single-file line behind the start; 1 player runs at a time, jog back around the outside to rejoin the queue.',
+            'Spacing: Allow one player to finish before the next starts to avoid collisions.'
+          ],
+          howToPlay: [
+            'Phase 1 — Linear Basics: Single-leg run (one foot per box) and 2-in (both feet per box). 2 reps each.',
+            'Phase 2 — Lateral Patterns: Lateral in-and-outs and Ickey Shuffle (in-in-out zigzag). 2 reps each.',
+            'Phase 3 — Rotational: Carioca/Grapevine sideways down the ladder. 2 reps each direction.',
+            'Phase 4 — Plyometrics: Hopscotch (straddle-single-straddle) and lateral bunny hops (two feet in-out-in-out slalom). 2 reps each.',
+            'Phase 5 — Soccer Exit: Complete any pattern and explode into a 5–10 yd sprint off the final rung. Optional: partner serves a 1-touch ball at the exit. 2–3 reps.'
+          ],
+          coachingPoints: [
+            'Quiet Feet: Players who slap the rungs are landing flat-footed — cue "light as a feather" and demonstrate the difference between heavy and quick contacts.',
+            'Arms Drive the Legs: Foot turnover is limited by arm swing — elbows at 90 degrees cheek-to-pocket; test it by having players run arms-crossed and feel the loss of speed.',
+            'Progress Then Speed: Teach the pattern correctly at 50% speed first, then build to full speed — rushing before clean form reinforces sloppy footwork.'
+          ]
+        },
+        {
+          type: 'drill',
+          id: 'parallel-corridor-footwork',
+          name: 'Parallel Corridor Footwork',
+          icon: '↔️',
+          desc: 'Two parallel cone corridors — pairs work through 5 progressive phases: mirror lateral shuffles, slalom weave, sole rollovers, creative dribbling, and a partner passing shuttle — building from pure movement into ball work and partner coordination.',
+          coaching: [
+            'All: stay low with knees bent and weight on the balls of your feet — no heel-striking during lateral shifts',
+            'All: the rollover is a positive prep touch, not a stop — set the ball clean for the next pass',
+            "Partners: call each other's names and find your passing rhythm as you advance down the corridor"
+          ],
+          duration: 12,
+          hasVariant: false,
+          videoFile: 'tactics/Lateral Movement.webm',
+          setup: [
+            'Corridor: Set two parallel rows of 6–7 cones, spaced 5–10 yds apart across, with cones ~2 yds apart along each row.',
+            'Players: Split evenly into two lines — Line A at Row 1, Line B at Row 2, partners facing each other across the channel.',
+            'Equipment: 1 ball per pair (phases 3–5); no ball needed for phases 1–2.'
+          ],
+          howToPlay: [
+            'Phase 1 — Mirror Lateral Shuffle: Both partners face each other and shuffle laterally cone-to-cone in sync, staying low. 4 reps each.',
+            'Phase 2 — Forward Slalom Weave: Players slalom in and out of their own row of cones with quick plant-and-push deceleration. 4 reps each.',
+            'Phase 3 — Linear Sole Rollovers: Each player travels down the corridor using continuous sole rollovers (alternating feet), ball within reach. 4 reps each.',
+            'Phase 4 — Creative Slalom Dribbling: Players dribble their own slalom using any technique — inside-outside cuts, sole rolls, La Croqueta — head up between touches. 4 reps each.',
+            'Phase 5 — Passing & Rollover Shuttle: With one ball per pair, Player A passes across to Player B at Cone 1. Player B executes a lateral rollover and plays back. The pair advances pass-by-pass down all 6–7 cones, then returns switching direction.'
+          ],
+          coachingPoints: [
+            'Low Center of Gravity: Knees bent and weight on the balls of the feet in all lateral phases — standing tall or heel-striking kills quickness.',
+            'Active Prep Touch: In phases 3 and 5, the rollover must be a purposeful directional touch that sets the ball cleanly — stopping the ball dead loses rhythm.',
+            'Rhythm & Communication: Phase 5 only works if partners establish a passing cadence and call each other — encourage "ready, yes, ready, yes" down the full corridor.'
+          ]
+        },
+        {
+          type: 'break',
+          id: 'break',
+          name: 'Water Break',
+          icon: '💧',
+          desc: 'Rest and hydration.',
+          duration: 5,
+          hasVariant: false
+        },
+        {
+          type: 'drill',
+          id: 'lateral-shadow',
+          name: 'Lateral Shadow',
+          icon: '⚡',
+          desc: 'The defender plays a ground pass to the attacker ~30 yards out, then sprints to close — decelerating into a side-on jockey stance 2 yards away; the defender shadows laterally to steer the attacker wide and waits for a heavy touch or hesitation before executing a block or poke tackle, with a goalkeeper behind to save any forced shots.',
+          coaching: [
+            'Defender: sprint to eat the grass while the ball travels — then slam the brakes and get side-on 2 yards away',
+            "Defender: open your body to offer the outside lane; your job is to deny the center, not win the ball immediately",
+            "Attacker: use body feints and changes of pace to create a moment of hesitation — that's your window to attack the space"
+          ],
+          duration: 15,
+          hasVariant: false,
+          videoFile: 'Lateral Shadow.webm',
+          setup: [
+            'Field: 18-yard box area with a standard goal and goalkeeper.',
+            'Defender line: Positioned centrally or slightly staggered, 3–5 yards beyond the top of the 18, each player holding a ball.',
+            'Attacker line: Stationed at a cone ~10–12 yards further upfield (roughly 30–35 yards from goal), facing the defender.',
+            'Equipment: Balls with the defender line, pinnies to distinguish lines, cone to mark the attacker start position.'
+          ],
+          howToPlay: [
+            'Service: The defender plays a firm ground pass to the feet of the attacker and immediately sprints to close.',
+            'Breakdown: Around 2–3 yards from the attacker, the defender drops their hips, chops strides, and assumes a side-on jockey stance.',
+            'Shadow & Steer: The defender shadows the attacker laterally — matching their rhythm and body feints — while opening their body to offer the outside/weak-foot lane and blocking the central route to goal.',
+            'Pounce: The defender waits for a heavy touch, hesitation, or head-down dribble before attempting a block or poke tackle.',
+            'Rotation: Attacker retrieves their ball and joins the defender line; defender rotates to the attacker line.'
+          ],
+          coachingPoints: [
+            'Fast Approach, Slow Arrival: Sprint while the ball is traveling to close distance quickly, but decelerate sharply 2 yards from the attacker — a flat-out arrival means the attacker can knock it past and run.',
+            'Surfer Stance: Hips angled ~45 degrees, knees bent, weight on the balls of the feet — this allows instant lateral push-off in either direction.',
+            "Patience Over Heroics: The defender's job is not to win the ball in the first two seconds — it is to deny a quality shot."
+          ]
+        },
+        {
+          type: 'drill',
+          id: '3v2-transition',
+          name: '3v2 Transition',
+          icon: '⚡',
+          desc: 'Three grids: the first runs a 3v2, the second is a transition zone, the third hosts a 2v2. One team holds pinnies. When a defender wins the ball, they drop their pinnie and drive into the transition zone to pass to teammates. A dropped pinnie is picked up by a waiting player to form the next 2v2.',
+          coaching: [
+            'When you win it, go immediately — no pause',
+            'Third man: check shoulder and be available in next grid',
+            'Defenders: deny the transition pass first, then recover'
+          ],
+          duration: 18,
+          hasVariant: false,
+          videoFile: '3v2 Transition.mp4',
+          setup: null,
+          howToPlay: null,
+          coachingPoints: null
+        },
+        {
+          type: 'closing',
+          id: 'cool-down',
+          name: 'Cool-Down Stretch',
+          icon: '🧘',
+          desc: 'Light static stretching — quads, hamstrings, calves, hips. Helps recovery and gives players a calm finish to training.',
+          duration: 5,
+          hasVariant: false
+        }
+      ]
+    }
+  }
+];
+
+// ══════════════════════════════════════════════
+//  FOCUS CHIP CONFIG
+// ══════════════════════════════════════════════
+
+const FOCUS_CHIP_CLASS = {
+  Fitness:    'chip-fit',
+  Tactical:   'chip-tac',
+  Technical:  'chip-tech',
+  Passing:    'chip-pass',
+  Possession: 'chip-poss',
+  Shooting:   'chip-shot',
+  Dribbling:  'chip-tech',
+  Games:      'chip-game',
+  Warmup:     'chip-warm',
+};
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+
+const AGE_FILTERS = ['All', 'U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'];
+let activeAge = 'All';
+
+function buildFilters() {
+  const row = document.getElementById('filterRow');
+  AGE_FILTERS.forEach(age => {
+    const btn = document.createElement('button');
+    btn.className = 'sp-filter-btn' + (age === 'All' ? ' active' : '');
+    btn.textContent = age;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sp-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeAge = age;
+      renderGrid();
+    });
+    row.appendChild(btn);
+  });
+}
+
+function getFilteredPlans() {
+  const q = document.getElementById('planSearch').value.toLowerCase().trim();
+  return SAVED_PLANS.filter(p => {
+    if (activeAge !== 'All' && p.ageGroup !== activeAge) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !p.description.toLowerCase().includes(q) && !p.focus.some(f => f.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function blockSummary(plan) {
+  const counts = { warmup: 0, drill: 0, break: 0, closing: 0 };
+  plan.forEach(b => { if (counts[b.type] !== undefined) counts[b.type]++; });
+  return Object.entries(counts)
+    .filter(([,v]) => v > 0)
+    .map(([k, v]) => `${v} ${k}${v > 1 ? (k === 'closing' ? 's' : 's') : ''}`)
+    .join(' · ');
+}
+
+function renderPlanCard(plan) {
+  const card = document.createElement('div');
+  card.className = 'plan-card';
+
+  const focusTags = plan.focus.map(f =>
+    `<span class="plan-chip ${FOCUS_CHIP_CLASS[f] || 'chip-tech'}">${f}</span>`
+  ).join('');
+
+  const timelineBlocks = plan.state.plan.map(b =>
+    `<span class="ptl-block ptl-${b.type}">${b.icon} ${b.duration}m</span>`
+  ).join('');
+
+  const summary = blockSummary(plan.state.plan);
+
+  card.innerHTML = `
+    <div class="plan-card-body">
+      <div class="plan-card-name">${plan.name}</div>
+      <div class="plan-meta">
+        <span class="plan-chip chip-age">${plan.ageGroup}</span>
+        <span class="plan-chip chip-dur">${plan.duration} min</span>
+        ${focusTags}
+      </div>
+      <div class="plan-desc">${plan.description}</div>
+      <div class="plan-timeline">${timelineBlocks}</div>
+      <div class="plan-stats">${summary}</div>
+    </div>
+    <div class="plan-card-footer">
+      <span class="plan-author"><i class="fas fa-user-shield" style="margin-right:.3rem;color:var(--gray-400)"></i>${plan.author}</span>
+      <button class="btn-load-plan" onclick="loadPlan('${plan.id}')">
+        <i class="fas fa-arrow-right"></i> Load Plan
+      </button>
+    </div>
+  `;
+
+  return card;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('planGrid');
+  const plans = getFilteredPlans();
+
+  document.getElementById('planCount').textContent = `${plans.length} plan${plans.length !== 1 ? 's' : ''}`;
+
+  grid.innerHTML = '';
+  if (!plans.length) {
+    grid.innerHTML = `<div class="sp-empty"><i class="fas fa-clipboard"></i>No plans match your search.</div>`;
+    return;
+  }
+  plans.forEach(p => grid.appendChild(renderPlanCard(p)));
+}
+
+// ══════════════════════════════════════════════
+//  LOAD PLAN
+// ══════════════════════════════════════════════
+
+function loadPlan(planId) {
+  const plan = SAVED_PLANS.find(p => p.id === planId);
+  if (!plan) return;
+  localStorage.setItem('bdu_indy_plan_v1', JSON.stringify(plan.state));
+  window.location.href = 'indy-practice-builder.html';
+}
+
+function filterPlans() {
+  renderGrid();
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildFilters();
+  renderGrid();
+});
+</script>
+
+</body>
+</html>

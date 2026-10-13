@@ -602,6 +602,9 @@
       <!-- Drill panel -->
       <div class="sub-panel" id="panelDrill">
         <button class="sub-back" onclick="showPanel('choice')">← Back</button>
+        <input type="search" id="drillSearch" placeholder="Search drills…" autocomplete="off"
+          style="width:100%;box-sizing:border-box;padding:.5rem .8rem;margin-bottom:.75rem;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-size:.88rem;font-family:inherit;outline:none;"
+          oninput="filterDrillSearch(this.value)" />
         <div class="bank-grid" id="drillBank"></div>
         <div class="time-row">
           <label>Duration:</label>
@@ -977,6 +980,53 @@ const DRILL_BANK = [
       },
     },
   },
+  {
+    id: 'target-dribbling',
+    name: 'Target Dribbling',
+    icon: '🎯',
+    category: 'Dribbling',
+    skillLevel: 'Intermediate',
+    minAge: 'U10',
+    defaultDuration: 12,
+    videoFile: 'Target Dribbling.webm',
+    equipment: ['Pinnies (yellow + red)', 'Balls (one per player)', 'Cones'],
+    purpose: 'Develop close ball control and forward-thinking decision-making by rewarding central penetration over safe wide dribbling.',
+    ageGroups: ['U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Players dribble freely inside a grid, scoring points by rolling the ball over flat pinnies — a high-value yellow penny in the center (3 pts) representing direct penetration, and lower-value red pennies on the perimeter (1 pt) representing wide outlets — while defenders try to intercept or force them wide.',
+        coaching: [
+          'Ball carrier: attack the center yellow if a seam opens — don\'t default to the easy wide target every time',
+          'Ball carrier: if defenders collapse on the middle, lift your head and bail wide immediately — don\'t force it into traffic',
+          'All: keep the ball glued to your feet — sole rolls and tight inside/outside touches to roll cleanly over a flat marker',
+        ],
+        setup: [
+          'Grid: 20×20 yd square marked with cones (adjust size based on player count).',
+          'Center target: Place 1 yellow pinnie flat in the center of the grid (3 points).',
+          'Perimeter targets: Place 4–6 red pinnies flat around the edges and corners of the grid (1 point each).',
+          'Players: Teams of 3–4 v 3–4 (or individual free-for-all for younger groups). Each player has their own ball.',
+        ],
+        howToPlay: [
+          'Objective: Dribble your ball directly over a target pinnie to score — the ball must roll cleanly over the flat pinnie, not past it.',
+          'Scoring: Yellow center penny = 3 points. Red perimeter penny = 1 point.',
+          'No-Repeat Rule: A player cannot score on the same penny back-to-back — after hitting the center yellow, they must score on a red perimeter penny before attacking the middle again.',
+          'Conquer & Flip (optional): When a player scores, their team flips the penny over (claims it). First team to claim the center plus a set number of wide targets wins the round.',
+          'Game Length: Play 60–90 second rounds with 30 sec rest; run 3–5 rounds, then swap defenders.',
+        ],
+        coachingPoints: [
+          'Directness & Forward Mentality: The 3-point center target rewards players who are bold enough to drive straight at the central corridor when a lane opens — hesitation hands the advantage to the defense.',
+          'Scanning & Decision-Making: When defenders pack the middle, the correct read is to escape wide — players who keep their heads up and recognize the overload early will consistently score more points than those who force.',
+          'Close Ball Control: Rolling the ball precisely over a flat pinnie demands tight, controlled touches; players quickly learn that overrunning the ball or using big touches causes them to miss the target and lose possession.',
+        ],
+        modifications: [
+          'U10/Beginners: Remove defenders — run as a solo time-trial where each player scores as many points as possible in 60 seconds. Focus on tight dribbling and scanning.',
+          'U12 standard: Full game with defenders as described — no-repeat rule active.',
+          'U14+/Advanced: Add a rule that center yellow can only be scored off a directional change (e.g., must enter from a wide angle after touching a red penny — simulating a cut inside).',
+          'Large groups (12+): Split into two grids running simultaneously; winners from each grid compete in a final round.',
+        ],
+      },
+    },
+  },
   // ── Possession ──
   {
     id: 'bumper-keepaway',
@@ -1333,6 +1383,53 @@ const DRILL_BANK = [
       },
     },
   },
+  {
+    id: 'lateral-shadow',
+    name: 'Lateral Shadow',
+    icon: '⚡',
+    category: 'Tactical',
+    skillLevel: 'Advanced',
+    minAge: 'U12',
+    defaultDuration: 15,
+    videoFile: 'Lateral Shadow.webm',
+    equipment: ['Full goal', 'Goalkeeper', 'Cones', 'Balls', 'Pinnies'],
+    purpose: 'Train defenders to close down quickly, jockey patiently, and pounce at the right moment — while teaching attackers to beat a disciplined defender in 1v1.',
+    ageGroups: ['U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'The defender plays a ground pass to the attacker ~30 yards out, then sprints to close — decelerating into a side-on jockey stance 2 yards away; the defender shadows laterally to steer the attacker wide and waits for a heavy touch or hesitation before executing a block or poke tackle, with a goalkeeper behind to save any forced shots.',
+        coaching: [
+          'Defender: sprint to eat the grass while the ball travels — then slam the brakes and get side-on 2 yards away',
+          'Defender: open your body to offer the outside lane; your job is to deny the center, not win the ball immediately',
+          'Attacker: use body feints and changes of pace to create a moment of hesitation — that\'s your window to attack the space',
+        ],
+        setup: [
+          'Field: 18-yard box area with a standard goal and goalkeeper.',
+          'Defender line: Positioned centrally or slightly staggered, 3–5 yards beyond the top of the 18, each player holding a ball.',
+          'Attacker line: Stationed at a cone ~10–12 yards further upfield (roughly 30–35 yards from goal), facing the defender.',
+          'Equipment: Balls with the defender line, pinnies to distinguish lines, cone to mark the attacker start position.',
+        ],
+        howToPlay: [
+          'Service: The defender plays a firm ground pass to the feet of the attacker and immediately sprints to close.',
+          'Breakdown: Around 2–3 yards from the attacker, the defender drops their hips, chops strides, and assumes a side-on jockey stance.',
+          'Shadow & Steer: The defender shadows the attacker laterally — matching their rhythm and body feints — while opening their body to offer the outside/weak-foot lane and blocking the central route to goal.',
+          'Pounce: The defender waits for a heavy touch, hesitation, or head-down dribble before attempting a block or poke tackle. If the attacker shoots from a poor angle under pressure, the defender has done their job.',
+          'Rotation: Attacker retrieves their ball and joins the defender line; defender rotates to the attacker line.',
+        ],
+        coachingPoints: [
+          'Fast Approach, Slow Arrival: Sprint while the ball is traveling to close distance quickly, but decelerate sharply 2 yards from the attacker — a flat-out arrival means the attacker can knock it past and run.',
+          'Surfer Stance: Hips angled ~45 degrees, knees bent, weight on the balls of the feet — this allows instant lateral push-off in either direction. Never stand chest-square or flat-footed.',
+          'Patience Over Heroics: The defender\'s job is not to win the ball in the first two seconds — it is to deny a quality shot. A hurried, wide-angle attempt with the keeper set is a defensive win.',
+        ],
+        modifications: [
+          'U12/Introductory: Remove the goalkeeper initially; defenders focus only on approach and jockey stance without worrying about the live shot. Add GK once technique is sound.',
+          'U14 standard: Full drill as described — live 1v1 with goalkeeper.',
+          'U16+/Advanced: Start the attacker facing away from goal (back to goal receive) so the defender must react to the turn — adding a recovery run element.',
+          'Large groups (12+): Run two parallel lines simultaneously; coach calls "go" to both pairs at once to increase rep rate.',
+        ],
+      },
+    },
+  },
   // ── Games ──
   {
     id: 'soccer-baseball',
@@ -1377,6 +1474,100 @@ const DRILL_BANK = [
           'U12 standard: Full 3-inning game as described — penalty spot, relay around the 18.',
           'U14+/Advanced: Add a 2-touch rule for shooters (first touch set + shoot — no standing over the ball), or require the shooting team to receive a served ball before finishing rather than static PKs.',
           'Large groups (16+): Run two shooting queues simultaneously to maximize rep rate and maintain pressure on runners.',
+        ],
+      },
+    },
+  },
+
+  // ── Fitness ──
+  {
+    id: 'parallel-corridor-footwork',
+    name: 'Parallel Corridor Footwork',
+    icon: '↔️',
+    category: 'Fitness',
+    skillLevel: 'Intermediate',
+    minAge: 'U8',
+    defaultDuration: 12,
+    videoFile: 'tactics/Lateral Movement.webm',
+    equipment: ['Cones', 'Balls (one per pair)'],
+    purpose: 'Build lateral quickness, footwork coordination, and ball mastery through a 5-phase partner corridor progression.',
+    ageGroups: ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Two parallel cone corridors — pairs work through 5 progressive phases: mirror lateral shuffles, slalom weave, sole rollovers, creative dribbling, and a partner passing shuttle — building from pure movement into ball work and partner coordination.',
+        coaching: [
+          'All: stay low with knees bent and weight on the balls of your feet — no heel-striking during lateral shifts',
+          'All: the rollover is a positive prep touch, not a stop — set the ball clean for the next pass',
+          'Partners: call each other\'s names and find your passing rhythm as you advance down the corridor',
+        ],
+        setup: [
+          'Corridor: Set two parallel rows of 6–7 cones, spaced 5–10 yds apart across, with cones ~2 yds apart along each row.',
+          'Players: Split evenly into two lines — Line A at Row 1, Line B at Row 2, partners facing each other across the channel.',
+          'Equipment: 1 ball per pair (phases 3–5); no ball needed for phases 1–2.',
+        ],
+        howToPlay: [
+          'Phase 1 — Mirror Lateral Shuffle: Both partners face each other and shuffle laterally cone-to-cone in sync, staying low. 4 reps each.',
+          'Phase 2 — Forward Slalom Weave: Players slalom in and out of their own row of cones with quick plant-and-push deceleration. 4 reps each.',
+          'Phase 3 — Linear Sole Rollovers: Each player travels down the corridor using continuous sole rollovers (alternating feet), ball within reach. 4 reps each.',
+          'Phase 4 — Creative Slalom Dribbling: Players dribble their own slalom using any technique — inside-outside cuts, sole rolls, La Croqueta — head up between touches. 4 reps each.',
+          'Phase 5 — Passing & Rollover Shuttle: With one ball per pair, Player A passes across to Player B at Cone 1. Player B executes a lateral rollover and plays back. The pair advances pass-by-pass down all 6–7 cones, then returns switching direction.',
+        ],
+        coachingPoints: [
+          'Low Center of Gravity: Knees bent and weight on the balls of the feet in all lateral phases — standing tall or heel-striking kills quickness.',
+          'Active Prep Touch: In phases 3 and 5, the rollover must be a purposeful directional touch that sets the ball cleanly — stopping the ball dead loses rhythm.',
+          'Rhythm & Communication: Phase 5 only works if partners establish a passing cadence and call each other — encourage "ready, yes, ready, yes" down the full corridor.',
+        ],
+        modifications: [
+          'U8/Beginners: Run phases 1–3 only; skip phases 4–5 until movement patterns are comfortable. Keep the channel short (4 cones).',
+          'U10 standard: All 5 phases as described.',
+          'U14+/Advanced: In phase 5, require one-touch return passes — partner must play back immediately off the rollover without an extra settle touch.',
+          'Large groups (12+): Set up two corridors running simultaneously; rotate pairs between corridors between phases.',
+        ],
+      },
+    },
+  },
+  {
+    id: 'agility-ladder',
+    name: 'Agility Ladder',
+    icon: '🏃',
+    category: 'Fitness',
+    skillLevel: 'Intermediate',
+    minAge: 'U8',
+    defaultDuration: 10,
+    videoFile: null,
+    equipment: ['Agility ladder'],
+    purpose: 'Build foot speed, coordination, and multi-directional movement fluency through a progressive ladder pattern sequence.',
+    ageGroups: ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'],
+    variants: {
+      default: {
+        desc: 'Players work through a progression of agility ladder patterns — from single-leg runs and 2-in to lateral shuffles, Ickey Shuffle, Carioca, plyometric hops, and a ladder-to-sprint exit — building foot speed, coordination, and movement fluency.',
+        coaching: [
+          'Quiet Feet: slapping or heavy stomping means flat feet — cue players to stay light on the balls of their feet',
+          'Pump the Pockets: arms drive the feet; elbows at 90 degrees, hands moving cheek-to-pocket — lazy hands = slow feet',
+          'Eyes Up: once the foot pattern is learned, players should look slightly forward rather than straight down at the rungs',
+        ],
+        setup: [
+          'Equipment: One agility ladder laid flat on the ground (10–12 rungs).',
+          'Players: Single-file line behind the start; 1 player runs at a time, jog back around the outside to rejoin the queue.',
+          'Spacing: Allow one player to finish before the next starts to avoid collisions.',
+        ],
+        howToPlay: [
+          'Phase 1 — Linear Basics: Single-leg run (one foot per box) and 2-in (both feet per box). 2 reps each.',
+          'Phase 2 — Lateral Patterns: Lateral in-and-outs and Ickey Shuffle (in-in-out zigzag). 2 reps each.',
+          'Phase 3 — Rotational: Carioca/Grapevine sideways down the ladder. 2 reps each direction.',
+          'Phase 4 — Plyometrics: Hopscotch (straddle-single-straddle) and lateral bunny hops (two feet in-out-in-out slalom). 2 reps each.',
+          'Phase 5 — Soccer Exit: Complete any pattern and explode into a 5–10 yd sprint off the final rung. Optional: partner serves a 1-touch ball at the exit. 2–3 reps.',
+        ],
+        coachingPoints: [
+          'Quiet Feet: Players who slap the rungs are landing flat-footed — cue "light as a feather" and demonstrate the difference between heavy and quick contacts.',
+          'Arms Drive the Legs: Foot turnover is limited by arm swing — elbows at 90 degrees cheek-to-pocket; test it by having players run arms-crossed and feel the loss of speed.',
+          'Progress Then Speed: Teach the pattern correctly at 50% speed first, then build to full speed — rushing before clean form reinforces sloppy footwork.',
+        ],
+        modifications: [
+          'U8/Beginners: Run phases 1–2 only (single-leg run, 2-in, lateral in-and-outs). Walk through the pattern once before each run.',
+          'U10 standard: Phases 1–4 as described. Skip the soccer exit ball work.',
+          'U14+/Advanced: All 5 phases including sprint exit with partner ball serve. Add In-In-Out with 180° hip flip for recovery mechanics.',
+          'Large groups (12+): Set up 2–3 ladders running simultaneously; players rotate between ladders on the coach\'s signal.',
         ],
       },
     },
@@ -1773,6 +1964,7 @@ function buildDrillBank() {
   filterRow.className = 'cat-filter';
   filterRow.style.cssText = 'display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;';
   let activeCat = 'All';
+  let drillSearchQuery = '';
 
   cats.forEach(cat => {
     const btn = document.createElement('button');
@@ -1801,10 +1993,16 @@ function buildDrillBank() {
   const ageOrder = ['U8', 'U10', 'U12', 'U14', 'U16', 'Mixed'];
   const ageIdx = ageOrder.indexOf(state.ageGroup || 'U8');
 
+  window.filterDrillSearch = function(val) {
+    drillSearchQuery = val.toLowerCase().trim();
+    renderDrillCards();
+  };
+
   function renderDrillCards() {
     grid.innerHTML = '';
     const filtered = DRILL_BANK.filter(d => {
       if (activeCat !== 'All' && d.category !== activeCat) return false;
+      if (drillSearchQuery && !d.name.toLowerCase().includes(drillSearchQuery) && !d.category.toLowerCase().includes(drillSearchQuery)) return false;
       // Show drills whose ageGroups array includes any age >= current
       return d.ageGroups.some(ag => ageOrder.indexOf(ag) >= ageIdx || ag === 'Mixed');
     });
@@ -1871,6 +2069,8 @@ function openModal() {
   document.getElementById('confirmDrill').disabled   = true;
   document.getElementById('confirmClosing').disabled = true;
   document.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+  const drillSearch = document.getElementById('drillSearch');
+  if (drillSearch) drillSearch.value = '';
   showPanel('choice');
   document.getElementById('modalOverlay').classList.add('open');
 }
@@ -1888,6 +2088,7 @@ function showPanel(name) {
     name === 'warmup' ? 'Add Warmup' :
     name === 'drill'  ? 'Add Drill' :
     name === 'break'  ? 'Add Water Break' : 'Add Closing';
+  if (name === 'drill' && window.filterDrillSearch) window.filterDrillSearch('');
 }
 
 function wireDragDrop() {

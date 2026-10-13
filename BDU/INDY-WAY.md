@@ -71,6 +71,7 @@ All drills live in the `DRILL_BANK` constant inside `indy-practice-builder.html`
 | Category | When to use |
 |---|---|
 | **Warmup** | Primary purpose is warming up the body/ball before the main session |
+| **Fitness** | Primary purpose is athletic development: agility, speed, conditioning, footwork — no ball required |
 | **Technical** | Individual skill focus: first touch, ball mastery, 1v1 moves, control |
 | **Passing** | Primary emphasis is passing accuracy, weight, combination, or distance |
 | **Dribbling** | Primary emphasis is dribbling speed, control, or decision-making |
@@ -125,6 +126,7 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `long-passes-4` | Long Passes (4 People) | Passing | U12 | `long passes 4 people.mp4` | `igs-takeaways.html` |
 | `get-open` | Get Open | Passing | U10 | `get open.mp4` | `igs-takeaways.html` |
 | `gates-competition-dribbling` | Gates Competition Dribbling | Dribbling | U10 | `Gates competition dribbling.mp4` | `igs-takeaways.html` |
+| `target-dribbling` | Target Dribbling | Dribbling | U10 | `Target Dribbling.webm` | *(user-submitted)* |
 | `bumper-keepaway` | Bumper Keepaway | Possession | U10 | `bumper Keepaway.mp4` | `igs-takeaways.html` |
 | `across-the-river` | Across The River | Possession | U12 | `across the river.mp4` | `igs-takeaways.html` |
 | `3-team-keepaway` | 3 Team Keep Away | Possession | U10 | `3 Team Keep Away.mp4` | `igs-takeaways.html` |
@@ -141,14 +143,17 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `scrimmage-7v7` | 7v7 Scrimmage | Scrimmage | U10 | None | *(original)* |
 | `scrimmage-9v9` | 9v9 Scrimmage | Scrimmage | U12 | None | *(original)* |
 | `scrimmage-11v11` | 11v11 Full Field Scrimmage | Scrimmage | U14 | None | *(original)* |
+| `parallel-corridor-footwork` | Parallel Corridor Footwork | Fitness | U8 | `tactics/Lateral Movement.webm` ¹ | *(user-submitted)* |
 | `shadow-dribbling` | Shadow Dribbling | Warmup | U8 | None | *(original)* |
 | `around-the-horn` | Around the Horn | Tactical | U12 | `The Spine.mp4` | *(original)* |
 | `king-of-the-end-zones` | King of the End Zones | Tactical | U12 | `King of the End Zones.mp4` | *(original)* |
 | `receive-turn-finish` | Receive, Turn & Finish | Shooting | U12 | `Charge Touch Shoot.mp4` | *(user-submitted)* |
 | `rock-the-river` | Rock the River | Tactical | U12 | `tactics/Rock the River.webm` | *(user-submitted)* |
+| `lateral-shadow` | Lateral Shadow | Tactical | U12 | `Lateral Shadow.webm` | *(user-submitted)* |
 | `soccer-baseball` | Soccer Baseball | Games | U10 | `tactics/baseball.webm` | *(user-submitted)* |
+| `agility-ladder` | Agility Ladder | Fitness | U8 | None | *(user-submitted)* |
 
-**Total: 31 drills**
+**Total: 35 drills**
 
 ¹ This drill's video lives in `BDU/tactics/` (webm), not `BDU/vid/` (mp4). The path resolver handles this: `videoFile.includes('/') ? videoFile : 'vid/' + videoFile`.
 
