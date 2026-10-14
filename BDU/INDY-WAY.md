@@ -156,7 +156,7 @@ All drills currently in `DRILL_BANK`. When adding from a source page, **check th
 | `circular-pyramid-intervals` | Circular Pyramid Intervals | Fitness | U10 | None | *(user-submitted)* |
 | `tag-and-release-relay` | Tag-and-Release Relay | Fitness | U10 | None | *(user-submitted)* |
 | `beep-test` | Beep Test | Fitness | U10 | None | *(user-submitted)* |
-| `peripheral-possession` | Peripheral Possession with Forbidden Returns | Possession | U12 | `Peripheral Possession with Forbidden Returns.webm` | *(user-submitted)* |
+| `peripheral-possession` | Peripheral Possession with Forbidden Returns | Possession | U12 | `tactics/Peripheral Possession with Forbidden Returns.webm` ¹ | *(user-submitted)* |
 
 **Total: 40 drills**
 
