@@ -368,6 +368,13 @@ function WizardView({ locations, onComplete, onCancel }) {
   )
 }
 
+// ── Shared Utilities ──────────────────────────────────────────
+function buildMapUrl(lat, lon) {
+  const d = 0.009
+  const bbox = `${lon - d},${lat - d},${lon + d},${lat + d}`
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`
+}
+
 // ── Print Utilities ────────────────────────────────────────────
 
 function openPrintWindow(html) {
@@ -572,6 +579,7 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
   const [viewPlan, setViewPlan] = useState(null)
   const [vpOpen, setVpOpen] = useState(false)
   const [printTarget, setPrintTarget] = useState(null)
+  const [locPanelOpen, setLocPanelOpen] = useState(false)
 
   useEffect(() => {
     if (viewPlan) requestAnimationFrame(() => setVpOpen(true))
@@ -637,7 +645,7 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
           <div className="dash-prog-name">{prog.name}</div>
           <div className="dash-chips">
             <span className="chip">{prog.sportName}</span>
-            {progLoc && <span className="chip">📍 {progLoc.name}</span>}
+            {progLoc && <button className="chip chip-loc-btn" onClick={() => setLocPanelOpen(true)}>📍 {progLoc.name}</button>}
             <span className="chip">{prog.numWeeks} week{prog.numWeeks !== 1 ? 's' : ''}</span>
             <span className="chip">{prog.groups.length} group{prog.groups.length !== 1 ? 's' : ''}</span>
             <span className="chip orange">{filled} / {total} plans</span>
@@ -860,6 +868,51 @@ function DashboardView({ prog, locations, plans: allPlans, onBack, onUpdate, onE
             <div className="view-actions">
               <button className="view-btn-edit" onClick={() => { closeVp(); onEditPlan && onEditPlan(viewPlan.id) }}>✏️ Edit Plan</button>
               <button className="view-btn-copy" onClick={closeVp}>← Back</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Location slide-down panel */}
+      {progLoc && (
+        <div className={`loc-panel-backdrop${locPanelOpen ? ' open' : ''}`} onClick={() => setLocPanelOpen(false)}>
+          <div className="loc-panel" onClick={e => e.stopPropagation()}>
+            <div className="loc-panel-header">
+              <div className="loc-panel-title">📍 {progLoc.name}</div>
+              <button className="loc-panel-close" onClick={() => setLocPanelOpen(false)}>✕</button>
+            </div>
+            <div className="loc-panel-scroll">
+              {progLoc.image
+                ? <img className="loc-panel-img" src={progLoc.image} alt="" loading="lazy" />
+                : <div className="loc-panel-img-placeholder">📍</div>}
+              <div className="loc-panel-body">
+                {progLoc.address && (
+                  <div className="loc-panel-row">
+                    <span className="loc-panel-icon">📍</span>
+                    {progLoc.lat && progLoc.lon
+                      ? <a className="loc-panel-link" href={`https://www.google.com/maps?q=${progLoc.lat},${progLoc.lon}`} target="_blank" rel="noreferrer">{progLoc.address}</a>
+                      : <a className="loc-panel-link" href={`https://www.google.com/maps/search/${encodeURIComponent(progLoc.address)}`} target="_blank" rel="noreferrer">{progLoc.address}</a>
+                    }
+                  </div>
+                )}
+                {progLoc.notes && (
+                  <div className="loc-panel-row">
+                    <span className="loc-panel-icon">📝</span>
+                    <span>{progLoc.notes}</span>
+                  </div>
+                )}
+                {progLoc.lat && progLoc.lon && (
+                  <div className="loc-panel-map-wrap">
+                    <iframe src={buildMapUrl(progLoc.lat, progLoc.lon)} title="Map" loading="lazy" />
+                  </div>
+                )}
+                {!progLoc.address && !progLoc.notes && !progLoc.lat && (
+                  <div className="loc-panel-empty">No additional details saved for this location.</div>
+                )}
+              </div>
+              <div className="loc-panel-footer">
+                <button className="btn-cancel" onClick={() => setLocPanelOpen(false)}>Close</button>
+              </div>
             </div>
           </div>
         </div>

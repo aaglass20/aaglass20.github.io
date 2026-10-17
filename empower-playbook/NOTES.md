@@ -253,7 +253,7 @@ Future additions (not yet built):
 
 ### Facility Inventory
 - [ ] Each facility has a record of what's available: courts, fields, equipment on-site
-- [ ] Plan builder uses facility inventory to validate equipment needs
+- [ ] Plan builder uses facility inventory tOn o validate equipment needs
 - [ ] Map, directions, and access notes
 
 ### Participants
