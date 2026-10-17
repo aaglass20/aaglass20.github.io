@@ -6,10 +6,9 @@ test.describe('PlanLibrary', () => {
     await page.goto('./#/plan-library')
   })
 
-
   test('hero renders', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('Plans')
-    await expect(page.locator('.hero-badge')).toContainText('Plan Management')
+    await expect(page.locator('.pl-page-title')).toContainText('Practice Plans')
+    await expect(page.locator('.pl-page-sub')).toBeVisible()
   })
 
   test('page loads (empty state or plan list)', async ({ page }) => {
@@ -53,6 +52,12 @@ const SEEDED_PLAN = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 }
 
+// Helper: click the plan card body to open the view panel
+async function openViewPanel(page) {
+  await page.locator('[data-testid="plan-card-test-plan-lib-1"]').click({ timeout: 10000 })
+  await expect(page.locator('.view-overlay.open')).toBeVisible({ timeout: 5000 })
+}
+
 test.describe('PlanLibrary — view panel & edit overlay (mocked)', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript((plan) => {
@@ -70,19 +75,20 @@ test.describe('PlanLibrary — view panel & edit overlay (mocked)', () => {
   })
 
   test('View button opens the slide-in view panel', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    // Clicking the card body opens the view panel
+    await page.locator('[data-testid="plan-card-test-plan-lib-1"]').click({ timeout: 10000 })
     await expect(page.locator('.view-overlay.open')).toBeVisible({ timeout: 3000 })
   })
 
   test('view panel shows plan name and block name', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    await openViewPanel(page)
     const panel = page.locator('.view-panel')
     await expect(panel).toContainText('Test Soccer Plan')
     await expect(panel).toContainText('Warm Up Lap')
   })
 
   test('vb-dur badge is inside vb-name-row, not a standalone row', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    await openViewPanel(page)
     const nameRow = page.locator('.view-panel .vb-name-row').first()
     await expect(nameRow).toBeVisible({ timeout: 3000 })
     await expect(nameRow.locator('.vb-dur')).toBeVisible()
@@ -90,13 +96,13 @@ test.describe('PlanLibrary — view panel & edit overlay (mocked)', () => {
   })
 
   test('Edit Plan button in view panel opens pb-overlay', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    await openViewPanel(page)
     await page.locator('.view-panel .view-btn-edit').click({ timeout: 3000 })
     await expect(page.locator('.pb-overlay.open')).toBeVisible({ timeout: 5000 })
   })
 
   test('pb-overlay shows Close Editor bar with plan name', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    await openViewPanel(page)
     await page.locator('.view-panel .view-btn-edit').click({ timeout: 3000 })
     // Wait for builder to load the plan from localStorage before asserting name
     await expect(page.locator('[data-testid="builder-view"]')).toBeVisible({ timeout: 8000 })
@@ -106,12 +112,14 @@ test.describe('PlanLibrary — view panel & edit overlay (mocked)', () => {
   })
 
   test('plan card Edit button opens pb-overlay directly (no view panel needed)', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .edit-btn').click({ timeout: 10000 })
+    // Open the options menu, then click Edit
+    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .plan-card-menu-btn').click({ timeout: 10000 })
+    await page.locator('[data-testid="plan-card-test-plan-lib-1-edit-btn"]').click({ timeout: 3000 })
     await expect(page.locator('.pb-overlay.open')).toBeVisible({ timeout: 5000 })
   })
 
   test('Close Editor button dismisses the overlay', async ({ page }) => {
-    await page.locator('[data-testid="plan-card-test-plan-lib-1"] .view-btn').click({ timeout: 10000 })
+    await openViewPanel(page)
     await page.locator('.view-panel .view-btn-edit').click({ timeout: 3000 })
     // Wait for builder to load before clicking close
     await expect(page.locator('[data-testid="builder-view"]')).toBeVisible({ timeout: 8000 })

@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { plans, socialStories } from '../lib/db.js'
 import { iconsForSport, iconUrl, buildSocialStory } from '../lib/socialStoryIcons.js'
 
-export default function SocialStory() {
+export default function SocialStory({ planId: propPlanId, onExit } = {}) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const resolvedPlanId = propPlanId || searchParams.get('planId')
   const [story, setStory] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -30,14 +31,13 @@ export default function SocialStory() {
   }, [isDirty])
 
   useEffect(() => {
-    const planId = searchParams.get('planId')
-    if (!planId) { setLoading(false); return }
+    if (!resolvedPlanId) { setLoading(false); return }
     async function load() {
       try {
-        const p = await plans.get(planId)
+        const p = await plans.get(resolvedPlanId)
         if (!p) { setLoading(false); return }
         setSourcePlan(p)
-        const existing = await socialStories.getByPlanId(planId)
+        const existing = await socialStories.getByPlanId(resolvedPlanId)
         const validStory = existing && Array.isArray(existing.lines) && existing.lines.length > 0 ? existing : null
         setStory(validStory || buildSocialStory(p))
         setIsDirty(false)
@@ -167,34 +167,53 @@ export default function SocialStory() {
     return (
       <div className="container-wide" style={{ padding: '3rem 1.5rem', textAlign: 'center' }}>
         <p style={{ color: 'var(--gray-400)' }}>Plan not found.</p>
-        <button className="btn-text-back" onClick={() => navigate(-1)}>← Back</button>
+        <button className="btn-text-back" onClick={() => onExit ? onExit() : navigate(-1)}>← Back</button>
       </div>
     )
   }
 
   return (
     <>
-      <section className="hero ss-hero">
-        <div className="hero-badge">📖 Social Story</div>
-        {editingTitle
-          ? <input
-              className="ss-title-input"
-              value={story.title}
-              onChange={e => updateTitle(e.target.value)}
-              onBlur={() => setEditingTitle(false)}
-              onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
-              autoFocus
-            />
-          : <h1 onClick={() => setEditingTitle(true)}>
-              {story.title} <span className="ss-edit-icon">✏️</span>
-            </h1>
-        }
-        <p className="ss-hero-sub">Each row has icons + one sentence · Click icons to swap · Drag rows to reorder</p>
-      </section>
+      {onExit ? (
+        <div className="pb-overlay-bar">
+          <button className="btn-pb-overlay-close" onClick={() => isDirty ? setShowLeaveModal(true) : onExit()}>← Close</button>
+          {editingTitle
+            ? <input
+                style={{ background: 'transparent', border: 'none', outline: 'none', flex: 1, color: 'rgba(255,255,255,.9)', fontWeight: 600, fontSize: '.9rem', fontFamily: 'inherit' }}
+                value={story.title}
+                onChange={e => updateTitle(e.target.value)}
+                onBlur={() => setEditingTitle(false)}
+                onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
+                autoFocus
+              />
+            : <span className="pb-overlay-plan-name" onClick={() => setEditingTitle(true)} style={{ cursor: 'pointer' }}>
+                {story.title} <span style={{ opacity: .65, fontSize: '.8em' }}>✏️</span>
+              </span>
+          }
+        </div>
+      ) : (
+        <section className="hero ss-hero">
+          <div className="hero-badge">📖 Social Story</div>
+          {editingTitle
+            ? <input
+                className="ss-title-input"
+                value={story.title}
+                onChange={e => updateTitle(e.target.value)}
+                onBlur={() => setEditingTitle(false)}
+                onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
+                autoFocus
+              />
+            : <h1 onClick={() => setEditingTitle(true)}>
+                {story.title} <span className="ss-edit-icon">✏️</span>
+              </h1>
+          }
+          <p className="ss-hero-sub">Each row has icons + one sentence · Click icons to swap · Drag rows to reorder</p>
+        </section>
+      )}
 
       <div className="container-wide">
         <div className="ss-toolbar">
-          <button className="btn-text-back" onClick={() => isDirty ? setShowLeaveModal(true) : navigate(-1)}>← Back</button>
+          {!onExit && <button className="btn-text-back" onClick={() => isDirty ? setShowLeaveModal(true) : navigate(-1)}>← Back</button>}
           {sourcePlan && (
             <button className="btn-ss-clear" onClick={() => { if (window.confirm('Delete the saved story and rebuild from the plan? This cannot be undone.')) handleClearAndReset() }} title="Delete saved story and rebuild fresh">
               🗑 Reset Story
@@ -323,7 +342,7 @@ export default function SocialStory() {
             <h3>Unsaved Changes</h3>
             <p>You have unsaved changes to this social story. If you leave now they will be lost.</p>
             <div className="ss-blocker-actions">
-              <button className="btn-blocker-leave" onClick={() => { setShowLeaveModal(false); navigate(-1) }}>Leave without saving</button>
+              <button className="btn-blocker-leave" onClick={() => { setShowLeaveModal(false); onExit ? onExit() : navigate(-1) }}>Leave without saving</button>
               <button className="btn-blocker-stay" onClick={() => setShowLeaveModal(false)}>Stay and save</button>
             </div>
           </div>

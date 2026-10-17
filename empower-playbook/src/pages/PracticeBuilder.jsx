@@ -34,16 +34,12 @@ function DrillDetail({ d, showTips, showEquipment }) {
           {d.steps.map((s, i) => (
             <li key={i}>
               <span className="drill-icon">{s.icon || '▸'}</span> {s.text}
-              {s.tag && <span className={`drill-tag ${s.tag}`}>{s.tag}</span>}
             </li>
           ))}
         </ul>
       ) : d.description ? (
         <div className="block-desc">{d.description}</div>
       ) : null}
-      {showEquipment && d.equipment && d.equipment.length > 0 && (
-        <div className="equip-tip"><span className="tip-icon">🎒</span><div><strong>Equipment</strong> — {d.equipment.join(', ')}</div></div>
-      )}
       {showTips && d.why && (
         <div className="why-tip"><span className="tip-icon">🤔</span><div><strong>Why we do this</strong> — {d.why}</div></div>
       )}
@@ -59,7 +55,7 @@ function DrillDetail({ d, showTips, showEquipment }) {
   )
 }
 
-function PlanBlock({ block, idx, onEdit, onRemove, onDrop, showTips, showEquipment }) {
+function PlanBlock({ block, idx, isFirst, isLast, onEdit, onRemove, onMoveUp, onMoveDown, onDrop, showTips, showEquipment }) {
   const [isDragging, setIsDragging] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const iconMap = { warmup: block.icon || '🌟', drill: block.icon || '🏃', rotation: '🔄', break: '💧', closing: '🏁' }
@@ -79,7 +75,10 @@ function PlanBlock({ block, idx, onEdit, onRemove, onDrop, showTips, showEquipme
       <span className="block-drag-handle" title="Drag to reorder" onClick={e => e.stopPropagation()}>⠿</span>
       <span className="block-icon">{icon}</span>
       <div className="block-body">
-        <div className="block-name">{block.name}</div>
+        <div className="block-name-row">
+          <div className="block-name">{block.name}</div>
+          <span className="block-dur-badge">{block.durationMinutes} min</span>
+        </div>
         {block.type !== 'drill' && block.type !== 'warmup' && block.description && (
           <div className="block-desc">{block.description}</div>
         )}
@@ -98,8 +97,11 @@ function PlanBlock({ block, idx, onEdit, onRemove, onDrop, showTips, showEquipme
         )}
         <span className="block-edit-hint">✏️ Click to edit</span>
       </div>
-      <span className="block-dur-badge">{block.durationMinutes} min</span>
-      <button className="block-remove" title="Remove" onClick={e => { e.stopPropagation(); onRemove(idx) }}>✕</button>
+      <div className="block-actions" onClick={e => e.stopPropagation()}>
+        <button className="block-remove" title="Remove block" onClick={() => onRemove(idx)}>✕</button>
+        <button className="block-move-up" title="Move up" disabled={isFirst} onClick={() => onMoveUp(idx)}>↑</button>
+        <button className="block-move-down" title="Move down" disabled={isLast} onClick={() => onMoveDown(idx)}>↓</button>
+      </div>
     </div>
   )
 }
@@ -113,6 +115,7 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
   const [isRotational, setIsRotational] = useState(false)
   const [drillTime, setDrillTime] = useState(12)
   const [activeCat, setActiveCat] = useState('All')
+  const [drillSearch, setDrillSearch] = useState('')
   const [breakTime, setBreakTime] = useState(5)
   const [breakLabel, setBreakLabel] = useState('Water Break')
   const [closingName, setClosingName] = useState('Closing Circle')
@@ -120,13 +123,18 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
 
   const warmups = plan ? (WARMUP_BANK[plan.sport] || WARMUP_BANK.soccer || []) : []
   const drills = plan ? (drillBank[plan.sport] || []) : []
-  const cats = ['All', ...new Set(drills.map(d => d.category))]
-  const filteredDrills = activeCat === 'All' ? drills : drills.filter(d => d.category === activeCat)
+  const cats = ['All', ...new Set(drills.map(d => d.category).filter(Boolean))]
+  const filteredDrills = drills
+    .filter(d => activeCat === 'All' || d.category === activeCat)
+    .filter(d => {
+      const q = drillSearch.trim().toLowerCase()
+      return !q || (d.name || '').toLowerCase().includes(q) || (d.description || '').toLowerCase().includes(q)
+    })
 
   useEffect(() => {
     if (!open) return
     setSelectedWarmup(null); setSelectedDrill(null); setSelectedRotDrills([]); setIsRotational(false)
-    setActiveCat('All'); setWarmupTime(10); setDrillTime(12)
+    setActiveCat('All'); setDrillSearch(''); setWarmupTime(10); setDrillTime(12)
     setBreakTime(5); setBreakLabel('Water Break'); setClosingName('Closing Circle'); setClosingTime(5)
     if (editIdx !== null && plan) {
       const block = plan.blocks[editIdx]
@@ -204,25 +212,42 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
                   </div>
                 ))}
               </div>
-              <div className="time-input-row">
-                <label>Duration:</label>
-                <input type="number" min="1" max="60" value={warmupTime} onChange={e => setWarmupTime(parseInt(e.target.value) || 10)} />
-                <span className="min-label">min</span>
+              <div className="modal-drill-footer">
+                <div className="time-input-row">
+                  <label>Duration:</label>
+                  <input type="number" min="1" max="60" value={warmupTime} onChange={e => setWarmupTime(parseInt(e.target.value) || 10)} />
+                  <span className="min-label">min</span>
+                </div>
+                <button className="btn-confirm" disabled={!selectedWarmup} onClick={confirmWarmup}>{editIdx !== null ? 'Update Warmup' : 'Add Warmup'}</button>
               </div>
-              <button className="btn-confirm" disabled={!selectedWarmup} onClick={confirmWarmup}>{editIdx !== null ? 'Update Warmup' : 'Add Warmup'}</button>
             </div>
           )}
           {panel === 'drill' && (
             <div className="sub-panel active">
-              <div className="rot-toggle-row">
+              <div className="drill-filter-bar">
+                <input
+                  className="drill-search-input"
+                  type="text"
+                  placeholder="🔍 Search drills…"
+                  value={drillSearch}
+                  onChange={e => setDrillSearch(e.target.value)}
+                />
                 <label className="rot-toggle-label">
-                  <input type="checkbox" checked={isRotational} onChange={e => { setIsRotational(e.target.checked); setSelectedDrill(null); setSelectedRotDrills([]) }} /> Rotation (multiple drills)
+                  <input type="checkbox" checked={isRotational} onChange={e => { setIsRotational(e.target.checked); setSelectedDrill(null); setSelectedRotDrills([]) }} />
+                  Rotation
                 </label>
               </div>
               <div className="cat-tabs">
                 {cats.map(c => <button key={c} className={`cat-btn${activeCat === c ? ' active' : ''}`} onClick={() => setActiveCat(c)}>{c}</button>)}
               </div>
               <div className="bank-grid">
+                {filteredDrills.length === 0 && (
+                  <div className="drill-empty-state">
+                    <span>🔍</span>
+                    <p>No drills match{drillSearch ? ` "${drillSearch}"` : ' this filter'}.</p>
+                    {drillSearch && <button className="drill-empty-clear" onClick={() => { setDrillSearch(''); setActiveCat('All') }}>Clear search</button>}
+                  </div>
+                )}
                 {filteredDrills.map(d => {
                   const sel = isRotational ? selectedRotDrills.some(x => x.id === d.id) : selectedDrill?.id === d.id
                   return (
@@ -238,17 +263,19 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
                   )
                 })}
               </div>
-              {isRotational && selectedRotDrills.length > 0 && (
-                <div className="rot-calc">{selectedRotDrills.length} drills × {drillTime} min = {selectedRotDrills.length * drillTime} min total</div>
-              )}
-              <div className="time-input-row">
-                <label>{isRotational ? 'Time per drill:' : 'Duration:'}</label>
-                <input type="number" min="1" max="60" value={drillTime} onChange={e => setDrillTime(parseInt(e.target.value) || 12)} />
-                <span className="min-label">min</span>
+              <div className="modal-drill-footer">
+                {isRotational && selectedRotDrills.length > 0 && (
+                  <div className="rot-calc">{selectedRotDrills.length} drills × {drillTime} min = {selectedRotDrills.length * drillTime} min total</div>
+                )}
+                <div className="time-input-row">
+                  <label>{isRotational ? 'Time per drill:' : 'Duration:'}</label>
+                  <input type="number" min="1" max="60" value={drillTime} onChange={e => setDrillTime(parseInt(e.target.value) || 12)} />
+                  <span className="min-label">min</span>
+                </div>
+                <button className="btn-confirm" disabled={isRotational ? selectedRotDrills.length === 0 : !selectedDrill} onClick={confirmDrill}>
+                  {editIdx !== null ? (isRotational ? 'Update Rotation' : 'Update Drill') : (isRotational ? 'Add Rotation' : 'Add Drill')}
+                </button>
               </div>
-              <button className="btn-confirm" disabled={isRotational ? selectedRotDrills.length === 0 : !selectedDrill} onClick={confirmDrill}>
-                {editIdx !== null ? (isRotational ? 'Update Rotation' : 'Update Drill') : (isRotational ? 'Add Rotation' : 'Add Drill')}
-              </button>
             </div>
           )}
           {panel === 'break' && (
@@ -260,7 +287,7 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
                 <label>Label:</label>
                 <input type="text" value={breakLabel} onChange={e => setBreakLabel(e.target.value)} className="text-input-field" style={{ marginBottom: 0 }} />
               </div>
-              <div className="time-input-row" style={{ marginTop: '.5rem' }}>
+              <div className="time-input-row">
                 <label>Duration:</label>
                 <input type="number" min="1" max="30" value={breakTime} onChange={e => setBreakTime(parseInt(e.target.value) || 5)} />
                 <span className="min-label">min</span>
@@ -274,7 +301,7 @@ function Modal({ open, onClose, plan, drillBank, editIdx, onUpsert }) {
                 <label>Label:</label>
                 <input type="text" value={closingName} onChange={e => setClosingName(e.target.value)} className="text-input-field" style={{ marginBottom: 0 }} />
               </div>
-              <div className="time-input-row" style={{ marginTop: '.5rem' }}>
+              <div className="time-input-row">
                 <label>Duration:</label>
                 <input type="number" min="1" max="30" value={closingTime} onChange={e => setClosingTime(parseInt(e.target.value) || 5)} />
                 <span className="min-label">min</span>
@@ -296,8 +323,8 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
   const [wiz, setWiz] = useState({ sport: null, sportName: null, sportIcon: null, durationMinutes: 75, hasWarmup: true, planName: '' })
   const [plan, setPlan] = useState(null)
   const [drillBank, setDrillBank] = useState(BASE_DRILL_BANK)
-  const [showTips, setShowTips] = useState(true)
-  const [showEquipment, setShowEquipment] = useState(true)
+  const showTips = true
+  const showEquipment = true
   const [modalOpen, setModalOpen] = useState(false)
   const [editIdx, setEditIdx] = useState(null)
   const [progCtx, setProgCtx] = useState(null)
@@ -438,7 +465,27 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
       return { ...prev, blocks }
     })
   }
-  function handleRemove(idx) { updatePlan(prev => ({ ...prev, blocks: prev.blocks.filter((_, i) => i !== idx) })) }
+  function handleRemove(idx) {
+    const block = plan?.blocks[idx]
+    if (!window.confirm(`Remove "${block?.name || 'this block'}" from the plan?`)) return
+    updatePlan(prev => ({ ...prev, blocks: prev.blocks.filter((_, i) => i !== idx) }))
+  }
+  function handleMoveUp(idx) {
+    if (idx === 0) return
+    updatePlan(prev => {
+      const blocks = [...prev.blocks];
+      [blocks[idx - 1], blocks[idx]] = [blocks[idx], blocks[idx - 1]]
+      return { ...prev, blocks }
+    })
+  }
+  function handleMoveDown(idx) {
+    updatePlan(prev => {
+      if (idx >= prev.blocks.length - 1) return prev
+      const blocks = [...prev.blocks];
+      [blocks[idx], blocks[idx + 1]] = [blocks[idx + 1], blocks[idx]]
+      return { ...prev, blocks }
+    })
+  }
   function handleDrop(from, to) {
     updatePlan(prev => {
       const blocks = [...prev.blocks]; const [moved] = blocks.splice(from, 1); blocks.splice(to, 0, moved); return { ...prev, blocks }
@@ -640,22 +687,10 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
                 <button className="btn-pb-save" onClick={handleSave} disabled={saving || !isDirty}>
                   {saving ? 'Saving…' : 'Save Plan'}
                 </button>
-                <button className="btn-print" onClick={printPlan}>🖨️ Print Plan</button>
-                {plan?.id && <button className="btn-story" onClick={() => guardNav(() => navigate(`/social-story?planId=${encodeURIComponent(plan.id)}`))}>📖 Social Story</button>}
-                <button className="btn-new-plan" onClick={resetWizard}>↩ New Plan</button>
               </div>
               <div style={{ padding: '.3rem .1rem .1rem' }}>
                 <input type="text" value={plan.name} onChange={e => updatePlan({ name: e.target.value })}
                   style={{ width: '100%', maxWidth: 380, padding: '.4rem .65rem', border: '1.5px solid var(--gray-200,#e5e7eb)', borderRadius: '.5rem', fontSize: '.9rem', fontWeight: 600, color: 'var(--blue)', background: 'transparent', boxSizing: 'border-box' }} />
-              </div>
-              <div className="bh-opts">
-                <span className="bh-opts-label">Show:</span>
-                <label className={`print-opt-pill${showTips ? ' active' : ''}`}>
-                  <input type="checkbox" checked={showTips} onChange={e => setShowTips(e.target.checked)} />💡 Tips
-                </label>
-                <label className={`print-opt-pill${showEquipment ? ' active' : ''}`}>
-                  <input type="checkbox" checked={showEquipment} onChange={e => setShowEquipment(e.target.checked)} />🎒 Equipment
-                </label>
               </div>
             </div>
             <div className="progress-bar">
@@ -669,7 +704,11 @@ export default function PracticeBuilder({ initPlanId, onExit } = {}) {
                 </div>
               )}
               {plan.blocks.map((block, idx) => (
-                <PlanBlock key={idx} block={block} idx={idx} onEdit={openModal} onRemove={handleRemove} onDrop={handleDrop} showTips={showTips} showEquipment={showEquipment} />
+                <PlanBlock key={idx} block={block} idx={idx}
+                  isFirst={idx === 0} isLast={idx === plan.blocks.length - 1}
+                  onEdit={openModal} onRemove={handleRemove}
+                  onMoveUp={handleMoveUp} onMoveDown={handleMoveDown}
+                  onDrop={handleDrop} showTips={showTips} showEquipment={showEquipment} />
               ))}
               {left > 0 && (
                 <div className="remaining-block" onClick={() => openModal()}>
