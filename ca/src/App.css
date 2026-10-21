@@ -1,0 +1,56 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --nav-width:          240px;
+  --bottom-nav-height:  64px;
+  --top-bar-height:     56px;
+
+  /* Coach Approach brand palette */
+  --accent:        #00BDB0;
+  --accent-dark:   #008A82;
+  --accent-light:  #E0F7F5;
+  --text-primary:  #0F2027;
+  --text-secondary:#5C7878;
+  --bg:            #F2FAFA;
+  --surface:       #FFFFFF;
+  --border:        #C8E8E6;
+  --radius:        12px;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+/* ── App shell — mobile first ── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  /* room for fixed top bar + fixed bottom nav */
+  padding-top: var(--top-bar-height);
+  padding-bottom: var(--bottom-nav-height);
+}
+
+/* ── Desktop layout (≥ 768px) ── */
+@media (min-width: 768px) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .main-content {
+    flex: 1;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: var(--nav-width);
+  }
+}

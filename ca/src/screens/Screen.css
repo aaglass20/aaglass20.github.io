@@ -1,0 +1,316 @@
+/* ── Screen chrome ── */
+.screen {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+
+.screen-header {
+  margin-bottom: 24px;
+}
+
+.screen-header.space-between {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.header-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.screen-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* ── Section ── */
+.section { margin-bottom: 28px; }
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.card-highlight {
+  border-left: 4px solid var(--accent);
+}
+
+.card-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* ── Placeholder primitives ── */
+.placeholder-block {
+  background: var(--border);
+  border-radius: 6px;
+  height: 14px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+.placeholder-block.short   { height: 12px; width: 140px; }
+.placeholder-block.narrow  { width: 80px; }
+
+.placeholder-chip {
+  background: var(--border);
+  border-radius: 20px;
+  height: 24px;
+  width: 72px;
+  display: inline-block;
+  opacity: 0.65;
+}
+.placeholder-chip.short  { height: 16px; width: 80px; }
+.placeholder-chip.narrow { width: 48px; }
+.placeholder-chip.wide   { width: 120px; }
+
+.placeholder-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+/* ── Search bar ── */
+.search-bar-placeholder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  height: 44px;
+  margin-bottom: 16px;
+}
+
+/* ── Filter chips ── */
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── Quick actions (Home) ── */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.action-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent-light);
+}
+
+/* ── Drill list ── */
+.drill-list { display: flex; flex-direction: column; gap: 10px; }
+
+.drill-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drill-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: var(--accent-light);
+  flex-shrink: 0;
+}
+
+.drill-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+.drill-arrow {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--border);
+  border-top: 2px solid var(--border);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* ── Practice timeline ── */
+.timeline { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.timeline-seg {
+  display: grid;
+  grid-template-columns: 48px 8px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.seg-bar {
+  width: 4px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+
+/* ── Tab bar (inline screen tabs) ── */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Roster grid ── */
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.athlete-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.athlete-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent-light);
+}
+
+/* ── Tools list ── */
+.tools-list { display: flex; flex-direction: column; gap: 2px; }
+
+.tool-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.tool-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  flex-shrink: 0;
+}
+
+.tool-text { flex: 1; }
+
+.tool-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tool-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.chevron {
+  font-size: 20px;
+  color: var(--border);
+  font-weight: 300;
+}
+
+@media (min-width: 768px) {
+  .screen {
+    padding: 40px 40px 56px;
+    max-width: 760px;
+  }
+  .roster-grid { grid-template-columns: repeat(5, 1fr); }
+  .quick-actions { grid-template-columns: repeat(4, 1fr); }
+}

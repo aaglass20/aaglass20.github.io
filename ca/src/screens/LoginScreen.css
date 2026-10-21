@@ -1,0 +1,182 @@
+/* ── Full-screen login layout ── */
+.login-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+/* ── Hero band — teal bg with logo ── */
+.login-hero {
+  background: linear-gradient(160deg, var(--accent-dark) 0%, var(--accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 40px 40px;
+  flex: 0 0 auto;
+}
+
+.login-logo {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  display: block;
+  /* Multiply blends white pixels into the teal background — effectively knocking out the JPEG background */
+  mix-blend-mode: multiply;
+}
+
+/* ── Form card — white sheet that slides over the hero ── */
+.login-card {
+  background: var(--surface);
+  border-radius: 28px 28px 0 0;
+  padding: 32px 24px 48px;
+  flex: 1;
+  margin-top: -20px;
+  box-shadow: 0 -4px 24px rgba(15, 32, 39, 0.08);
+}
+
+.login-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* ── Form ── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.field-input {
+  height: 50px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--text-primary);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+
+.field-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 189, 176, 0.15);
+  background: var(--surface);
+}
+
+.forgot-link {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Login button ── */
+.login-btn {
+  height: 52px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.login-btn:hover  { background: var(--accent-dark); }
+.login-btn:active { transform: scale(0.98); }
+
+/* ── Sign-up footer ── */
+.login-signup {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.signup-link {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Desktop: center the whole thing in a card ── */
+@media (min-width: 768px) {
+  .login-root {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--accent-dark) 0%, var(--accent) 60%, var(--accent-light) 100%);
+  }
+
+  .login-hero {
+    background: transparent;
+    padding: 40px 40px 24px;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+  }
+
+  .login-logo { max-width: 200px; }
+
+  .login-card {
+    border-radius: 0 0 20px 20px;
+    margin-top: 0;
+    box-shadow: none;
+    width: 440px;
+    flex: 0 0 auto;
+  }
+
+  /* wrap hero + card into one floating panel */
+  .login-root::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: inherit;
+    z-index: -1;
+  }
+
+  .login-hero,
+  .login-card {
+    width: 440px;
+  }
+}
