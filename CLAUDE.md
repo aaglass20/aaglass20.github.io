@@ -54,7 +54,8 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 ### /ca — Coach Approach App
 - **What:** Coach Approach coaching app — promo landing carousel → login/signup → app shell (Home, Drills, Practice, Roster, Tools)
 - **Stack:** React 19 + Vite + React Router (HashRouter); `base: '/ca/'`; no backend yet (auth is stubbed)
-- **Dev:** `cd ca && npm run dev`; build with `npx vite build` (outputs `dist/`)
+- **Dev:** `cd ca && npm run dev` (swaps in the dev `index.html`)
+- **Deploy:** `npm run deploy` — builds, copies `dist/assets` + `dist/images` + built `index.html` into `ca/` for GitHub Pages. **Run it after any `npm run dev` before committing**, or `/ca/` is a blank page. Source page is `index.src.html` (same pattern as `empower-playbook`).
 - **Before building out this site, read `ca/NOTES.md`** — running log of brand rules, image conventions, carousel rules, and the idea backlog. Add new rules/decisions/ideas there as you go.
 
 ### /fuelup — Athlete Nutrition Meal Planner

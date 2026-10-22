@@ -15,7 +15,7 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 - **No App Store / Google Play badges** until real listings exist.
 
 ### Images
-- Full promo originals live in `public/images/*.jpeg` (2752×1536, ~2.5 MB each).
+- Full promo originals live in `design/promos/*.jpeg` (2752×1536, ~2.5 MB each) — **outside `public/`** so they don't ship with the site.
 - Page-ready crops live in `public/images/slides/*.jpg` — max 1100px, JPEG quality ~72, ~200–280 KB each.
 - Crop with `sips -c <h> <w> --cropOffset <y> <x>`. Gotcha: `--cropOffset 0 0` is ignored and crops from center — use `1 1` for the top-left corner.
 - Paths in JSX are absolute with the Vite base: `/ca/images/...`.
@@ -70,8 +70,11 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 - Demo data (`src/data/teamMock.js`): teams BDU U13 2026, U12 2025, U11 2024, U10 2025; generated rosters; opponents are fictional; all dates relative to today, nothing scheduled today.
 - Shared UI for both profiles: `components/EventCard.jsx`, `components/DayStrip.jsx`, `screens/shared.css`.
 
-### Build & testing
-- `npm run dev` for local; `npx vite build` writes `dist/`.
+### Build, deploy & testing
+- **`index.src.html` is the real source page.** `index.html` gets overwritten: `npm run dev` / `npm run build` copy the dev version in (points at `/src/main.jsx`); `npm run deploy` replaces it with the built one.
+- **After `npm run dev`, always `npm run deploy` before committing** — otherwise GitHub Pages serves the dev `index.html` and `/ca/` is a blank white page.
+- `npm run deploy` = build → copy `dist/assets` → `assets/`, `dist/images` → `images/`, `dist/index.html` → `index.html`. Commit those.
+- `npm run restore` puts the dev `index.html` back without starting the server.
 - Visual check: `npx vite preview --port 4317` + headless Chrome screenshots. Headless Chrome won't go narrower than ~500px — to test phone widths, load the page inside a 390px / 375px `<iframe>`.
 - Headless screenshots often freeze entrance animations partway (content looks faded/offset). That's the screenshot tool, not the page — don't "fix" it.
 
@@ -96,7 +99,6 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 - [ ] Add a slide for `volunter.jpeg` (Volunteer program?).
 - [ ] Each slide could link to a program detail page ("Learn more").
 - [ ] Optional pause on desktop — hover over the photo only, not the whole page.
-- [ ] Move full-size promo originals out of `public/` so they don't ship in `dist/` (~20 MB of unused images).
 - [ ] App Store / Google Play badges once listings exist.
 - [ ] Opener photo looked dim in mobile headless screenshots — verify on a real phone.
 
