@@ -14,6 +14,20 @@
   justify-content: center;
   padding: 56px 40px 40px;
   flex: 0 0 auto;
+  position: relative;
+}
+
+.login-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 4px;
 }
 
 .login-logo {
@@ -21,8 +35,6 @@
   height: 160px;
   object-fit: contain;
   display: block;
-  /* Multiply blends white pixels into the teal background — effectively knocking out the JPEG background */
-  mix-blend-mode: multiply;
 }
 
 /* ── Form card — white sheet that slides over the hero ── */

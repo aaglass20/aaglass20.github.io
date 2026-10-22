@@ -1,0 +1,117 @@
+/* ── Adaptive Sports profile screens (Home / Programs) ── */
+
+/* ── Quick actions with real labels ── */
+.quick-actions-3 { grid-template-columns: repeat(3, 1fr); }
+
+.action-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.action-link:hover  { border-color: var(--accent); }
+.action-link:active { transform: scale(0.97); }
+
+.action-icon-glyph {
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: var(--accent-dark);
+}
+
+.action-name { font-size: 14px; font-weight: 600; }
+
+/* ── Programs ── */
+.program-list { display: flex; flex-direction: column; gap: 10px; }
+
+.program-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.program-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.program-name { font-size: 16px; font-weight: 700; }
+.program-meta { font-size: 13px; color: var(--text-secondary); }
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-pill.is-active   { background: var(--accent-light); color: var(--accent-dark); }
+.status-pill.is-upcoming { background: #FFF0E6; color: #C2510F; }
+.status-pill.is-complete { background: #EEF1F2; color: var(--text-secondary); }
+
+.program-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  margin: 12px 0 6px;
+  overflow: hidden;
+}
+
+.program-progress-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+
+.program-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ── New program form ── */
+.new-program {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-left: 4px solid var(--accent);
+  animation: np-in 0.25s ease both;
+}
+
+@keyframes np-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.new-program-title,
+.new-program-sub { grid-column: 1 / -1; }
+.new-program-title { font-size: 17px; font-weight: 700; }
+.new-program-sub   { font-size: 13px; color: var(--text-secondary); margin-top: -8px; }
+
+.np-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.np-full  { grid-column: 1 / -1; }
+
+.np-field span { font-size: 12px; font-weight: 600; }
+
+.np-field input,
+.np-field select {
+  height: 42px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text-primary);
+  width: 100%;
+  min-width: 0;
+}
+
+.np-field input:focus,
+.np-field select:focus { outline: none; border-color: var(--accent); }
+
+.np-actions { display: flex; justify-content: flex-end; gap: 8px; }

@@ -1,3 +1,4 @@
+import { initialsOf, sportLabelOf } from '../data/account'
 import './AvatarSheet.css'
 
 const SETUP_ITEMS = [
@@ -7,7 +8,7 @@ const SETUP_ITEMS = [
   { icon: '◧', label: 'Preferences',       sub: 'Display, units, defaults' },
 ]
 
-export default function AvatarSheet({ open, onClose, onLogout }) {
+export default function AvatarSheet({ account, open, onClose, onLogout }) {
   return (
     <>
       {/* Backdrop */}
@@ -23,11 +24,11 @@ export default function AvatarSheet({ open, onClose, onLogout }) {
         {/* Coach profile row */}
         <div className="sheet-profile">
           <div className="sheet-avatar">
-            <span className="sheet-avatar-initials">CA</span>
+            <span className="sheet-avatar-initials">{initialsOf(account?.name)}</span>
           </div>
           <div className="sheet-profile-text">
-            <div className="sheet-coach-name">Coach Aaron</div>
-            <div className="sheet-coach-sub">3 teams · 24 athletes</div>
+            <div className="sheet-coach-name">{account?.name}</div>
+            <div className="sheet-coach-sub">{sportLabelOf(account)}</div>
           </div>
         </div>
 

@@ -1,0 +1,422 @@
+/* ── Team-based profile (Soccer): Home / Plan / Events / plan editor ── */
+
+.team-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+
+.link-btn { background: none; border: none; cursor: pointer; padding: 0; }
+
+/* Practice / game pill */
+.type-pill {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  vertical-align: 1px;
+  white-space: nowrap;
+}
+
+.type-pill.is-practice { background: var(--accent-light); color: var(--accent-dark); }
+.type-pill.is-game     { background: #FFF0E6; color: #C2510F; }
+
+.event-plan.is-empty { background: #F5F7F7; }
+.event-plan.is-empty .event-plan-title { color: var(--text-secondary); font-weight: 600; }
+
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 16px 14px;
+}
+
+.event-actions .btn-primary { text-decoration: none; }
+
+/* ── Team list (Home) ── */
+.team-list { display: flex; flex-direction: column; gap: 10px; }
+
+.team-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.team-card:hover { border-color: var(--team); }
+
+.team-card.is-selected {
+  border-color: var(--team);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--team) 20%, transparent);
+}
+
+.team-badge {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--team);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.team-card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.team-name { font-size: 16px; font-weight: 700; }
+.team-sub  { font-size: 13px; color: var(--text-secondary); }
+.team-next { font-size: 12px; font-weight: 600; color: var(--accent-dark); }
+
+.team-check { font-size: 20px; color: var(--text-secondary); }
+.team-card.is-selected .team-check { color: var(--team); font-weight: 800; }
+
+/* ── Team scope bar (Plan / Events) ── */
+.scope-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.scope-bar.is-team { border-left: 4px solid var(--team); }
+.scope-label { flex: 1; color: var(--text-secondary); }
+.scope-label strong { color: var(--text-primary); }
+
+.scope-action {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.filter-chips .chip { font: inherit; font-size: 13px; }
+
+/* ── Plan rows ── */
+.plan-rows { display: flex; flex-direction: column; gap: 8px; }
+
+.plan-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.plan-row:hover { border-color: var(--accent); }
+.plan-row .type-pill { margin-left: 0; min-width: 64px; text-align: center; }
+
+.plan-row-main  { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.plan-row-title { font-size: 15px; font-weight: 700; }
+.plan-row-sub   { font-size: 12px; color: var(--text-secondary); }
+.plan-row-status { font-size: 12px; font-weight: 600; color: var(--accent-dark); white-space: nowrap; }
+.plan-row-status.is-empty { color: #C2510F; }
+
+/* ── New plan card ── */
+.new-plan { margin-bottom: 20px; border-left: 4px solid var(--accent); }
+
+.new-plan-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.new-plan-title { font-size: 17px; font-weight: 700; }
+
+.np-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 14px 0 8px;
+}
+
+.type-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.type-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.type-option-icon  { font-size: 22px; margin-bottom: 4px; }
+.type-option-label { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.type-option-sub   { font-size: 12px; color: var(--text-secondary); }
+
+.type-option.is-practice.is-selected { border-color: var(--accent); background: var(--accent-light); }
+.type-option.is-game.is-selected     { border-color: #FF6B1A; background: #FFF0E6; }
+
+/* ── Plan editor ── */
+.back-link {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+.editor-meta { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+.section-meta { font-size: 12px; color: var(--text-secondary); }
+
+.np-field { display: flex; flex-direction: column; gap: 4px; }
+.np-field span { font-size: 12px; font-weight: 600; }
+
+.np-field input,
+.np-field textarea,
+.lineup-slot select {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--surface);
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.np-field textarea { resize: vertical; line-height: 1.4; }
+.np-field input:focus,
+.np-field textarea:focus,
+.lineup-slot select:focus { outline: none; border-color: var(--accent); }
+
+.editor-title { margin-bottom: 24px; }
+
+/* Practice drills */
+.plan-drills { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.plan-drill,
+.drill-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.plan-drill-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.plan-drill-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.plan-drill-name { font-size: 15px; font-weight: 600; }
+.plan-drill-sub  { font-size: 12px; color: var(--text-secondary); }
+
+.plan-drill-tools { display: flex; gap: 4px; }
+
+.plan-drill-tools button {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.plan-drill-tools button:disabled { opacity: 0.35; cursor: default; }
+
+.drill-picker { display: grid; grid-template-columns: 1fr; gap: 8px; }
+
+.drill-pick { font: inherit; text-align: left; cursor: pointer; width: 100%; }
+.drill-pick:hover { border-color: var(--accent); }
+
+.drill-pick-add {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--accent);
+  color: var(--accent-dark);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Tabs as buttons */
+.tab-bar .tab { background: none; border-top: none; border-left: none; border-right: none; font: inherit; font-size: 14px; }
+
+/* Lineup */
+.lineup-format {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  margin-bottom: 10px;
+}
+
+.lineup-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 24px; }
+
+.lineup-slot {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.lineup-pos {
+  height: 40px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+}
+
+.bench { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.bench-chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+
+/* Game points */
+.points { display: flex; flex-direction: column; gap: 16px; }
+.point-field span { font-size: 13px; }
+
+/* Stats */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.score-side {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+
+.score-label { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); }
+
+.score-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.score-ctrl button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.score-num { font-size: 34px; font-weight: 800; min-width: 40px; }
+
+.stats-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 44px);
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.stats-row:last-child { border-bottom: none; }
+
+.stats-head {
+  background: var(--bg);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.stats-head span { padding: 8px 0; text-align: center; }
+.stats-head span:first-child { text-align: left; padding-left: 12px; }
+
+.stats-player { padding: 10px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stats-row.is-starter .stats-player { font-weight: 600; }
+
+.stat-cell {
+  height: 40px;
+  border: none;
+  border-left: 1px solid var(--border);
+  background: none;
+  font: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.stat-cell.has-value { color: var(--accent-dark); font-weight: 800; background: var(--accent-light); }
+
+.stats-hint { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+
+@media (min-width: 768px) {
+  .team-list   { display: grid; grid-template-columns: 1fr 1fr; }
+  .lineup-grid { grid-template-columns: 1fr 1fr; }
+  .drill-picker { grid-template-columns: 1fr 1fr; }
+}

@@ -1,10 +1,11 @@
+import { firstNameOf, sportLabelOf } from '../data/account'
 import './Screen.css'
 
-export default function HomeScreen() {
+export default function HomeScreen({ account }) {
   return (
     <div className="screen">
       <div className="screen-header">
-        <div className="header-eyebrow">Good morning, Coach</div>
+        <div className="header-eyebrow">Welcome, {firstNameOf(account?.name)} · {sportLabelOf(account)}</div>
         <h1>Dashboard</h1>
       </div>
 

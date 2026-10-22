@@ -51,6 +51,12 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 - **Toggle practice plans live:** In `practice.html`, set `const PLANS_LIVE = true` (~line 553 in the script block) to publish; `false` to hide
 - **Conventions:** BDU colors — `#003366` (blue) + `#FFD700` (gold); no build step; sessions are 75 min (10:00–11:15)
 
+### /ca — Coach Approach App
+- **What:** Coach Approach coaching app — promo landing carousel → login/signup → app shell (Home, Drills, Practice, Roster, Tools)
+- **Stack:** React 19 + Vite + React Router (HashRouter); `base: '/ca/'`; no backend yet (auth is stubbed)
+- **Dev:** `cd ca && npm run dev`; build with `npx vite build` (outputs `dist/`)
+- **Before building out this site, read `ca/NOTES.md`** — running log of brand rules, image conventions, carousel rules, and the idea backlog. Add new rules/decisions/ideas there as you go.
+
 ### /fuelup — Athlete Nutrition Meal Planner
 - **What:** Drag-and-drop daily nutrition planner with compliance engine, food group tracking (USDA MyPlate), and Supabase sync
 - **Stack:** Vanilla HTML/CSS/JS; SortableJS (CDN); Supabase (`fpnmnlrwhwnuefbnehuf.supabase.co`, same project as `/empower/` and `/schedule/`)

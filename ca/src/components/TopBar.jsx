@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import AvatarSheet from './AvatarSheet'
+import { initialsOf } from '../data/account'
 import './TopBar.css'
 
 const SCREEN_TITLES = {
@@ -9,19 +10,23 @@ const SCREEN_TITLES = {
   '/practice': 'Practice',
   '/roster':   'Roster',
   '/tools':    'Tools',
+  '/programs': 'Programs',
+  '/events':   'Events',
+  '/plan':     'Plan',
 }
 
-export default function TopBar({ onLogout }) {
+export default function TopBar({ account, onLogout }) {
   const [sheetOpen, setSheetOpen] = useState(false)
   const { pathname } = useLocation()
-  const title = SCREEN_TITLES[pathname] ?? 'Coach Approach'
+  // '/plan/abc' → 'Plan'
+  const title = SCREEN_TITLES[pathname] ?? SCREEN_TITLES['/' + pathname.split('/')[1]] ?? 'Coach Approach'
 
   return (
     <>
       <header className="top-bar">
         <div className="top-bar-left">
           <img
-            src="/ca/images/calogo.jpeg"
+            src="/ca/images/coachApproachLogo.png"
             alt="CA"
             className="top-bar-logo"
             onError={e => { e.target.style.display = 'none' }}
@@ -35,12 +40,12 @@ export default function TopBar({ onLogout }) {
           aria-label="Account and settings"
         >
           <div className="avatar-ring">
-            <span className="avatar-initials">CA</span>
+            <span className="avatar-initials">{initialsOf(account?.name)}</span>
           </div>
         </button>
       </header>
 
-      <AvatarSheet open={sheetOpen} onClose={() => setSheetOpen(false)} onLogout={onLogout} />
+      <AvatarSheet account={account} open={sheetOpen} onClose={() => setSheetOpen(false)} onLogout={onLogout} />
     </>
   )
 }

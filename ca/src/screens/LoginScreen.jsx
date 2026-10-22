@@ -1,20 +1,24 @@
 import { useState } from 'react'
 import './LoginScreen.css'
 
-export default function LoginScreen({ onLogin }) {
+export default function LoginScreen({ onBack, onSignup, onLogin }) {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
 
   function handleSubmit(e) {
     e.preventDefault()
-    onLogin()
+    // Mock login — demo account is a Soccer coach with the BDU teams
+    onLogin({ name: 'Coach', email: email.trim().toLowerCase(), sport: 'soccer' })
   }
 
   return (
     <div className="login-root">
       {/* Hero band */}
       <div className="login-hero">
-        <img src="/ca/images/calogo.jpeg" alt="Coach Approach" className="login-logo" />
+        <button type="button" className="login-back" onClick={onBack} aria-label="Back">
+          ‹ Back
+        </button>
+        <img src="/ca/images/coachApproachLogo.png" alt="Coach Approach" className="login-logo" />
       </div>
 
       {/* Form card */}
@@ -59,7 +63,7 @@ export default function LoginScreen({ onLogin }) {
 
         <p className="login-signup">
           New to Coach Approach?{' '}
-          <button type="button" className="signup-link">Create account</button>
+          <button type="button" className="signup-link" onClick={onSignup}>Create account</button>
         </p>
       </div>
     </div>
