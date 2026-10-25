@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WIP Board</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>WIP Board</h1>
+      <span id="syncIndicator" class="sync-indicator idle" title="Cloud sync ready"></span>
+    </div>
+
+    <div class="filters">
+      <label>Project
+        <select id="filterProject"></select>
+      </label>
+      <label>Epic
+        <select id="filterEpic"></select>
+      </label>
+      <label>Type
+        <select id="filterType">
+          <option value="">All</option>
+          <option value="ticket">Tickets</option>
+          <option value="bug">Bugs</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" data-new-item="ticket">+ Ticket</button>
+      <button class="btn bug" data-new-item="bug">+ Bug</button>
+      <button class="btn" id="openHierarchy">Projects &amp; Epics</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner hidden"></div>
+
+  <main class="board" id="board">
+    <section class="column" data-status="backlog">
+      <header><h2>Backlog</h2><span class="count"></span></header>
+      <div class="cards"></div>
+      <button class="add-card" data-new-item="ticket" data-status="backlog">+ Add ticket</button>
+    </section>
+    <section class="column" data-status="in_progress">
+      <header><h2>In Progress</h2><span class="count"></span></header>
+      <div class="cards"></div>
+    </section>
+    <section class="column" data-status="testing">
+      <header><h2>Testing</h2><span class="count"></span></header>
+      <div class="cards"></div>
+    </section>
+    <section class="column" data-status="done">
+      <header><h2>Done</h2><span class="count"></span></header>
+      <div class="cards"></div>
+      <footer class="done-footer">
+        <span>Cleared 7 days after done</span>
+        <label class="toggle"><input type="checkbox" id="showArchived"> Show archived <span id="archivedCount"></span></label>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Ticket / bug editor -->
+  <dialog id="itemDialog" class="modal">
+    <form method="dialog" id="itemForm">
+      <header class="modal-head">
+        <div class="type-toggle" role="radiogroup" aria-label="Type">
+          <label><input type="radio" name="type" value="ticket" checked><span>Ticket</span></label>
+          <label><input type="radio" name="type" value="bug"><span>Bug</span></label>
+        </div>
+        <button type="button" class="icon-btn" data-close aria-label="Close">&times;</button>
+      </header>
+      <label class="field">Title
+        <input name="title" required maxlength="200" autocomplete="off">
+      </label>
+      <label class="field">Description
+        <textarea name="description" rows="6"></textarea>
+      </label>
+      <div class="field-row">
+        <label class="field">Epic
+          <select name="epic_id"></select>
+        </label>
+        <label class="field">Status
+          <select name="status">
+            <option value="backlog">Backlog</option>
+            <option value="in_progress">In Progress</option>
+            <option value="testing">Testing</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+      </div>
+      <p class="meta" id="itemMeta"></p>
+      <footer class="modal-foot">
+        <button type="button" class="btn danger" id="deleteItem">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Project / epic editor -->
+  <dialog id="entityDialog" class="modal">
+    <form method="dialog" id="entityForm">
+      <header class="modal-head">
+        <h3 id="entityHeading">New project</h3>
+        <button type="button" class="icon-btn" data-close aria-label="Close">&times;</button>
+      </header>
+      <label class="field" id="entityProjectField">Project
+        <select name="project_id"></select>
+      </label>
+      <label class="field">Title
+        <input name="title" required maxlength="200" autocomplete="off">
+      </label>
+      <label class="field">Description
+        <textarea name="description" rows="5"></textarea>
+      </label>
+      <footer class="modal-foot">
+        <button type="button" class="btn danger" id="deleteEntity">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Projects & epics drawer -->
+  <aside id="hierarchy" class="drawer" aria-hidden="true">
+    <header class="drawer-head">
+      <h3>Projects &amp; Epics</h3>
+      <button class="icon-btn" id="closeHierarchy" aria-label="Close">&times;</button>
+    </header>
+    <button class="btn primary block" id="newProject">+ New project</button>
+    <div id="hierarchyList"></div>
+  </aside>
+  <div id="scrim" class="scrim hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

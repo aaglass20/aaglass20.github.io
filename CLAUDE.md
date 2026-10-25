@@ -146,6 +146,13 @@ Examples: `mini-muffin` (`grains: 1`, half of `muffin`'s 2), `mini-bagel` (`grai
 
 When adding a new compliance rule: add to `evaluate()`, return it in the `rules` array with `{ pass, label, desc }`, optionally push a tip to `tips`. The engine auto-calculates pass ratio and status (green/yellow/red).
 
+### /wip — WIP Kanban Board
+- **What:** Kanban board (Backlog → In Progress → Testing → Done) with a Project → Epic → Ticket/Bug hierarchy
+- **Stack:** Vanilla HTML/CSS/JS; SortableJS (CDN); Supabase (`fpnmnlrwhwnuefbnehuf.supabase.co`, same project as `/fuelup/`)
+- **Key files:** `index.html`, `css/styles.css`, `js/app.js`, `js/config.js`, `setup.sql`
+- **Run setup.sql once** in Supabase SQL editor to create `wip_projects`, `wip_epics`, `wip_items`
+- **Conventions:** Tickets/bugs may be unlinked (`epic_id` NULL). Deleting a project cascades to its epics; deleting an epic unlinks its items. A DB trigger stamps `done_at` when an item enters Done; the board hides Done items older than `DONE_VISIBLE_DAYS` (7, in `config.js`) — they're kept in the DB and shown via "Show archived"
+
 ### /signs — Google Sheets Form Utility
 - **What:** Small utility/form that integrates with Google Sheets
 - **Stack:** HTML + Google Apps Script (`Code.gs`)
