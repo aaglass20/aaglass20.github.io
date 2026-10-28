@@ -56,21 +56,23 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'cone', 'hoop', 'pinnie', 'pole'])
+const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'football', 'cone', 'hoop', 'pinnie', 'pole'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
+const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', football: '#8a4b22', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
 
 // Sports — each has its own court/field drawing and object list (switching clears the board)
 const SPORTS = [
   { id: 'soccer',     label: '⚽ Soccer'     },
   { id: 'basketball', label: '🏀 Basketball' },
+  { id: 'football',   label: '🏈 Football'   },
 ]
-const BOTH = ['soccer', 'basketball']
+const BOTH = ['soccer', 'basketball', 'football']   // objects every sport gets
 
 const CATALOG = [
   { type: 'ball',       label: 'Soccer Ball', src: null, sports: ['soccer']     },
   { type: 'basketball', label: 'Basketball',  src: null, sports: ['basketball'] },
+  { type: 'football',   label: 'Football',    src: null, sports: ['football']   },
   { type: 'player',     label: 'Player',      src: null, sports: BOTH           },
   { type: 'player-t1',  label: 'Player 1',    src: null, sports: BOTH           },
   { type: 'player-t2',  label: 'Player 2',    src: null, sports: BOTH           },
@@ -94,14 +96,15 @@ const NUMBERED_TYPES = new Set([...MARKER_TYPES, 'player-t1', 'player-t2'])
 const NUMBER_MAX     = 20
 const PLAYER_DEFAULT_SIZE = 4   // one step up from the shared default so chest numbers stay readable
 
-// Same five views for every sport; `courtLabel` names them for basketball
+// Same five views for every sport; `names` overrides the label per sport (`src` is soccer only)
 const FIELD_CATALOG = [
-  { id: 'full',      label: 'Full Field',        courtLabel: 'Full Court',        src: null           },
-  { id: 'half',      label: 'Half Field',        courtLabel: 'Half Court',        src: 'halfield.png' },
-  { id: 'half-flip', label: 'Half Field (flip)', courtLabel: 'Half Court (flip)', src: 'halfield.png' },
-  { id: 'middle',    label: 'Middle Third',      courtLabel: 'Mid Court',         src: null           },
-  { id: 'blank',     label: 'Blank',             courtLabel: 'Blank',             src: null           },
+  { id: 'full',      label: 'Full Field',        names: { basketball: 'Full Court' },                                 src: null           },
+  { id: 'half',      label: 'Half Field',        names: { basketball: 'Half Court' },                                 src: 'halfield.png' },
+  { id: 'half-flip', label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)' },                          src: 'halfield.png' },
+  { id: 'middle',    label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield' },            src: null           },
+  { id: 'blank',     label: 'Blank',             names: {},                                                           src: null           },
 ]
+const fieldLabel = (f, sport) => f.names[sport] ?? f.label
 
 const DRAW_TYPES = [
   { id: 'line',         label: 'Line'     },
@@ -177,7 +180,8 @@ function hexToRgb(hex) {
 // Head-and-jersey bust drawn as a shaded figurine: soft ground shadow, dark outline,
 // cylindrical light→dark shading on the jersey (light from the upper left), collar,
 // sleeve cuffs, shaded head. Optional jersey number on the chest.
-// `kit` 'basketball' swaps the jersey for a sleeveless tank with bare arms and trim.
+// `kit` 'basketball' swaps the jersey for a sleeveless tank with bare arms and trim;
+// 'football' widens the shoulders over pads and puts on a helmet with a facemask.
 // Cached by `hexColor|number|kit`.
 const _playerCache = new Map()
 const PLAYER_PX    = 192
@@ -233,6 +237,26 @@ function armsPath(ctx, S) {
   })
 }
 
+// Football jersey: high, wide shoulder pads and short sleeves
+function padsPath(ctx, S) {
+  const P = (u, v) => [u * S, v * S]
+  ctx.beginPath()
+  ctx.moveTo(...P(0.40, 0.415))
+  ctx.quadraticCurveTo(...P(0.22, 0.385), ...P(0.14, 0.46))    // left pad
+  ctx.lineTo(...P(0.095, 0.585))                               // left sleeve
+  ctx.quadraticCurveTo(...P(0.11, 0.64), ...P(0.17, 0.66))     // left cuff
+  ctx.lineTo(...P(0.27, 0.62))                                 // left armpit
+  ctx.lineTo(...P(0.285, 0.86))                                // left side
+  ctx.quadraticCurveTo(...P(0.5, 0.895), ...P(0.715, 0.86))    // hem
+  ctx.lineTo(...P(0.73, 0.62))
+  ctx.lineTo(...P(0.83, 0.66))
+  ctx.quadraticCurveTo(...P(0.89, 0.64), ...P(0.905, 0.585))   // right cuff
+  ctx.lineTo(...P(0.86, 0.46))
+  ctx.quadraticCurveTo(...P(0.78, 0.385), ...P(0.60, 0.415))   // right pad
+  ctx.quadraticCurveTo(...P(0.5, 0.50), ...P(0.40, 0.415))     // collar dip
+  ctx.closePath()
+}
+
 function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   const key = `${hexColor}|${number ?? ''}|${kit}`
   if (_playerCache.has(key)) return _playerCache.get(key)
@@ -241,11 +265,12 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   const canvas = document.createElement('canvas')
   canvas.width = canvas.height = S
   const ctx = canvas.getContext('2d')
-  const head = { x: 0.5 * S, y: 0.265 * S, r: 0.135 * S }
+  const helmet = kit === 'football'
+  const head = helmet ? { x: 0.5 * S, y: 0.255 * S, r: 0.152 * S } : { x: 0.5 * S, y: 0.265 * S, r: 0.135 * S }
   const headPath = () => { ctx.beginPath(); ctx.arc(head.x, head.y, head.r, 0, Math.PI * 2) }
   const neckPath = () => { ctx.beginPath(); ctx.roundRect(0.435 * S, 0.33 * S, 0.13 * S, 0.15 * S, 0.03 * S) }
   const tank = kit === 'basketball'
-  const bodyPath = () => (tank ? tankPath : jerseyPath)(ctx, S)
+  const bodyPath = () => (tank ? tankPath : helmet ? padsPath : jerseyPath)(ctx, S)
 
   // 1. Soft ground shadow, cast down-right
   ctx.save()
@@ -302,7 +327,29 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   down.addColorStop(0.5, 'rgba(0,0,0,0)')
   down.addColorStop(1,   'rgba(0,0,0,0.25)')
   ctx.fillStyle = down; ctx.fillRect(0, 0, S, S)
-  if (!tank) {
+  if (helmet) {
+    // Shoulder-pad caps: a lit ridge across each pad and a crease where it meets the chest
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)'
+    ctx.lineWidth = 0.02 * S
+    ctx.beginPath()
+    ctx.moveTo(0.37 * S, 0.43 * S); ctx.quadraticCurveTo(0.22 * S, 0.41 * S, 0.16 * S, 0.48 * S)
+    ctx.moveTo(0.63 * S, 0.43 * S); ctx.quadraticCurveTo(0.78 * S, 0.41 * S, 0.84 * S, 0.48 * S)
+    ctx.stroke()
+    ctx.strokeStyle = 'rgba(0,0,0,0.22)'
+    ctx.lineWidth = 0.012 * S
+    ctx.beginPath()
+    ctx.moveTo(0.30 * S, 0.45 * S); ctx.quadraticCurveTo(0.27 * S, 0.54 * S, 0.27 * S, 0.62 * S)
+    ctx.moveTo(0.70 * S, 0.45 * S); ctx.quadraticCurveTo(0.73 * S, 0.54 * S, 0.73 * S, 0.62 * S)
+    ctx.stroke()
+    // Sleeve stripes
+    ctx.strokeStyle = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.85)'
+    ctx.lineWidth = 0.018 * S
+    ctx.beginPath()
+    ctx.moveTo(0.105 * S, 0.555 * S); ctx.lineTo(0.205 * S, 0.62 * S)
+    ctx.moveTo(0.895 * S, 0.555 * S); ctx.lineTo(0.795 * S, 0.62 * S)
+    ctx.stroke()
+  } else if (!tank) {
     // Sleeve cuffs + seams where the sleeves meet the body
     ctx.strokeStyle = shadeHex(hexColor, -0.35)
     ctx.lineWidth = 0.022 * S
@@ -354,7 +401,42 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     ctx.fillText(String(number), 0.5 * S, 0.665 * S)
   }
 
-  // 5. Head: sphere shading + rim highlight
+  // 5. Head — football gets a helmet in the team color instead
+  if (helmet) {
+    const shell = ctx.createRadialGradient(head.x - head.r * 0.4, head.y - head.r * 0.45, head.r * 0.08, head.x, head.y, head.r)
+    shell.addColorStop(0,    shadeHex(hexColor, 0.55))
+    shell.addColorStop(0.55, hexColor)
+    shell.addColorStop(1,    shadeHex(hexColor, -0.4))
+    headPath(); ctx.fillStyle = shell; ctx.fill()
+    ctx.save()
+    headPath(); ctx.clip()
+    // Center stripe over the crown
+    ctx.fillStyle = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.9)'
+    ctx.fillRect(head.x - 0.017 * S, head.y - head.r, 0.034 * S, head.r * 0.62)
+    // Face opening, skin shaded darker under the brim
+    const face = ctx.createLinearGradient(0, head.y - 0.02 * S, 0, head.y + head.r)
+    face.addColorStop(0, PLAYER_SKIN.dark)
+    face.addColorStop(0.4, PLAYER_SKIN.mid)
+    face.addColorStop(1, PLAYER_SKIN.dark)
+    ctx.beginPath(); ctx.roundRect(head.x - 0.08 * S, head.y - 0.025 * S, 0.16 * S, 0.2 * S, 0.04 * S)
+    ctx.fillStyle = face; ctx.fill()
+    ctx.restore()
+    // Facemask — grey bars with a dark edge so they read on any skin or shell color
+    const bars = (w, color) => {
+      ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round'
+      ctx.beginPath()
+      ctx.moveTo(head.x - 0.105 * S, head.y + 0.03 * S); ctx.quadraticCurveTo(head.x, head.y + 0.055 * S, head.x + 0.105 * S, head.y + 0.03 * S)
+      ctx.moveTo(head.x - 0.09 * S, head.y + 0.085 * S); ctx.quadraticCurveTo(head.x, head.y + 0.11 * S, head.x + 0.09 * S, head.y + 0.085 * S)
+      ctx.moveTo(head.x, head.y + 0.043 * S); ctx.lineTo(head.x, head.y + 0.135 * S)
+      ctx.stroke()
+    }
+    bars(0.03 * S, 'rgba(0,0,0,0.7)')
+    bars(0.016 * S, '#d1d5db')
+    ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 0.016 * S; ctx.stroke()
+    _playerCache.set(key, canvas)
+    return canvas
+  }
   const skin = ctx.createRadialGradient(head.x - head.r * 0.35, head.y - head.r * 0.4, head.r * 0.1, head.x, head.y, head.r)
   skin.addColorStop(0,   PLAYER_SKIN.light)
   skin.addColorStop(0.6, PLAYER_SKIN.mid)
@@ -932,6 +1014,68 @@ function drawBasketball(ctx, S, hex) {
   ball(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
 }
 
+// Football — leather prolate ball lying on a diagonal, white end stripes and laces
+function drawFootball(ctx, S, hex) {
+  const cx = 0.47 * S, cy = 0.47 * S, RX = 0.43 * S, RY = 0.25 * S, tilt = -Math.PI / 4
+  const trim = luminance(hex) > 170 ? '#3f2a1a' : '#f8fafc'
+  const shape = (c) => {
+    // Pointed ends: two arcs meeting at the tips
+    c.beginPath()
+    c.moveTo(-RX, 0)
+    c.bezierCurveTo(-RX * 0.55, -RY * 1.32, RX * 0.55, -RY * 1.32, RX, 0)
+    c.bezierCurveTo(RX * 0.55, RY * 1.32, -RX * 0.55, RY * 1.32, -RX, 0)
+    c.closePath()
+  }
+  softShadow(ctx, S, (c) => { c.translate(cx, cy); c.rotate(tilt); shape(c); c.fill() }, 0.06 * S, 0.07 * S, 5, 0.35)
+
+  ctx.save()
+  ctx.translate(cx, cy); ctx.rotate(tilt)
+  shape(ctx); ctx.fillStyle = hex; ctx.fill()
+  ctx.save()
+  shape(ctx); ctx.clip()
+  // Pebble grain
+  ctx.fillStyle = 'rgba(0,0,0,0.12)'
+  for (let i = 0; i < 200; i++) {
+    const a = i * 2.39996, d = Math.sqrt(i / 200)
+    ctx.beginPath(); ctx.arc(Math.cos(a) * d * RX, Math.sin(a) * d * RY, 0.006 * S, 0, Math.PI * 2); ctx.fill()
+  }
+  // End stripes (curved with the ball)
+  ctx.strokeStyle = trim
+  ctx.lineWidth = 0.035 * S
+  ;[-1, 1].forEach(e => {
+    ctx.beginPath()
+    ctx.moveTo(e * RX * 0.62, -RY)
+    ctx.quadraticCurveTo(e * RX * 0.56, 0, e * RX * 0.62, RY)
+    ctx.stroke()
+  })
+  // Seam + laces along the top
+  ctx.strokeStyle = 'rgba(0,0,0,0.35)'
+  ctx.lineWidth = 0.012 * S
+  ctx.beginPath(); ctx.moveTo(-RX * 0.95, -RY * 0.05); ctx.quadraticCurveTo(0, -RY * 0.25, RX * 0.95, -RY * 0.05); ctx.stroke()
+  ctx.strokeStyle = trim
+  ctx.lineCap = 'round'
+  ctx.lineWidth = 0.022 * S
+  ctx.beginPath(); ctx.moveTo(-RX * 0.3, -RY * 0.19); ctx.lineTo(RX * 0.3, -RY * 0.19); ctx.stroke()
+  ctx.lineWidth = 0.016 * S
+  ctx.beginPath()
+  for (let k = -3; k <= 3; k++) { const x = k * RX * 0.085; ctx.moveTo(x, -RY * 0.34); ctx.lineTo(x, -RY * 0.04) }
+  ctx.stroke()
+  // Shading: lit from the upper left (undo the tilt so the light stays put)
+  ctx.rotate(-tilt)
+  const g = ctx.createRadialGradient(-RX * 0.35, -RX * 0.35, RX * 0.05, 0, 0, RX)
+  g.addColorStop(0,    'rgba(255,255,255,0.4)')
+  g.addColorStop(0.45, 'rgba(255,255,255,0)')
+  g.addColorStop(0.75, 'rgba(0,0,0,0.18)')
+  g.addColorStop(1,    'rgba(0,0,0,0.5)')
+  ctx.fillStyle = g; ctx.fillRect(-S, -S, S * 2, S * 2)
+  ctx.filter = 'blur(2px)'
+  ctx.fillStyle = 'rgba(255,255,255,0.45)'
+  ctx.beginPath(); ctx.ellipse(-RX * 0.28, -RX * 0.26, RX * 0.16, RX * 0.07, -Math.PI / 4, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+  shape(ctx); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
+  ctx.restore()
+}
+
 // Disc cone — side-on frustum with an open top and ridge rings
 function drawCone(ctx, S, hex) {
   const bx = 0.5 * S, by = 0.68 * S, rb = 0.4 * S, rt = 0.11 * S, h = 0.24 * S
@@ -1100,7 +1244,7 @@ function drawPinnie(ctx, S, hex) {
   ctx.restore()
 }
 
-const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
+const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, football: drawFootball, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
 
 function getEquipCanvas(type, hexColor) {
   const key = `${type}|${hexColor}`
@@ -1981,7 +2125,7 @@ export default function App() {
       <nav className="sidebar">
         <SidebarBtn
           label="Objects"
-          imgSrc={sport === 'basketball' ? equipPreview('basketball') : `${import.meta.env.BASE_URL}soccerball.png`}
+          imgSrc={sport === 'soccer' ? `${import.meta.env.BASE_URL}soccerball.png` : equipPreview(sport)}
           active={activePanel === 'objects'}
           onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'objects' ? null : 'objects') }}
         />
@@ -2016,7 +2160,7 @@ export default function App() {
         <div className="panel-header">{sport === 'basketball' ? 'Courts' : 'Fields'}</div>
         <div className="field-list">
           {FIELD_CATALOG.map(f => {
-            const label = sport === 'basketball' ? f.courtLabel : f.label
+            const label = fieldLabel(f, sport)
             return (
               <button
                 key={f.id}
@@ -2948,6 +3092,7 @@ const HALF_GOAL_Y = 521, HALF_GOAL_H = 18   // trimmed right + top to sit inside
 
 function FieldBackground({ sport, field, halfImg, fieldW, fieldH }) {
   if (sport === 'basketball') return <BasketballCourt field={field} />
+  if (sport === 'football')   return <FootballField field={field} />
   const net = getNetPattern()
   const greenBorder = <Rect x={-GBUF} y={-GBUF} width={fieldW+GBUF*2} height={fieldH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
 
@@ -3161,6 +3306,111 @@ function BasketballCourt({ field }) {
       {backdrop}
       <Group clipX={-2} clipY={-2} clipWidth={W + 4} clipHeight={H + 4} listening={false}>
         <Group {...group}><CourtLines lw={LINE_PX / s} /></Group>
+      </Group>
+    </>
+  )
+}
+
+// ── Football field ────────────────────────────────────────────────────────────
+// NFL field (53⅓ × 120 yd incl. 10-yd end zones) drawn in yards inside a scaled
+// Group on mowed grass stripes. Views match the other sports: full field fits the
+// portrait canvas; half field is landscape with the end zone at the bottom (top
+// when flipped) — turned 180° rather than mirrored so the numbers stay readable;
+// midfield turns the field sideways and crops both ends.
+const GRID_W = 160 / 3, GRID_L = 120
+const HASH_IN = 70.75 / 3   // hash marks 70'9" in from each sideline (NFL)
+const NUM_H   = 3.2         // yard-number height — a bit over the real 2 yd so they read at board size
+
+function FootballLines({ lw }) {
+  const line = { stroke: 'white', strokeWidth: lw, listening: false }
+  const yards = []
+  for (let y = 15; y <= 105; y += 5) yards.push(y)
+  const ticks = []
+  for (let y = 11; y < 110; y++) if (y % 5) ticks.push(y)
+  return (
+    <>
+      {/* Mowing stripes every 5 yards, end zones a shade darker */}
+      {Array.from({ length: 20 }, (_, i) => (
+        <Rect key={i} x={0} y={10 + i * 5} width={GRID_W} height={5} fill={i % 2 ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.04)'} listening={false} />
+      ))}
+      <Rect x={0} y={0}   width={GRID_W} height={10} fill="rgba(0,0,0,0.14)" listening={false} />
+      <Rect x={0} y={110} width={GRID_W} height={10} fill="rgba(0,0,0,0.14)" listening={false} />
+      {/* Yard lines + goal lines */}
+      {yards.map(y => <Line key={y} points={[0, y, GRID_W, y]} {...line} />)}
+      <Line points={[0, 10, GRID_W, 10]}   {...line} strokeWidth={lw * 2} />
+      <Line points={[0, 110, GRID_W, 110]} {...line} strokeWidth={lw * 2} />
+      {/* One-yard ticks: along both sidelines and at both hash lines */}
+      {ticks.map(y => (
+        <Group key={y}>
+          <Line points={[0.33, y, 1, y]} {...line} />
+          <Line points={[GRID_W - 1, y, GRID_W - 0.33, y]} {...line} />
+          <Line points={[HASH_IN, y, HASH_IN + 0.67, y]} {...line} />
+          <Line points={[GRID_W - HASH_IN - 0.67, y, GRID_W - HASH_IN, y]} {...line} />
+        </Group>
+      ))}
+      {/* Try lines */}
+      <Line points={[GRID_W / 2 - 0.5, 12, GRID_W / 2 + 0.5, 12]} {...line} />
+      <Line points={[GRID_W / 2 - 0.5, 108, GRID_W / 2 + 0.5, 108]} {...line} />
+      {/* Numbers every 10 yards, tops toward the middle, with an arrow toward the nearer goal */}
+      {[20, 30, 40, 50, 60, 70, 80, 90, 100].map(y => {
+        const n = 50 - Math.abs(60 - y)
+        return [0, 1].map(side => {
+          const x = side ? GRID_W - 11 : 11
+          const rot = side ? -90 : 90
+          const toward = y < 60 ? -1 : 1   // nearer goal is at smaller y in the first half
+          return (
+            <Group key={`${y}-${side}`} listening={false}>
+              <KonvaText x={x} y={y} text={String(n)} fontSize={NUM_H} fontStyle="bold" fontFamily="system-ui, -apple-system, Arial, sans-serif"
+                         fill="rgba(255,255,255,0.92)" width={8} height={NUM_H} offsetX={4} offsetY={NUM_H / 2} align="center" verticalAlign="middle" rotation={rot} />
+              {n !== 50 && (
+                <Line points={side
+                  ? [x - 0.3, y + toward * 3.2, x - 1.3, y + toward * 3.2, x - 0.8, y + toward * 4.3]
+                  : [x + 0.3, y + toward * 3.2, x + 1.3, y + toward * 3.2, x + 0.8, y + toward * 4.3]}
+                  closed fill="rgba(255,255,255,0.92)" listening={false} />
+              )}
+            </Group>
+          )
+        })
+      })}
+      {/* Goalposts on the end lines, seen from above */}
+      {[0, GRID_L].map(y => (
+        <Group key={y} listening={false}>
+          <Line points={[GRID_W / 2 - 3.08, y, GRID_W / 2 + 3.08, y]} stroke="#facc15" strokeWidth={lw * 2.4} lineCap="round" />
+          <Circle x={GRID_W / 2} y={y} radius={0.45} fill="#facc15" stroke="rgba(0,0,0,0.5)" strokeWidth={lw * 0.6} />
+        </Group>
+      ))}
+      <Rect width={GRID_W} height={GRID_L} {...line} strokeWidth={lw * 1.6} />
+    </>
+  )
+}
+
+function FootballField({ field }) {
+  const full = field === 'full'
+  const W = full ? FW : LW, H = full ? FH : LH
+  const padY = full ? GOAL_D + GBUF : GBUF
+  const backdrop = <Rect x={-GBUF} y={-padY} width={W + GBUF * 2} height={H + padY * 2} fill="#2d8b2d" cornerRadius={4} listening={false} />
+  if (field === 'blank') return backdrop
+
+  const LINE_PX = 2
+  let s, group
+  if (full) {
+    s = Math.min(FW / GRID_W, FH / GRID_L)
+    group = { x: (FW - GRID_W * s) / 2, y: (FH - GRID_L * s) / 2, scaleX: s, scaleY: s }
+  } else if (field === 'middle') {
+    s = LH / GRID_W
+    group = { x: LW / 2 + (GRID_L / 2) * s, y: 0, scaleX: s, scaleY: s, rotation: 90 }
+  } else {
+    // Half field: end zone along one edge, running 2 yd past the 50 so its numbers aren't cut
+    s = LH / (GRID_L / 2 + 2)
+    group = field === 'half-flip'
+      ? { x: (LW - GRID_W * s) / 2, y: 0, scaleX: s, scaleY: s }
+      : { x: (LW + GRID_W * s) / 2, y: LH, scaleX: s, scaleY: s, rotation: 180 }
+  }
+  return (
+    <>
+      {backdrop}
+      <Group clipX={-2} clipY={-2} clipWidth={W + 4} clipHeight={H + 4} listening={false}>
+        <Group {...group}><FootballLines lw={LINE_PX / s} /></Group>
       </Group>
     </>
   )

@@ -1516,3 +1516,32 @@ canvas {
   width: 1.5px;
   background: rgba(255,255,255,0.85);
 }
+
+/* ── Football field thumbnails ── */
+.field-preview[data-sport="football"] {
+  background: repeating-linear-gradient(90deg, #2d8b2d 0 9px, rgba(255,255,255,0.75) 9px 10px, #2a822a 10px 19px, rgba(255,255,255,0.75) 19px 20px);
+}
+.field-preview[data-sport="football"][data-field="full"] {
+  background: repeating-linear-gradient(180deg, #2d8b2d 0 5px, rgba(255,255,255,0.7) 5px 6px);
+  border: 2px solid rgba(255,255,255,0.6);
+}
+.field-preview[data-sport="football"][data-field="full"]::after { display: none; }
+.field-preview[data-sport="football"][data-field="half"],
+.field-preview[data-sport="football"][data-field="half-flip"] {
+  background: repeating-linear-gradient(180deg, #2d8b2d 0 7px, rgba(255,255,255,0.7) 7px 8px);
+}
+.field-preview[data-sport="football"][data-field="half"]::after,
+.field-preview[data-sport="football"][data-field="half-flip"]::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; height: 22%;
+  bottom: 0;
+  background: #1f6e1f;
+  border-top: 2px solid #fff;
+}
+.field-preview[data-sport="football"][data-field="half-flip"]::after {
+  bottom: auto; top: 0;
+  border-top: none;
+  border-bottom: 2px solid #fff;
+}
+.field-preview[data-sport="football"][data-field="blank"] { background: #2d8b2d; }
