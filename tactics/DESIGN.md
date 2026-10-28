@@ -1,12 +1,30 @@
 # Soccer Tactics Board — Design Rules
 
-## Field
+## Canvas (`canvasFor(sport, field)`)
 
-- Canvas size: **928 × 632px** (field 840×544 + 44px padding on each side)
-- Field color: `#2d8b2d` (grass green)
-- All field lines: white, 2–2.5px stroke
-- Field dimensions at **8px per meter** (105m × 68m standard)
-- Goals render as semi-transparent white rectangles extending beyond the field boundary
+Each view picks a field area plus room outside it for goals; the stage adds 44px `PAD` on every side and a 14px `GBUF` border.
+
+| Canvas | Field area | Goal room | Used by |
+|---|---|---|---|
+| Portrait | 544 × 840 | `padY` 20 | Full Field / Court / Rink (not diamonds) |
+| Horizontal | 840 × 544 | `padX` 20 | Soccer Horizontal |
+| Side | 440 × 544 (`SIDE_W`) | — | Soccer Horizontal Left / Right |
+| Landscape | 840 × 544 | — | everything else (half views, middle, blank, all diamond views) |
+
+Drag bounds and the draw-capture rect use the same `padX` / `padY`.
+
+## Soccer Pitch (`SoccerPitch`)
+
+- FIFA pitch (68 × 105 m) drawn in **metres** in a scaled Group — no images (`halfield.png` is no longer used). Grass `#2d8b2d` with 18 mowing stripes; white lines 2px; penalty + goal areas, spots, penalty arcs, corner arcs, center circle, nets (2.5 m deep) using the tiled net pattern.
+- `PitchEnd` draws one end (goal line at y = 0); the far end is the same component mirrored.
+- Views (`views` in `SoccerPitch`):
+  - **Full Field** — portrait at 8 px/m, goals top and bottom in the canvas padding.
+  - **Horizontal** — the full pitch turned 90°, goals left and right.
+  - **Half Field** / **(flip)** — half the pitch fit to the landscape height, goal at the bottom / top.
+  - **Horizontal Left** / **Right** — half the pitch side-on at 8 px/m on the 440-wide canvas, goal on the left / right, halfway line on the far edge.
+  - **Middle Third** — turned sideways, only sidelines, halfway line and center circle (`ends={false}`).
+  - **Blank** — grass.
+- The three Horizontal views are soccer-only (`FIELD_CATALOG[].sports`). Switching to a sport that doesn't have the current view resets to Full Field (`fieldInSport`).
 
 ## Sports (`SPORTS`, dropdown at the left of the header)
 
@@ -41,7 +59,7 @@
 
 - One drawing for both sports, sized by `DIAMOND_SPECS` (feet): baseball 90 ft bases, 60.5 ft rubber, grass infield with a 95 ft skin arc, 330/400 ft fence; softball 60 ft bases, 43 ft rubber with an 8 ft pitching circle, all-dirt infield (60 ft arc), 200/220 ft fence.
 - Home plate at the origin, y toward center field (the Group flips y). `fenceDist` curves the fence from the foul-line distance at ±45° to the center distance; `diamondOutline` adds foul territory and a backstop arc. Layers: warning track, grass, skin (a dirt circle clipped to fair territory), infield grass (baseball), home circle, mound, foul lines (starting at the batter's boxes), running lane, batter's + catcher's boxes, on-deck circles, bases, rubber, plate, fence and yellow foul poles. Bases/plate/rubber have a minimum on-screen size so they still show when zoomed out.
-- **All diamond views are landscape** — `isFullField` (the portrait canvas) is false for diamond sports. Views fit a box of the field: **Full Field**, **Infield**, **Outfield**, **Home Plate** (close-up of the boxes), **Blank**.
+- **All diamond views are landscape** — `canvasFor` never gives diamonds the portrait canvas. Views fit a box of the field: **Full Field**, **Infield**, **Outfield**, **Home Plate** (close-up of the boxes), **Blank**.
 
 ## Hockey Rink (`HockeyRink`)
 

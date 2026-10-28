@@ -4,16 +4,21 @@ import './App.css'
 
 // Full field (portrait): 68m wide × 105m tall at 8px/m
 const FW = 544, FH = 840, PAD = 44
-const SW = FW + PAD * 2, SH = FH + PAD * 2
-const CX = FW / 2, CY = FH / 2
-const PA_HW = 162, PA_D = 132, GA_HW = 73, GA_D = 44
-const PS_D = 88, CIRCLE_R = 73, ARC_X = 58.3
-const GOAL_HW = 30, GOAL_D = 20
+const GOAL_D = 20   // goal depth (2.5 m) — room the canvas leaves past the goal lines
 const GBUF = 14   // green border around all fields
 
-// Image-based fields (half, blank) use a larger landscape canvas
+// Landscape canvas (half fields, middle, blank, and every diamond/court side view)
 const LW = 840, LH = 544
-const LSW = LW + PAD * 2, LSH = LH + PAD * 2
+// Soccer side-on half pitch (Horizontal Left/Right): 52.5 m + goal depth at 8 px/m
+const SIDE_W = 440
+
+// Canvas for a view: field area w × h, plus room outside it for goals (padX / padY)
+function canvasFor(sport, field) {
+  if (field === 'full' && !DIAMOND.has(sport)) return { w: FW, h: FH, padX: 0, padY: GOAL_D }
+  if (field === 'horizontal')                  return { w: LW, h: LH, padX: GOAL_D, padY: 0 }
+  if (field === 'horizontal-left' || field === 'horizontal-right') return { w: SIDE_W, h: LH, padX: 0, padY: 0 }
+  return { w: LW, h: LH, padX: 0, padY: 0 }
+}
 
 const SIZE_RADII   = [10, 13, 17, 22, 27, 34]
 const DEFAULT_SIZE = 3
@@ -106,15 +111,20 @@ const NUMBERED_TYPES = new Set([...MARKER_TYPES, 'player-t1', 'player-t2'])
 const NUMBER_MAX     = 20
 const PLAYER_DEFAULT_SIZE = 4   // one step up from the shared default so chest numbers stay readable
 
-// Same five views for every sport; `names` overrides the label per sport (`src` is soccer only)
+// Views per sport: the shared five, plus soccer's horizontal ones (`sports` limits a view;
+// `names` overrides its label per sport)
 const FIELD_CATALOG = [
-  { id: 'full',      label: 'Full Field',        names: { basketball: 'Full Court', hockey: 'Full Rink' },                                 src: null           },
-  { id: 'half',      label: 'Half Field',        names: { basketball: 'Half Court', baseball: 'Infield', softball: 'Infield', hockey: 'Half Rink' },          src: 'halfield.png' },
-  { id: 'half-flip', label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)', baseball: 'Outfield', softball: 'Outfield', hockey: 'Half Rink (flip)' }, src: 'halfield.png' },
-  { id: 'middle',    label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield', baseball: 'Home Plate', softball: 'Home Plate', hockey: 'Neutral Zone' }, src: null },
-  { id: 'blank',     label: 'Blank',             names: {},                                                           src: null           },
+  { id: 'full',             label: 'Full Field',        names: { basketball: 'Full Court', hockey: 'Full Rink' } },
+  { id: 'horizontal',       label: 'Horizontal',        names: {}, sports: ['soccer'] },
+  { id: 'half',             label: 'Half Field',        names: { basketball: 'Half Court', baseball: 'Infield', softball: 'Infield', hockey: 'Half Rink' } },
+  { id: 'half-flip',        label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)', baseball: 'Outfield', softball: 'Outfield', hockey: 'Half Rink (flip)' } },
+  { id: 'horizontal-left',  label: 'Horizontal Left',   names: {}, sports: ['soccer'] },
+  { id: 'horizontal-right', label: 'Horizontal Right',  names: {}, sports: ['soccer'] },
+  { id: 'middle',           label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield', baseball: 'Home Plate', softball: 'Home Plate', hockey: 'Neutral Zone' } },
+  { id: 'blank',            label: 'Blank',             names: {} },
 ]
-const fieldLabel = (f, sport) => f.names[sport] ?? f.label
+const fieldLabel  = (f, sport) => f.names[sport] ?? f.label
+const fieldInSport = (id, sport) => { const f = FIELD_CATALOG.find(v => v.id === id); return !!f && (!f.sports || f.sports.includes(sport)) }
 
 const DRAW_TYPES = [
   { id: 'line',         label: 'Line'     },
@@ -1523,11 +1533,11 @@ export default function App() {
   const [textCtxMenu,    setTextCtxMenu]    = useState(null)
 
   // Active canvas dims — must be computed before any callbacks that reference them
-  const isFullField = currentField === 'full' && !DIAMOND.has(sport)   // portrait canvas; diamonds are landscape
-  const aFW = isFullField ? FW : LW
-  const aFH = isFullField ? FH : LH
-  const aSW = isFullField ? SW : LSW
-  const aSH = isFullField ? SH : LSH
+  const canvas = canvasFor(sport, currentField)
+  const aFW = canvas.w
+  const aFH = canvas.h
+  const aSW = aFW + PAD * 2
+  const aSH = aFH + PAD * 2
   const aCX = aFW / 2
   const aCY = aFH / 2
 
@@ -1567,27 +1577,13 @@ export default function App() {
   const nextTextId     = useRef(0)
   const textEditRef    = useRef(null)
 
-  // Load all catalog + field images once
+  // Load any image-based catalog objects once
   useEffect(() => {
     CATALOG.forEach(({ type, src }) => {
       if (!src) return
       const img = new window.Image()
       img.src = `${import.meta.env.BASE_URL}${src}`
       img.onload = () => setImages(prev => ({ ...prev, [type]: img }))
-    })
-    // Deduplicate by src so halfield.png only loads once; both half and half-flip share the same image
-    const seenSrcs = new Map()
-    FIELD_CATALOG.filter(f => f.src).forEach(({ id, src }) => {
-      if (!seenSrcs.has(src)) {
-        const img = new window.Image()
-        img.src = `${import.meta.env.BASE_URL}${src}`
-        img.onload = () => setImages(prev => {
-          const updates = {}
-          FIELD_CATALOG.filter(f => f.src === src).forEach(f => { updates[`field_${f.id}`] = img })
-          return { ...prev, ...updates }
-        })
-        seenSrcs.set(src, true)
-      }
     })
   }, [])
 
@@ -2041,7 +2037,8 @@ export default function App() {
     clearBoard()
     historyRef.current = []
     setSport(next)
-  }, [sport, placedObjects, drawings, shapes, textItems, clearBoard])
+    if (!fieldInSport(currentField, next)) setCurrentField('full')
+  }, [sport, currentField, placedObjects, drawings, shapes, textItems, clearBoard])
 
   const openAnimation = useCallback(async (file) => {
     if (!file) return
@@ -2346,7 +2343,7 @@ export default function App() {
       <aside className={`objects-panel${activePanel === 'fields' ? ' open' : ''}`}>
         <div className="panel-header">{sport === 'basketball' ? 'Courts' : sport === 'hockey' ? 'Rinks' : 'Fields'}</div>
         <div className="field-list">
-          {FIELD_CATALOG.map(f => {
+          {FIELD_CATALOG.filter(f => !f.sports || f.sports.includes(sport)).map(f => {
             const label = fieldLabel(f, sport)
             return (
               <button
@@ -2355,9 +2352,7 @@ export default function App() {
                 onClick={() => setCurrentField(f.id)}
                 title={label}
               >
-                <div className="field-preview" data-field={f.id} data-sport={sport}>
-                  {f.src && sport === 'soccer' && <img src={`${import.meta.env.BASE_URL}${f.src}`} alt={label} />}
-                </div>
+                <div className="field-preview" data-field={f.id} data-sport={sport} />
                 <span className="field-card-label">{label}</span>
               </button>
             )
@@ -2676,7 +2671,7 @@ export default function App() {
           onClick={() => { setContextMenu(null); setSelectedShapeId(null); setSelectedTextId(null) }}
         >
           <Layer x={PAD} y={PAD}>
-            <FieldBackground sport={sport} field={currentField} halfImg={images['field_half']} fieldW={aFW} fieldH={aFH} />
+            <FieldBackground sport={sport} field={currentField} canvas={canvas} />
 
             {/* Live preview line while recording a free path */}
             <Line
@@ -2888,7 +2883,7 @@ export default function App() {
 
             {/* Placed objects */}
             {placedObjects.map(obj => {
-              const pos = frames[currentFrame]?.positions[obj.id] ?? { x: CX, y: CY }
+              const pos = frames[currentFrame]?.positions[obj.id] ?? { x: aCX, y: aCY }
               const r   = getRadius(obj.size) * (MODEL_TYPES.has(obj.type) ? GOAL_RADIUS_MULT : 1)
 
               return (
@@ -2920,10 +2915,10 @@ export default function App() {
                   // Konva passes absolute (on-screen) coords, so the stage-unit bounds are scaled by fieldScale.
                   dragBoundFunc={(p) => {
                     const k = fieldScale
-                    const yMin = isFullField ? PAD - GOAL_D - GBUF : PAD - GBUF
-                    const yMax = isFullField ? PAD + aFH + GOAL_D + GBUF : PAD + aFH + GBUF
+                    const { padX, padY } = canvas
+                    const yMin = PAD - padY - GBUF, yMax = PAD + aFH + padY + GBUF
                     return {
-                      x: Math.max((PAD - GBUF) * k, Math.min(p.x, (PAD + aFW + GBUF) * k)),
+                      x: Math.max((PAD - padX - GBUF) * k, Math.min(p.x, (PAD + aFW + padX + GBUF) * k)),
                       y: Math.max(yMin * k, Math.min(p.y, yMax * k)),
                     }
                   }}
@@ -2943,9 +2938,9 @@ export default function App() {
             {/* Draw capture rect — on top of everything when draw panel is open */}
             {activePanel === 'draw' && (
               <Rect
-                x={-GBUF} y={isFullField ? -(GOAL_D + GBUF) : -GBUF}
-                width={aFW + GBUF * 2}
-                height={isFullField ? aFH + (GOAL_D + GBUF) * 2 : aFH + GBUF * 2}
+                x={-(canvas.padX + GBUF)} y={-(canvas.padY + GBUF)}
+                width={aFW + (canvas.padX + GBUF) * 2}
+                height={aFH + (canvas.padY + GBUF) * 2}
                 fill="transparent"
                 onMouseDown={handleDrawStart}
                 onMouseMove={handleDrawMove}
@@ -3271,48 +3266,12 @@ export default function App() {
 }
 
 // ── Field background switcher ─────────────────────────────────────────────────
-// Half-field goal net overlay in rendered (840×544) space.
-// Goal frame is the small rectangle that extends below the outer field line at the bottom center.
-// Y measured from the top of the canvas; flip case mirrors to the top.
-const HALF_GOAL_X = 378, HALF_GOAL_W = 76
-const HALF_GOAL_Y = 521, HALF_GOAL_H = 18   // trimmed right + top to sit inside goal frame
-
-function FieldBackground({ sport, field, halfImg, fieldW, fieldH }) {
+function FieldBackground({ sport, field, canvas }) {
   if (sport === 'basketball') return <BasketballCourt field={field} />
   if (sport === 'football')   return <FootballField field={field} />
   if (DIAMOND.has(sport))     return <DiamondField field={field} sport={sport} />
   if (sport === 'hockey')     return <HockeyRink field={field} />
-  const net = getNetPattern()
-  const greenBorder = <Rect x={-GBUF} y={-GBUF} width={fieldW+GBUF*2} height={fieldH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
-
-  if (field === 'blank') {
-    return greenBorder
-  }
-  if (field === 'middle') {
-    return <MiddleThirdField />
-  }
-  if (field === 'half' || field === 'half-flip') {
-    if (!halfImg) return greenBorder
-    const flipped = field === 'half-flip'
-    // In 'half-flip' the image is rendered scaleY=-1 from y=fieldH, so image pixel at
-    // source y maps to canvas y = fieldH - source_y. Goal at bottom → canvas top.
-    const goalY = flipped ? fieldH - (HALF_GOAL_Y + HALF_GOAL_H) : HALF_GOAL_Y
-    return (
-      <>
-        {greenBorder}
-        <KonvaImage image={halfImg} y={flipped ? fieldH : 0} width={fieldW} height={fieldH} scaleY={flipped ? -1 : 1} />
-        {/* Darken the image to match the full-field green shade (#2d8b2d) */}
-        <Rect width={fieldW} height={fieldH} fill="rgba(0,0,0,0.26)" listening={false} />
-        <Rect x={HALF_GOAL_X} y={goalY} width={HALF_GOAL_W} height={HALF_GOAL_H}
-              fillPatternImage={net} fillPatternRepeat="repeat"
-              fillPatternOffsetX={0} fillPatternOffsetY={0}
-              stroke="rgba(255,255,255,0.5)" strokeWidth={1}
-              listening={false} />
-      </>
-    )
-  }
-  // Full field always uses portrait FIFA constants (FW=544, FH=840)
-  return <SoccerField />
+  return <SoccerPitch field={field} canvas={canvas} />
 }
 
 // ── Net pattern — tiled 5×5 grid cell, created once ─────────────────────────
@@ -3335,57 +3294,88 @@ function getNetPattern() {
   return c
 }
 
-// ── Middle third field (landscape, same canvas as half field) ────────────────
-// Shows only the center band: sidelines + halfway line + center circle.
-// Left/right edges are open cuts — no goal lines drawn.
-function MiddleThirdField() {
-  const LCX = LW / 2
-  const LCY = LH / 2
+// ── Soccer pitch ──────────────────────────────────────────────────────────────
+// FIFA pitch (68 × 105 m) drawn in metres inside a scaled Group on mowed grass
+// stripes, goal ends at y = 0 and y = 105. At 8 px/m it exactly fills the
+// portrait (544 × 840) and Horizontal (840 × 544) canvases, with the goals in the
+// canvas padding. Half views fit half the pitch with the goal at the bottom, top,
+// left or right; Middle Third turns it sideways and shows only the center markings.
+const PITCH_W = 68, PITCH_L = 105, PITCH_PX = 8
+const GOAL_DEPTH_M = GOAL_D / PITCH_PX
+
+function PitchEnd({ lw, s }) {
+  const line = { stroke: 'white', strokeWidth: lw, listening: false }
+  const cx = PITCH_W / 2
+  const dot = Math.max(0.25, 3 / s)
   return (
     <>
-      <Rect x={-GBUF} y={-GBUF} width={LW+GBUF*2} height={LH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
-      {/* Sidelines only — no left/right goal lines */}
-      <Line points={[0, 0, LW, 0]}   stroke="white" strokeWidth={2.5} />
-      <Line points={[0, LH, LW, LH]} stroke="white" strokeWidth={2.5} />
-      {/* Halfway line */}
-      <Line points={[LCX, 0, LCX, LH]} stroke="white" strokeWidth={2} />
-      {/* Center circle + spot */}
-      <Circle x={LCX} y={LCY} radius={CIRCLE_R} stroke="white" strokeWidth={2} fill="transparent" />
-      <Circle x={LCX} y={LCY} radius={3.5} fill="white" />
+      <Rect x={cx - 20.16} y={0} width={40.32} height={16.5} {...line} />
+      <Rect x={cx - 9.16}  y={0} width={18.32} height={5.5}  {...line} />
+      <Circle x={cx} y={11} radius={dot} fill="white" listening={false} />
+      {/* Penalty arc: the part of the 9.15 m circle around the spot outside the area */}
+      <Path data={`M ${cx - 7.31} 16.5 A 9.15 9.15 0 0 0 ${cx + 7.31} 16.5`} {...line} />
+      {[0, PITCH_W].map(x => (
+        <Path key={x} data={x ? `M ${x - 1} 0 A 1 1 0 0 0 ${x} 1` : `M 0 1 A 1 1 0 0 0 1 0`} {...line} />
+      ))}
+      <Rect x={cx - 3.66} y={-GOAL_DEPTH_M} width={7.32} height={GOAL_DEPTH_M}
+            fillPatternImage={getNetPattern()} fillPatternRepeat="repeat" fillPatternScale={{ x: 1 / s, y: 1 / s }}
+            {...line} strokeWidth={lw * 1.2} />
     </>
   )
 }
 
-// ── Soccer field (static) ─────────────────────────────────────────────────────
-function SoccerField() {
-  const net = getNetPattern()
+// `ends` false (Middle Third) keeps just the center band: sidelines, halfway line, circle
+function PitchLines({ lw, s, ends = true }) {
+  const line = { stroke: 'white', strokeWidth: lw, listening: false }
+  const BANDS = 18
   return (
     <>
-      <Rect x={-GBUF} y={-(GOAL_D+GBUF)} width={FW+GBUF*2} height={FH+(GOAL_D+GBUF)*2} fill="#2d8b2d" cornerRadius={4} />
-      <Rect width={FW} height={FH} stroke="white" strokeWidth={2.5} fill="transparent" />
-      <Line points={[0, CY, FW, CY]} stroke="white" strokeWidth={2} />
-      <Circle x={CX} y={CY} radius={CIRCLE_R} stroke="white" strokeWidth={2} fill="transparent" />
-      <Circle x={CX} y={CY} radius={3.5} fill="white" />
-      <Rect x={CX-PA_HW} y={0}       width={PA_HW*2} height={PA_D}   stroke="white" strokeWidth={2} fill="transparent" />
-      <Rect x={CX-GA_HW} y={0}       width={GA_HW*2} height={GA_D}   stroke="white" strokeWidth={2} fill="transparent" />
-      <Circle x={CX} y={PS_D}        radius={3.5} fill="white" />
-      <Path data={`M ${CX+ARC_X} ${PA_D} A ${CIRCLE_R} ${CIRCLE_R} 0 0 1 ${CX-ARC_X} ${PA_D}`}
-            stroke="white" strokeWidth={2} fill="transparent" />
-      {/* Top goal — net fill */}
-      <Rect x={CX-GOAL_HW} y={-GOAL_D} width={GOAL_HW*2} height={GOAL_D}
-            stroke="white" strokeWidth={2}
-            fillPatternImage={net} fillPatternRepeat="repeat"
-            fillPatternOffsetX={0} fillPatternOffsetY={0} />
-      <Rect x={CX-PA_HW} y={FH-PA_D} width={PA_HW*2} height={PA_D}   stroke="white" strokeWidth={2} fill="transparent" />
-      <Rect x={CX-GA_HW} y={FH-GA_D} width={GA_HW*2} height={GA_D}   stroke="white" strokeWidth={2} fill="transparent" />
-      <Circle x={CX} y={FH-PS_D}    radius={3.5} fill="white" />
-      <Path data={`M ${CX+ARC_X} ${FH-PA_D} A ${CIRCLE_R} ${CIRCLE_R} 0 0 0 ${CX-ARC_X} ${FH-PA_D}`}
-            stroke="white" strokeWidth={2} fill="transparent" />
-      {/* Bottom goal — net fill */}
-      <Rect x={CX-GOAL_HW} y={FH}   width={GOAL_HW*2} height={GOAL_D}
-            stroke="white" strokeWidth={2}
-            fillPatternImage={net} fillPatternRepeat="repeat"
-            fillPatternOffsetX={0} fillPatternOffsetY={0} />
+      {Array.from({ length: BANDS }, (_, i) => (
+        <Rect key={i} x={0} y={(PITCH_L / BANDS) * i} width={PITCH_W} height={PITCH_L / BANDS}
+              fill={i % 2 ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.04)'} listening={false} />
+      ))}
+      <Line points={[0, PITCH_L / 2, PITCH_W, PITCH_L / 2]} {...line} />
+      <Circle x={PITCH_W / 2} y={PITCH_L / 2} radius={9.15} {...line} />
+      <Circle x={PITCH_W / 2} y={PITCH_L / 2} radius={Math.max(0.25, 3 / s)} fill="white" listening={false} />
+      {ends ? (
+        <>
+          <PitchEnd lw={lw} s={s} />
+          <Group y={PITCH_L} scaleY={-1}><PitchEnd lw={lw} s={s} /></Group>
+          <Rect width={PITCH_W} height={PITCH_L} {...line} strokeWidth={lw * 1.25} />
+        </>
+      ) : (
+        <>
+          <Line points={[0, 0, 0, PITCH_L]} {...line} strokeWidth={lw * 1.25} />
+          <Line points={[PITCH_W, 0, PITCH_W, PITCH_L]} {...line} strokeWidth={lw * 1.25} />
+        </>
+      )}
+    </>
+  )
+}
+
+function SoccerPitch({ field, canvas }) {
+  const { w: W, h: H, padX, padY } = canvas
+  const backdrop = <Rect x={-(GBUF + padX)} y={-(GBUF + padY)} width={W + (GBUF + padX) * 2} height={H + (GBUF + padY) * 2} fill="#2d8b2d" cornerRadius={4} listening={false} />
+  if (field === 'blank') return backdrop
+
+  const halfFit = LH / (PITCH_L / 2 + GOAL_DEPTH_M + 0.1)
+  const views = {
+    full:               { s: PITCH_PX, x: 0, y: 0 },
+    horizontal:         { s: PITCH_PX, x: LW, y: 0, rotation: 90 },
+    half:               { s: halfFit, x: (LW - PITCH_W * halfFit) / 2, y: LH - (GOAL_DEPTH_M + 0.1) * halfFit, flipY: true },
+    'half-flip':        { s: halfFit, x: (LW - PITCH_W * halfFit) / 2, y: (GOAL_DEPTH_M + 0.1) * halfFit },
+    'horizontal-left':  { s: PITCH_PX, x: GOAL_D, y: LH, rotation: -90 },
+    'horizontal-right': { s: PITCH_PX, x: SIDE_W - GOAL_D, y: 0, rotation: 90 },
+    middle:             { s: PITCH_PX, x: LW / 2 + (PITCH_L / 2) * PITCH_PX, y: 0, rotation: 90 },
+  }
+  const v = views[field] ?? views.full
+  const group = { x: v.x, y: v.y, scaleX: v.s, scaleY: v.flipY ? -v.s : v.s, rotation: v.rotation ?? 0 }
+  return (
+    <>
+      {backdrop}
+      <Group clipX={-padX - 2} clipY={-padY - 2} clipWidth={W + padX * 2 + 4} clipHeight={H + padY * 2 + 4} listening={false}>
+        <Group {...group}><PitchLines lw={2 / v.s} s={v.s} ends={field !== 'middle'} /></Group>
+      </Group>
     </>
   )
 }

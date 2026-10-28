@@ -717,16 +717,39 @@ canvas {
   background: rgba(255,255,255,0.5);
 }
 
-/* Half field: image fills the preview */
-.field-preview[data-field="half"] img,
-.field-preview[data-field="half-flip"] img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Soccer views — CSS-drawn: the pitch outline, halfway line and the penalty box on the goal side */
+.field-preview[data-sport="soccer"]::before,
+.field-preview[data-sport="soccer"]::after { content: ''; position: absolute; }
+.field-preview[data-sport="soccer"][data-field="horizontal"] { border: 2px solid rgba(255,255,255,0.6); }
+.field-preview[data-sport="soccer"][data-field="horizontal"]::after {
+  top: 0; bottom: 0; left: 50%; width: 1px; height: auto; background: rgba(255,255,255,0.6);
 }
-
-.field-preview[data-field="half-flip"] img {
-  transform: scaleY(-1);
+.field-preview[data-sport="soccer"][data-field="half"]::after,
+.field-preview[data-sport="soccer"][data-field="half-flip"]::after {
+  left: 32%; width: 36%; height: 32%; bottom: 0;
+  border: 1.5px solid rgba(255,255,255,0.75); border-bottom: none;
+}
+.field-preview[data-sport="soccer"][data-field="half-flip"]::after {
+  bottom: auto; top: 0; border-bottom: 1.5px solid rgba(255,255,255,0.75); border-top: none;
+}
+.field-preview[data-sport="soccer"][data-field="horizontal-left"]::after,
+.field-preview[data-sport="soccer"][data-field="horizontal-right"]::after {
+  top: 22%; height: 56%; width: 22%; left: 0;
+  border: 1.5px solid rgba(255,255,255,0.75); border-left: none;
+}
+.field-preview[data-sport="soccer"][data-field="horizontal-right"]::after {
+  left: auto; right: 0; border-right: none; border-left: 1.5px solid rgba(255,255,255,0.75);
+}
+.field-preview[data-sport="soccer"][data-field="horizontal-left"]::before,
+.field-preview[data-sport="soccer"][data-field="horizontal-right"]::before,
+.field-preview[data-sport="soccer"][data-field="middle"]::before {
+  top: 0; bottom: 0; right: 0; width: 1px; background: rgba(255,255,255,0.6);
+}
+.field-preview[data-sport="soccer"][data-field="horizontal-right"]::before { right: auto; left: 0; }
+.field-preview[data-sport="soccer"][data-field="middle"]::before { right: auto; left: 50%; }
+.field-preview[data-sport="soccer"][data-field="middle"]::after {
+  left: 50%; top: 50%; width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.6); transform: translate(-50%, -50%);
 }
 
 .field-card-label {
