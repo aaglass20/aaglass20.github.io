@@ -7,8 +7,8 @@ Each view picks a field area plus room outside it for goals; the stage adds 44px
 | Canvas | Field area | Goal room | Used by |
 |---|---|---|---|
 | Portrait | 544 × 840 | `padY` 20 | Full Field / Court / Rink (not diamonds) |
-| Horizontal | 840 × 544 | `padX` 20 | Soccer Horizontal |
-| Side | 440 × 544 (`SIDE_W`) | — | Soccer Horizontal Left / Right |
+| Horizontal | 840 × 544 | `padX` 20 (soccer only) | Horizontal (soccer, basketball, football, hockey) |
+| Side | 440 × 544 (`SIDE_W`) | — | Horizontal Left / Right (same sports) |
 | Landscape | 840 × 544 | — | everything else (half views, middle, blank, all diamond views) |
 
 Drag bounds and the draw-capture rect use the same `padX` / `padY`.
@@ -24,12 +24,12 @@ Drag bounds and the draw-capture rect use the same `padX` / `padY`.
   - **Horizontal Left** / **Right** — half the pitch side-on at 8 px/m on the 440-wide canvas, goal on the left / right, halfway line on the far edge.
   - **Middle Third** — turned sideways, only sidelines, halfway line and center circle (`ends={false}`).
   - **Blank** — grass.
-- The three Horizontal views are soccer-only (`FIELD_CATALOG[].sports`). Switching to a sport that doesn't have the current view resets to Full Field (`fieldInSport`).
+- The three Horizontal views exist for every sport in `SIDEWAYS` (soccer, basketball, football, hockey — not the diamonds) via `FIELD_CATALOG[].sports`. Switching to a sport that doesn't have the current view resets to Full Field (`fieldInSport`).
 
 ## Sports (`SPORTS`, dropdown at the left of the header)
 
 - **Soccer**, **Basketball**, **Football**, **Baseball**, **Softball** and **Hockey**. The sport picks the field drawing, the object list and the player kit.
-- Each `CATALOG` entry lists its `sports`. Shared: Player / Player 1 / Player 2, Team 1 / Team 2, Cone, Pinnie. Soccer only: Soccer Ball, Goal, Hoop, Pole, Pop-up Goal, Free Kick, Arch. Basketball only: Basketball. Football only: Football. Baseball / Softball: their own ball. Hockey: Puck. Each `SPORTS` entry names its `ball` type, which is also the sidebar's Objects icon.
+- Each `CATALOG` entry lists its `sports`. Shared: Player / Player 1 / Player 2, Team 1 / Team 2, Cone, Pinnie. Soccer only: Soccer Ball, Goal, Hoop, Pole, Pop-up Goal, Free Kick, Arch. Basketball only: Basketball. Football only: Football. Baseball / Softball: their own ball. Hockey: Puck, Hockey Goal. Basketball also has Positions 1 / Positions 2 and Ball Rack; Football has Field Goal; Baseball / Softball have Batter, Bat, Soft Toss, Hit Stick, Hitting Net, Tee, Home Plate and Base (`DIAMOND_IDS`). Each `SPORTS` entry names its `ball` type, which is also the sidebar's Objects icon.
 - Switching sport **clears the board and undo history** (after a confirm if anything is on it), so objects never cross sports.
 - Saved plays store `sport`; older files without it open as soccer.
 - Players take `kit = sport`: basketball draws a sleeveless tank (`tankPath`) with bare arms (`armsPath`) and contrast trim (white, or dark on light colors) instead of the sleeved jersey. Football draws a wide shoulder-pad jersey (`padsPath`) with pad highlights and sleeve stripes, and swaps the head for a team-color helmet (center stripe, face opening, grey facemask). Baseball and softball share `kit = 'baseball'` (`kitFor`): the sleeved jersey plus a button placket and a team-color ball cap (crown, seam, top button, brim). Hockey uses the sleeved jersey with hem + sleeve stripes, gloves at the cuffs, a stick hanging from the right glove (blade pointing out), and a smaller team-color helmet with a wire cage.
@@ -46,6 +46,7 @@ Drag bounds and the draw-capture rect use the same `padX` / `padY`.
   - **Half Court**: landscape 840×544, basket at the bottom (`scaleY` negative), half-court line on the top edge. **Flip** puts the basket at the top.
   - **Mid Court**: landscape, court turned 90° and centered on the half-court line; ends are clipped. Planks rotate with it.
   - **Blank**: floor only.
+- **Horizontal** / **Horizontal Left** / **Horizontal Right**: like soccer — the full court turned 90° on the landscape canvas, or half the court side-on on the 440-wide side canvas with the basket left / right and the half-court line on the far edge. Planks turn with the court.
 - Field-panel thumbnails for basketball are CSS-only (`.field-preview[data-sport="basketball"]`).
 
 ## Football Field (`FootballField`)
@@ -53,7 +54,7 @@ Drag bounds and the draw-capture rect use the same `padX` / `padY`.
 - NFL geometry in **yards** (53⅓ × 120 incl. 10-yd end zones) inside a scaled Group, line width `2px / scale`, on the soccer green `#2d8b2d`.
 - Mowing stripes every 5 yd, darker end zones, yard lines every 5, thick goal lines, 1-yd ticks at both sidelines and both hash lines (`HASH_IN` = 70'9"), try-line dashes, yellow goalposts on the end lines.
 - Numbers every 10 yd (`NUM_H` 3.2 yd — larger than the real 2 yd so they read at board size), tops toward the middle, with an arrow at the top pointing to the nearer goal (none at the 50).
-- Views: **Full Field** portrait, fit to height. **Half Field** landscape, end zone at the bottom, running 2 yd past the 50 so its numbers aren't cut — turned **180°, not mirrored**, so numbers stay readable. **Flip** puts the end zone on top. **Midfield** turns the field sideways, centered on the 50, ends clipped. **Blank** is plain grass.
+- Views: **Full Field** portrait, fit to height. **Half Field** landscape, end zone at the bottom, running 2 yd past the 50 so its numbers aren't cut — turned **180°, not mirrored**, so numbers stay readable. **Flip** puts the end zone on top. **Midfield** turns the field sideways, centered on the 50, ends clipped. **Horizontal** turns the full field 90°; **Horizontal Left / Right** show half the field side-on (2 yd past the 50) with the end zone left / right. Numbers face the sidelines as on a real field, so the far row reads upside down. **Blank** is plain grass.
 
 ## Baseball / Softball Diamond (`DiamondField`)
 
@@ -66,7 +67,10 @@ Drag bounds and the draw-capture rect use the same `padX` / `padY`.
 - NHL geometry in **feet** (85 × 200, 28 ft corner radius) inside a scaled Group; markings are clipped to the rounded rink (`roundRectPath`).
 - White-blue ice `#eef6fb`, red goal lines (11 ft from the boards), trapezoids, light-blue creases with red outline, nets, 4 end-zone faceoff circles (r 15, hash marks, dots), neutral-zone dots, 1-ft blue lines (75 ft from each end) and red center line, blue center circle, referee's crease. Boards: yellow kick plate inside a dark cap. Slate surround `#475569`.
 - `RinkEnd` draws one end with the boards at y = 0; the far end is the same component mirrored.
-- Views: **Full Rink** portrait; **Half Rink** landscape with the end boards at the bottom (**flip**: top) and the red line along the far edge; **Neutral Zone** turned sideways and centered on the red line; **Blank** is plain ice.
+- Views: **Full Rink** portrait; **Half Rink** landscape with the end boards at the bottom (**flip**: top) and the red line along the far edge; **Neutral Zone** turned sideways and centered on the red line; **Horizontal** turns the full rink 90°; **Horizontal Left / Right** show half the rink side-on with the end boards left / right; **Blank** is plain ice.
+
+### Horizontal views (`sidewaysGroup(field, L, Wd, half, endPad)`)
+Shared by basketball, football and hockey: returns the scale and Group transform for Horizontal (full length fit to 840×544) and Horizontal Left / Right (`half` of the length fit to `SIDE_W` × 544, `endPad` units of room behind the end line). It uses **rotation ±90° only, never mirroring**, so numbers and text stay readable. Hockey nudges the result by its 1.5 ft board thickness.
 
 ## Object Model
 
@@ -126,7 +130,8 @@ Triggered by **double-click** on any object. Contains:
 1. **Color** — 8 color swatches (types in `COLORIZABLE`)
 2. **Facing** — compass grid (3D models only: goals, pop-up goal, free-kick mannequin, arch)
 3. **Size** — 6 dot buttons, visually sized to match their radius
-4. **Rotate 90°** — increments `rotation` by 90 mod 360 (only the pinnie now; everything else is `isUpright` — it stays upright or uses Facing)
+4. **Rotate** — `rotateStep(type)`: 45° for `ROTATE_45` (bat, hit stick, home plate, base), 90° for the pinnie. Only `FLAT_TYPES` rotate; everything else is `isUpright` — it stays upright or uses Facing
+   - **View** Front / Back (`.ctx-toggle`) for every player type; **Bats** Right / Left for the batter (`setPlayerOpt`)
 5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`). Layer order is the object's position in `placedObjects` (later entries draw on top); buttons disable at the top/bottom. Undoable, and saved with the play.
 6. **Duplicate** — copies all metadata + positions in every frame, offset +28px
 7. **Delete** — removes from all frames
@@ -196,6 +201,17 @@ A head-and-jersey bust (same silhouette as the old icon) drawn as a shaded figur
 - **No rotation:** Rotate is hidden and rendering forces `rotation=0` so the figure stays upright
 - **Catalog cards:** `playerPreview()` for the plain player; `numberedPreview(type, n)` for the teams (shows the next number)
 
+### Positions (`pos-t1`, `pos-t2`, basketball)
+- `POSITION_TYPES`: Positions 1 (green `#22c55e`) and Positions 2 (red `#ef4444`) wear the basketball kit with a position on the chest instead of a number: `POSITIONS = ['PG','SG','SF','PF','C']`.
+- `nextTag(objects, type)` gives the next free label (`{ number }`, `{ position }`, `{}`, or `null` when all are used — the card and Duplicate disable); `tagLabel()` renders it. Each team counts separately. 2-letter labels use a 0.17S font.
+
+### Back view (`obj.back`, `opts.back`)
+- Any player can be turned around from the menu. The back draws a shallower neckline, no placket, and a larger number (1.22×, lower at y 0.645). Hair covers the back of the head; the baseball cap shows its crown, strap opening and button (no brim); the football helmet shows a full stripe; the hockey helmet shows vents and a rim.
+
+### Batter (`batter`, baseball / softball)
+- The baseball figurine with a bat over one shoulder (`opts.bat` `'R'` / `'L'`, saved as `obj.bats`, default R). A righty's bat rests on their right shoulder — the viewer's **left** from the front and **right** from the back. From the front, two white batting gloves hold the handle at the chest; from the back the bat is drawn before the body, so the shoulder hides the handle and hands.
+- Cache key: `hex|label|kit|f/b|bat`. Card: `batterPreview(kit)`.
+
 ## Generated Equipment (`ball`, `basketball`, `football`, `baseball`, `softball`, `puck`, `cone`, `hoop`, `pole`, `pinnie`)
 
 `getEquipCanvas(type, hexColor)` dispatches to `EQUIP_RENDERERS[type]` on a 192×192 canvas (`EQUIP_PX`). Cached by `type|hex`, previewed on catalog cards by `equipPreview(type)`. These replaced the photo-based images and the old knockout/recolor/outline pixel pipeline.
@@ -214,6 +230,12 @@ Shared helpers: `softShadow(ctx, S, draw, dx, dy, blur, alpha)` (solid shape on 
 | `cone`   | Red `#ef4444`    | Side-on disc cone (frustum): side shading, 2 ridge rings across the front (a dark groove with a light edge), an open top drawn as a dark hole with a lit far rim |
 | `hoop`   | Blue `#3b82f6`   | A tube ring on the grass: outline ring, color ring, then the same ring shifted down-right (shade) and up-left (highlight), so the lit side stays consistent all the way round |
 | `pole`   | Yellow `#facc15` | Disc base (a short cylinder with a lit top face), an upright rod lit on the left with a rounded cap, and a collar at the join. Its shadow stretches across the grass to the lower right |
+| `ballrack` | Silver `#cbd5e1` | `drawBallRack`: front view of a 3-shelf cart — 3 rows of 4 mini basketballs, rounded-top side frames in the color, casters |
+| `bat` | Wood `#c8955c` | `drawBat`: a tapered bat on a diagonal, black grip tape and knob at the lower left. Rotates 45° |
+| `hitstick` | Yellow `#facc15` | `drawHitStick`: a thin black shaft with a grip and a ball on the end in the color. Rotates 45° |
+| `softtoss` | Yellow `#fde047` | `drawSoftToss`: a wiffle-style ball with dark slots |
+| `tee` | Black `#1f2937` | `drawTee`: side-on rubber base, a stem and a flared cup |
+| `plate` / `base` | White `#f8fafc` | `drawFlatSlab`: a pentagon plate / square base with an edge for thickness; the base has a dashed seam. Rotate 45° |
 | `pinnie` | Red `#ef4444`    | A flat mesh vest: outline, side shading, a dot mesh texture, 2 soft folds (crease + highlight), and contrast trim on the neck, armholes and wavy hem (gold, or dark on light colors with luminance > 170). Drawn at 90% so the hem stays inside the circular clip |
 
 - **Rotation:** ball, cone, hoop and pole are upright (`isUpright`), so Rotate is hidden. The pinnie lies flat and keeps Rotate 90°.
@@ -327,6 +349,15 @@ Built from bars only (tube shading, like the goal posts):
 - **Feet:** at each side, an orange foot tube running front-to-back (±0.24) with a black T hub, black end caps and a black connector sleeve up to the arch leg
 - Symmetric front/back, so facings 180° apart look the same (4 distinct orientations)
 - Default color orange `#f97316` (tubes; black parts stay black). Default size 3.
+
+### `fieldgoal` — field goal (`FIELDGOAL_MODEL`)
+Gooseneck post off a dark base pad, a crossbar and two tall uprights with red ribbons on top. Default yellow `#facc15`, size 4.
+
+### `hockey-goal` — hockey net (`HOCKEY_GOAL_MODEL`)
+Red posts and crossbar, light grey top and base curves running back, white mesh. Default red `#d42a2a`, size 2.
+
+### `hit-net` — hitting net (`HIT_NET_MODEL`)
+Square frame with a bulged net, ground legs and back braces. Default dark `#1f2937`, size 3.
 
 ### Context menu + catalog
 - A **Facing** compass (3×3 grid: NW N NE / W ↻ E / SW S SE; tooltips "Faces N" etc.). The center ↻ rotates 45° clockwise. It replaces Rotate 90° for all 3D models, and the menu clamps higher on screen because it's taller.

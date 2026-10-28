@@ -1633,3 +1633,66 @@ canvas {
   border-radius: 18px 18px 4px 4px;
 }
 .field-preview[data-sport="hockey"][data-field="blank"] { background: #eef6fb; }
+
+/* ── Two-way toggle in the object menu (Front/Back, Bats Right/Left) ── */
+.ctx-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  margin: 2px 0 4px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+}
+.ctx-toggle button {
+  flex: 1;
+  padding: 5px 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ctx-toggle button.active {
+  background: linear-gradient(180deg, #4b5563, #374151);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 0 rgba(0,0,0,0.4);
+}
+
+/* ── Horizontal views for court, football field, rink ── */
+.field-preview[data-sport="basketball"][data-field="horizontal"] { border: 2px solid rgba(255,255,255,0.75); }
+.field-preview[data-sport="basketball"][data-field="horizontal"]::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1.5px; background: rgba(255,255,255,0.85);
+}
+.field-preview[data-sport="basketball"][data-field="horizontal-left"]::after,
+.field-preview[data-sport="basketball"][data-field="horizontal-right"]::after {
+  content: ''; position: absolute; top: 34%; height: 32%; width: 30%; left: 0;
+  border: 1.5px solid rgba(255,255,255,0.85); border-left: none; background: rgba(196,86,28,0.35);
+}
+.field-preview[data-sport="basketball"][data-field="horizontal-right"]::after {
+  left: auto; right: 0; border-right: none; border-left: 1.5px solid rgba(255,255,255,0.85);
+}
+.field-preview[data-sport="football"][data-field="horizontal"] {
+  background: linear-gradient(90deg, #1f6e1f 0 8%, transparent 8% 92%, #1f6e1f 92%),
+              repeating-linear-gradient(90deg, #2d8b2d 0 9px, rgba(255,255,255,0.75) 9px 10px);
+  border: 2px solid rgba(255,255,255,0.6);
+}
+.field-preview[data-sport="football"][data-field="horizontal-left"] {
+  background: linear-gradient(90deg, #1f6e1f 0 16%, #fff 16% 18%, transparent 18%),
+              repeating-linear-gradient(90deg, #2d8b2d 0 9px, rgba(255,255,255,0.75) 9px 10px);
+}
+.field-preview[data-sport="football"][data-field="horizontal-right"] {
+  background: linear-gradient(270deg, #1f6e1f 0 16%, #fff 16% 18%, transparent 18%),
+              repeating-linear-gradient(90deg, #2d8b2d 0 9px, rgba(255,255,255,0.75) 9px 10px);
+}
+.field-preview[data-sport="hockey"][data-field="horizontal"] { border: 2px solid #1e293b; }
+.field-preview[data-sport="hockey"][data-field="horizontal-left"] {
+  background: linear-gradient(90deg, transparent 10%, #d42a2a 10% 12%, transparent 12% 52%, #1d4ed8 52% 58%, transparent 58% 96%, #d42a2a 96%), #eef6fb;
+  border-radius: 18px 4px 4px 18px;
+}
+.field-preview[data-sport="hockey"][data-field="horizontal-right"] {
+  background: linear-gradient(270deg, transparent 10%, #d42a2a 10% 12%, transparent 12% 52%, #1d4ed8 52% 58%, transparent 58% 96%, #d42a2a 96%), #eef6fb;
+  border-radius: 4px 18px 18px 4px;
+}

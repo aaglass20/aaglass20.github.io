@@ -15,7 +15,7 @@ const SIDE_W = 440
 // Canvas for a view: field area w × h, plus room outside it for goals (padX / padY)
 function canvasFor(sport, field) {
   if (field === 'full' && !DIAMOND.has(sport)) return { w: FW, h: FH, padX: 0, padY: GOAL_D }
-  if (field === 'horizontal')                  return { w: LW, h: LH, padX: GOAL_D, padY: 0 }
+  if (field === 'horizontal')                  return { w: LW, h: LH, padX: sport === 'soccer' ? GOAL_D : 0, padY: 0 }
   if (field === 'horizontal-left' || field === 'horizontal-right') return { w: SIDE_W, h: LH, padX: 0, padY: 0 }
   return { w: LW, h: LH, padX: 0, padY: 0 }
 }
@@ -61,10 +61,10 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'football', 'baseball', 'softball', 'puck', 'cone', 'hoop', 'pinnie', 'pole'])
+const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'football', 'baseball', 'softball', 'puck', 'pos-t1', 'pos-t2', 'ballrack', 'fieldgoal', 'hockey-goal', 'batter', 'bat', 'softtoss', 'hitstick', 'hit-net', 'tee', 'plate', 'base', 'cone', 'hoop', 'pinnie', 'pole'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', football: '#8a4b22', baseball: '#f8fafc', softball: '#e4f03c', puck: '#111827', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
+const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', football: '#8a4b22', baseball: '#f8fafc', softball: '#e4f03c', puck: '#111827', 'pos-t1': '#22c55e', 'pos-t2': '#ef4444', ballrack: '#cbd5e1', fieldgoal: '#facc15', 'hockey-goal': '#d42a2a', batter: '#3b82f6', bat: '#c8955c', softtoss: '#fde047', hitstick: '#facc15', 'hit-net': '#1f2937', tee: '#1f2937', plate: '#f8fafc', base: '#f8fafc', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
 
 // Sports — each has its own court/field drawing and object list (switching clears the board).
 // `ball` is the object type used as the sidebar's Objects icon.
@@ -77,6 +77,7 @@ const SPORTS = [
   { id: 'hockey',     label: '🏒 Hockey',     ball: 'puck'       },
 ]
 const BOTH = SPORTS.map(sp => sp.id)   // objects every sport gets
+const DIAMOND_IDS = ['baseball', 'softball']
 // Diamond sports share a field drawing (sized per sport), the player kit and a landscape full view
 const DIAMOND = new Set(['baseball', 'softball'])
 const kitFor  = (sport) => DIAMOND.has(sport) ? 'baseball' : sport
@@ -91,6 +92,9 @@ const CATALOG = [
   { type: 'player',     label: 'Player',      src: null, sports: BOTH           },
   { type: 'player-t1',  label: 'Player 1',    src: null, sports: BOTH           },
   { type: 'player-t2',  label: 'Player 2',    src: null, sports: BOTH           },
+  { type: 'pos-t1',     label: 'Positions 1', src: null, sports: ['basketball'] },
+  { type: 'pos-t2',     label: 'Positions 2', src: null, sports: ['basketball'] },
+  { type: 'batter',     label: 'Batter',      src: null, sports: DIAMOND_IDS    },
   { type: 'marker',     label: 'Team 1',      src: null, sports: BOTH           },
   { type: 'marker2',    label: 'Team 2',      src: null, sports: BOTH           },
   { type: 'goal',       label: 'Goal',        src: null, sports: ['soccer']     },
@@ -101,25 +105,39 @@ const CATALOG = [
   { type: 'popup-goal', label: 'Pop-up Goal', src: null, sports: ['soccer']     },
   { type: 'freekick',   label: 'Free Kick',   src: null, sports: ['soccer']     },
   { type: 'arch',       label: 'Arch',        src: null, sports: ['soccer']     },
+  { type: 'ballrack',   label: 'Ball Rack',   src: null, sports: ['basketball'] },
+  { type: 'fieldgoal',  label: 'Field Goal',  src: null, sports: ['football']   },
+  { type: 'bat',        label: 'Bat',         src: null, sports: DIAMOND_IDS    },
+  { type: 'softtoss',   label: 'Soft Toss',   src: null, sports: DIAMOND_IDS    },
+  { type: 'hitstick',   label: 'Hit Stick',   src: null, sports: DIAMOND_IDS    },
+  { type: 'hit-net',    label: 'Hitting Net', src: null, sports: DIAMOND_IDS    },
+  { type: 'tee',        label: 'Tee',         src: null, sports: DIAMOND_IDS    },
+  { type: 'plate',      label: 'Home Plate',  src: null, sports: DIAMOND_IDS    },
+  { type: 'base',       label: 'Base',        src: null, sports: DIAMOND_IDS    },
+  { type: 'hockey-goal', label: 'Hockey Goal', src: null, sports: ['hockey']    },
 ]
 
 // Numbered objects (one type per team) — each new one takes the lowest number
 // not already used by its own type. Markers and players number independently.
 const MARKER_TYPES   = new Set(['marker', 'marker2'])
-const PLAYER_TYPES   = new Set(['player', 'player-t1', 'player-t2'])   // 'player' is unnumbered
+const PLAYER_TYPES   = new Set(['player', 'player-t1', 'player-t2', 'pos-t1', 'pos-t2', 'batter'])   // 'player' + 'batter' are unlabeled
 const NUMBERED_TYPES = new Set([...MARKER_TYPES, 'player-t1', 'player-t2'])
 const NUMBER_MAX     = 20
+// Basketball position players: each team takes the next free position, PG → C
+const POSITION_TYPES = new Set(['pos-t1', 'pos-t2'])
+const POSITIONS      = ['PG', 'SG', 'SF', 'PF', 'C']
 const PLAYER_DEFAULT_SIZE = 4   // one step up from the shared default so chest numbers stay readable
 
-// Views per sport: the shared five, plus soccer's horizontal ones (`sports` limits a view;
-// `names` overrides its label per sport)
+// Views per sport: the shared five, plus horizontal ones for the long fields (`sports`
+// limits a view; `names` overrides its label per sport)
+const SIDEWAYS = ['soccer', 'basketball', 'football', 'hockey']
 const FIELD_CATALOG = [
   { id: 'full',             label: 'Full Field',        names: { basketball: 'Full Court', hockey: 'Full Rink' } },
-  { id: 'horizontal',       label: 'Horizontal',        names: {}, sports: ['soccer'] },
+  { id: 'horizontal',       label: 'Horizontal',        names: {}, sports: SIDEWAYS },
   { id: 'half',             label: 'Half Field',        names: { basketball: 'Half Court', baseball: 'Infield', softball: 'Infield', hockey: 'Half Rink' } },
   { id: 'half-flip',        label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)', baseball: 'Outfield', softball: 'Outfield', hockey: 'Half Rink (flip)' } },
-  { id: 'horizontal-left',  label: 'Horizontal Left',   names: {}, sports: ['soccer'] },
-  { id: 'horizontal-right', label: 'Horizontal Right',  names: {}, sports: ['soccer'] },
+  { id: 'horizontal-left',  label: 'Horizontal Left',   names: {}, sports: SIDEWAYS },
+  { id: 'horizontal-right', label: 'Horizontal Right',  names: {}, sports: SIDEWAYS },
   { id: 'middle',           label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield', baseball: 'Home Plate', softball: 'Home Plate', hockey: 'Neutral Zone' } },
   { id: 'blank',            label: 'Blank',             names: {} },
 ]
@@ -204,6 +222,9 @@ function hexToRgb(hex) {
 // 'football' widens the shoulders over pads and puts on a helmet with a facemask;
 // 'baseball' (also softball) adds a button placket and a ball cap in the team color;
 // 'hockey' adds sweater stripes, gloves, a stick, and a helmet with a cage.
+// `opts.back` turns the figure around (hair / back of cap or helmet, plain collar, a big
+// number); `opts.bat` ('R' / 'L') gives it a bat over that shoulder. `number` may also be a
+// position label (PG, SG…).
 // Cached by `hexColor|number|kit`.
 const _playerCache = new Map()
 const PLAYER_PX    = 192
@@ -279,8 +300,9 @@ function padsPath(ctx, S) {
   ctx.closePath()
 }
 
-function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
-  const key = `${hexColor}|${number ?? ''}|${kit}`
+function getPlayerCanvas(hexColor, number = null, kit = 'soccer', opts = {}) {
+  const back = !!opts.back, bat = opts.bat ?? null
+  const key = `${hexColor}|${number ?? ''}|${kit}|${back ? 'b' : 'f'}|${bat ?? ''}`
   if (_playerCache.has(key)) return _playerCache.get(key)
 
   const S = PLAYER_PX
@@ -297,12 +319,38 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   const bodyPath = () => (tank ? tankPath : pads ? padsPath : jerseyPath)(ctx, S)
   const trimColor = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.9)'
 
+  // Bat over one shoulder (batter): hands together in front of the chest, barrel up behind
+  // the head. A righty's bat rests on their right shoulder — the viewer's left from the
+  // front, the viewer's right from the back. From behind it's drawn before the body, so
+  // the shoulder hides the handle and the hands.
+  const drawShoulderBat = () => {
+    const flip = (bat === 'L') === back
+    const m = (u) => (flip ? 1 - u : u) * S
+    const prof = [[0.56, 0.6, 0.016], [0.68, 0.42, 0.018], [0.8, 0.22, 0.034], [0.9, 0.06, 0.036]]
+    const batPath = () => {
+      ctx.beginPath()
+      prof.forEach(([u, v, r], i) => { const x = m(u) - r * S * 0.85, y = v * S - r * S * 0.5; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y) })
+      ;[...prof].reverse().forEach(([u, v, r]) => ctx.lineTo(m(u) + r * S * 0.85, v * S + r * S * 0.5))
+      ctx.closePath()
+    }
+    ctx.lineJoin = 'round'
+    batPath(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.022 * S; ctx.stroke()
+    batPath(); ctx.fillStyle = '#c8955c'; ctx.fill()
+    ctx.save(); batPath(); ctx.clip(); sideShade(ctx, S, m(0.62), 0, m(0.95), 0, 0.35, 0.35); ctx.restore()
+    if (!back) [[0.575, 0.585], [0.605, 0.54]].forEach(([u, v]) => {
+      ctx.beginPath(); ctx.arc(m(u), v * S, 0.034 * S, 0, Math.PI * 2)
+      ctx.fillStyle = '#f8fafc'; ctx.fill(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.014 * S; ctx.stroke()
+    })
+  }
+
   // 1. Soft ground shadow, cast down-right
   ctx.save()
   ctx.filter = 'blur(4px)'
   ctx.fillStyle = 'rgba(0,0,0,0.35)'
   ctx.beginPath(); ctx.ellipse(0.55 * S, 0.885 * S, 0.27 * S, 0.055 * S, 0, 0, Math.PI * 2); ctx.fill()
   ctx.restore()
+
+  if (bat && back) drawShoulderBat()
 
   // Hockey stick — hangs from the right glove beside the body, blade on the ice pointing out
   if (hockey) {
@@ -421,12 +469,13 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   ctx.restore()
 
   ctx.lineCap = 'round'
+  const neckDip = back ? 0.45 : null   // the back neckline is much shallower
   if (tank) {
     // Contrast trim around the neck and armholes — white, or dark on a light tank
     ctx.strokeStyle = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.9)'
     ctx.lineWidth = 0.022 * S
     ctx.beginPath()
-    ctx.moveTo(0.41 * S, 0.425 * S); ctx.quadraticCurveTo(0.5 * S, 0.53 * S, 0.59 * S, 0.425 * S)
+    ctx.moveTo(0.41 * S, 0.425 * S); ctx.quadraticCurveTo(0.5 * S, (neckDip ?? 0.53) * S, 0.59 * S, 0.425 * S)
     ctx.moveTo(0.335 * S, 0.44 * S); ctx.quadraticCurveTo(0.355 * S, 0.56 * S, 0.295 * S, 0.62 * S)
     ctx.moveTo(0.665 * S, 0.44 * S); ctx.quadraticCurveTo(0.645 * S, 0.56 * S, 0.705 * S, 0.62 * S)
     ctx.stroke()
@@ -435,12 +484,12 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     ctx.strokeStyle = shadeHex(hexColor, -0.4)
     ctx.lineWidth = 0.028 * S
     ctx.beginPath()
-    ctx.moveTo(0.405 * S, 0.425 * S); ctx.quadraticCurveTo(0.5 * S, 0.49 * S, 0.595 * S, 0.425 * S)
+    ctx.moveTo(0.405 * S, 0.425 * S); ctx.quadraticCurveTo(0.5 * S, (neckDip ?? 0.49) * S, 0.595 * S, 0.425 * S)
     ctx.stroke()
   }
 
   // Button-front placket (baseball/softball) — the number sits over it
-  if (kit === 'baseball') {
+  if (kit === 'baseball' && !back) {
     ctx.strokeStyle = shadeHex(hexColor, -0.35)
     ctx.lineWidth = 0.012 * S
     ctx.beginPath(); ctx.moveTo(0.5 * S, 0.475 * S); ctx.lineTo(0.5 * S, 0.875 * S); ctx.stroke()
@@ -461,18 +510,23 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     })
   }
 
-  // 4. Optional jersey number
+  // 4. Optional jersey number (or position) — bigger and higher on the back
   if (number != null) {
     const { r, g, b } = hexToRgb(hexColor)
     const light = (0.299 * r + 0.587 * g + 0.114 * b) > 170
-    ctx.font = `800 ${number >= 10 ? 0.2 * S : 0.23 * S}px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
+    const text = String(number)
+    const size = (text.length >= 2 ? (typeof number === 'string' ? 0.17 : 0.2) : 0.23) * (back ? 1.22 : 1)
+    const y = (back ? 0.645 : 0.665) * S
+    ctx.font = `800 ${size * S}px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
     ctx.lineWidth = 0.025 * S
     ctx.strokeStyle = light ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.55)'
-    ctx.strokeText(String(number), 0.5 * S, 0.665 * S)
+    ctx.strokeText(text, 0.5 * S, y)
     ctx.fillStyle = light ? '#111827' : '#ffffff'
-    ctx.fillText(String(number), 0.5 * S, 0.665 * S)
+    ctx.fillText(text, 0.5 * S, y)
   }
+
+  if (bat && !back) drawShoulderBat()
 
   // 5. Head — football and hockey get a helmet in the team color instead
   if (helmet) {
@@ -481,6 +535,23 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     shell.addColorStop(0.55, hexColor)
     shell.addColorStop(1,    shadeHex(hexColor, -0.4))
     headPath(); ctx.fillStyle = shell; ctx.fill()
+    if (back) {
+      // Back of the helmet: full stripe (football) or vents + a rim (hockey), no face
+      ctx.save(); headPath(); ctx.clip()
+      if (pads) { ctx.fillStyle = trimColor; ctx.fillRect(head.x - 0.017 * S, head.y - head.r, 0.034 * S, head.r * 2) }
+      else {
+        ctx.strokeStyle = shadeHex(hexColor, -0.5); ctx.lineWidth = 0.014 * S
+        ctx.beginPath()
+        ;[-1, 1].forEach(k => { ctx.moveTo(head.x + k * 0.035 * S, head.y - 0.07 * S); ctx.lineTo(head.x + k * 0.05 * S, head.y - 0.02 * S) })
+        ctx.stroke()
+        ctx.beginPath(); ctx.arc(head.x, head.y + head.r * 1.6, head.r * 1.05, Math.PI * 1.25, Math.PI * 1.75); ctx.stroke()
+      }
+      ctx.restore()
+      ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 0.016 * S; ctx.stroke()
+      _playerCache.set(key, canvas)
+      return canvas
+    }
     ctx.save()
     headPath(); ctx.clip()
     // Center stripe over the crown (football)
@@ -523,11 +594,45 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   skin.addColorStop(0.6, PLAYER_SKIN.mid)
   skin.addColorStop(1,   PLAYER_SKIN.dark)
   headPath(); ctx.fillStyle = skin; ctx.fill()
+  if (back) {
+    // Back of the head: hair over most of it, the nape showing at the bottom
+    ctx.save(); headPath(); ctx.clip()
+    const hair = ctx.createRadialGradient(head.x - head.r * 0.35, head.y - head.r * 0.45, head.r * 0.1, head.x, head.y, head.r)
+    hair.addColorStop(0, '#6b4a2e'); hair.addColorStop(0.7, '#3f2a1a'); hair.addColorStop(1, '#24170e')
+    ctx.beginPath()
+    ctx.moveTo(head.x - head.r, head.y + head.r * 0.35)
+    ctx.quadraticCurveTo(head.x, head.y + head.r * 0.75, head.x + head.r, head.y + head.r * 0.35)
+    ctx.lineTo(head.x + head.r, head.y - head.r); ctx.lineTo(head.x - head.r, head.y - head.r); ctx.closePath()
+    ctx.fillStyle = hair; ctx.fill()
+    ctx.restore()
+  }
   ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
   ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.014 * S; ctx.stroke()
 
+  // Back of a ball cap: crown with the strap opening at the bottom, brim hidden
+  if (kit === 'baseball' && back) {
+    const { x, y, r } = head
+    const crown = () => {
+      ctx.beginPath()
+      ctx.arc(x, y + 0.02 * r, r * 1.05, Math.PI, Math.PI * 2)
+      ctx.quadraticCurveTo(x, y + 0.2 * r, x - r * 1.05, y + 0.02 * r)
+      ctx.closePath()
+    }
+    ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S
+    crown(); ctx.stroke()
+    const cap = ctx.createRadialGradient(x - r * 0.4, y - r * 0.6, r * 0.08, x, y - r * 0.2, r * 1.1)
+    cap.addColorStop(0, shadeHex(hexColor, 0.5)); cap.addColorStop(0.55, hexColor); cap.addColorStop(1, shadeHex(hexColor, -0.4))
+    crown(); ctx.fillStyle = cap; ctx.fill()
+    ctx.beginPath(); ctx.ellipse(x, y + 0.08 * r, r * 0.3, r * 0.2, 0, Math.PI, 0); ctx.closePath()
+    ctx.fillStyle = '#3f2a1a'; ctx.fill()
+    ctx.strokeStyle = shadeHex(hexColor, -0.45); ctx.lineWidth = 0.014 * S
+    ctx.beginPath(); ctx.moveTo(x - r * 0.32, y + 0.1 * r); ctx.lineTo(x + r * 0.32, y + 0.1 * r); ctx.stroke()
+    ctx.fillStyle = shadeHex(hexColor, -0.3)
+    ctx.beginPath(); ctx.arc(x, y - r * 1.02, 0.012 * S, 0, Math.PI * 2); ctx.fill()
+  }
+
   // Ball cap: crown over the top of the head, brim out over the face
-  if (kit === 'baseball') {
+  if (kit === 'baseball' && !back) {
     const { x, y, r } = head
     const crown = () => {
       ctx.beginPath()
@@ -564,6 +669,11 @@ const _playerPreview = new Map()
 const playerPreview = (kit) => {
   if (!_playerPreview.has(kit)) _playerPreview.set(kit, getPlayerCanvas(DEFAULT_COLORS.player, null, kit).toDataURL())
   return _playerPreview.get(kit)
+}
+const _batterPreview = new Map()
+const batterPreview = (kit) => {
+  if (!_batterPreview.has(kit)) _batterPreview.set(kit, getPlayerCanvas(DEFAULT_COLORS.batter, null, kit, { bat: 'R' }).toDataURL())
+  return _batterPreview.get(kit)
 }
 
 // ── Numbered marker ──────────────────────────────────────────────────────────
@@ -633,6 +743,19 @@ function nextFreeNumber(objects, type) {
   return null
 }
 
+// The label a new object of `type` gets: { number } / { position }, {} for unlabeled
+// types, or null when every number / position is already on the board
+function nextTag(objects, type) {
+  if (NUMBERED_TYPES.has(type)) { const number = nextFreeNumber(objects, type); return number == null ? null : { number } }
+  if (POSITION_TYPES.has(type)) {
+    const used = new Set(objects.filter(o => o.type === type).map(o => o.position))
+    const position = POSITIONS.find(p => !used.has(p))
+    return position ? { position } : null
+  }
+  return {}
+}
+const tagLabel = (tag) => tag?.number ?? tag?.position ?? null
+
 // Data URL of a numbered type in its default color for the catalog card (shows the next number)
 const _numberedPreviewCache = new Map()
 function numberedPreview(type, number, kit) {
@@ -652,14 +775,15 @@ function numberedPreview(type, number, kit) {
 // lighting and depth stay correct in every direction.
 // `facing` is a compass heading in degrees for the model's front (a goal's mouth, the
 // mannequin's front face): 0 = N, 90 = E.
-const MODEL_TYPES = new Set(['goal', 'popup-goal', 'freekick', 'arch'])   // everything drawn by getGoalCanvas
+const MODEL_TYPES = new Set(['goal', 'popup-goal', 'freekick', 'arch', 'fieldgoal', 'hockey-goal', 'hit-net'])   // everything drawn by getGoalCanvas
 const GOAL_FACINGS = [
   { deg: 315, label: 'NW' }, { deg:   0, label: 'N' }, { deg:  45, label: 'NE' },
   { deg: 270, label: 'W'  }, null,                     { deg:  90, label: 'E'  },
   { deg: 225, label: 'SW' }, { deg: 180, label: 'S' }, { deg: 135, label: 'SE' },
 ]
 const GOAL_DEFAULT_FACING = 180
-const GOAL_DEFAULT_SIZE   = { goal: 4, 'popup-goal': 3, freekick: 3, arch: 3 }   // goal ≈ true scale on the full field; freekick ≈ player height
+const GOAL_DEFAULT_SIZE   = { goal: 4, 'popup-goal': 3, freekick: 3, arch: 3, fieldgoal: 4, 'hockey-goal': 2, 'hit-net': 3 }   // goal ≈ true scale on the full field; freekick ≈ player height
+const EQUIP_DEFAULT_SIZE  = { ballrack: 5, bat: 4, hitstick: 4, softtoss: 1, tee: 3, plate: 2, base: 2 }
 const GOAL_PREVIEW_FACING = 135    // 3/4 view for the catalog card
 const GOAL_RADIUS_MULT    = 2      // goals render at 2× the shared size radii
 const GOAL_PX             = 256
@@ -808,7 +932,77 @@ const ARCH_MODEL = (() => {
   }
 })()
 
-const GOAL_MODELS = { goal: BOX_GOAL_MODEL, 'popup-goal': POPUP_GOAL_MODEL, freekick: FREEKICK_MODEL, arch: ARCH_MODEL }
+// Football goalposts: a padded post set behind the end line, gooseneck curving forward to
+// the crossbar, two tall uprights with wind ribbons. Model units ≈ 9 ft (crossbar 18'6" wide)
+const FIELDGOAL_MODEL = (() => {
+  const w = 1, bar = 1.08, top = 3.1
+  return {
+    nets: [],
+    bars: [
+      { pts: [[0, -0.6, 0], [0, -0.6, 0.85], [0, -0.52, 1.0], [0, -0.32, 1.07], [0, 0, bar]], w: 0.1, color: 'frame' },
+      { pts: [[0, -0.6, 0], [0, -0.6, 0.38]], w: 0.16, color: '#1f2937' },                       // base pad
+      { pts: [[-w, 0, bar], [w, 0, bar]], w: 0.075, color: 'frame' },
+      { pts: [[-w, 0, bar], [-w, 0, top]], w: 0.06, color: 'frame' },
+      { pts: [[ w, 0, bar], [ w, 0, top]], w: 0.06, color: 'frame' },
+      { pts: [[-w, 0, top], [-w, 0.05, top - 0.28]], w: 0.035, color: '#ef4444' },               // ribbons
+      { pts: [[ w, 0, top], [ w, 0.05, top - 0.28]], w: 0.035, color: '#ef4444' },
+    ],
+    joints:  [{ p: [0, -0.6, 0.01], r: 0.11, color: '#6b7280' }],
+    netLine: 'transparent',
+    netFill: 'transparent',
+  }
+})()
+
+// Hockey goal: red posts + crossbar, white top frame and base curving back, net between.
+// Model units = 3 ft (6 ft × 4 ft mouth, 40" deep)
+const HOCKEY_GOAL_MODEL = (() => {
+  const w = 1, h = 1.33, dTop = 0.35, dBase = 1.1, N = 20, S = 6
+  const ts  = Array.from({ length: N + 1 }, (_, i) => (i / N) * Math.PI)
+  const top = (t) => [-w * Math.cos(t), -dTop * Math.sin(t), h]
+  const gnd = (t) => [-w * Math.cos(t), -dBase * Math.sin(t), 0]
+  const net = []
+  for (let j = 0; j <= S; j++) {
+    const k = j / S, bulge = Math.sin(Math.PI * k)
+    net.push(ts.map(t => { const [u, v, z] = lerp3(top(t), gnd(t), k); return [u, v - bulge * 0.12 * Math.sin(t), z] }))
+  }
+  return {
+    nets: [net],
+    bars: [
+      { pts: ts.map(gnd), w: 0.09, color: '#e5e7eb' },
+      { pts: ts.map(top), w: 0.06, color: '#e5e7eb' },
+      { pts: [[-w, 0, 0], [-w, 0, h]], w: 0.11, color: 'frame' },
+      { pts: [[ w, 0, 0], [ w, 0, h]], w: 0.11, color: 'frame' },
+      { pts: [[-w, 0, h], [w, 0, h]], w: 0.11, color: 'frame' },
+    ],
+    joints:  [],
+    netLine: 'rgba(71,85,105,0.55)',
+    netFill: 'rgba(255,255,255,0.22)',
+  }
+})()
+
+// Pop-up hitting net: square frame with a net panel, legs running back on the ground and
+// braces from the frame. Model units = 3.5 ft (7 × 7 ft)
+const HIT_NET_MODEL = (() => {
+  const w = 1, h = 2, d = 0.9
+  const P = { BL: [-w, 0, 0], BR: [w, 0, 0], TL: [-w, 0, h], TR: [w, 0, h], LL: [-w, -d, 0], LR: [w, -d, 0] }
+  const net = quadGrid([-w, -0.05, h], [w, -0.05, h], [w, -0.05, 0.03], [-w, -0.05, 0.03], 0.16)
+    .map(row => row.map(([u, v, z]) => [u, v - 0.18 * Math.sin(Math.PI * (u + w) / (2 * w)) * Math.sin(Math.PI * z / h), z]))
+  const bar = (a, b, w0 = 0.09, dark) => ({ pts: [P[a], P[b]], w: w0, color: 'frame', ...(dark ? { dark: true } : {}) })
+  return {
+    nets: [net],
+    bars: [
+      bar('LL', 'BL', 0.07, true), bar('LR', 'BR', 0.07, true),
+      { pts: [[-w, 0, 1.1], P.LL], w: 0.06, color: 'frame', dark: true },
+      { pts: [[ w, 0, 1.1], P.LR], w: 0.06, color: 'frame', dark: true },
+      bar('BL', 'TL'), bar('BR', 'TR'), bar('TL', 'TR'), bar('BL', 'BR', 0.07),
+    ],
+    joints:  [],
+    netLine: 'rgba(17,24,39,0.6)',
+    netFill: 'rgba(255,255,255,0.08)',
+  }
+})()
+
+const GOAL_MODELS = { goal: BOX_GOAL_MODEL, 'popup-goal': POPUP_GOAL_MODEL, freekick: FREEKICK_MODEL, arch: ARCH_MODEL, fieldgoal: FIELDGOAL_MODEL, 'hockey-goal': HOCKEY_GOAL_MODEL, 'hit-net': HIT_NET_MODEL }
 
 // Local → world (x east, y south, z up) for a given facing
 function goalWorld([u, v, z], deg) {
@@ -1273,6 +1467,176 @@ function drawPuck(ctx, S, hex) {
   top(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
 }
 
+// Small shaded basketball used by the rack
+function miniBasketball(ctx, x, y, r) {
+  const g = ctx.createRadialGradient(x - r * 0.4, y - r * 0.45, r * 0.1, x, y, r)
+  g.addColorStop(0, '#f6a35c'); g.addColorStop(0.6, '#e2702a'); g.addColorStop(1, '#9a4314')
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill()
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.clip()
+  ctx.strokeStyle = '#2a1506'; ctx.lineWidth = r * 0.12
+  ctx.beginPath()
+  ctx.moveTo(x - r, y); ctx.quadraticCurveTo(x, y + r * 0.2, x + r, y)
+  ctx.moveTo(x, y - r); ctx.lineTo(x, y + r)
+  ctx.moveTo(x - r * 0.7, y - r * 0.75); ctx.quadraticCurveTo(x - r * 0.25, y, x - r * 0.7, y + r * 0.75)
+  ctx.moveTo(x + r * 0.7, y - r * 0.75); ctx.quadraticCurveTo(x + r * 0.25, y, x + r * 0.7, y + r * 0.75)
+  ctx.stroke(); ctx.restore()
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.strokeStyle = OUTLINE; ctx.lineWidth = r * 0.14; ctx.stroke()
+}
+
+// A tube from a to b: dark outline, the color, then a thin highlight on the lit side
+function tube(ctx, pts, w, hex, dark = 0) {
+  const path = () => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)) }
+  ctx.lineCap = ctx.lineJoin = 'round'
+  path(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = w * 1.6; ctx.stroke()
+  path(); ctx.strokeStyle = dark ? shadeHex(hex, -dark) : hex; ctx.lineWidth = w; ctx.stroke()
+  ctx.save(); ctx.translate(-w * 0.18, -w * 0.18)
+  path(); ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = w * 0.3; ctx.stroke()
+  ctx.restore()
+}
+
+// Ball rack — front view of a 3-shelf cart holding 12 basketballs; the color is the frame
+function drawBallRack(ctx, S, hex) {
+  const L = 0.14 * S, R = 0.86 * S, back = 0.035 * S, t = 0.022 * S, br = 0.078 * S
+  const rows = [0.25, 0.47, 0.69].map(v => v * S)
+  const cols = [0.245, 0.415, 0.585, 0.755].map(u => u * S)
+  softShadow(ctx, S, (c) => { c.fillRect(L, 0.84 * S, R - L, 0.07 * S) }, 0.04 * S, 0.02 * S, 4, 0.35)
+  // Back frame (offset up-right, darker)
+  ;[L, R].forEach(x => tube(ctx, [[x + back, 0.14 * S - back], [x + back, 0.86 * S - back]], t, hex, 0.3))
+  rows.forEach(y => tube(ctx, [[L + back, y + br - back], [R + back, y + br - back]], t * 0.8, hex, 0.3))
+  // Balls
+  rows.forEach(y => cols.forEach(x => miniBasketball(ctx, x, y, br)))
+  // Front rails + side frames with rounded tops, feet and casters
+  rows.forEach(y => tube(ctx, [[L, y + br + 0.005 * S], [R, y + br + 0.005 * S]], t, hex))
+  ;[L, R].forEach(x => {
+    const inward = x < S / 2 ? 1 : -1
+    tube(ctx, [[x + inward * 0.04 * S, 0.1 * S], [x, 0.13 * S], [x, 0.87 * S]], t, hex)
+    tube(ctx, [[x - inward * 0.02 * S, 0.87 * S], [x + back + inward * 0.02 * S, 0.87 * S - back]], t, hex, 0.15)
+    ctx.fillStyle = '#374151'
+    ;[[x - inward * 0.02 * S, 0.905 * S], [x + back + inward * 0.02 * S, 0.905 * S - back]].forEach(([cx, cy]) => {
+      ctx.beginPath(); ctx.arc(cx, cy, 0.022 * S, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.008 * S; ctx.stroke()
+    })
+  })
+}
+
+// Long flat things (bat, hit stick) are drawn along the diagonal, knob at the lower left.
+// `profile(t)` gives the half-width at t ∈ [0, 1] from knob to tip.
+function diagonalShape(ctx, S, profile, N = 40) {
+  const L = 0.86 * S
+  const top = [], bot = []
+  for (let i = 0; i <= N; i++) { const t = i / N, x = -L / 2 + t * L, r = profile(t) * S; top.push([x, -r]); bot.push([x, r]) }
+  ctx.beginPath()
+  top.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))
+  bot.reverse().forEach(([x, y]) => ctx.lineTo(x, y))
+  ctx.closePath()
+  return L
+}
+
+// Baseball bat lying on the ground — knob, taped handle, taper, barrel; color = the wood/alloy
+function drawBat(ctx, S, hex) {
+  const prof = (t) => t < 0.04 ? 0.03 : t < 0.42 ? 0.016 : t < 0.68 ? 0.016 + (t - 0.42) / 0.26 * 0.03 : t > 0.985 ? 0.046 * Math.sqrt((1 - t) / 0.015) : 0.046
+  const at = (draw) => { ctx.save(); ctx.translate(0.5 * S, 0.5 * S); ctx.rotate(-Math.PI / 4); draw(); ctx.restore() }
+  softShadow(ctx, S, (c) => { c.translate(0.5 * S, 0.5 * S); c.rotate(-Math.PI / 4); diagonalShape(c, S, prof); c.fill() }, 0.035 * S, 0.035 * S, 3, 0.4)
+  at(() => {
+    diagonalShape(ctx, S, prof); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.025 * S; ctx.lineJoin = 'round'; ctx.stroke()
+    diagonalShape(ctx, S, prof); ctx.fillStyle = hex; ctx.fill()
+    ctx.save(); diagonalShape(ctx, S, prof); ctx.clip()
+    const L = 0.86 * S
+    // Grip tape on the handle
+    ctx.fillStyle = '#1f2937'; ctx.fillRect(-L / 2 + 0.03 * S, -0.03 * S, 0.3 * S, 0.06 * S)
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 0.004 * S
+    for (let x = -L / 2 + 0.04 * S; x < -L / 2 + 0.33 * S; x += 0.022 * S) { ctx.beginPath(); ctx.moveTo(x, -0.03 * S); ctx.lineTo(x + 0.012 * S, 0.03 * S); ctx.stroke() }
+    // Rounded shading across the bat (lit from the upper side)
+    const g = ctx.createLinearGradient(0, -0.05 * S, 0, 0.05 * S)
+    g.addColorStop(0, 'rgba(255,255,255,0.45)'); g.addColorStop(0.4, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.4)')
+    ctx.fillStyle = g; ctx.fillRect(-L / 2, -0.06 * S, L, 0.12 * S)
+    ctx.restore()
+  })
+}
+
+// Hit stick — a long thin shaft with a grip and a foam target ball on the end (color = ball)
+function drawHitStick(ctx, S, hex) {
+  const prof = (t) => t < 0.03 ? 0.022 : t < 0.3 ? 0.017 : 0.011
+  const ball = 0.1 * S
+  const L = 0.86 * S
+  const bx = L / 2 - ball * 0.6
+  softShadow(ctx, S, (c) => { c.translate(0.5 * S, 0.5 * S); c.rotate(-Math.PI / 4); diagonalShape(c, S, prof); c.fill(); c.beginPath(); c.arc(bx, 0, ball, 0, Math.PI * 2); c.fill() }, 0.035 * S, 0.035 * S, 3, 0.4)
+  ctx.save(); ctx.translate(0.5 * S, 0.5 * S); ctx.rotate(-Math.PI / 4)
+  diagonalShape(ctx, S, prof); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
+  diagonalShape(ctx, S, prof); ctx.fillStyle = '#27272a'; ctx.fill()
+  ctx.fillStyle = '#52525b'; ctx.fillRect(-L / 2 + 0.03 * S, -0.017 * S, 0.22 * S, 0.034 * S)
+  ctx.rotate(Math.PI / 4)   // keep the ball's light in the upper left
+  const [cx, cy] = [bx * Math.SQRT1_2, -bx * Math.SQRT1_2]
+  const g = ctx.createRadialGradient(cx - ball * 0.4, cy - ball * 0.4, ball * 0.1, cx, cy, ball)
+  g.addColorStop(0, shadeHex(hex, 0.45)); g.addColorStop(0.6, hex); g.addColorStop(1, shadeHex(hex, -0.4))
+  ctx.beginPath(); ctx.arc(cx, cy, ball, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill()
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
+  ctx.restore()
+}
+
+// Soft toss / wiffle ball — shaded sphere with oval slots
+function drawSoftToss(ctx, S, hex) {
+  const cx = 0.47 * S, cy = 0.47 * S, R = 0.42 * S
+  softShadow(ctx, S, (c) => { c.beginPath(); c.arc(cx, cy, R * 0.95, 0, Math.PI * 2); c.fill() }, 0.06 * S, 0.07 * S, 5, 0.35)
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fillStyle = hex; ctx.fill()
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.clip()
+  ctx.fillStyle = shadeHex(hex, -0.55)
+  ;[[0, 0, 0], [-0.5, -0.25, 0.5], [0.5, -0.25, -0.5], [-0.3, 0.5, -0.3], [0.32, 0.5, 0.3]].forEach(([u, v, rot]) => {
+    const squash = 1 - Math.hypot(u, v) * 0.45
+    ctx.beginPath(); ctx.ellipse(cx + u * R, cy + v * R, R * 0.2 * squash, R * 0.085, rot, 0, Math.PI * 2); ctx.fill()
+  })
+  const g = ctx.createRadialGradient(cx - R * 0.4, cy - R * 0.45, R * 0.05, cx, cy, R)
+  g.addColorStop(0, 'rgba(255,255,255,0.5)'); g.addColorStop(0.45, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.42)')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S)
+  ctx.restore()
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
+}
+
+// Batting tee — side-on like the cone: rubber base, stem, flexible top
+function drawTee(ctx, S, hex) {
+  const bx = 0.5 * S, by = 0.8 * S, rb = 0.28 * S, hb = 0.06 * S
+  const ell = (y, r) => [bx, y, r, r * EQUIP_SQUASH]
+  softShadow(ctx, S, (c) => { c.beginPath(); c.ellipse(...ell(by + hb, rb), 0, 0, Math.PI * 2); c.fill(); c.fillRect(bx, 0.2 * S, 0.05 * S, 0.6 * S) }, 0.06 * S, 0.03 * S, 4, 0.35)
+  // Base: short cylinder
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.025 * S
+  const baseSide = () => { ctx.beginPath(); ctx.ellipse(...ell(by, rb), 0, Math.PI, 0, true); ctx.lineTo(bx + rb, by + hb); ctx.ellipse(...ell(by + hb, rb), 0, 0, Math.PI); ctx.closePath() }
+  baseSide(); ctx.stroke(); ctx.fillStyle = shadeHex(hex, -0.2); ctx.fill()
+  ctx.save(); baseSide(); ctx.clip(); sideShade(ctx, S, bx - rb, 0, bx + rb, 0, 0.2, 0.4); ctx.restore()
+  ctx.beginPath(); ctx.ellipse(...ell(by, rb), 0, 0, Math.PI * 2); ctx.fillStyle = shadeHex(hex, 0.18); ctx.fill(); ctx.stroke()
+  // Stem: wide lower tube, narrower upper tube, flexible top
+  const stem = (x0, x1, y0, y1, color) => {
+    ctx.beginPath(); ctx.roundRect(x0, y0, x1 - x0, y1 - y0, (x1 - x0) / 2)
+    ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
+    ctx.save(); ctx.beginPath(); ctx.roundRect(x0, y0, x1 - x0, y1 - y0, (x1 - x0) / 2); ctx.clip(); sideShade(ctx, S, x0, 0, x1, 0, 0.35, 0.45); ctx.restore()
+  }
+  stem(bx - 0.04 * S, bx + 0.04 * S, 0.5 * S, by + 0.01 * S, shadeHex(hex, 0.1))
+  stem(bx - 0.026 * S, bx + 0.026 * S, 0.22 * S, 0.52 * S, '#9ca3af')
+  ctx.beginPath()
+  ctx.moveTo(bx - 0.03 * S, 0.24 * S); ctx.lineTo(bx - 0.06 * S, 0.14 * S); ctx.lineTo(bx + 0.06 * S, 0.14 * S); ctx.lineTo(bx + 0.03 * S, 0.24 * S); ctx.closePath()
+  ctx.fillStyle = hex; ctx.fill(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
+  ctx.beginPath(); ctx.ellipse(bx, 0.14 * S, 0.06 * S, 0.06 * S * EQUIP_SQUASH, 0, 0, Math.PI * 2)
+  ctx.fillStyle = shadeHex(hex, -0.5); ctx.fill(); ctx.stroke()
+}
+
+// Home plate and bases — flat rubber / canvas on the dirt, with a visible edge for thickness
+function drawFlatSlab(ctx, S, hex, pts, edge = 0.045, seam = false) {
+  const path = (dy = 0) => { ctx.beginPath(); pts.forEach(([u, v], i) => i ? ctx.lineTo(u * S, v * S + dy) : ctx.moveTo(u * S, v * S + dy)); ctx.closePath() }
+  softShadow(ctx, S, (c) => { c.beginPath(); pts.forEach(([u, v], i) => i ? c.lineTo(u * S, v * S) : c.moveTo(u * S, v * S)); c.closePath(); c.fill() }, 0.05 * S, 0.06 * S + edge * S, 4, 0.35)
+  ctx.lineJoin = 'round'
+  path(edge * S); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.028 * S; ctx.stroke(); ctx.fillStyle = shadeHex(hex, -0.38); ctx.fill()
+  path(); ctx.stroke()
+  const g = ctx.createLinearGradient(0.15 * S, 0.15 * S, 0.85 * S, 0.85 * S)
+  g.addColorStop(0, shadeHex(hex, 0.2)); g.addColorStop(1, shadeHex(hex, -0.12))
+  path(); ctx.fillStyle = g; ctx.fill()
+  if (seam) {
+    const c = pts.reduce((a, [u, v]) => [a[0] + u / pts.length, a[1] + v / pts.length], [0, 0])
+    ctx.beginPath(); pts.forEach(([u, v], i) => { const x = (c[0] + (u - c[0]) * 0.82) * S, y = (c[1] + (v - c[1]) * 0.82) * S; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y) }); ctx.closePath()
+    ctx.setLineDash([0.02 * S, 0.016 * S]); ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 0.01 * S; ctx.stroke(); ctx.setLineDash([])
+  }
+}
+const drawPlate = (ctx, S, hex) => drawFlatSlab(ctx, S, hex, [[0.15, 0.2], [0.85, 0.2], [0.85, 0.5], [0.5, 0.82], [0.15, 0.5]], 0.035)
+const drawBase  = (ctx, S, hex) => drawFlatSlab(ctx, S, hex, [[0.18, 0.18], [0.8, 0.18], [0.8, 0.78], [0.18, 0.78]], 0.07, true)
+
 // Disc cone — side-on frustum with an open top and ridge rings
 function drawCone(ctx, S, hex) {
   const bx = 0.5 * S, by = 0.68 * S, rb = 0.4 * S, rt = 0.11 * S, h = 0.24 * S
@@ -1441,7 +1805,7 @@ function drawPinnie(ctx, S, hex) {
   ctx.restore()
 }
 
-const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, football: drawFootball, baseball: drawStitchBall, softball: drawStitchBall, puck: drawPuck, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
+const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, football: drawFootball, baseball: drawStitchBall, softball: drawStitchBall, puck: drawPuck, ballrack: drawBallRack, bat: drawBat, hitstick: drawHitStick, softtoss: drawSoftToss, tee: drawTee, plate: drawPlate, base: drawBase, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
 
 function getEquipCanvas(type, hexColor) {
   const key = `${type}|${hexColor}`
@@ -1455,8 +1819,12 @@ function getEquipCanvas(type, hexColor) {
 
 // Shading is baked for light from the upper left, so these never rotate (they use
 // Facing or simply stay upright). The pinnie lies flat, so it keeps Rotate 90°.
+// Flat things on the ground rotate; the long ones and the bases turn in 45° steps.
+const FLAT_TYPES   = new Set(['pinnie', 'bat', 'hitstick', 'plate', 'base'])
+const ROTATE_45    = new Set(['bat', 'hitstick', 'plate', 'base'])
+const rotateStep   = (type) => ROTATE_45.has(type) ? 45 : 90
 const isUpright = (type) =>
-  MARKER_TYPES.has(type) || PLAYER_TYPES.has(type) || MODEL_TYPES.has(type) || (type in EQUIP_RENDERERS && type !== 'pinnie')
+  MARKER_TYPES.has(type) || PLAYER_TYPES.has(type) || MODEL_TYPES.has(type) || (type in EQUIP_RENDERERS && !FLAT_TYPES.has(type))
 
 const _equipPreview = new Map()
 function equipPreview(type) {
@@ -1640,9 +2008,8 @@ export default function App() {
   // ── Object mutations ─────────────────────────────────────────────────────────
 
   const addToField = useCallback((type) => {
-    const isNumbered = NUMBERED_TYPES.has(type)
-    const number     = isNumbered ? nextFreeNumber(placedObjects, type) : null
-    if (isNumbered && number == null) return
+    const tag = nextTag(placedObjects, type)
+    if (!tag) return
     pushHistory()
     const id = nextId.current++
     const initPos = {
@@ -1652,10 +2019,10 @@ export default function App() {
     setPlacedObjects(prev => [...prev, {
       id,
       type,
-      size: GOAL_DEFAULT_SIZE[type] ?? (PLAYER_TYPES.has(type) ? PLAYER_DEFAULT_SIZE : DEFAULT_SIZE),
+      size: GOAL_DEFAULT_SIZE[type] ?? EQUIP_DEFAULT_SIZE[type] ?? (PLAYER_TYPES.has(type) ? PLAYER_DEFAULT_SIZE : DEFAULT_SIZE),
       rotation: 0,
       ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
-      ...(isNumbered ? { number } : {}),
+      ...tag,
       ...(MODEL_TYPES.has(type) ? { facing: GOAL_DEFAULT_FACING } : {}),
     }])
     setFrames(prev => prev.map(f => ({
@@ -1701,8 +2068,14 @@ export default function App() {
     setPlacedObjects(prev => prev.map(o =>
       o.id !== id ? o
         : MODEL_TYPES.has(o.type) ? { ...o, facing: ((o.facing ?? GOAL_DEFAULT_FACING) + 45) % 360 }
-        : { ...o, rotation: (o.rotation + 90) % 360 }
+        : { ...o, rotation: (o.rotation + rotateStep(o.type)) % 360 }
     ))
+  }, [])
+
+  // Players: turn around to show the back; batters: which shoulder the bat is on
+  const setPlayerOpt = useCallback((id, changes) => {
+    pushHistory()
+    setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, ...changes } : o))
   }, [])
 
   const setGoalFacing = useCallback((id, facing) => {
@@ -1713,13 +2086,12 @@ export default function App() {
   const duplicateObject = useCallback((id) => {
     const src = placedObjects.find(o => o.id === id)
     if (!src) return
-    // Duplicated numbered objects take the next free number rather than copying it
-    const isNumbered = NUMBERED_TYPES.has(src.type)
-    const number     = isNumbered ? nextFreeNumber(placedObjects, src.type) : null
-    if (isNumbered && number == null) return
+    // Duplicated numbered / position objects take the next free label rather than copying it
+    const tag = nextTag(placedObjects, src.type)
+    if (!tag) return
     pushHistory()
     const newId = nextId.current++
-    setPlacedObjects(prev => [...prev, { ...src, id: newId, ...(number != null ? { number } : {}) }])
+    setPlacedObjects(prev => [...prev, { ...src, id: newId, ...tag }])
     setFrames(prev => prev.map(f => {
       const orig = f.positions[id] ?? { x: aCX, y: aCY }
       return { ...f, positions: { ...f.positions, [newId]: { x: orig.x + 28, y: orig.y + 28 } } }
@@ -2239,7 +2611,8 @@ export default function App() {
   const getObjectFill = (obj, r) => {
     // Players: generated shaded figurine, numbered for the team types
     if (PLAYER_TYPES.has(obj.type)) {
-      const canvas = getPlayerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? null, kitFor(sport))
+      const canvas = getPlayerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? obj.position ?? null, kitFor(sport),
+        { back: obj.back, bat: obj.type === 'batter' ? (obj.bats ?? 'R') : null })
       const scale  = (r * 2) / canvas.width
       return {
         fillPatternImage:  canvas,
@@ -2365,11 +2738,13 @@ export default function App() {
         <div className="panel-header">Objects</div>
         <div className="object-grid">
           {CATALOG.filter(item => item.sports.includes(sport)).map(item => {
-            const isNumbered = NUMBERED_TYPES.has(item.type)
-            const nextNum    = isNumbered ? nextFreeNumber(placedObjects, item.type) : null
-            const full       = isNumbered && nextNum == null
+            const isNumbered = NUMBERED_TYPES.has(item.type) || POSITION_TYPES.has(item.type)
+            const tag        = nextTag(placedObjects, item.type)
+            const nextNum    = tagLabel(tag)
+            const full       = !tag
             const imgSrc     = isNumbered
-              ? numberedPreview(item.type, nextNum ?? NUMBER_MAX, kitFor(sport))
+              ? numberedPreview(item.type, nextNum ?? (POSITION_TYPES.has(item.type) ? 'C' : NUMBER_MAX), kitFor(sport))
+              : item.type === 'batter' ? batterPreview(kitFor(sport))
               : MODEL_TYPES.has(item.type) ? goalPreview(item.type)
               : item.type === 'player' ? playerPreview(kitFor(sport))
               : EQUIP_RENDERERS[item.type] ? equipPreview(item.type)
@@ -2380,7 +2755,7 @@ export default function App() {
                 className="object-card"
                 onClick={() => addToField(item.type)}
                 disabled={full}
-                title={full ? `All ${NUMBER_MAX} ${item.label} numbers placed` : `Add ${item.label}${nextNum ? ` #${nextNum}` : ''}`}
+                title={full ? `All ${POSITION_TYPES.has(item.type) ? 'positions' : `${NUMBER_MAX} numbers`} placed for ${item.label}` : `Add ${item.label}${nextNum ? ` ${typeof nextNum === 'number' ? '#' : ''}${nextNum}` : ''}`}
               >
                 <img src={imgSrc} alt={item.label} />
                 <span>{item.label}</span>
@@ -3058,7 +3433,7 @@ export default function App() {
             className="ctx-menu"
             style={{
               left: Math.min(contextMenu.x, viewW - 234),
-              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 510 : 390))),
+              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 510 : PLAYER_TYPES.has(ctxObj?.type) ? 470 : 390))),
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -3100,6 +3475,26 @@ export default function App() {
               </>
             )}
 
+            {PLAYER_TYPES.has(ctxObj?.type) && (
+              <>
+                <div className="ctx-label">View</div>
+                <div className="ctx-toggle">
+                  <button className={!ctxObj.back ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { back: false })}>Front</button>
+                  <button className={ctxObj.back ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { back: true })}>Back</button>
+                </div>
+                {ctxObj.type === 'batter' && (
+                  <>
+                    <div className="ctx-label">Bats</div>
+                    <div className="ctx-toggle">
+                      <button className={(ctxObj.bats ?? 'R') === 'R' ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { bats: 'R' })}>Right</button>
+                      <button className={ctxObj.bats === 'L' ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { bats: 'L' })}>Left</button>
+                    </div>
+                  </>
+                )}
+                <div className="ctx-divider" />
+              </>
+            )}
+
             <div className="ctx-label">Size</div>
             <div className="ctx-sizes">
               {SIZE_RADII.map((r, i) => {
@@ -3120,7 +3515,7 @@ export default function App() {
 
             {isUpright(ctxObj?.type) ? null : (
               <button className="ctx-btn" onClick={() => rotateObject(contextMenu.objId)}>
-                <span className="ctx-icon">↻</span> Rotate 90°
+                <span className="ctx-icon">↻</span> Rotate {rotateStep(ctxObj?.type)}°
               </button>
             )}
 
@@ -3145,7 +3540,7 @@ export default function App() {
             <button
               className="ctx-btn"
               onClick={() => duplicateObject(contextMenu.objId)}
-              disabled={NUMBERED_TYPES.has(ctxObj?.type) && nextFreeNumber(placedObjects, ctxObj.type) == null}
+              disabled={!!ctxObj && !nextTag(placedObjects, ctxObj.type)}
             >
               <span className="ctx-icon">⧉</span> Duplicate
             </button>
@@ -3267,11 +3662,30 @@ export default function App() {
 
 // ── Field background switcher ─────────────────────────────────────────────────
 function FieldBackground({ sport, field, canvas }) {
-  if (sport === 'basketball') return <BasketballCourt field={field} />
-  if (sport === 'football')   return <FootballField field={field} />
+  if (sport === 'basketball') return <BasketballCourt field={field} canvas={canvas} />
+  if (sport === 'football')   return <FootballField field={field} canvas={canvas} />
   if (DIAMOND.has(sport))     return <DiamondField field={field} sport={sport} />
-  if (sport === 'hockey')     return <HockeyRink field={field} />
+  if (sport === 'hockey')     return <HockeyRink field={field} canvas={canvas} />
   return <SoccerPitch field={field} canvas={canvas} />
+}
+
+const isSideways = (field) => field === 'horizontal' || field === 'horizontal-left' || field === 'horizontal-right'
+
+// Group transform for the Horizontal views of a field drawn lengthwise (ends at y = 0 and
+// y = L, width Wd across). Horizontal fits the whole length left→right; Left / Right show
+// `half` units (the first `endPad` of them before the end line) with that end on the
+// left / right of the narrow side canvas. Rotations only — never mirrored — so any text
+// on the field stays readable.
+function sidewaysGroup(field, L, Wd, half, endPad = 0) {
+  if (field === 'horizontal') {
+    const s = Math.min(LW / L, LH / Wd)
+    return { s, group: { x: LW / 2 + (L / 2) * s, y: (LH - Wd * s) / 2, scaleX: s, scaleY: s, rotation: 90 } }
+  }
+  const s = Math.min(SIDE_W / half, LH / Wd)
+  const edge = (SIDE_W - half * s) / 2 + endPad * s   // canvas edge → end line
+  return field === 'horizontal-left'
+    ? { s, group: { x: edge, y: (LH + Wd * s) / 2, scaleX: s, scaleY: s, rotation: -90 } }
+    : { s, group: { x: SIDE_W - edge, y: (LH - Wd * s) / 2, scaleX: s, scaleY: s, rotation: 90 } }
 }
 
 // ── Net pattern — tiled 5×5 grid cell, created once ─────────────────────────
@@ -3452,22 +3866,24 @@ function CourtLines({ lw }) {
   )
 }
 
-function BasketballCourt({ field }) {
+function BasketballCourt({ field, canvas }) {
   const floor = getFloorPattern()
   const full = field === 'full'
-  const W = full ? FW : LW, H = full ? FH : LH
-  const padY = full ? GOAL_D + GBUF : GBUF
+  const { w: W, h: H } = canvas
+  const padY = canvas.padY + GBUF
   const backdrop = (
     <Rect x={-GBUF} y={-padY} width={W + GBUF * 2} height={H + padY * 2}
           fillPatternImage={floor} fillPatternRepeat="repeat"
-          fillPatternRotation={field === 'middle' ? 90 : 0}
+          fillPatternRotation={field === 'middle' || isSideways(field) ? 90 : 0}
           cornerRadius={4} listening={false} />
   )
   if (field === 'blank') return backdrop
 
   const LINE_PX = 2.2
   let s, group
-  if (full) {
+  if (isSideways(field)) {
+    ;({ s, group } = sidewaysGroup(field, COURT_L, COURT_W, COURT_L / 2))
+  } else if (full) {
     s = Math.min(FW / COURT_W, FH / COURT_L)
     group = { x: (FW - COURT_W * s) / 2, y: (FH - COURT_L * s) / 2, scaleX: s, scaleY: s }
   } else if (field === 'middle') {
@@ -3563,16 +3979,19 @@ function FootballLines({ lw }) {
   )
 }
 
-function FootballField({ field }) {
+function FootballField({ field, canvas }) {
   const full = field === 'full'
-  const W = full ? FW : LW, H = full ? FH : LH
-  const padY = full ? GOAL_D + GBUF : GBUF
+  const { w: W, h: H } = canvas
+  const padY = canvas.padY + GBUF
   const backdrop = <Rect x={-GBUF} y={-padY} width={W + GBUF * 2} height={H + padY * 2} fill="#2d8b2d" cornerRadius={4} listening={false} />
   if (field === 'blank') return backdrop
 
   const LINE_PX = 2
   let s, group
-  if (full) {
+  if (isSideways(field)) {
+    // Half views run 2 yd past the 50 so its numbers aren't cut
+    ;({ s, group } = sidewaysGroup(field, GRID_L, GRID_W, GRID_L / 2 + 2))
+  } else if (full) {
     s = Math.min(FW / GRID_W, FH / GRID_L)
     group = { x: (FW - GRID_W * s) / 2, y: (FH - GRID_L * s) / 2, scaleX: s, scaleY: s }
   } else if (field === 'middle') {
@@ -3777,16 +4196,23 @@ function RinkLines({ lw }) {
   )
 }
 
-function HockeyRink({ field }) {
+function HockeyRink({ field, canvas }) {
   const full = field === 'full'
-  const W = full ? FW : LW, H = full ? FH : LH
-  const padY = full ? GOAL_D + GBUF : GBUF
+  const { w: W, h: H } = canvas
+  const padY = canvas.padY + GBUF
   const backdrop = <Rect x={-GBUF} y={-padY} width={W + GBUF * 2} height={H + padY * 2} fill={field === 'blank' ? ICE : '#475569'} cornerRadius={4} listening={false} />
   if (field === 'blank') return backdrop
 
   const LINE_PX = 2
   let s, group
-  if (full) {
+  if (field === 'horizontal') {
+    ;({ s, group } = sidewaysGroup(field, RINK_L + 3, RINK_W + 3, 0))
+    group.x -= 1.5 * s   // the fit includes a 1.5-ft margin at each end and side;
+    group.y += 1.5 * s   // shift so the 200 × 85 rink itself is centered
+  } else if (isSideways(field)) {
+    ;({ s, group } = sidewaysGroup(field, RINK_L, RINK_W + 3, RINK_L / 2 + 3, 1.5))
+    group.y += (field === 'horizontal-left' ? -1.5 : 1.5) * s
+  } else if (full) {
     s = Math.min(FW / (RINK_W + 3), FH / (RINK_L + 3))
     group = { x: (FW - RINK_W * s) / 2, y: (FH - RINK_L * s) / 2, scaleX: s, scaleY: s }
   } else if (field === 'middle') {
