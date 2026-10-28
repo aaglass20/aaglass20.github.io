@@ -56,20 +56,27 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'cone', 'hoop', 'pinnie', 'popup-goal'])
+const COLORIZABLE = new Set(['player', 'marker', 'marker2', 'cone', 'hoop', 'pinnie', 'popup-goal'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#ef4444', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', 'popup-goal': '#f97316' }
+const DEFAULT_COLORS = { player: '#ef4444', marker: '#3b82f6', marker2: '#facc15', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', 'popup-goal': '#f97316' }
 
 const CATALOG = [
   { type: 'ball',       label: 'Soccer Ball', src: 'soccerball.png'  },
   { type: 'player',     label: 'Player',      src: 'player1.png'     },
+  { type: 'marker',     label: 'Team 1',      src: null              },
+  { type: 'marker2',    label: 'Team 2',      src: null              },
   { type: 'cone',       label: 'Cone',        src: 'cone.png'        },
   { type: 'hoop',       label: 'Hoop',        src: 'hoop.png'        },
   { type: 'pinnie',     label: 'Pinnie',      src: 'pinnie.png'      },
   { type: 'pole',       label: 'Pole',        src: 'pole.png'        },
   { type: 'popup-goal', label: 'Pop-up Goal', src: 'popup-goal.jpg'  },
 ]
+
+// Numbered player markers (one type per team) — each new marker takes the
+// lowest number not already used by its own team
+const MARKER_TYPES = new Set(['marker', 'marker2'])
+const MARKER_MAX   = 20
 
 const FIELD_CATALOG = [
   { id: 'full',      label: 'Full Field',       src: null           },
@@ -296,6 +303,83 @@ function getColorizedPlayer(srcImg, hexColor) {
 
   _playerColorCache.set(hexColor, canvas)
   return canvas
+}
+
+// ── Numbered marker ──────────────────────────────────────────────────────────
+// Draws a beveled puck: darker base shows as a rim at the bottom (depth), lighter
+// top face with a soft top-left highlight, number centered on the face.
+// Cached by `hexColor|number`.
+const _markerCache = new Map()
+const MARKER_PX    = 160   // render size — crisp at size 6 on 2× displays
+
+function shadeHex(hex, amt) {
+  const { r, g, b } = hexToRgb(hex)
+  const f = (c) => Math.round(amt < 0 ? c * (1 + amt) : c + (255 - c) * amt)
+  return `rgb(${f(r)},${f(g)},${f(b)})`
+}
+
+function getMarkerCanvas(hexColor, number) {
+  const key = `${hexColor}|${number}`
+  if (_markerCache.has(key)) return _markerCache.get(key)
+
+  const S = MARKER_PX, R = S / 2
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = S
+  const ctx = canvas.getContext('2d')
+
+  // Outer dark outline
+  ctx.beginPath(); ctx.arc(R, R, R, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fill()
+
+  // Base / side of the puck — dark, gradient so the bottom rim reads as thickness
+  const base = ctx.createLinearGradient(0, 0, 0, S)
+  base.addColorStop(0,   shadeHex(hexColor, -0.35))
+  base.addColorStop(1,   shadeHex(hexColor, -0.6))
+  ctx.beginPath(); ctx.arc(R, R, R - 3, 0, Math.PI * 2)
+  ctx.fillStyle = base; ctx.fill()
+
+  // Top face — smaller and shifted up, exposing the bevel along the bottom
+  const fr = R * 0.84, fx = R, fy = R - R * 0.1
+  const face = ctx.createRadialGradient(fx - fr * 0.35, fy - fr * 0.4, fr * 0.1, fx, fy, fr)
+  face.addColorStop(0,   shadeHex(hexColor, 0.35))
+  face.addColorStop(0.6, hexColor)
+  face.addColorStop(1,   shadeHex(hexColor, -0.15))
+  ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2)
+  ctx.fillStyle = face; ctx.fill()
+
+  // Thin highlight ring around the top edge of the face
+  ctx.beginPath(); ctx.arc(fx, fy, fr - 2, Math.PI * 1.05, Math.PI * 1.95)
+  ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 3; ctx.stroke()
+
+  // Number — dark on light colors, white on everything else
+  const { r, g, b } = hexToRgb(hexColor)
+  const light = (0.299 * r + 0.587 * g + 0.114 * b) > 170
+  ctx.font = `800 ${number >= 10 ? fr * 0.95 : fr * 1.1}px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+  ctx.shadowColor = light ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.55)'
+  ctx.shadowOffsetY = 3; ctx.shadowBlur = 4
+  ctx.fillStyle = light ? '#111827' : '#ffffff'
+  ctx.fillText(String(number), fx, fy + fr * 0.06)
+
+  _markerCache.set(key, canvas)
+  return canvas
+}
+
+// Lowest number (1–MARKER_MAX) not already used by that team, or null if full
+function nextMarkerNumber(objects, type) {
+  const used = new Set(objects.filter(o => o.type === type).map(o => o.number))
+  for (let n = 1; n <= MARKER_MAX; n++) if (!used.has(n)) return n
+  return null
+}
+
+// Data URL of a team's default-color marker for the catalog card (shows the next number)
+const _markerPreviewCache = new Map()
+function markerPreview(type, number) {
+  const key = `${type}|${number}`
+  if (!_markerPreviewCache.has(key)) {
+    _markerPreviewCache.set(key, getMarkerCanvas(DEFAULT_COLORS[type], number).toDataURL())
+  }
+  return _markerPreviewCache.get(key)
 }
 
 // ── Equipment colorization ────────────────────────────────────────────────────
@@ -618,6 +702,9 @@ export default function App() {
   // ── Object mutations ─────────────────────────────────────────────────────────
 
   const addToField = useCallback((type) => {
+    const isMarker = MARKER_TYPES.has(type)
+    const number   = isMarker ? nextMarkerNumber(placedObjects, type) : null
+    if (isMarker && number == null) return
     pushHistory()
     const id = nextId.current++
     const initPos = {
@@ -631,12 +718,13 @@ export default function App() {
       rotation: 0,
       ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
       ...(type === 'popup-goal' ? { popupPos: 'A' } : {}),
+      ...(isMarker ? { number } : {}),
     }])
     setFrames(prev => prev.map(f => ({
       ...f,
       positions: { ...f.positions, [id]: { ...initPos } },
     })))
-  }, [aCX, aCY])
+  }, [aCX, aCY, placedObjects])
 
   // Called onDragMove / onDragEnd — updates only the current frame
   const moveObject = useCallback((id, x, y) => {
@@ -697,18 +785,21 @@ export default function App() {
 
 
   const duplicateObject = useCallback((id) => {
+    const src = placedObjects.find(o => o.id === id)
+    if (!src) return
+    // Duplicated markers take the next free number rather than copying it
+    const isMarker = MARKER_TYPES.has(src.type)
+    const number   = isMarker ? nextMarkerNumber(placedObjects, src.type) : null
+    if (isMarker && number == null) return
     pushHistory()
     const newId = nextId.current++
-    setPlacedObjects(prev => {
-      const src = prev.find(o => o.id === id)
-      return src ? [...prev, { ...src, id: newId }] : prev
-    })
+    setPlacedObjects(prev => [...prev, { ...src, id: newId, ...(number != null ? { number } : {}) }])
     setFrames(prev => prev.map(f => {
       const orig = f.positions[id] ?? { x: aCX, y: aCY }
       return { ...f, positions: { ...f.positions, [newId]: { x: orig.x + 28, y: orig.y + 28 } } }
     }))
     setContextMenu(null)
-  }, [])
+  }, [placedObjects])
 
   const resizeObject = useCallback((id, size) => {
     pushHistory()
@@ -1133,6 +1224,17 @@ export default function App() {
         fillPatternRepeat: 'no-repeat',
       }
     }
+    // Marker: generated beveled puck with its number
+    if (MARKER_TYPES.has(obj.type)) {
+      const canvas = getMarkerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? 1)
+      const scale  = (r * 2) / canvas.width
+      return {
+        fillPatternImage:  canvas,
+        fillPatternOffset: { x: canvas.width / 2, y: canvas.height / 2 },
+        fillPatternScale:  { x: scale, y: scale },
+        fillPatternRepeat: 'no-repeat',
+      }
+    }
     // Ball: non-uniform scale so image fills the full circle
     if (obj.type === 'ball' && images.ball) {
       const img = images.ball
@@ -1242,17 +1344,26 @@ export default function App() {
       <aside className={`objects-panel${activePanel === 'objects' ? ' open' : ''}`}>
         <div className="panel-header">Objects</div>
         <div className="object-grid">
-          {CATALOG.map(item => (
-            <button
-              key={item.type}
-              className="object-card"
-              onClick={() => addToField(item.type)}
-              title={`Add ${item.label}`}
-            >
-              <img src={`${import.meta.env.BASE_URL}${item.src}`} alt={item.label} />
-              <span>{item.label}</span>
-            </button>
-          ))}
+          {CATALOG.map(item => {
+            const isMarker  = MARKER_TYPES.has(item.type)
+            const markerNum = isMarker ? nextMarkerNumber(placedObjects, item.type) : null
+            const full      = isMarker && markerNum == null
+            const imgSrc    = isMarker
+              ? markerPreview(item.type, markerNum ?? MARKER_MAX)
+              : `${import.meta.env.BASE_URL}${item.src}`
+            return (
+              <button
+                key={item.type}
+                className="object-card"
+                onClick={() => addToField(item.type)}
+                disabled={full}
+                title={full ? `All ${MARKER_MAX} ${item.label} markers placed` : `Add ${item.label}${markerNum ? ` #${markerNum}` : ''}`}
+              >
+                <img src={imgSrc} alt={item.label} />
+                <span>{item.label}</span>
+              </button>
+            )
+          })}
         </div>
       </aside>
 
@@ -1740,8 +1851,9 @@ export default function App() {
                   x={pos.x}
                   y={pos.y}
                   radius={r}
-                  rotation={obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A']?.rotation ?? 0) : obj.rotation}
+                  rotation={obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A']?.rotation ?? 0) : MARKER_TYPES.has(obj.type) ? 0 : obj.rotation}
                   {...getObjectFill(obj, r)}
+                  {...(MARKER_TYPES.has(obj.type) ? { shadowColor: 'black', shadowBlur: 5, shadowOffsetY: 3, shadowOpacity: 0.45 } : {})}
                   strokeEnabled={obj.type === 'ball'}
                   stroke="#1a1a1a"
                   strokeWidth={1.5}
@@ -1938,7 +2050,7 @@ export default function App() {
 
             <div className="ctx-divider" />
 
-            {ctxObj?.type === 'popup-goal' ? (
+            {MARKER_TYPES.has(ctxObj?.type) ? null : ctxObj?.type === 'popup-goal' ? (
               <button className="ctx-btn" onClick={() => rotatePopupGoal(contextMenu.objId)}>
                 <span className="ctx-icon">↻</span> Rotate
               </button>
@@ -1948,7 +2060,11 @@ export default function App() {
               </button>
             )}
 
-            <button className="ctx-btn" onClick={() => duplicateObject(contextMenu.objId)}>
+            <button
+              className="ctx-btn"
+              onClick={() => duplicateObject(contextMenu.objId)}
+              disabled={MARKER_TYPES.has(ctxObj?.type) && nextMarkerNumber(placedObjects, ctxObj.type) == null}
+            >
               <span className="ctx-icon">⧉</span> Duplicate
             </button>
 

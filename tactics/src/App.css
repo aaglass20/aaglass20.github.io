@@ -154,6 +154,7 @@ body {
 }
 
 .object-card:active { transform: scale(0.94); }
+.object-card:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 .object-card img {
   width: 52px;
@@ -593,6 +594,7 @@ canvas {
   color: #fff;
 }
 
+.ctx-btn:disabled { opacity: 0.35; cursor: not-allowed; background: none; }
 .ctx-btn.danger { color: rgba(248,113,113,0.8); }
 .ctx-btn.danger:hover {
   background: rgba(248,113,113,0.1);

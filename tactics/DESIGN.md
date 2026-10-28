@@ -176,6 +176,8 @@ Add the hex string to `JERSEY_COLORS`. No other changes needed — the cache han
 |----------|-----------------|-----------|---------------|
 | `ball`   | soccerball.png  | 488×513   | Non-uniform scale — fills full circle diameter |
 | `player` | player1.png     | 82×96     | Colorize + outline pipeline; uniform scale by height |
+| `marker` | *(generated)*   | 160×160   | Team 1 — `getMarkerCanvas` beveled numbered puck, no source image |
+| `marker2`| *(generated)*   | 160×160   | Team 2 — same as `marker`, default yellow |
 | `cone`   | cone.png        | 122×108   | Equipment pipeline (white knockout + outline); uniform scale by max dimension |
 | `hoop`   | hoop.png        | 120×118   | Equipment pipeline (white knockout + outline); uniform scale by max dimension |
 | `pole`   | pole.png        | 74×114    | Equipment pipeline (white knockout + outline); uniform scale by max dimension |
@@ -189,3 +191,16 @@ Same 3-stage approach as the player pipeline, without recoloring:
 3. **Outline**: draw silhouette at 8 neighbor offsets (±1px), then draw processed image on top
 
 Cached by image object reference (`_equipmentCache: Map<HTMLImageElement, HTMLCanvasElement>`).
+
+## Numbered Team Markers (`marker` = Team 1, `marker2` = Team 2)
+
+Generated on a canvas by `getMarkerCanvas(hexColor, number)`, so there's no source image. Cached by `hex|number`.
+
+- **Types:** both are listed in `MARKER_TYPES`. Anything marker-specific checks `MARKER_TYPES.has(type)`, so a Team 3 only needs a `CATALOG` entry, a `DEFAULT_COLORS` entry, and to be added to `MARKER_TYPES` + `COLORIZABLE`.
+- **Numbering:** each team counts separately. A new marker takes the **lowest number its own team isn't using**, 1–20 (`nextMarkerNumber(objects, type)`). If you delete #3, the next one added is #3. Duplicate also takes the next free number. Once 20 are on the field, the catalog card and Duplicate are disabled.
+- **Object field:** `number` (marker only)
+- **Default colors:** Team 1 Blue `#3b82f6`, Team 2 Yellow `#facc15`. Both recolor with the same 8 swatches as Player
+- **Look:** dark outline → dark base (shows as a bevel rim along the bottom) → top face shifted up with a radial highlight → white number (dark `#111827` on light colors, luminance > 170)
+- **Konva drop shadow** (marker only): black, blur 5, offsetY 3, opacity 0.45
+- **No rotation:** Rotate is hidden in the context menu and rendering forces `rotation=0` so numbers stay upright
+- The catalog card shows a live preview with the next number (`markerPreview`)
