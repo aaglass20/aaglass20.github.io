@@ -826,253 +826,6 @@ canvas {
   box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
 }
 
-/* ── Mobile tool tab handle (desktop: hidden) ── */
-.mobile-tab-handle { display: none; }
-
-/* ── Mobile layout (≤ 640px) ── */
-@media (max-width: 640px) {
-
-  /* Lock to viewport — no body-level scroll on mobile */
-  .app {
-    flex-direction: column;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  /* ── Subtle bottom tab handle — flex child, always at bottom ── */
-  .mobile-tab-handle {
-    order: 3;
-    flex-shrink: 0;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    background: #161618;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s;
-    z-index: 20;
-  }
-
-  .mobile-tab-handle:active { background: #1e1e24; }
-
-  .mobile-tab-grip {
-    width: 32px;
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.18);
-    transition: background 0.2s;
-  }
-
-  .mobile-tab-handle.open .mobile-tab-grip {
-    background: rgba(255,255,255,0.45);
-  }
-
-  .mobile-tab-label {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    color: rgba(255,255,255,0.3);
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
-  .mobile-tab-handle.open .mobile-tab-label,
-  .mobile-tab-handle.panel-open .mobile-tab-label {
-    color: rgba(255,255,255,0.6);
-  }
-
-  .mobile-tab-handle.panel-open .mobile-tab-grip {
-    background: rgba(255,255,255,0.45);
-  }
-
-  /* Sidebar: collapsed by default, slides in when tray open */
-  .sidebar {
-    order: 2;
-    width: 100%;
-    height: 0;
-    overflow: hidden;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0;
-    border-right: none;
-    border-top: none;
-    gap: 0;
-    flex-shrink: 0;
-    transition: height 0.22s ease-out, opacity 0.18s ease-out;
-    opacity: 0;
-  }
-
-  /* Tray revealed */
-  .app.mobile-tools-open .sidebar {
-    height: 52px;
-    opacity: 1;
-    padding: 0 4px;
-    border-top: 1px solid rgba(255,255,255,0.07);
-  }
-
-  .sidebar-btn {
-    flex: 1;
-    max-width: 80px;
-    flex-direction: column;
-    padding: 6px 4px 4px;
-    gap: 2px;
-  }
-
-  /* Main fills remaining height — no scroll, stage scales to fit */
-  .main {
-    order: 1;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    padding: 4px 4px 6px;
-    gap: 6px;
-  }
-
-  h1 { font-size: 1rem; }
-
-  .export-btn, .clear-btn {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
-
-  /* Panel slides UP from just above the handle (handle=30px) */
-  .objects-panel {
-    left: 0;
-    right: 0;
-    top: auto;
-    bottom: 30px;
-    width: 100%;
-    height: 170px;
-    border-right: none;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    transform: translateY(calc(100% + 30px));
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-direction: row;
-  }
-
-  .objects-panel.open {
-    transform: translateY(0);
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-  }
-
-  .panel-header {
-    writing-mode: vertical-rl;
-    padding: 14px 8px;
-    font-size: 10px;
-    border-bottom: none;
-    border-right: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-  }
-
-  /* Object cards in a single horizontal row */
-  .object-grid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 8px;
-    padding: 10px 12px;
-    align-items: center;
-    min-width: min-content;
-  }
-
-  .object-card {
-    min-width: 68px;
-    flex-shrink: 0;
-    padding: 8px 6px 6px;
-  }
-
-  .object-card img {
-    width: 44px;
-    height: 44px;
-  }
-
-  /* Field cards — compact square icons in a horizontal row */
-  .field-list {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    padding: 8px 10px;
-    align-items: center;
-    gap: 6px;
-    min-width: min-content;
-  }
-
-  .field-card {
-    min-width: unset;
-    width: 52px;
-    flex-shrink: 0;
-    padding: 5px;
-    gap: 3px;
-  }
-
-  .field-preview {
-    width: 42px;
-    height: 42px;
-  }
-
-  .field-card-label {
-    font-size: 8px;
-    letter-spacing: 0;
-  }
-
-  /* Bottom bar: allow frame strip to scroll if many frames */
-  .bottom-bar {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 8px 10px;
-    gap: 8px;
-    border-radius: 8px;
-  }
-
-  .frame-strip {
-    overflow-x: auto;
-    min-width: 0;
-    flex-shrink: 1;
-  }
-
-  .play-btn, .stop-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 13px;
-  }
-
-  .frame-btn {
-    width: 34px;
-    height: 30px;
-    font-size: 12px;
-  }
-
-  .frame-delete { width: 34px; }
-
-  .add-frame-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  /* Context menu: ensure it's large enough to tap */
-  .ctx-btn {
-    padding: 11px 8px;
-  }
-
-  .color-swatch {
-    width: 26px;
-    height: 26px;
-  }
-
-  .size-dot {
-    min-width: 20px;
-    min-height: 20px;
-  }
-}
-
 /* ── Draw panel ──────────────────────────────────────────────────────────── */
 .draw-panel {
   padding: 12px;
@@ -1182,16 +935,6 @@ canvas {
 
 .draw-thick-btn.active .draw-thick-preview { background: #4ade80; }
 
-@media (max-width: 640px) {
-  .draw-panel-aside {
-    flex-direction: column !important;
-    height: 280px;
-    overflow-y: auto;
-  }
-  .draw-panel {
-    overflow-y: auto;
-  }
-}
 
 /* ── Free-path toggle ────────────────────────────────────────────────────── */
 .free-path-btn {
@@ -1696,3 +1439,337 @@ canvas {
   background: linear-gradient(270deg, transparent 10%, #d42a2a 10% 12%, transparent 12% 52%, #1d4ed8 52% 58%, transparent 58% 96%, #d42a2a 96%), #eef6fb;
   border-radius: 4px 18px 18px 4px;
 }
+
+/* ══ Phone layout ═══════════════════════════════════════════════════════════
+   JS adds .mobile to .app (narrow, or short when held sideways) and .m-land when
+   the phone is sideways. Upright: top bar · field · timeline · tool dock, with the
+   tool panels as bottom drawers. Sideways: tool rail on the left, timeline inside
+   the top bar, drawers slide out from the rail. Menus become sheets. */
+
+/* Desktop: the phone-only pieces stay hidden */
+.panel-grab, .panel-btn, .m-hint { display: none; }
+.stage-wrap { display: contents; }
+.panel-title { pointer-events: none; }
+
+.app.mobile {
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.app.mobile .main {
+  order: 1;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+/* ── Top bar ── */
+.app.mobile .header {
+  max-width: none;
+  height: 50px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  background: #161618;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.app.mobile .sport-select { padding: 8px 28px 8px 10px; font-size: 14px; }
+.app.mobile .header-right { gap: 6px; }
+
+.m-icon-btn {
+  width: 40px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: linear-gradient(180deg, #2b2b34, #1f1f26);
+  color: #e5e7eb;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 0 rgba(0,0,0,0.4);
+}
+.m-icon-btn:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+.m-icon-btn:disabled { opacity: 0.35; }
+
+/* ── Field: takes every pixel left over ── */
+.app.mobile .stage-wrap {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.app.mobile canvas { border-radius: 0; box-shadow: none; }
+
+/* ── Timeline ── */
+.m-timeline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 52px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  background: #161618;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.m-play, .m-add-frame, .m-chip {
+  flex-shrink: 0;
+  height: 36px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #e5e7eb;
+  font-weight: 800;
+  cursor: pointer;
+}
+.m-play {
+  width: 42px;
+  font-size: 15px;
+  background: linear-gradient(180deg, #22c55e, #15803d);
+  border-color: #4ade80;
+  color: #fff;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
+.m-play.playing { background: linear-gradient(180deg, #ef4444, #b91c1c); border-color: #f87171; }
+.m-play:disabled { background: rgba(34,197,94,0.15); border-color: rgba(74,222,128,0.25); color: rgba(255,255,255,0.4); box-shadow: none; }
+.m-add-frame { width: 36px; font-size: 20px; color: #93c5fd; border-color: rgba(96,165,250,0.4); background: rgba(96,165,250,0.12); }
+.m-chip { min-width: 38px; padding: 0 6px; font-size: 13px; color: rgba(255,255,255,0.7); }
+.m-chip.active { color: #4ade80; border-color: #4ade80; background: rgba(74,222,128,0.12); }
+.m-play:disabled, .m-add-frame:disabled, .m-chip:disabled { opacity: 0.4; }
+
+.m-timeline .frame-strip {
+  flex: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 7px 4px 4px;   /* room for the delete badge */
+  gap: 6px;
+}
+.m-timeline .frame-strip::-webkit-scrollbar { display: none; }
+.m-timeline .frame-slot { position: relative; flex-shrink: 0; }
+.m-timeline .frame-btn { width: 36px; height: 34px; font-size: 13px; }
+/* Only the selected frame shows its delete, as a badge on the corner */
+.m-timeline .frame-delete { display: none; }
+.m-timeline .frame-slot.active .frame-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* ── Tool dock (the desktop sidebar, laid flat along the bottom) ── */
+.app.mobile .sidebar {
+  order: 2;
+  width: 100%;
+  height: calc(60px + env(safe-area-inset-bottom));
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 5px 6px env(safe-area-inset-bottom);
+  border-right: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  z-index: 30;
+}
+.app.mobile .sidebar-btn { flex: 1; max-width: 76px; padding: 6px 2px 5px; gap: 4px; border-radius: 10px; }
+.app.mobile .sidebar-btn.active { background: rgba(74,222,128,0.14); color: #4ade80; }
+
+/* ── Drawers (the desktop side panels) ── */
+.app.mobile .objects-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: auto;
+  bottom: calc(60px + env(safe-area-inset-bottom));
+  width: auto;
+  max-height: 46vh;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: none;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(180deg, #24242b, #1c1c1f 40px);
+  z-index: 25;
+  transform: translateY(calc(100% + 70px));
+  transition: transform 0.24s cubic-bezier(.2,.8,.3,1), box-shadow 0.2s;
+}
+.app.mobile .objects-panel.open { transform: translateY(0); box-shadow: 0 -8px 30px rgba(0,0,0,0.55); }
+/* Peek: collapsed to its header so the whole field shows (tap the header to bring it back) */
+.app.mobile .objects-panel.open.min { transform: translateY(calc(100% - 46px)); }
+.app.mobile .objects-panel > :not(.panel-header) { overflow-y: auto; overscroll-behavior: contain; }
+
+.app.mobile .panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 46px;
+  flex-shrink: 0;
+  padding: 10px 8px 0 16px;
+  position: relative;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  writing-mode: horizontal-tb;
+}
+.app.mobile .panel-grab {
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 38px;
+  height: 4px;
+  margin-left: -19px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.22);
+}
+.app.mobile .panel-title { flex: 1; }
+.app.mobile .panel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.app.mobile .object-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+  padding: 12px;
+}
+.app.mobile .object-card { padding: 8px 4px 7px; }
+.app.mobile .object-card img { width: 46px; height: 46px; }
+
+.app.mobile .field-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+  padding: 12px;
+}
+.app.mobile .field-preview { height: 52px; }
+
+.app.mobile .draw-panel { padding: 10px 14px 16px; }
+
+/* ── Menus become sheets ── */
+.app.mobile .ctx-overlay { background: rgba(0,0,0,0.42); animation: m-fade 0.18s ease-out; }
+.app.mobile .ctx-menu {
+  left: 0 !important;
+  right: 0;
+  top: auto !important;
+  bottom: 0;
+  min-width: 0;
+  max-height: 78vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: none;
+  border-radius: 20px 20px 0 0;
+  padding: 22px 16px calc(14px + env(safe-area-inset-bottom));
+  animation: m-sheet-up 0.24s cubic-bezier(.2,.8,.3,1);
+}
+.app.mobile .ctx-menu::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 38px;
+  height: 4px;
+  margin-left: -19px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.22);
+}
+.app.mobile .ctx-colors { gap: 8px; }
+.app.mobile .ctx-menu .color-swatch { width: 32px; height: 32px; }
+.app.mobile .ctx-toggle button { padding: 10px 0; font-size: 13px; }
+.app.mobile .ctx-btn { padding: 13px 8px; font-size: 14px; }
+.app.mobile .layer-btn { padding-top: 9px; padding-bottom: 9px; }
+.app.mobile .ctx-compass { max-width: 240px; margin: 0 auto; }
+.app.mobile .m-hint {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+}
+
+@keyframes m-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes m-sideways-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes m-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Sideways phone ── */
+.app.mobile.m-land { flex-direction: row; }
+.app.mobile.m-land .sidebar {
+  order: 0;
+  width: calc(60px + env(safe-area-inset-left));
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 4px 4px env(safe-area-inset-left);
+  gap: 4px;
+  border-top: none;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.app.mobile.m-land .sidebar-btn { flex: 0 0 auto; width: 52px; padding: 5px 2px 4px; }
+.app.mobile.m-land .sidebar-label { font-size: 8.5px; letter-spacing: 0; }
+.app.mobile.m-land .header { gap: 8px; }
+.app.mobile.m-land .m-timeline {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+}
+.app.mobile.m-land .objects-panel {
+  left: calc(60px + env(safe-area-inset-left));
+  right: auto;
+  top: 0;
+  bottom: 0;
+  width: 290px;
+  max-height: none;
+  border-top: none;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0 18px 18px 0;
+  transform: translateX(calc(-100% - 70px));
+}
+.app.mobile.m-land .objects-panel.open { transform: translateX(0); box-shadow: 8px 0 30px rgba(0,0,0,0.55); }
+.app.mobile.m-land .objects-panel.open.min { transform: translateX(0); }   /* no peek sideways */
+.app.mobile.m-land .panel-grab,
+.app.mobile.m-land .panel-btn[aria-label="Minimize"],
+.app.mobile.m-land .panel-btn[aria-label="Expand"] { display: none; }
+.app.mobile.m-land .ctx-menu {
+  left: auto !important;
+  right: 0;
+  top: 0 !important;
+  bottom: 0;
+  width: 320px;
+  max-height: none;
+  border-radius: 20px 0 0 20px;
+  padding-top: 16px;
+  animation-name: m-sideways-in;
+}
+.app.mobile.m-land .ctx-menu::before { display: none; }

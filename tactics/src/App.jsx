@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { Stage, Layer, Rect, Circle, Line, Path, Arrow, Group, Image as KonvaImage, Ellipse, Transformer, Text as KonvaText } from 'react-konva'
+import { useState, useRef, useCallback, useEffect, Fragment } from 'react'
+import { Stage, Layer, Rect, Circle, Line, Path, Arrow, Arc, Group, Image as KonvaImage, Ellipse, Transformer, Text as KonvaText } from 'react-konva'
 import './App.css'
 
 // Full field (portrait): 68m wide × 105m tall at 8px/m
@@ -13,11 +13,21 @@ const LW = 840, LH = 544
 const SIDE_W = 440
 
 // Canvas for a view: field area w × h, plus room outside it for goals (padX / padY)
-function canvasFor(sport, field) {
+function canvasFor(sport, field, portrait = false) {
   if (field === 'full' && !DIAMOND.has(sport)) return { w: FW, h: FH, padX: 0, padY: GOAL_D }
   if (field === 'horizontal')                  return { w: LW, h: LH, padX: sport === 'soccer' ? GOAL_D : 0, padY: 0 }
   if (field === 'horizontal-left' || field === 'horizontal-right') return { w: SIDE_W, h: LH, padX: 0, padY: 0 }
+  if (field === 'blank' && portrait && !DIAMOND.has(sport)) return { w: FW, h: FH, padX: 0, padY: 0 }
   return { w: LW, h: LH, padX: 0, padY: 0 }
+}
+
+// Phones list only the views that fill their screen: portrait canvases when held upright,
+// landscape ones when sideways. Diamonds are landscape-only and Blank follows the phone,
+// so those always show.
+const fitsPhone = (sport, field, portrait) => {
+  if (DIAMOND.has(sport) || field === 'blank') return true
+  const c = canvasFor(sport, field, portrait)
+  return portrait ? c.h > c.w : c.w > c.h
 }
 
 const SIZE_RADII   = [10, 13, 17, 22, 27, 34]
@@ -26,9 +36,9 @@ const getRadius    = (size) => SIZE_RADII[(size ?? DEFAULT_SIZE) - 1]
 
 const FRAME_MS  = 900
 const SPEED_OPTIONS = [
-  { label: 'Normal', value: 1 },
-  { label: 'Slow',   value: 0.55 },
-  { label: 'V. Slow', value: 0.32 },
+  { label: 'Normal', value: 1,    short: '1×' },
+  { label: 'Slow',   value: 0.55, short: '½×' },
+  { label: 'V. Slow', value: 0.32, short: '⅓×' },
 ]
 const easeInOut = (t) => t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t
 
@@ -1833,6 +1843,30 @@ function equipPreview(type) {
 }
 
 // ── Sidebar button ────────────────────────────────────────────────────────────
+// Small padlock on a locked object's shoulder (not clickable; sized to stay legible on phones)
+function LockBadge({ x, y, k }) {
+  return (
+    <Group x={x} y={y} scaleX={k} scaleY={k} listening={false}>
+      <Circle radius={7.5} fill="rgba(17,24,39,0.9)" stroke="#fbbf24" strokeWidth={1.2} />
+      <Arc y={-1.2} innerRadius={1.5} outerRadius={2.7} angle={180} rotation={180} fill="#fbbf24" />
+      <Rect x={-3.6} y={-1.4} width={7.2} height={5.4} cornerRadius={1} fill="#fbbf24" />
+    </Group>
+  )
+}
+
+// Drawer header. On phones it's a grab bar with minimize (peek) and close; on desktop only
+// the title shows.
+function PanelHeader({ title, min, onMin, onClose }) {
+  return (
+    <div className="panel-header" onClick={min ? onMin : undefined}>
+      <span className="panel-grab" />
+      <span className="panel-title">{title}</span>
+      <button className="panel-btn" onClick={(e) => { e.stopPropagation(); onMin() }} aria-label={min ? 'Expand' : 'Minimize'}>{min ? '▴' : '▾'}</button>
+      <button className="panel-btn" onClick={(e) => { e.stopPropagation(); onClose() }} aria-label="Close">✕</button>
+    </div>
+  )
+}
+
 function SidebarBtn({ label, icon, imgSrc, active, onClick, disabled }) {
   return (
     <button
@@ -1861,7 +1895,8 @@ export default function App() {
 
   // UI state
   const [activePanel, setActivePanel] = useState(null)
-  const [mobileToolsOpen, setMobileToolsOpen] = useState(false)
+  const [panelMin, setPanelMin]       = useState(false)   // phone: open drawer collapsed to its header
+  const [fileMenuOpen, setFileMenuOpen] = useState(false) // phone: Save / Open / Export / Clear sheet
   const [contextMenu, setContextMenu] = useState(null)   // { x, y, objId }
   const [images, setImages]       = useState({})   // { [type]: HTMLImageElement, field_half: ... }
   const [currentField, setCurrentField] = useState('full')
@@ -1901,7 +1936,11 @@ export default function App() {
   const [textCtxMenu,    setTextCtxMenu]    = useState(null)
 
   // Active canvas dims — must be computed before any callbacks that reference them
-  const canvas = canvasFor(sport, currentField)
+  // Phones (narrow, or short when held sideways) get the drawer layout; sideways phones put
+  // the tool rail on the left and the timeline in the top bar
+  const isMobile   = viewW < 640 || viewH < 500
+  const mobileLand = isMobile && viewW > viewH
+  const canvas = canvasFor(sport, currentField, isMobile && !mobileLand)
   const aFW = canvas.w
   const aFH = canvas.h
   const aSW = aFW + PAD * 2
@@ -1909,13 +1948,16 @@ export default function App() {
   const aCX = aFW / 2
   const aCY = aFH / 2
 
-  // Scale the stage to fit available viewport space; never enlarges past 1
-  const isMobile = viewW < 640
+  // Scale the stage to fit available viewport space; never enlarges past 1.
+  // Phone chrome: portrait = top bar 50 + timeline 52 + dock 60; sideways = rail 60 + top bar 50
   const fieldScale = Math.min(
-    (viewW - (isMobile ? 16 : 66 + 40)) / aSW,   // sidebar + main h-padding
-    (viewH - (isMobile ? 192 : 148))    / aSH,   // header + bottom-bar + mobile-nav + gaps
+    (viewW - (mobileLand ? 60 + 8 : isMobile ? 6 : 66 + 40)) / aSW,
+    (viewH - (mobileLand ? 50 + 6 : isMobile ? 50 + 52 + 60 + 8 : 148)) / aSH,
     1
   )
+  // Touch targets: on a phone even small objects answer to a fingertip-sized circle
+  const objRadius = (o) => getRadius(o.size) * (MODEL_TYPES.has(o.type) ? GOAL_RADIUS_MULT : 1)
+  const hitRadius = (o) => Math.max(objRadius(o), isMobile ? 18 / fieldScale : 0)
 
   // ── History (undo) ───────────────────────────────────────────────────────────
   const historyRef         = useRef([])
@@ -1944,6 +1986,9 @@ export default function App() {
   const textTransRef   = useRef(null)
   const nextTextId     = useRef(0)
   const textEditRef    = useRef(null)
+  const longPressRef   = useRef(null)   // { timer, x, y } while a finger rests on an object
+  const isMobileRef    = useRef(false)
+  isMobileRef.current  = isMobile
 
   // Load any image-based catalog objects once
   useEffect(() => {
@@ -1968,6 +2013,13 @@ export default function App() {
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
+
+  // Phone turned (or opened) with a view that doesn't fit: switch to the one that does —
+  // only while the board is empty, so placed objects never end up off the canvas
+  useEffect(() => {
+    if (!isMobile || fitsPhone(sport, currentField, !mobileLand) || placedObjectsRef.current.length) return
+    setCurrentField(mobileLand ? 'horizontal' : 'full')
+  }, [isMobile, mobileLand, sport]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keep shapesRef in sync with shapes state
   useEffect(() => { shapesRef.current = shapes }, [shapes])
@@ -2012,9 +2064,11 @@ export default function App() {
     if (!tag) return
     pushHistory()
     const id = nextId.current++
+    // On a phone the open drawer covers the bottom (upright) or left (sideways) of the
+    // field, so new objects land in the part that's still showing
     const initPos = {
-      x: aCX + (Math.random() - 0.5) * 120,
-      y: aCY + (Math.random() - 0.5) * 80,
+      x: (mobileLand && activePanel ? aFW * 0.64 : aCX) + (Math.random() - 0.5) * 120,
+      y: (isMobile && !mobileLand && activePanel ? aFH * 0.28 : aCY) + (Math.random() - 0.5) * 80,
     }
     setPlacedObjects(prev => [...prev, {
       id,
@@ -2029,7 +2083,7 @@ export default function App() {
       ...f,
       positions: { ...f.positions, [id]: { ...initPos } },
     })))
-  }, [aCX, aCY, placedObjects])
+  }, [aCX, aCY, aFW, aFH, isMobile, mobileLand, activePanel, placedObjects])
 
   // Called onDragMove / onDragEnd — updates only the current frame
   const moveObject = useCallback((id, x, y) => {
@@ -2073,7 +2127,7 @@ export default function App() {
   }, [])
 
   // Players: turn around to show the back; batters: which shoulder the bat is on
-  const setPlayerOpt = useCallback((id, changes) => {
+  const setObjectOpt = useCallback((id, changes) => {
     pushHistory()
     setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, ...changes } : o))
   }, [])
@@ -2133,6 +2187,7 @@ export default function App() {
   }, [])
 
   const handleDrawStart = useCallback(() => {
+    if (isMobileRef.current) setPanelMin(true)   // tuck the drawer away so the whole field is drawable
     const pos = getLayerPos()
     setCurrentDraw({
       id: nextDrawId.current++,
@@ -2659,24 +2714,58 @@ export default function App() {
 
   const ctxObj  = contextMenu ? placedObjects.find(o => o.id === contextMenu.objId) : null
   const canPlay = !isPlaying && frames.length >= 2 && placedObjects.length > 0
+  const panelHeader = (title) => (
+    <PanelHeader title={title} min={panelMin} onMin={() => setPanelMin(m => !m)} onClose={() => setActivePanel(null)} />
+  )
+  const frameStrip = (
+    <div className="frame-strip">
+      {frames.map((_, i) => (
+        <div key={i} className={`frame-slot${currentFrame === i ? ' active' : ''}`}>
+          <button
+            className={`frame-btn${currentFrame === i ? ' active' : ''}`}
+            onClick={() => selectFrame(i)}
+            disabled={isPlaying}
+          >
+            {i + 1}
+          </button>
+          {frames.length > 1 && (
+            <button
+              className="frame-delete"
+              onClick={() => deleteFrame(i)}
+              disabled={isPlaying}
+              title="Delete frame"
+            >×</button>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+  // Phone timeline: play/stop, frames, add, speed (tap to cycle), free path
+  const timeline = (
+    <div className="m-timeline">
+      <button className={`m-play${isPlaying ? ' playing' : ''}`} onClick={isPlaying ? stop : play} disabled={!isPlaying && !canPlay} aria-label={isPlaying ? 'Stop' : 'Play'}>
+        {isPlaying ? '■' : '▶'}
+      </button>
+      {frameStrip}
+      <button className="m-add-frame" onClick={addFrame} disabled={isPlaying} aria-label="Add frame" title="Add frame">+</button>
+      <button
+        className="m-chip"
+        onClick={() => setPlaySpeed(v => SPEED_OPTIONS[(SPEED_OPTIONS.findIndex(o => o.value === v) + 1) % SPEED_OPTIONS.length].value)}
+        disabled={isPlaying}
+        title="Playback speed"
+      >{SPEED_OPTIONS.find(o => o.value === playSpeed)?.short}</button>
+      <button
+        className={`m-chip${freePathMode ? ' active' : ''}`}
+        onClick={() => setFreePathMode(p => !p)}
+        disabled={isPlaying || frames.length < 2}
+        title={freePathMode ? 'Free path ON' : 'Free path OFF'}
+      >〜</button>
+    </div>
+  )
+
 
   return (
-    <div className={`app${mobileToolsOpen ? ' mobile-tools-open' : ''}`}>
-
-      {/* ── Mobile bottom tab handle ── */}
-      <button
-        className={`mobile-tab-handle${mobileToolsOpen ? ' open' : activePanel ? ' panel-open' : ''}`}
-        onClick={() => {
-          if (mobileToolsOpen) { setMobileToolsOpen(false) }
-          else { setMobileToolsOpen(true); setActivePanel(null) }
-        }}
-        aria-label="Toggle tools"
-      >
-        <div className="mobile-tab-grip" />
-        <span className="mobile-tab-label">
-          {mobileToolsOpen ? '▾ Tools' : activePanel ? `▾ ${activePanel}` : '▸ Tools'}
-        </span>
-      </button>
+    <div className={`app${isMobile ? ' mobile' : ''}${mobileLand ? ' m-land' : ''}`}>
 
       {/* ── Sidebar ── */}
       <nav className="sidebar">
@@ -2684,45 +2773,45 @@ export default function App() {
           label="Objects"
           imgSrc={sport === 'soccer' ? `${import.meta.env.BASE_URL}soccerball.png` : equipPreview(SPORTS.find(sp => sp.id === sport).ball)}
           active={activePanel === 'objects'}
-          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'objects' ? null : 'objects') }}
+          onClick={() => { setPanelMin(false); setActivePanel(p => p === 'objects' ? null : 'objects') }}
         />
         <SidebarBtn
           label="Fields"
           icon="⬚"
           active={activePanel === 'fields'}
-          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'fields' ? null : 'fields') }}
+          onClick={() => { setPanelMin(false); setActivePanel(p => p === 'fields' ? null : 'fields') }}
         />
         <SidebarBtn
           label="Shapes"
           icon="□"
           active={activePanel === 'shapes'}
-          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'shapes' ? null : 'shapes'); setSelectedShapeId(null) }}
+          onClick={() => { setPanelMin(false); setActivePanel(p => p === 'shapes' ? null : 'shapes'); setSelectedShapeId(null) }}
         />
         <SidebarBtn
           label="Text"
           icon="T"
           active={activePanel === 'text'}
-          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'text' ? null : 'text'); setSelectedTextId(null) }}
+          onClick={() => { setPanelMin(false); setActivePanel(p => p === 'text' ? null : 'text'); setSelectedTextId(null) }}
         />
         <SidebarBtn
           label="Draw"
           icon="✏"
           active={activePanel === 'draw'}
-          onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'draw' ? null : 'draw') }}
+          onClick={() => { setPanelMin(false); setActivePanel(p => p === 'draw' ? null : 'draw') }}
         />
       </nav>
 
       {/* ── Fields panel ── */}
-      <aside className={`objects-panel${activePanel === 'fields' ? ' open' : ''}`}>
-        <div className="panel-header">{sport === 'basketball' ? 'Courts' : sport === 'hockey' ? 'Rinks' : 'Fields'}</div>
+      <aside className={`objects-panel${activePanel === 'fields' ? ' open' : ''}${panelMin ? ' min' : ''}`}>
+        {panelHeader(sport === 'basketball' ? 'Courts' : sport === 'hockey' ? 'Rinks' : 'Fields')}
         <div className="field-list">
-          {FIELD_CATALOG.filter(f => !f.sports || f.sports.includes(sport)).map(f => {
+          {FIELD_CATALOG.filter(f => (!f.sports || f.sports.includes(sport)) && (!isMobile || f.id === currentField || fitsPhone(sport, f.id, !mobileLand))).map(f => {
             const label = fieldLabel(f, sport)
             return (
               <button
                 key={f.id}
                 className={`field-card${currentField === f.id ? ' active' : ''}`}
-                onClick={() => setCurrentField(f.id)}
+                onClick={() => { setCurrentField(f.id); if (isMobile) setActivePanel(null) }}
                 title={label}
               >
                 <div className="field-preview" data-field={f.id} data-sport={sport} />
@@ -2734,8 +2823,8 @@ export default function App() {
       </aside>
 
       {/* ── Objects panel — always in DOM, slides in/out via class ── */}
-      <aside className={`objects-panel${activePanel === 'objects' ? ' open' : ''}`}>
-        <div className="panel-header">Objects</div>
+      <aside className={`objects-panel${activePanel === 'objects' ? ' open' : ''}${panelMin ? ' min' : ''}`}>
+        {panelHeader('Objects')}
         <div className="object-grid">
           {CATALOG.filter(item => item.sports.includes(sport)).map(item => {
             const isNumbered = NUMBERED_TYPES.has(item.type) || POSITION_TYPES.has(item.type)
@@ -2766,8 +2855,8 @@ export default function App() {
       </aside>
 
       {/* ── Text panel ── */}
-      <aside className={`objects-panel${activePanel === 'text' ? ' open' : ''}`}>
-        <div className="panel-header">Text</div>
+      <aside className={`objects-panel${activePanel === 'text' ? ' open' : ''}${panelMin ? ' min' : ''}`}>
+        {panelHeader('Text')}
         <div className="draw-panel">
 
           <button className="add-text-btn" onClick={addText}>+ Add Text</button>
@@ -2865,8 +2954,8 @@ export default function App() {
       </aside>
 
       {/* ── Shapes panel ── */}
-      <aside className={`objects-panel${activePanel === 'shapes' ? ' open' : ''}`}>
-        <div className="panel-header">Shapes</div>
+      <aside className={`objects-panel${activePanel === 'shapes' ? ' open' : ''}${panelMin ? ' min' : ''}`}>
+        {panelHeader('Shapes')}
         <div className="draw-panel">
 
           <div className="draw-section-label">Add Shape</div>
@@ -2928,8 +3017,8 @@ export default function App() {
       </aside>
 
       {/* ── Draw panel ── */}
-      <aside className={`objects-panel draw-panel-aside${activePanel === 'draw' ? ' open' : ''}`}>
-        <div className="panel-header">Draw</div>
+      <aside className={`objects-panel draw-panel-aside${activePanel === 'draw' ? ' open' : ''}${panelMin ? ' min' : ''}`}>
+        {panelHeader('Draw')}
         <div className="draw-panel">
 
           <div className="draw-section-label">Type</div>
@@ -3001,6 +3090,13 @@ export default function App() {
           >
             {SPORTS.map(sp => <option key={sp.id} value={sp.id}>{sp.label}</option>)}
           </select>
+          {isMobile && mobileLand && timeline}
+          {isMobile ? (
+            <div className="header-right">
+              <button className="m-icon-btn" onClick={undo} disabled={isPlaying} aria-label="Undo" title="Undo">↩</button>
+              <button className="m-icon-btn" onClick={() => setFileMenuOpen(true)} aria-label="More" title="Save, open, export, clear">⋯</button>
+            </div>
+          ) : (
           <div className="header-right">
             <button className="file-btn" onClick={saveAnimation} disabled={isPlaying} title="Save this play to a file">
               💾 Save
@@ -3008,13 +3104,6 @@ export default function App() {
             <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={isPlaying} title="Open a saved play">
               📂 Open
             </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json,application/json"
-              style={{ display: 'none' }}
-              onChange={(e) => { openAnimation(e.target.files?.[0]); e.target.value = '' }}
-            />
             <button
               className="undo-btn"
               onClick={undo}
@@ -3035,7 +3124,17 @@ export default function App() {
               Clear
             </button>
           </div>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,application/json"
+            style={{ display: 'none' }}
+            onChange={(e) => { openAnimation(e.target.files?.[0]); e.target.value = '' }}
+          />
         </header>
+
+        <div className="stage-wrap">
 
         <Stage
           ref={stageRef}
@@ -3258,12 +3357,54 @@ export default function App() {
 
             {/* Placed objects */}
             {placedObjects.map(obj => {
-              const pos = frames[currentFrame]?.positions[obj.id] ?? { x: aCX, y: aCY }
-              const r   = getRadius(obj.size) * (MODEL_TYPES.has(obj.type) ? GOAL_RADIUS_MULT : 1)
+              const posOf = (o) => frames[currentFrame]?.positions[o.id]
+              const pos  = posOf(obj) ?? { x: aCX, y: aCY }
+              const r    = objRadius(obj)
+              const hitR = hitRadius(obj)
+              const rot  = isUpright(obj.type) ? 0 : obj.rotation
+              // Overlap-aware hit area: where two circles overlap, each point belongs to the
+              // object whose center is nearer, so pressing an object's center always grabs that
+              // object, whatever is layered on top; the rest of each circle is untouched. Locked objects give way entirely — they
+              // answer only where no movable object is (still enough to open their menu).
+              const near = placedObjects.flatMap(o => {
+                if (o.id === obj.id || (o.locked && !obj.locked)) return []
+                const p = posOf(o)
+                if (!p) return []
+                const dx = p.x - pos.x, dy = p.y - pos.y, d = Math.hypot(dx, dy), nr = hitRadius(o)
+                return d < hitR + nr ? [{ dx, dy, d, nr, yield: obj.locked && !o.locked }] : []
+              })
+              const hitFunc = (ctx, shape) => {
+                ctx.save()
+                if (rot) ctx.rotate(-rot * Math.PI / 180)   // neighbor offsets are in layer axes
+                for (const n of near) {
+                  if (!n.yield && n.d <= 0.5) continue        // same spot: layer order decides
+                  // Cut away the neighbor's circle — all of it if this object yields, otherwise
+                  // just the part past the perpendicular bisector (the segment nearer its center)
+                  ctx.beginPath()
+                  ctx.rect(-4000, -4000, 8000, 8000)
+                  const t = -n.d / 2                            // bisector, from the neighbor's center
+                  if (n.yield || -t >= n.nr) {
+                    ctx.moveTo(n.dx + n.nr, n.dy)
+                    ctx.arc(n.dx, n.dy, n.nr, 0, Math.PI * 2)
+                  } else {
+                    const th = Math.atan2(n.dy, n.dx), a = Math.acos(t / n.nr)
+                    ctx.moveTo(n.dx + n.nr * Math.cos(th + a), n.dy + n.nr * Math.sin(th + a))
+                    ctx.arc(n.dx, n.dy, n.nr, th + a, th - a, true)
+                    ctx.closePath()
+                  }
+                  ctx.clip('evenodd')
+                }
+                ctx.beginPath()
+                ctx.arc(0, 0, hitR, 0, Math.PI * 2)
+                ctx.closePath()
+                ctx.fillStrokeShape(shape)
+                ctx.restore()
+              }
+              const cancelLongPress = () => { clearTimeout(longPressRef.current?.timer); longPressRef.current = null }
 
               return (
+                <Fragment key={obj.id}>
                 <Circle
-                  key={obj.id}
                   ref={(node) => {
                     if (node) objRefs.current[obj.id] = node
                     else delete objRefs.current[obj.id]
@@ -3271,12 +3412,18 @@ export default function App() {
                   x={pos.x}
                   y={pos.y}
                   radius={r}
-                  rotation={isUpright(obj.type) ? 0 : obj.rotation}
+                  rotation={rot}
+                  hitFunc={hitFunc}
                   {...getObjectFill(obj, r)}
                   {...(MARKER_TYPES.has(obj.type) ? { shadowColor: 'black', shadowBlur: 5, shadowOffsetY: 3, shadowOpacity: 0.45 } : {})}
                   strokeEnabled={false}
-                  draggable={!isPlaying && activePanel !== 'draw'}
-                  onDragStart={(e) => handleFreePathDragStart(obj.id, e.target.x(), e.target.y())}
+                  draggable={!isPlaying && activePanel !== 'draw' && !obj.locked}
+                  dragDistance={isMobile ? 6 : 3}
+                  onDragStart={(e) => {
+                    cancelLongPress()
+                    if (isMobile && activePanel) setPanelMin(true)   // drawer steps aside while you move things
+                    handleFreePathDragStart(obj.id, e.target.x(), e.target.y())
+                  }}
                   onDragMove={(e) => {
                     moveObject(obj.id, e.target.x(), e.target.y())
                     handleFreePathDragMove(obj.id, e.target.x(), e.target.y())
@@ -3304,9 +3451,29 @@ export default function App() {
                   onDblTap={(e) => {
                     e.cancelBubble = true
                     const t = e.evt.changedTouches?.[0]
-                    if (t) setContextMenu({ x: t.clientX, y: t.clientY, objId: obj.id })
+                    if (t) setContextMenu({ x: t.clientX, y: t.clientY, objId: obj.id, at: Date.now() })
                   }}
+                  // Press and hold (touch) also opens the menu
+                  onTouchStart={(e) => {
+                    const t = e.evt.touches?.[0]
+                    if (!t || isPlaying) return
+                    cancelLongPress()
+                    const { clientX: x, clientY: y } = t
+                    longPressRef.current = { x, y, timer: setTimeout(() => {
+                      longPressRef.current = null
+                      setContextMenu({ x, y, objId: obj.id, at: Date.now() })
+                    }, 550) }
+                  }}
+                  onTouchMove={(e) => {
+                    const t = e.evt.touches?.[0], lp = longPressRef.current
+                    if (lp && t && Math.hypot(t.clientX - lp.x, t.clientY - lp.y) > 8) cancelLongPress()
+                  }}
+                  onTouchEnd={cancelLongPress}
                 />
+                {obj.locked && !isPlaying && !isExporting && (
+                  <LockBadge x={pos.x + r * 0.66} y={pos.y - r * 0.66} k={Math.min(1.7, 1 / fieldScale)} />
+                )}
+                </Fragment>
               )
             })}
 
@@ -3328,8 +3495,10 @@ export default function App() {
             )}
           </Layer>
         </Stage>
+        </div>
 
-        {/* ── Bottom bar: playback + frame timeline ── */}
+        {/* ── Bottom bar: playback + frame timeline (phones: compact timeline) ── */}
+        {isMobile ? (!mobileLand && timeline) : (
         <div className="bottom-bar">
           <div className="playback">
             <button className="play-btn" onClick={play}  disabled={!canPlay}   title="Play">▶</button>
@@ -3356,33 +3525,38 @@ export default function App() {
             〜 Free
           </button>
 
-          <div className="frame-strip">
-            {frames.map((_, i) => (
-              <div key={i} className="frame-slot">
-                <button
-                  className={`frame-btn${currentFrame === i ? ' active' : ''}`}
-                  onClick={() => selectFrame(i)}
-                  disabled={isPlaying}
-                >
-                  {i + 1}
-                </button>
-                {frames.length > 1 && (
-                  <button
-                    className="frame-delete"
-                    onClick={() => deleteFrame(i)}
-                    disabled={isPlaying}
-                    title="Delete frame"
-                  >×</button>
-                )}
-              </div>
-            ))}
-          </div>
+          {frameStrip}
 
           <button className="add-frame-btn" onClick={addFrame} disabled={isPlaying}>
             + Frame
           </button>
         </div>
+        )}
       </div>
+
+      {/* ── Phone: Save / Open / Export / Clear sheet ── */}
+      {fileMenuOpen && (
+        <>
+          <div className="ctx-overlay" onClick={() => setFileMenuOpen(false)} />
+          <div className="ctx-menu" onClick={(e) => e.stopPropagation()}>
+            <div className="ctx-label">Play</div>
+            <button className="ctx-btn" disabled={isPlaying} onClick={() => { setFileMenuOpen(false); saveAnimation() }}>
+              <span className="ctx-icon">💾</span> Save play
+            </button>
+            <button className="ctx-btn" disabled={isPlaying} onClick={() => { setFileMenuOpen(false); fileInputRef.current?.click() }}>
+              <span className="ctx-icon">📂</span> Open play
+            </button>
+            <button className="ctx-btn" disabled={isPlaying || isExporting || frames.length < 2 || placedObjects.length === 0} onClick={() => { setFileMenuOpen(false); exportVideo() }}>
+              <span className="ctx-icon">⬇</span> Export video
+            </button>
+            <div className="ctx-divider" />
+            <button className="ctx-btn danger" onClick={() => { setFileMenuOpen(false); clearBoard() }}>
+              <span className="ctx-icon">✕</span> Clear board
+            </button>
+            <div className="m-hint">Tip: double-tap or press and hold anything on the field for its options.</div>
+          </div>
+        </>
+      )}
 
       {/* ── Export save dialog ── */}
       {exportBlob && (
@@ -3428,12 +3602,13 @@ export default function App() {
       {/* ── Context menu ── */}
       {contextMenu && (
         <>
-          <div className="ctx-overlay" onClick={() => setContextMenu(null)} />
+          {/* ignore the release of the press-and-hold that opened it */}
+          <div className="ctx-overlay" onClick={() => { if (Date.now() - (contextMenu.at ?? 0) > 450) setContextMenu(null) }} />
           <div
             className="ctx-menu"
             style={{
               left: Math.min(contextMenu.x, viewW - 234),
-              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 510 : PLAYER_TYPES.has(ctxObj?.type) ? 470 : 390))),
+              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 570 : PLAYER_TYPES.has(ctxObj?.type) ? 530 : 450))),
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -3479,15 +3654,15 @@ export default function App() {
               <>
                 <div className="ctx-label">View</div>
                 <div className="ctx-toggle">
-                  <button className={!ctxObj.back ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { back: false })}>Front</button>
-                  <button className={ctxObj.back ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { back: true })}>Back</button>
+                  <button className={!ctxObj.back ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { back: false })}>Front</button>
+                  <button className={ctxObj.back ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { back: true })}>Back</button>
                 </div>
                 {ctxObj.type === 'batter' && (
                   <>
                     <div className="ctx-label">Bats</div>
                     <div className="ctx-toggle">
-                      <button className={(ctxObj.bats ?? 'R') === 'R' ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { bats: 'R' })}>Right</button>
-                      <button className={ctxObj.bats === 'L' ? 'active' : ''} onClick={() => setPlayerOpt(contextMenu.objId, { bats: 'L' })}>Left</button>
+                      <button className={(ctxObj.bats ?? 'R') === 'R' ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { bats: 'R' })}>Right</button>
+                      <button className={ctxObj.bats === 'L' ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { bats: 'L' })}>Left</button>
                     </div>
                   </>
                 )}
@@ -3536,6 +3711,13 @@ export default function App() {
                 </>
               )
             })()}
+
+            <div className="ctx-label">Position</div>
+            <div className="ctx-toggle">
+              <button className={!ctxObj?.locked ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { locked: false })}>Movable</button>
+              <button className={ctxObj?.locked ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { locked: true })}>🔒 Locked</button>
+            </div>
+            <div className="ctx-divider" />
 
             <button
               className="ctx-btn"

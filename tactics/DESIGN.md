@@ -86,6 +86,17 @@ Every placed object has:
 
 **Position is NOT stored on the object** — it lives in the frame system.
 
+## Picking Overlapping Objects (`hitFunc` on each object)
+
+Each object's hit area is its circle, except where it overlaps another object: there each point belongs to whichever object's **center is nearer** (the neighbor's circle is cut away past the perpendicular bisector, using `ctx.clip('evenodd')`). So pressing an object's center always grabs that object, whatever is layered on top, and the rest of each circle still works. Objects in exactly the same spot fall back to layer order. Hit areas are rebuilt from the current frame's positions on every render. The offsets are worked out in layer axes, so a rotated object un-rotates its hit context first.
+
+- **Locked** objects give way completely: their hit area loses every movable neighbor's whole circle, so they only answer (for their menu) where nothing movable is.
+- **Phones:** the hit radius is at least 18 screen px (`hitRadius`), so small objects still take a fingertip.
+
+## Lock (`obj.locked`)
+
+**Position: Movable / 🔒 Locked** in the object menu (`setObjectOpt`, undoable, saved with the play, copied by Duplicate). A locked object isn't draggable in any frame and shows a gold padlock badge on its upper right (`LockBadge`, not clickable, hidden while playing or exporting). Its menu still opens, so it can be unlocked.
+
 ## Drag Bounds
 
 An object's **center** is clamped to the green area (field + `GBUF` border, plus the goal depth on the full field), so any object can sit right at the edge and hang up to half off. The video export records the stage, so anything past it is simply cropped, and nothing can be lost off-screen.
@@ -133,8 +144,9 @@ Triggered by **double-click** on any object. Contains:
 4. **Rotate** — `rotateStep(type)`: 45° for `ROTATE_45` (bat, hit stick, home plate, base), 90° for the pinnie. Only `FLAT_TYPES` rotate; everything else is `isUpright` — it stays upright or uses Facing
    - **View** Front / Back (`.ctx-toggle`) for every player type; **Bats** Right / Left for the batter (`setPlayerOpt`)
 5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`). Layer order is the object's position in `placedObjects` (later entries draw on top); buttons disable at the top/bottom. Undoable, and saved with the play.
-6. **Duplicate** — copies all metadata + positions in every frame, offset +28px
-7. **Delete** — removes from all frames
+6. **Position** — Movable / 🔒 Locked (see Lock)
+7. **Duplicate** — copies all metadata + positions in every frame, offset +28px
+8. **Delete** — removes from all frames
 
 Closes on: overlay click, Escape key, or after Delete/Duplicate.
 
@@ -259,6 +271,20 @@ Shared helpers: `softShadow(ctx, S, draw, dx, dy, blur, alpha)` (solid shape on 
 - Resets: `placedObjects → []`, `frames → [{positions:{}}]`, `currentFrame → 0`
 - Also: cancels any active animation, closes context menu
 - Does NOT reset `nextId` (avoids any ID collision with stale Konva refs)
+
+## Phone Layout (`.app.mobile`, `.m-land`)
+
+`isMobile = viewW < 640 || viewH < 500`; `mobileLand` when it's also wider than tall. JS sets the classes, so CSS and stage sizing always agree (no media queries).
+
+- **Upright:** top bar (sport, ↩ undo, ⋯ more) · field · timeline · tool dock.
+  - **Timeline** (`.m-timeline`): ▶/■, frame chips (only the selected frame shows its red × delete badge), **+** frame, speed chip (tap to cycle 1× → ½× → ⅓×), 〜 free path.
+  - **Tool dock:** the desktop sidebar laid along the bottom (Objects, Fields, Shapes, Text, Draw; the active tool is green).
+  - **Drawers:** the side panels become bottom sheets up to 46vh, sitting above the dock, with a grab bar, **▾** peek (collapse to the header; tap the header to bring it back) and **✕** close (`PanelHeader`). A drawer peeks on its own when you start dragging an object or drawing. New objects land in the top part of the field while a drawer is open. Picking a field closes the drawer.
+- **Sideways:** a tool rail on the left, the timeline inside the top bar, and drawers sliding out from the rail (290px, no peek); new objects land on the right side.
+- **Field views:** phones list only the views that fill the screen (`fitsPhone`): upright shows the portrait canvases (Full, Horizontal Left / Right); sideways shows the landscape ones (Horizontal, Half, Half (flip), Middle). Blank always shows: upright it gets a portrait canvas (`canvasFor(sport, field, portrait)`). Diamonds always show all views. If the phone turns while the board is empty and the view doesn't fit, it switches to Full or Horizontal.
+- **Menus** (object, drawing, shape, text, and the ⋯ Save / Open / Export / Clear sheet) become bottom sheets with a dimmed backdrop and bigger touch targets; sideways they're a right-side panel.
+- **Opening an object's menu:** double-tap, or **press and hold** (550 ms; cancelled by moving 8px or starting a drag). The backdrop ignores taps for 450 ms after opening, so lifting the finger doesn't close it.
+- **Stage fit:** upright reserves 50 + 52 + 60 px of chrome; sideways reserves the 60px rail and the 50px top bar.
 
 ## Sidebar
 
