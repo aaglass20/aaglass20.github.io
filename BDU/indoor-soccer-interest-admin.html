@@ -109,6 +109,16 @@
       cursor: pointer;
     }
     .filter-bar select:focus { outline: none; border-color: var(--blue); }
+    .filter-bar .check-label {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .filter-bar .check-label input { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
+
+    .result-count { font-size: .82rem; color: var(--gray); margin: -.35rem 0 .75rem; }
 
     .refresh-btn {
       margin-left: auto;
@@ -168,6 +178,7 @@
     }
     .badge-s2 { background: #DBEAFE; color: #1d4ed8; }
     .badge-s3 { background: #D1FAE5; color: #065f46; }
+    .badge-dupe { background: #FEF3C7; color: #92400e; font-size: .7rem; vertical-align: middle; }
 
     .empty-state {
       text-align: center;
@@ -247,15 +258,26 @@
     </div>
 
     <div class="filter-bar">
-      <label for="filter-session">Filter:</label>
+      <label for="filter-session">Session:</label>
       <select id="filter-session">
-        <option value="all">All Signups</option>
-        <option value="s2">Session 1 only</option>
-        <option value="s3">Session 2 only</option>
+        <option value="all">All Sessions</option>
+        <option value="s2">1st Session</option>
+        <option value="s3">2nd Session</option>
         <option value="both">Both Sessions</option>
       </select>
+      <label for="filter-age">Age Group:</label>
+      <select id="filter-age">
+        <option value="all">All Grades</option>
+        <option value="U14">U14 (8th)</option>
+        <option value="U13">U13 (6th &amp; 7th)</option>
+        <option value="U12">U12 (6th)</option>
+      </select>
+      <label class="check-label">
+        <input type="checkbox" id="hide-dupes" checked> Hide duplicate names
+      </label>
       <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
     </div>
+    <div class="result-count" id="result-count"></div>
 
     <div class="table-wrap">
       <div id="table-container">
@@ -289,7 +311,6 @@
           .order('created_at', { ascending: false });
         if (error) throw error;
         allRows = data || [];
-        updateStats();
         render();
       } catch (err) {
         console.error(err);
@@ -298,22 +319,62 @@
       }
     }
 
-    function updateStats() {
-      const s2   = allRows.filter(r => r.session_1).length;
-      const s3   = allRows.filter(r => r.session_2).length;
-      const both = allRows.filter(r => r.session_1 && r.session_2).length;
-      document.getElementById('stat-total').textContent = allRows.length;
+    const AGE_GROUPS = { U14: ['8'], U13: ['6', '7'], U12: ['6'] };
+
+    // Collapse rows with the same player name (case/spacing-insensitive).
+    // Keeps the most recent entry (allRows is newest-first) and merges session interest.
+    function dedupe(rows) {
+      const byName = new Map();
+      rows.forEach(r => {
+        const key = (r.player_name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        const kept = byName.get(key);
+        if (!kept) {
+          byName.set(key, { ...r, dupeCount: 1 });
+        } else {
+          kept.session_1 = kept.session_1 || r.session_1;
+          kept.session_2 = kept.session_2 || r.session_2;
+          kept.phone = kept.phone || r.phone;
+          kept.email = kept.email || r.email;
+          kept.dupeCount++;
+        }
+      });
+      return [...byName.values()];
+    }
+
+    // Rows after the dedupe + age group filters (stats are based on these)
+    function baseRows() {
+      let rows = document.getElementById('hide-dupes').checked ? dedupe(allRows) : allRows;
+      const age = document.getElementById('filter-age').value;
+      if (AGE_GROUPS[age]) rows = rows.filter(r => AGE_GROUPS[age].includes(String(r.grade)));
+      return rows;
+    }
+
+    function updateStats(rows) {
+      const s2   = rows.filter(r => r.session_1).length;
+      const s3   = rows.filter(r => r.session_2).length;
+      const both = rows.filter(r => r.session_1 && r.session_2).length;
+      document.getElementById('stat-total').textContent = rows.length;
       document.getElementById('stat-s2').textContent    = s2;
       document.getElementById('stat-s3').textContent    = s3;
       document.getElementById('stat-both').textContent  = both;
     }
 
     function render() {
+      const base = baseRows();
+      updateStats(base);
+
       const filter = document.getElementById('filter-session').value;
-      let rows = allRows;
-      if (filter === 's2')   rows = allRows.filter(r => r.session_1);
-      if (filter === 's3')   rows = allRows.filter(r => r.session_2);
-      if (filter === 'both') rows = allRows.filter(r => r.session_1 && r.session_2);
+      let rows = base;
+      if (filter === 's2')   rows = base.filter(r => r.session_1);
+      if (filter === 's3')   rows = base.filter(r => r.session_2);
+      if (filter === 'both') rows = base.filter(r => r.session_1 && r.session_2);
+
+      const hidden = allRows.length - dedupe(allRows).length;
+      document.getElementById('result-count').textContent =
+        `Showing ${rows.length} player${rows.length === 1 ? '' : 's'}` +
+        (document.getElementById('hide-dupes').checked && hidden
+          ? ` · ${hidden} duplicate submission${hidden === 1 ? '' : 's'} hidden`
+          : '');
 
       if (rows.length === 0) {
         document.getElementById('table-container').innerHTML =
@@ -330,7 +391,7 @@
           r.session_2 ? '<span class="badge badge-s3">Session 2</span>' : '',
         ].join('');
         return `<tr>
-          <td class="name">${esc(r.player_name)}</td>
+          <td class="name">${esc(r.player_name)}${r.dupeCount > 1 ? ` <span class="badge badge-dupe" title="Submitted ${r.dupeCount} times">×${r.dupeCount}</span>` : ''}</td>
           <td>${gradeLabel(r.grade)}</td>
           <td>${r.phone ? esc(r.phone) : '<span style="color:#94a3b8">—</span>'}</td>
           <td>${r.email ? `<a href="mailto:${esc(r.email)}" style="color:var(--blue)">${esc(r.email)}</a>` : '<span style="color:#94a3b8">—</span>'}</td>
@@ -367,6 +428,8 @@
     }
 
     document.getElementById('filter-session').addEventListener('change', render);
+    document.getElementById('filter-age').addEventListener('change', render);
+    document.getElementById('hide-dupes').addEventListener('change', render);
     document.getElementById('refresh-btn').addEventListener('click', load);
 
     load();
