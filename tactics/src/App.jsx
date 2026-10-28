@@ -1,6 +1,10 @@
-import { useState, useRef, useCallback, useEffect, Fragment } from 'react'
+import { useState, useRef, useCallback, useEffect, Fragment, lazy, Suspense } from 'react'
 import { Stage, Layer, Rect, Circle, Line, Path, Arrow, Arc, Group, Image as KonvaImage, Ellipse, Transformer, Text as KonvaText } from 'react-konva'
 import './App.css'
+
+// Lab: draft a play from a video. Loaded only when opened, so the AI SDK stays out of the
+// main bundle.
+const VideoImport = lazy(() => import('./VideoImport.jsx'))
 
 // Full field (portrait): 68m wide × 105m tall at 8px/m
 const FW = 544, FH = 840, PAD = 44
@@ -765,6 +769,52 @@ function nextTag(objects, type) {
   return {}
 }
 const tagLabel = (tag) => tag?.number ?? tag?.position ?? null
+
+// A fresh object of `type` with its default size, color and facing (no position —
+// positions live in frames)
+function newObject(id, type, tag = {}) {
+  return {
+    id,
+    type,
+    size: GOAL_DEFAULT_SIZE[type] ?? EQUIP_DEFAULT_SIZE[type] ?? (PLAYER_TYPES.has(type) ? PLAYER_DEFAULT_SIZE : DEFAULT_SIZE),
+    rotation: 0,
+    ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
+    ...tag,
+    ...(MODEL_TYPES.has(type) ? { facing: GOAL_DEFAULT_FACING } : {}),
+  }
+}
+
+// ── Play files ────────────────────────────────────────────────────────────────
+const SAVE_FORMAT  = 'tactics-board'
+const SAVE_VERSION = 1
+
+// Writes a play to a .json file; returns the name it was saved under, or null if cancelled.
+// Chrome/Edge: native Save dialog (pick name + folder). Elsewhere: ask for a name and download.
+async function savePlayFile(data, suggested) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: `${suggested}.json`,
+        types: [{ description: 'Tactics play', accept: { 'application/json': ['.json'] } }],
+      })
+      const w = await handle.createWritable()
+      await w.write(blob); await w.close()
+      return handle.name.replace(/\.json$/i, '')
+    } catch (err) {
+      if (err.name === 'AbortError') return null
+    }
+  }
+  const name = window.prompt('Save play as:', suggested)
+  if (!name) return null
+  const clean = name.trim().replace(/\.json$/i, '') || 'play'
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `${clean}.json`
+  a.click()
+  URL.revokeObjectURL(a.href)
+  return clean
+}
 
 // Data URL of a numbered type in its default color for the catalog card (shows the next number)
 const _numberedPreviewCache = new Map()
@@ -1882,6 +1932,13 @@ function SidebarBtn({ label, icon, imgSrc, active, onClick, disabled }) {
   )
 }
 
+// What the video importer needs to know about the board (passed in, not imported, so the
+// lazy chunk doesn't pull App back in)
+const VIDEO_KIT = {
+  SAVE_FORMAT, SAVE_VERSION, SPORTS, CATALOG, FIELD_CATALOG, OBJECT_COLORS, DEFAULT_COLORS,
+  COLORIZABLE, MODEL_TYPES, GOAL_DEFAULT_FACING, fieldInSport, fieldLabel, canvasFor, nextTag, newObject, savePlayFile,
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   // Object metadata — type, size, rotation, color (NOT position; positions live in frames)
@@ -2070,15 +2127,7 @@ export default function App() {
       x: (mobileLand && activePanel ? aFW * 0.64 : aCX) + (Math.random() - 0.5) * 120,
       y: (isMobile && !mobileLand && activePanel ? aFH * 0.28 : aCY) + (Math.random() - 0.5) * 80,
     }
-    setPlacedObjects(prev => [...prev, {
-      id,
-      type,
-      size: GOAL_DEFAULT_SIZE[type] ?? EQUIP_DEFAULT_SIZE[type] ?? (PLAYER_TYPES.has(type) ? PLAYER_DEFAULT_SIZE : DEFAULT_SIZE),
-      rotation: 0,
-      ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
-      ...tag,
-      ...(MODEL_TYPES.has(type) ? { facing: GOAL_DEFAULT_FACING } : {}),
-    }])
+    setPlacedObjects(prev => [...prev, newObject(id, type, tag)])
     setFrames(prev => prev.map(f => ({
       ...f,
       positions: { ...f.positions, [id]: { ...initPos } },
@@ -2416,8 +2465,6 @@ export default function App() {
   // ── Save / Open ──────────────────────────────────────────────────────────────
   // A play is saved as a .json file holding everything on the board. Opening one
   // replaces the board and clears undo history.
-  const SAVE_FORMAT  = 'tactics-board'
-  const SAVE_VERSION = 1
   const fileInputRef = useRef(null)
   const [playName, setPlayName] = useState('play')
 
@@ -2428,31 +2475,8 @@ export default function App() {
       placedObjects, frames, freePaths, drawings, shapes, textItems,
       nextIds: { object: nextId.current, draw: nextDrawId.current, shape: nextShapeId.current, text: nextTextId.current },
     }
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-    // Chrome/Edge: native Save dialog (pick name + folder). Elsewhere: ask for a name and download.
-    if (window.showSaveFilePicker) {
-      try {
-        const handle = await window.showSaveFilePicker({
-          suggestedName: `${playName}.json`,
-          types: [{ description: 'Tactics play', accept: { 'application/json': ['.json'] } }],
-        })
-        const w = await handle.createWritable()
-        await w.write(blob); await w.close()
-        setPlayName(handle.name.replace(/\.json$/i, ''))
-        return
-      } catch (err) {
-        if (err.name === 'AbortError') return
-      }
-    }
-    const name = window.prompt('Save play as:', playName)
-    if (!name) return
-    const clean = name.trim().replace(/\.json$/i, '') || 'play'
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = `${clean}.json`
-    a.click()
-    URL.revokeObjectURL(a.href)
-    setPlayName(clean)
+    const name = await savePlayFile(data, playName)
+    if (name) setPlayName(name)
   }, [sport, currentField, playSpeed, placedObjects, frames, freePaths, drawings, shapes, textItems, playName])
 
   // Each sport has its own objects, so switching starts a fresh board (after a confirm if it isn't empty)
@@ -2467,14 +2491,7 @@ export default function App() {
     if (!fieldInSport(currentField, next)) setCurrentField('full')
   }, [sport, currentField, placedObjects, drawings, shapes, textItems, clearBoard])
 
-  const openAnimation = useCallback(async (file) => {
-    if (!file) return
-    let data
-    try { data = JSON.parse(await file.text()) } catch { data = null }
-    if (!data || data.format !== SAVE_FORMAT || !Array.isArray(data.frames) || !data.frames.length) {
-      window.alert(`"${file.name}" isn't a saved tactics play.`)
-      return
-    }
+  const loadPlay = useCallback((data, name) => {
     clearBoard()
     historyRef.current = []
     const maxId = (items) => items.reduce((m, it) => Math.max(m, Number(it.id) || 0), -1) + 1
@@ -2493,8 +2510,30 @@ export default function App() {
     setShapes(shps)
     setTextItems(texts)
     setCurrentFrame(0)
-    setPlayName(file.name.replace(/\.json$/i, ''))
+    setPlayName(name)
   }, [clearBoard])
+
+  const openAnimation = useCallback(async (file) => {
+    if (!file) return
+    let data
+    try { data = JSON.parse(await file.text()) } catch { data = null }
+    if (!data || data.format !== SAVE_FORMAT || !Array.isArray(data.frames) || !data.frames.length) {
+      window.alert(`"${file.name}" isn't a saved tactics play.`)
+      return
+    }
+    loadPlay(data, file.name.replace(/\.json$/i, ''))
+  }, [loadPlay])
+
+  // ── Lab: draft a play from a video (hidden; ?lab=1 turns it on, ?lab=0 off) ──
+  const [lab] = useState(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get('lab')
+      if (q === '1') localStorage.setItem('tacticsLab', '1')
+      if (q === '0') localStorage.removeItem('tacticsLab')
+      return localStorage.getItem('tacticsLab') === '1'
+    } catch { return false }
+  })
+  const [videoImportOpen, setVideoImportOpen] = useState(false)
 
   const pushHistory = useCallback(() => {
     historyRef.current = [
@@ -3104,6 +3143,11 @@ export default function App() {
             <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={isPlaying} title="Open a saved play">
               📂 Open
             </button>
+            {lab && (
+              <button className="file-btn lab-btn" onClick={() => setVideoImportOpen(true)} disabled={isPlaying} title="Lab: draft a play from a video clip">
+                🎬 From video
+              </button>
+            )}
             <button
               className="undo-btn"
               onClick={undo}
@@ -3546,6 +3590,11 @@ export default function App() {
             <button className="ctx-btn" disabled={isPlaying} onClick={() => { setFileMenuOpen(false); fileInputRef.current?.click() }}>
               <span className="ctx-icon">📂</span> Open play
             </button>
+            {lab && (
+              <button className="ctx-btn" disabled={isPlaying} onClick={() => { setFileMenuOpen(false); setVideoImportOpen(true) }}>
+                <span className="ctx-icon">🎬</span> Play from video <span className="lab-tag">Lab</span>
+              </button>
+            )}
             <button className="ctx-btn" disabled={isPlaying || isExporting || frames.length < 2 || placedObjects.length === 0} onClick={() => { setFileMenuOpen(false); exportVideo() }}>
               <span className="ctx-icon">⬇</span> Export video
             </button>
@@ -3556,6 +3605,23 @@ export default function App() {
             <div className="m-hint">Tip: double-tap or press and hold anything on the field for its options.</div>
           </div>
         </>
+      )}
+
+      {/* ── Lab: play from video ── */}
+      {videoImportOpen && (
+        <Suspense fallback={<div className="export-overlay"><div className="export-dialog">Loading…</div></div>}>
+          <VideoImport
+            sport={sport}
+            kit={VIDEO_KIT}
+            onClose={() => setVideoImportOpen(false)}
+            onOpen={(data, name) => {
+              const busy = placedObjects.length || drawings.length || shapes.length || textItems.length
+              if (busy && !window.confirm('Opening the draft replaces what is on the board. Save first if you want to keep it.\n\nOpen anyway?')) return
+              loadPlay(data, name)
+              setVideoImportOpen(false)
+            }}
+          />
+        </Suspense>
       )}
 
       {/* ── Export save dialog ── */}

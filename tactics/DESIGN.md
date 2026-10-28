@@ -388,3 +388,18 @@ Square frame with a bulged net, ground legs and back braces. Default dark `#1f29
 ### Context menu + catalog
 - A **Facing** compass (3×3 grid: NW N NE / W ↻ E / SW S SE; tooltips "Faces N" etc.). The center ↻ rotates 45° clockwise. It replaces Rotate 90° for all 3D models, and the menu clamps higher on screen because it's taller.
 - Catalog cards show a 3/4 view (`GOAL_PREVIEW_FACING = 135`, SE) on a rounded patch of field grass (`goalPreview(type)`), so light frames and dark nets both read against the dark card.
+
+## Lab: Play from Video (`src/VideoImport.jsx`, hidden)
+How to turn it on, use it and get an API key: see `VIDEO-LAB.md`.
+
+Drafts a play from a video clip with Claude. It's hidden from everyone by default: open the board with `?lab=1` once to turn it on for that browser (saved as `localStorage.tacticsLab`), and `?lab=0` to turn it off. When it's on, desktop shows **🎬 From video** after Open, and the phone ⋯ sheet shows **Play from video**.
+
+- **Input**: a video file (best) or a direct `.mp4` link. The link only works if its host allows other sites to read it (CORS); YouTube / Vimeo pages are refused with a hint to download the clip. **Start here / End here** trims to one drill; a warning shows past 90 s.
+- **Frames**: 8–32 (default 16) evenly spaced stills, pulled in the browser by seeking a `<video>` and drawing to a canvas (max 960 px wide, JPEG). Recorded `.webm` files with no stored length are handled by seeking past the end.
+- **Claude call**: `claude-opus-5-5`, adaptive thinking, effort `high`, streamed, structured output (`output_config.format` JSON schema built per sport), with server-side refusal fallback (`fallbacks: 'default'`). It's made from the browser with the user's own Anthropic API key (`dangerouslyAllowBrowser`), and "Remember on this device" keeps it in `localStorage.tacticsLabKey`. **Not safe to open to everyone as is:** a public version needs a small server that holds the key.
+- **Prompt**: lists the sport's field views (`viewHelp` — orientation, which end is where, real size) and catalog objects (`OBJECT_HELP`). The coach's optional notes win over Claude's guesses.
+- **Answer**: `field`, `objects` (key, type, palette color, goal facing, start x/y as 0–1 of the view's canvas), `steps` (only the objects that moved, 2–8 moments of one rep), `arrows` (runs = arrow, passes = dashed-arrow), plus `title`, `summary` and `camera`.
+- **Conversion** (`toPlay`): fractions × `canvasFor(sport, field)`. Objects are built with the board's own `newObject` / `nextTag`, so numbering, positions and default sizes match hand-placed ones; team players past the number limit fall back to plain `player`. There is one frame for the start plus one per step. Arrows are added only when the box is ticked. The result is a normal `tactics-board` save file plus an extra `notes` block (title, summary, camera, step notes) that the board ignores.
+- **Review**: a top-down mini map, the step list, the camera note and the frames Claude saw. **Open on board** replaces the board (with a confirm if the board isn't empty); **Save file** writes the `.json` directly.
+- The module is lazy-loaded (`React.lazy`), so the SDK (~360 KB) is only downloaded when the dialog opens. App passes the board helpers in through `VIDEO_KIT` instead of the module importing App.
+- Dev only: under `npm run dev`, the API key `test` skips the call and returns `SAMPLE_RESULT` (a 4v2 rondo) to exercise the flow.
