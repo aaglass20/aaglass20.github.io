@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cp index.src.html index.html && vite",
-    "build": "vite build",
+    "build": "cp index.html .index.prod.html && cp index.src.html index.html && vite build; s=$?; mv .index.prod.html index.html; exit $s",
     "preview": "vite preview",
     "deploy": "cp index.src.html index.html && vite build && rm -rf assets && cp -r dist/assets assets && cp dist/index.html index.html && for f in public/*.png public/*.jpg public/*.jpeg public/*.webp; do [ -f \"$f\" ] && cp \"$f\" .; done && echo 'Deployed!'"
   },
