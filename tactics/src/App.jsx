@@ -56,23 +56,33 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'football', 'cone', 'hoop', 'pinnie', 'pole'])
+const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'basketball', 'football', 'baseball', 'softball', 'puck', 'cone', 'hoop', 'pinnie', 'pole'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', football: '#8a4b22', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
+const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', basketball: '#e8742a', football: '#8a4b22', baseball: '#f8fafc', softball: '#e4f03c', puck: '#111827', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
 
-// Sports — each has its own court/field drawing and object list (switching clears the board)
+// Sports — each has its own court/field drawing and object list (switching clears the board).
+// `ball` is the object type used as the sidebar's Objects icon.
 const SPORTS = [
-  { id: 'soccer',     label: '⚽ Soccer'     },
-  { id: 'basketball', label: '🏀 Basketball' },
-  { id: 'football',   label: '🏈 Football'   },
+  { id: 'soccer',     label: '⚽ Soccer',     ball: 'ball'       },
+  { id: 'basketball', label: '🏀 Basketball', ball: 'basketball' },
+  { id: 'football',   label: '🏈 Football',   ball: 'football'   },
+  { id: 'baseball',   label: '⚾ Baseball',   ball: 'baseball'   },
+  { id: 'softball',   label: '🥎 Softball',   ball: 'softball'   },
+  { id: 'hockey',     label: '🏒 Hockey',     ball: 'puck'       },
 ]
-const BOTH = ['soccer', 'basketball', 'football']   // objects every sport gets
+const BOTH = SPORTS.map(sp => sp.id)   // objects every sport gets
+// Diamond sports share a field drawing (sized per sport), the player kit and a landscape full view
+const DIAMOND = new Set(['baseball', 'softball'])
+const kitFor  = (sport) => DIAMOND.has(sport) ? 'baseball' : sport
 
 const CATALOG = [
   { type: 'ball',       label: 'Soccer Ball', src: null, sports: ['soccer']     },
   { type: 'basketball', label: 'Basketball',  src: null, sports: ['basketball'] },
   { type: 'football',   label: 'Football',    src: null, sports: ['football']   },
+  { type: 'baseball',   label: 'Baseball',    src: null, sports: ['baseball']   },
+  { type: 'softball',   label: 'Softball',    src: null, sports: ['softball']   },
+  { type: 'puck',       label: 'Puck',        src: null, sports: ['hockey']     },
   { type: 'player',     label: 'Player',      src: null, sports: BOTH           },
   { type: 'player-t1',  label: 'Player 1',    src: null, sports: BOTH           },
   { type: 'player-t2',  label: 'Player 2',    src: null, sports: BOTH           },
@@ -98,10 +108,10 @@ const PLAYER_DEFAULT_SIZE = 4   // one step up from the shared default so chest 
 
 // Same five views for every sport; `names` overrides the label per sport (`src` is soccer only)
 const FIELD_CATALOG = [
-  { id: 'full',      label: 'Full Field',        names: { basketball: 'Full Court' },                                 src: null           },
-  { id: 'half',      label: 'Half Field',        names: { basketball: 'Half Court' },                                 src: 'halfield.png' },
-  { id: 'half-flip', label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)' },                          src: 'halfield.png' },
-  { id: 'middle',    label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield' },            src: null           },
+  { id: 'full',      label: 'Full Field',        names: { basketball: 'Full Court', hockey: 'Full Rink' },                                 src: null           },
+  { id: 'half',      label: 'Half Field',        names: { basketball: 'Half Court', baseball: 'Infield', softball: 'Infield', hockey: 'Half Rink' },          src: 'halfield.png' },
+  { id: 'half-flip', label: 'Half Field (flip)', names: { basketball: 'Half Court (flip)', baseball: 'Outfield', softball: 'Outfield', hockey: 'Half Rink (flip)' }, src: 'halfield.png' },
+  { id: 'middle',    label: 'Middle Third',      names: { basketball: 'Mid Court', football: 'Midfield', baseball: 'Home Plate', softball: 'Home Plate', hockey: 'Neutral Zone' }, src: null },
   { id: 'blank',     label: 'Blank',             names: {},                                                           src: null           },
 ]
 const fieldLabel = (f, sport) => f.names[sport] ?? f.label
@@ -181,7 +191,9 @@ function hexToRgb(hex) {
 // cylindrical light→dark shading on the jersey (light from the upper left), collar,
 // sleeve cuffs, shaded head. Optional jersey number on the chest.
 // `kit` 'basketball' swaps the jersey for a sleeveless tank with bare arms and trim;
-// 'football' widens the shoulders over pads and puts on a helmet with a facemask.
+// 'football' widens the shoulders over pads and puts on a helmet with a facemask;
+// 'baseball' (also softball) adds a button placket and a ball cap in the team color;
+// 'hockey' adds sweater stripes, gloves, a stick, and a helmet with a cage.
 // Cached by `hexColor|number|kit`.
 const _playerCache = new Map()
 const PLAYER_PX    = 192
@@ -265,12 +277,15 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   const canvas = document.createElement('canvas')
   canvas.width = canvas.height = S
   const ctx = canvas.getContext('2d')
-  const helmet = kit === 'football'
-  const head = helmet ? { x: 0.5 * S, y: 0.255 * S, r: 0.152 * S } : { x: 0.5 * S, y: 0.265 * S, r: 0.135 * S }
+  const pads   = kit === 'football'
+  const hockey = kit === 'hockey'
+  const helmet = pads || hockey
+  const head = pads ? { x: 0.5 * S, y: 0.255 * S, r: 0.152 * S } : hockey ? { x: 0.5 * S, y: 0.26 * S, r: 0.143 * S } : { x: 0.5 * S, y: 0.265 * S, r: 0.135 * S }
   const headPath = () => { ctx.beginPath(); ctx.arc(head.x, head.y, head.r, 0, Math.PI * 2) }
   const neckPath = () => { ctx.beginPath(); ctx.roundRect(0.435 * S, 0.33 * S, 0.13 * S, 0.15 * S, 0.03 * S) }
   const tank = kit === 'basketball'
-  const bodyPath = () => (tank ? tankPath : helmet ? padsPath : jerseyPath)(ctx, S)
+  const bodyPath = () => (tank ? tankPath : pads ? padsPath : jerseyPath)(ctx, S)
+  const trimColor = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.9)'
 
   // 1. Soft ground shadow, cast down-right
   ctx.save()
@@ -278,6 +293,21 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   ctx.fillStyle = 'rgba(0,0,0,0.35)'
   ctx.beginPath(); ctx.ellipse(0.55 * S, 0.885 * S, 0.27 * S, 0.055 * S, 0, 0, Math.PI * 2); ctx.fill()
   ctx.restore()
+
+  // Hockey stick — hangs from the right glove beside the body, blade on the ice pointing out
+  if (hockey) {
+    const stick = (w, color) => {
+      ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+      ctx.beginPath()
+      ctx.moveTo(0.85 * S, 0.64 * S); ctx.lineTo(0.815 * S, 0.93 * S)
+      ctx.quadraticCurveTo(0.82 * S, 0.97 * S, 0.96 * S, 0.955 * S)
+      ctx.stroke()
+    }
+    stick(0.05 * S, 'rgba(0,0,0,0.8)')
+    stick(0.026 * S, '#3f3f46')
+    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 0.02 * S
+    ctx.beginPath(); ctx.moveTo(0.86 * S, 0.964 * S); ctx.lineTo(0.94 * S, 0.957 * S); ctx.stroke()
+  }
 
   // 2. Outline — strokes the silhouette wide before the fills go on top
   ctx.lineJoin = 'round'
@@ -327,7 +357,18 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   down.addColorStop(0.5, 'rgba(0,0,0,0)')
   down.addColorStop(1,   'rgba(0,0,0,0.25)')
   ctx.fillStyle = down; ctx.fillRect(0, 0, S, S)
-  if (helmet) {
+  if (hockey) {
+    // Sweater stripes: two bands at the hem and near each cuff
+    ctx.strokeStyle = trimColor
+    ctx.lineWidth = 0.022 * S
+    ctx.beginPath()
+    ctx.moveTo(0.27 * S, 0.785 * S); ctx.quadraticCurveTo(0.5 * S, 0.815 * S, 0.73 * S, 0.785 * S)
+    ctx.moveTo(0.27 * S, 0.83 * S);  ctx.quadraticCurveTo(0.5 * S, 0.86 * S, 0.73 * S, 0.83 * S)
+    ctx.moveTo(0.135 * S, 0.565 * S); ctx.lineTo(0.215 * S, 0.645 * S)
+    ctx.moveTo(0.865 * S, 0.565 * S); ctx.lineTo(0.785 * S, 0.645 * S)
+    ctx.stroke()
+  }
+  if (pads) {
     // Shoulder-pad caps: a lit ridge across each pad and a crease where it meets the chest
     ctx.lineCap = 'round'
     ctx.strokeStyle = 'rgba(255,255,255,0.35)'
@@ -388,6 +429,28 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     ctx.stroke()
   }
 
+  // Button-front placket (baseball/softball) — the number sits over it
+  if (kit === 'baseball') {
+    ctx.strokeStyle = shadeHex(hexColor, -0.35)
+    ctx.lineWidth = 0.012 * S
+    ctx.beginPath(); ctx.moveTo(0.5 * S, 0.475 * S); ctx.lineTo(0.5 * S, 0.875 * S); ctx.stroke()
+    ctx.fillStyle = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.5) : 'rgba(255,255,255,0.85)'
+    ;[0.51, 0.81].forEach(v => { ctx.beginPath(); ctx.arc(0.515 * S, v * S, 0.009 * S, 0, Math.PI * 2); ctx.fill() })
+  }
+
+  // Hockey gloves at the cuffs
+  if (hockey) {
+    ;[[0.155, 0.665], [0.845, 0.665]].forEach(([u, v]) => {
+      const gx = u * S, gy = v * S, gr = 0.05 * S
+      const glove = ctx.createRadialGradient(gx - gr * 0.4, gy - gr * 0.4, gr * 0.1, gx, gy, gr)
+      glove.addColorStop(0, shadeHex(hexColor, 0.3))
+      glove.addColorStop(1, shadeHex(hexColor, -0.45))
+      ctx.beginPath(); ctx.roundRect(gx - gr, gy - gr * 0.85, gr * 2, gr * 1.7, gr * 0.6)
+      ctx.fillStyle = glove; ctx.fill()
+      ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.014 * S; ctx.stroke()
+    })
+  }
+
   // 4. Optional jersey number
   if (number != null) {
     const { r, g, b } = hexToRgb(hexColor)
@@ -401,7 +464,7 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     ctx.fillText(String(number), 0.5 * S, 0.665 * S)
   }
 
-  // 5. Head — football gets a helmet in the team color instead
+  // 5. Head — football and hockey get a helmet in the team color instead
   if (helmet) {
     const shell = ctx.createRadialGradient(head.x - head.r * 0.4, head.y - head.r * 0.45, head.r * 0.08, head.x, head.y, head.r)
     shell.addColorStop(0,    shadeHex(hexColor, 0.55))
@@ -410,9 +473,11 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     headPath(); ctx.fillStyle = shell; ctx.fill()
     ctx.save()
     headPath(); ctx.clip()
-    // Center stripe over the crown
-    ctx.fillStyle = luminance(hexColor) > 170 ? shadeHex(hexColor, -0.45) : 'rgba(255,255,255,0.9)'
-    ctx.fillRect(head.x - 0.017 * S, head.y - head.r, 0.034 * S, head.r * 0.62)
+    // Center stripe over the crown (football)
+    if (pads) {
+      ctx.fillStyle = trimColor
+      ctx.fillRect(head.x - 0.017 * S, head.y - head.r, 0.034 * S, head.r * 0.62)
+    }
     // Face opening, skin shaded darker under the brim
     const face = ctx.createLinearGradient(0, head.y - 0.02 * S, 0, head.y + head.r)
     face.addColorStop(0, PLAYER_SKIN.dark)
@@ -422,16 +487,22 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
     ctx.fillStyle = face; ctx.fill()
     ctx.restore()
     // Facemask — grey bars with a dark edge so they read on any skin or shell color
+    // Football: two curved bars + a center bar. Hockey: a wire cage grid over the whole face.
     const bars = (w, color) => {
       ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round'
       ctx.beginPath()
-      ctx.moveTo(head.x - 0.105 * S, head.y + 0.03 * S); ctx.quadraticCurveTo(head.x, head.y + 0.055 * S, head.x + 0.105 * S, head.y + 0.03 * S)
-      ctx.moveTo(head.x - 0.09 * S, head.y + 0.085 * S); ctx.quadraticCurveTo(head.x, head.y + 0.11 * S, head.x + 0.09 * S, head.y + 0.085 * S)
-      ctx.moveTo(head.x, head.y + 0.043 * S); ctx.lineTo(head.x, head.y + 0.135 * S)
+      if (hockey) {
+        for (let i = -3; i <= 3; i++) { const x = head.x + i * 0.024 * S; ctx.moveTo(x, head.y - 0.015 * S); ctx.lineTo(x, head.y + 0.14 * S - Math.abs(i) * 0.008 * S) }
+        for (let j = 0; j < 3; j++) { const y = head.y + (0.025 + j * 0.045) * S; ctx.moveTo(head.x - 0.08 * S, y); ctx.quadraticCurveTo(head.x, y + 0.012 * S, head.x + 0.08 * S, y) }
+      } else {
+        ctx.moveTo(head.x - 0.105 * S, head.y + 0.03 * S); ctx.quadraticCurveTo(head.x, head.y + 0.055 * S, head.x + 0.105 * S, head.y + 0.03 * S)
+        ctx.moveTo(head.x - 0.09 * S, head.y + 0.085 * S); ctx.quadraticCurveTo(head.x, head.y + 0.11 * S, head.x + 0.09 * S, head.y + 0.085 * S)
+        ctx.moveTo(head.x, head.y + 0.043 * S); ctx.lineTo(head.x, head.y + 0.135 * S)
+      }
       ctx.stroke()
     }
-    bars(0.03 * S, 'rgba(0,0,0,0.7)')
-    bars(0.016 * S, '#d1d5db')
+    bars(hockey ? 0.016 * S : 0.03 * S, 'rgba(0,0,0,0.7)')
+    bars(hockey ? 0.008 * S : 0.016 * S, '#d1d5db')
     ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
     ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 0.016 * S; ctx.stroke()
     _playerCache.set(key, canvas)
@@ -444,6 +515,36 @@ function getPlayerCanvas(hexColor, number = null, kit = 'soccer') {
   headPath(); ctx.fillStyle = skin; ctx.fill()
   ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
   ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.014 * S; ctx.stroke()
+
+  // Ball cap: crown over the top of the head, brim out over the face
+  if (kit === 'baseball') {
+    const { x, y, r } = head
+    const crown = () => {
+      ctx.beginPath()
+      ctx.arc(x, y - 0.02 * r, r * 1.05, Math.PI, Math.PI * 2)
+      ctx.quadraticCurveTo(x, y - 0.2 * r, x - r * 1.05, y - 0.02 * r)
+      ctx.closePath()
+    }
+    const brim = () => { ctx.beginPath(); ctx.ellipse(x, y + 0.08 * r, r * 0.92, r * 0.38, 0, 0, Math.PI * 2) }
+    ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S
+    crown(); ctx.stroke(); brim(); ctx.stroke()
+    const cap = ctx.createRadialGradient(x - r * 0.4, y - r * 0.6, r * 0.08, x, y - r * 0.2, r * 1.1)
+    cap.addColorStop(0,    shadeHex(hexColor, 0.5))
+    cap.addColorStop(0.55, hexColor)
+    cap.addColorStop(1,    shadeHex(hexColor, -0.4))
+    crown(); ctx.fillStyle = cap; ctx.fill()
+    // Panel seam + top button
+    ctx.strokeStyle = shadeHex(hexColor, -0.35); ctx.lineWidth = 0.01 * S
+    ctx.beginPath(); ctx.moveTo(x, y - r * 1.05); ctx.quadraticCurveTo(x - r * 0.05, y - r * 0.5, x, y - r * 0.12); ctx.stroke()
+    ctx.fillStyle = shadeHex(hexColor, -0.3)
+    ctx.beginPath(); ctx.arc(x, y - r * 1.04, 0.012 * S, 0, Math.PI * 2); ctx.fill()
+    // Brim — darker underside showing at the front edge, lit top
+    const b = ctx.createLinearGradient(0, y - 0.26 * r, 0, y + 0.34 * r)
+    b.addColorStop(0,   shadeHex(hexColor, 0.2))
+    b.addColorStop(0.6, shadeHex(hexColor, -0.15))
+    b.addColorStop(1,   shadeHex(hexColor, -0.5))
+    brim(); ctx.fillStyle = b; ctx.fill()
+  }
 
   _playerCache.set(key, canvas)
   return canvas
@@ -1076,6 +1177,92 @@ function drawFootball(ctx, S, hex) {
   ctx.restore()
 }
 
+// Baseball / softball — a sphere with the two C-shaped seams and red chevron stitches
+function drawStitchBall(ctx, S, hex) {
+  const cx = 0.47 * S, cy = 0.47 * S, R = 0.43 * S
+  const rgb = hexToRgb(hex)
+  const stitch = rgb.r > 170 && rgb.g < 110 && rgb.b < 110 ? '#f8fafc' : '#dc2626'   // red stitches, white on a red ball
+
+  softShadow(ctx, S, (c) => { c.beginPath(); c.ellipse(cx, cy, R * 0.95, R * 0.85, 0, 0, Math.PI * 2); c.fill() }, 0.06 * S, 0.07 * S, 5, 0.35)
+  const ball = () => { ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2) }
+  ball(); ctx.fillStyle = hex; ctx.fill()
+
+  ctx.save()
+  ball(); ctx.clip()
+  // Each seam is an arc whose center sits outside the ball, so it curves back toward the middle
+  ;[-1, 1].forEach(side => {
+    const ox = cx + side * R * 1.12, rr = R * 0.78
+    const a0 = side < 0 ? -0.95 : Math.PI - 0.95, a1 = a0 + 1.9
+    ctx.strokeStyle = 'rgba(0,0,0,0.18)'
+    ctx.lineWidth = 0.012 * S
+    ctx.beginPath(); ctx.arc(ox, cy, rr, a0, a1); ctx.stroke()
+    ctx.strokeStyle = stitch
+    ctx.lineWidth = 0.016 * S
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    for (let i = 0; i <= 10; i++) {
+      const a = a0 + (a1 - a0) * (i / 10)
+      const px = ox + Math.cos(a) * rr, py = cy + Math.sin(a) * rr
+      const nx = Math.cos(a), ny = Math.sin(a), tx = -ny, ty = nx
+      const w = 0.04 * S, h = 0.018 * S
+      // Chevron across the seam
+      ctx.moveTo(px - nx * w + tx * h, py - ny * w + ty * h); ctx.lineTo(px, py)
+      ctx.lineTo(px + nx * w + tx * h, py + ny * w + ty * h)
+    }
+    ctx.stroke()
+  })
+  const g = ctx.createRadialGradient(cx - R * 0.4, cy - R * 0.45, R * 0.05, cx, cy, R)
+  g.addColorStop(0,    'rgba(255,255,255,0.45)')
+  g.addColorStop(0.45, 'rgba(255,255,255,0)')
+  g.addColorStop(0.8,  'rgba(0,0,0,0.12)')
+  g.addColorStop(1,    'rgba(0,0,0,0.42)')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S)
+  ctx.filter = 'blur(2px)'
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'
+  ctx.beginPath(); ctx.ellipse(cx - R * 0.42, cy - R * 0.48, R * 0.16, R * 0.09, -0.6, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+
+  ball(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
+}
+
+// Hockey puck — a short cylinder seen from above: lit top face, dark rim band, gloss
+function drawPuck(ctx, S, hex) {
+  const cx = 0.47 * S, cy = 0.44 * S, R = 0.34 * S, ry = R * 0.62, h = 0.11 * S
+  softShadow(ctx, S, (c) => { c.beginPath(); c.ellipse(cx, cy + h, R, ry, 0, 0, Math.PI * 2); c.fill() }, 0.07 * S, 0.08 * S, 5, 0.4)
+  const side = () => {
+    ctx.beginPath()
+    ctx.ellipse(cx, cy, R, ry, 0, Math.PI, 0, true)
+    ctx.lineTo(cx + R, cy + h)
+    ctx.ellipse(cx, cy + h, R, ry, 0, 0, Math.PI)
+    ctx.closePath()
+  }
+  const top = () => { ctx.beginPath(); ctx.ellipse(cx, cy, R, ry, 0, 0, Math.PI * 2) }
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.035 * S; ctx.lineJoin = 'round'
+  side(); ctx.stroke()
+  // Rim: knurled band, light on the left
+  side(); ctx.fillStyle = shadeHex(hex, -0.2); ctx.fill()
+  ctx.save(); side(); ctx.clip()
+  sideShade(ctx, S, cx - R, 0, cx + R, 0, 0.22, 0.4)
+  ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 0.006 * S
+  ctx.beginPath()
+  for (let a = 0.15; a < Math.PI; a += 0.14) { const x = cx + Math.cos(a) * R; ctx.moveTo(x, cy + Math.sin(a) * ry); ctx.lineTo(x, cy + h + Math.sin(a) * ry) }
+  ctx.stroke()
+  ctx.restore()
+  // Top face
+  const g = ctx.createRadialGradient(cx - R * 0.35, cy - ry * 0.5, R * 0.05, cx, cy, R)
+  g.addColorStop(0, shadeHex(hex, 0.35))
+  g.addColorStop(1, hex)
+  top(); ctx.fillStyle = g; ctx.fill()
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 0.012 * S
+  ctx.beginPath(); ctx.ellipse(cx, cy, R * 0.72, ry * 0.72, 0, 0, Math.PI * 2); ctx.stroke()
+  ctx.save(); top(); ctx.clip()
+  ctx.filter = 'blur(2px)'
+  ctx.fillStyle = 'rgba(255,255,255,0.35)'
+  ctx.beginPath(); ctx.ellipse(cx - R * 0.4, cy - ry * 0.4, R * 0.28, ry * 0.18, -0.3, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+  top(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.02 * S; ctx.stroke()
+}
+
 // Disc cone — side-on frustum with an open top and ridge rings
 function drawCone(ctx, S, hex) {
   const bx = 0.5 * S, by = 0.68 * S, rb = 0.4 * S, rt = 0.11 * S, h = 0.24 * S
@@ -1244,7 +1431,7 @@ function drawPinnie(ctx, S, hex) {
   ctx.restore()
 }
 
-const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, football: drawFootball, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
+const EQUIP_RENDERERS = { ball: drawBall, basketball: drawBasketball, football: drawFootball, baseball: drawStitchBall, softball: drawStitchBall, puck: drawPuck, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
 
 function getEquipCanvas(type, hexColor) {
   const key = `${type}|${hexColor}`
@@ -1336,7 +1523,7 @@ export default function App() {
   const [textCtxMenu,    setTextCtxMenu]    = useState(null)
 
   // Active canvas dims — must be computed before any callbacks that reference them
-  const isFullField = currentField === 'full'
+  const isFullField = currentField === 'full' && !DIAMOND.has(sport)   // portrait canvas; diamonds are landscape
   const aFW = isFullField ? FW : LW
   const aFH = isFullField ? FH : LH
   const aSW = isFullField ? SW : LSW
@@ -2055,7 +2242,7 @@ export default function App() {
   const getObjectFill = (obj, r) => {
     // Players: generated shaded figurine, numbered for the team types
     if (PLAYER_TYPES.has(obj.type)) {
-      const canvas = getPlayerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? null, sport)
+      const canvas = getPlayerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? null, kitFor(sport))
       const scale  = (r * 2) / canvas.width
       return {
         fillPatternImage:  canvas,
@@ -2125,7 +2312,7 @@ export default function App() {
       <nav className="sidebar">
         <SidebarBtn
           label="Objects"
-          imgSrc={sport === 'soccer' ? `${import.meta.env.BASE_URL}soccerball.png` : equipPreview(sport)}
+          imgSrc={sport === 'soccer' ? `${import.meta.env.BASE_URL}soccerball.png` : equipPreview(SPORTS.find(sp => sp.id === sport).ball)}
           active={activePanel === 'objects'}
           onClick={() => { setMobileToolsOpen(false); setActivePanel(p => p === 'objects' ? null : 'objects') }}
         />
@@ -2157,7 +2344,7 @@ export default function App() {
 
       {/* ── Fields panel ── */}
       <aside className={`objects-panel${activePanel === 'fields' ? ' open' : ''}`}>
-        <div className="panel-header">{sport === 'basketball' ? 'Courts' : 'Fields'}</div>
+        <div className="panel-header">{sport === 'basketball' ? 'Courts' : sport === 'hockey' ? 'Rinks' : 'Fields'}</div>
         <div className="field-list">
           {FIELD_CATALOG.map(f => {
             const label = fieldLabel(f, sport)
@@ -2187,9 +2374,9 @@ export default function App() {
             const nextNum    = isNumbered ? nextFreeNumber(placedObjects, item.type) : null
             const full       = isNumbered && nextNum == null
             const imgSrc     = isNumbered
-              ? numberedPreview(item.type, nextNum ?? NUMBER_MAX, sport)
+              ? numberedPreview(item.type, nextNum ?? NUMBER_MAX, kitFor(sport))
               : MODEL_TYPES.has(item.type) ? goalPreview(item.type)
-              : item.type === 'player' ? playerPreview(sport)
+              : item.type === 'player' ? playerPreview(kitFor(sport))
               : EQUIP_RENDERERS[item.type] ? equipPreview(item.type)
               : `${import.meta.env.BASE_URL}${item.src}`
             return (
@@ -3093,6 +3280,8 @@ const HALF_GOAL_Y = 521, HALF_GOAL_H = 18   // trimmed right + top to sit inside
 function FieldBackground({ sport, field, halfImg, fieldW, fieldH }) {
   if (sport === 'basketball') return <BasketballCourt field={field} />
   if (sport === 'football')   return <FootballField field={field} />
+  if (DIAMOND.has(sport))     return <DiamondField field={field} sport={sport} />
+  if (sport === 'hockey')     return <HockeyRink field={field} />
   const net = getNetPattern()
   const greenBorder = <Rect x={-GBUF} y={-GBUF} width={fieldW+GBUF*2} height={fieldH+GBUF*2} fill="#2d8b2d" cornerRadius={4} />
 
@@ -3411,6 +3600,219 @@ function FootballField({ field }) {
       {backdrop}
       <Group clipX={-2} clipY={-2} clipWidth={W + 4} clipHeight={H + 4} listening={false}>
         <Group {...group}><FootballLines lw={LINE_PX / s} /></Group>
+      </Group>
+    </>
+  )
+}
+
+// ── Baseball / softball diamond ───────────────────────────────────────────────
+// Drawn in feet with home plate at the origin and y pointing toward center field
+// (the Group flips y). One drawing serves both sports, sized by DIAMOND_SPECS.
+// Every view is landscape and fits a box of the field: the whole field, the
+// infield, the outfield, or a close-up of home plate.
+const DIAMOND_SPECS = {
+  //          bases  rubber  skin arc (center, radius)  infield grass  fence: lines / center  foul room  box (w × l)  catcher box
+  baseball: { base: 90, rubber: 60.5, skinC: 59,  skinR: 95, grassInfield: true,  line: 330, center: 400, foul: 45, track: 15, box: [4, 6], catcher: 8,  moundR: 9 },
+  softball: { base: 60, rubber: 43,   skinC: 43,  skinR: 60, grassInfield: false, line: 200, center: 220, foul: 25, track: 10, box: [3, 7], catcher: 10, circleR: 8 },
+}
+const DIRT  = '#c98d5c'
+const TRACK = '#b8804f'
+const GRASS = '#2d8b2d'
+
+// Fence distance at angle θ (degrees off the center-field line): foul-line distance at ±45°, deepest at 0°
+const fenceDist = (sp, deg) => sp.line + (sp.center - sp.line) * Math.cos((2 * deg * Math.PI) / 180)
+
+// Playing-area outline (fence arc + foul territory + backstop) with the fence pulled in by `inset`
+function diamondOutline(sp, inset = 0) {
+  const pts = []
+  const at = (deg, d) => { const a = (deg * Math.PI) / 180; return [Math.sin(a) * d, Math.cos(a) * d] }
+  for (let deg = -45; deg <= 45; deg += 3) pts.push(...at(deg, fenceDist(sp, deg) - inset))
+  const W = sp.foul - inset * 0.3
+  const k = Math.SQRT1_2
+  const [rx, ry] = at(45, sp.line - inset)
+  pts.push(rx + k * W, ry - k * W)
+  // Backstop: a half circle of radius W behind home joins the two offset foul lines
+  for (let a = -45; a >= -135; a -= 9) { const r = (a * Math.PI) / 180; pts.push(Math.cos(r) * W, Math.sin(r) * W) }
+  const [lx, ly] = at(-45, sp.line - inset)
+  pts.push(lx - k * W, ly - k * W)
+  return pts
+}
+
+function DiamondLines({ sp, s }) {
+  const lw = 2 / s
+  const line = { stroke: 'white', strokeWidth: lw, listening: false }
+  const B = sp.base, k = Math.SQRT1_2
+  const minFt = (ft, px) => Math.max(ft, px / s)            // keep small marks visible when zoomed out
+  const baseSz = minFt(1.25, 7)
+  const bases = [[B * k, B * k], [0, B * Math.SQRT2], [-B * k, B * k]]
+  const plate = 17 / 24, bw = sp.box[0], bl = sp.box[1], boxIn = plate + 0.5, boxY = plate - bl / 2
+  const fence = []
+  for (let deg = -45; deg <= 45; deg += 3) { const a = (deg * Math.PI) / 180, d = fenceDist(sp, deg); fence.push(Math.sin(a) * d, Math.cos(a) * d) }
+  const lineEnd = sp.line * k
+  return (
+    <>
+      <Line points={diamondOutline(sp)} closed fill={TRACK} listening={false} />
+      <Line points={diamondOutline(sp, sp.track)} closed fill={GRASS} listening={false} />
+      {/* Infield skin: a circle of dirt clipped to fair territory (plus a few feet over the lines) */}
+      <Group listening={false} clipFunc={(c) => { c.beginPath(); c.moveTo(0, -6); c.lineTo(-900, 894); c.lineTo(900, 894); c.closePath() }}>
+        <Circle x={0} y={sp.skinC} radius={sp.skinR} fill={DIRT} />
+      </Group>
+      {sp.grassInfield && (
+        <Line points={[0, 3 * Math.SQRT2, B * k - 3 * Math.SQRT2, B * k, 0, B * Math.SQRT2 - 3 * Math.SQRT2, -(B * k - 3 * Math.SQRT2), B * k]}
+              closed fill="#33962f" listening={false} />
+      )}
+      <Circle x={0} y={0} radius={13} fill={DIRT} listening={false} />
+      {sp.moundR && <Circle x={0} y={sp.rubber - 1.5} radius={sp.moundR} fill={DIRT} stroke="rgba(0,0,0,0.12)" strokeWidth={lw} listening={false} />}
+      {sp.circleR && <Circle x={0} y={sp.rubber} radius={sp.circleR} {...line} />}
+      {/* Foul lines to the poles, running lane on the first-base side */}
+      {/* (they start at the front of the batter's boxes, not inside them) */}
+      <Line points={[boxY + bl, boxY + bl, lineEnd, lineEnd]} {...line} />
+      <Line points={[-(boxY + bl), boxY + bl, -lineEnd, lineEnd]} {...line} />
+      <Line points={[B * k / 2 + 3 * k, B * k / 2 - 3 * k, B * k + 3 * k, B * k - 3 * k]} {...line} />
+      {/* Batter's boxes + catcher's box */}
+      {[-1, 1].map(side => (
+        <Rect key={side} x={side > 0 ? boxIn : -boxIn - bw} y={boxY} width={bw} height={bl} {...line} />
+      ))}
+      <Line points={[-1.8, boxY, -1.8, boxY - sp.catcher, 1.8, boxY - sp.catcher, 1.8, boxY]} {...line} />
+      {/* On-deck circles */}
+      {[-1, 1].map(side => <Circle key={side} x={side * sp.foul * 0.62} y={-sp.foul * 0.3} radius={2.5} {...line} />)}
+      {/* Bases, rubber, plate */}
+      {bases.map(([x, y], i) => (
+        <Rect key={i} x={x} y={y} width={baseSz} height={baseSz} offsetX={baseSz / 2} offsetY={baseSz / 2} rotation={45}
+              fill="white" stroke="rgba(0,0,0,0.35)" strokeWidth={lw * 0.5} listening={false} />
+      ))}
+      <Rect x={0} y={sp.rubber} width={minFt(2, 8)} height={minFt(0.5, 3)} offsetX={minFt(2, 8) / 2} offsetY={minFt(0.5, 3) / 2} fill="white" listening={false} />
+      {(() => { const p = minFt(plate, 4); return (
+        <Line points={[0, 0, p, p, p, 2 * p, -p, 2 * p, -p, p]} closed fill="white" stroke="rgba(0,0,0,0.35)" strokeWidth={lw * 0.5} listening={false} />
+      ) })()}
+      {/* Fence + foul poles */}
+      <Line points={fence} stroke="#1f3b2a" strokeWidth={lw * 2.2} lineCap="round" listening={false} />
+      {[-1, 1].map(side => <Circle key={side} x={side * lineEnd} y={lineEnd} radius={minFt(2, 4)} fill="#facc15" stroke="rgba(0,0,0,0.5)" strokeWidth={lw * 0.5} listening={false} />)}
+    </>
+  )
+}
+
+function DiamondField({ field, sport }) {
+  const sp = DIAMOND_SPECS[sport]
+  const backdrop = <Rect x={-GBUF} y={-GBUF} width={LW + GBUF * 2} height={LH + GBUF * 2} fill={field === 'blank' ? GRASS : '#246f24'} cornerRadius={4} listening={false} />
+  if (field === 'blank') return backdrop
+
+  const B = sp.base, k = Math.SQRT1_2
+  let box   // [x0, x1, y0, y1] in feet, y toward center field
+  if (field === 'half') {
+    box = [-(B * k + B * 0.35), B * k + B * 0.35, -B * 0.35, B * Math.SQRT2 + B * 0.45]
+  } else if (field === 'half-flip') {
+    const half = sp.line * k + 12
+    box = [-half, half, B * Math.SQRT2 - B * 0.1, sp.center + 12]
+  } else if (field === 'middle') {
+    box = [-20, 20, -16, 16]
+  } else {
+    const pts = diamondOutline(sp)
+    const xs = pts.filter((_, i) => i % 2 === 0), ys = pts.filter((_, i) => i % 2 === 1)
+    box = [Math.min(...xs) - 8, Math.max(...xs) + 8, Math.min(...ys) - 8, Math.max(...ys) + 8]
+  }
+  const [x0, x1, y0, y1] = box
+  const s = Math.min(LW / (x1 - x0), LH / (y1 - y0))
+  const group = { x: LW / 2 - s * (x0 + x1) / 2, y: LH / 2 + s * (y0 + y1) / 2, scaleX: s, scaleY: -s }
+  return (
+    <>
+      {backdrop}
+      <Group clipX={-2} clipY={-2} clipWidth={LW + 4} clipHeight={LH + 4} listening={false}>
+        <Group {...group}><DiamondLines sp={sp} s={s} /></Group>
+      </Group>
+    </>
+  )
+}
+
+// ── Hockey rink ───────────────────────────────────────────────────────────────
+// NHL rink (85 × 200 ft, 28 ft corner radius) drawn in feet inside a scaled Group:
+// white ice inside rounded boards, red goal + center lines, blue lines, faceoff
+// circles and dots, creases and nets. Views match basketball (half rink is mirrored —
+// there's no text to flip).
+const RINK_W = 85, RINK_L = 200, RINK_R = 28
+const RINK_RED = '#d42a2a', RINK_BLUE = '#1d4ed8', ICE = '#eef6fb'
+
+function roundRectPath(ctx, w, h, r) {
+  ctx.beginPath()
+  ctx.moveTo(r, 0); ctx.lineTo(w - r, 0); ctx.arc(w - r, r, r, -Math.PI / 2, 0)
+  ctx.lineTo(w, h - r); ctx.arc(w - r, h - r, r, 0, Math.PI / 2)
+  ctx.lineTo(r, h); ctx.arc(r, h - r, r, Math.PI / 2, Math.PI)
+  ctx.lineTo(0, r); ctx.arc(r, r, r, Math.PI, Math.PI * 1.5)
+  ctx.closePath()
+}
+
+// One end of the rink, end boards at y = 0
+function RinkEnd({ lw }) {
+  const red = { stroke: RINK_RED, strokeWidth: lw, listening: false }
+  const cx = RINK_W / 2
+  return (
+    <>
+      <Line points={[0, 11, RINK_W, 11]} {...red} strokeWidth={Math.max(lw, 0.17)} />
+      <Line points={[cx - 11, 11, cx - 14, 0]} {...red} />
+      <Line points={[cx + 11, 11, cx + 14, 0]} {...red} />
+      <Path data={`M ${cx - 6} 11 A 6 6 0 0 0 ${cx + 6} 11 Z`} fill="#a5d8f3" {...red} />
+      <Rect x={cx - 3} y={7.2} width={6} height={3.8} cornerRadius={1.2} fill="rgba(148,163,184,0.55)" {...red} strokeWidth={lw * 1.6} />
+      {[20.5, 64.5].map(x => (
+        <Group key={x}>
+          <Circle x={x} y={31} radius={15} {...red} />
+          <Circle x={x} y={31} radius={1} fill={RINK_RED} listening={false} />
+          {[-1, 1].map(sx => [-1, 1].map(sy => (
+            <Line key={`${sx}${sy}`} points={[x + sx * 14.8, 31 + sy * 2.9, x + sx * 17, 31 + sy * 2.9]} {...red} />
+          )))}
+          <Circle x={x} y={80} radius={1} fill={RINK_RED} listening={false} />
+        </Group>
+      ))}
+      <Rect x={0} y={74.5} width={RINK_W} height={1} fill={RINK_BLUE} listening={false} />
+    </>
+  )
+}
+
+function RinkLines({ lw }) {
+  const cx = RINK_W / 2
+  return (
+    <>
+      <Rect width={RINK_W} height={RINK_L} cornerRadius={RINK_R} fill={ICE} listening={false} />
+      <Group clipFunc={(c) => roundRectPath(c, RINK_W, RINK_L, RINK_R)} listening={false}>
+        <RinkEnd lw={lw} />
+        <Group y={RINK_L} scaleY={-1}><RinkEnd lw={lw} /></Group>
+        <Rect x={0} y={99.5} width={RINK_W} height={1} fill={RINK_RED} />
+        <Circle x={cx} y={100} radius={15} stroke={RINK_BLUE} strokeWidth={lw} />
+        <Circle x={cx} y={100} radius={0.6} fill={RINK_BLUE} />
+        <Path data={`M ${RINK_W} 90 A 10 10 0 0 0 ${RINK_W} 110`} stroke={RINK_RED} strokeWidth={lw} />
+      </Group>
+      {/* Boards: dark cap over a yellow kick plate */}
+      <Rect width={RINK_W} height={RINK_L} cornerRadius={RINK_R} stroke="#facc15" strokeWidth={lw * 1.6} listening={false} />
+      <Rect x={-0.6} y={-0.6} width={RINK_W + 1.2} height={RINK_L + 1.2} cornerRadius={RINK_R + 0.6} stroke="#1e293b" strokeWidth={lw * 1.8} listening={false} />
+    </>
+  )
+}
+
+function HockeyRink({ field }) {
+  const full = field === 'full'
+  const W = full ? FW : LW, H = full ? FH : LH
+  const padY = full ? GOAL_D + GBUF : GBUF
+  const backdrop = <Rect x={-GBUF} y={-padY} width={W + GBUF * 2} height={H + padY * 2} fill={field === 'blank' ? ICE : '#475569'} cornerRadius={4} listening={false} />
+  if (field === 'blank') return backdrop
+
+  const LINE_PX = 2
+  let s, group
+  if (full) {
+    s = Math.min(FW / (RINK_W + 3), FH / (RINK_L + 3))
+    group = { x: (FW - RINK_W * s) / 2, y: (FH - RINK_L * s) / 2, scaleX: s, scaleY: s }
+  } else if (field === 'middle') {
+    s = LH / (RINK_W + 3)
+    group = { x: LW / 2 + (RINK_L / 2) * s, y: (LH - RINK_W * s) / 2, scaleX: s, scaleY: s, rotation: 90 }
+  } else {
+    // Half rink: end boards along one edge, center red line just inside the far edge
+    s = Math.min(LH / (RINK_L / 2 + 3), LW / (RINK_W + 3))
+    const flip = field === 'half-flip'
+    group = { x: (LW - RINK_W * s) / 2, y: flip ? 1.5 * s : LH - 1.5 * s, scaleX: s, scaleY: flip ? s : -s }
+  }
+  return (
+    <>
+      {backdrop}
+      <Group clipX={-2} clipY={-2} clipWidth={W + 4} clipHeight={H + 4} listening={false}>
+        <Group {...group}><RinkLines lw={LINE_PX / s} /></Group>
       </Group>
     </>
   )

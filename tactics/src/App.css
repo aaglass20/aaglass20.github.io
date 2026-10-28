@@ -1545,3 +1545,68 @@ canvas {
   border-bottom: 2px solid #fff;
 }
 .field-preview[data-sport="football"][data-field="blank"] { background: #2d8b2d; }
+
+/* ── Baseball / softball thumbnails ── */
+.field-preview[data-sport="baseball"],
+.field-preview[data-sport="softball"] { background: #2d8b2d; }
+.field-preview[data-sport="baseball"]::after,
+.field-preview[data-sport="softball"]::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 26px; height: 26px;
+  bottom: 4px;
+  background: #c98d5c;
+  border: 1.5px solid #fff;
+  transform: translateX(-50%) rotate(45deg);
+  transform-origin: center;
+}
+.field-preview[data-sport="baseball"][data-field="full"],
+.field-preview[data-sport="softball"][data-field="full"] {
+  background: radial-gradient(circle at 50% 100%, #2d8b2d 0 62%, #b8804f 62% 68%, #246f24 68%);
+  border: none;
+}
+.field-preview[data-sport="baseball"][data-field="full"]::after,
+.field-preview[data-sport="softball"][data-field="full"]::after { width: 14px; height: 14px; bottom: 2px; }
+.field-preview[data-sport="baseball"][data-field="half"]::after,
+.field-preview[data-sport="softball"][data-field="half"]::after { width: 34px; height: 34px; bottom: 6px; }
+.field-preview[data-sport="baseball"][data-field="half-flip"],
+.field-preview[data-sport="softball"][data-field="half-flip"] {
+  background: radial-gradient(circle at 50% 160%, #2d8b2d 0 78%, #b8804f 78% 84%, #246f24 84%);
+}
+.field-preview[data-sport="baseball"][data-field="half-flip"]::after,
+.field-preview[data-sport="softball"][data-field="half-flip"]::after { display: none; }
+.field-preview[data-sport="baseball"][data-field="middle"]::after,
+.field-preview[data-sport="softball"][data-field="middle"]::after {
+  width: 44px; height: 44px; bottom: 7px; border-radius: 50%; border: none; transform: translateX(-50%);
+}
+.field-preview[data-sport="baseball"][data-field="blank"]::after,
+.field-preview[data-sport="softball"][data-field="blank"]::after { display: none; }
+
+/* ── Hockey rink thumbnails ── */
+.field-preview[data-sport="hockey"] {
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), #d42a2a calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(90deg, transparent 31%, #1d4ed8 31% 34%, transparent 34% 66%, #1d4ed8 66% 69%, transparent 69%),
+    #eef6fb;
+  border-radius: 14px;
+}
+.field-preview[data-sport="hockey"][data-field="full"],
+.field-preview[data-sport="hockey"][data-field="half"],
+.field-preview[data-sport="hockey"][data-field="half-flip"] {
+  background:
+    linear-gradient(180deg, transparent 49%, #d42a2a 49% 53%, transparent 53%),
+    linear-gradient(180deg, transparent 32%, #1d4ed8 32% 36%, transparent 36% 64%, #1d4ed8 64% 68%, transparent 68%),
+    #eef6fb;
+  border: 2px solid #1e293b;
+}
+.field-preview[data-sport="hockey"][data-field="full"]::after { display: none; }
+.field-preview[data-sport="hockey"][data-field="half"] {
+  background: linear-gradient(180deg, #d42a2a 0 5%, transparent 5% 40%, #1d4ed8 40% 46%, transparent 46% 86%, #d42a2a 86% 88%, transparent 88%), #eef6fb;
+  border-radius: 4px 4px 18px 18px;
+}
+.field-preview[data-sport="hockey"][data-field="half-flip"] {
+  background: linear-gradient(0deg, #d42a2a 0 5%, transparent 5% 40%, #1d4ed8 40% 46%, transparent 46% 86%, #d42a2a 86% 88%, transparent 88%), #eef6fb;
+  border-radius: 18px 18px 4px 4px;
+}
+.field-preview[data-sport="hockey"][data-field="blank"] { background: #eef6fb; }

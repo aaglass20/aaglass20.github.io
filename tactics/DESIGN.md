@@ -10,13 +10,13 @@
 
 ## Sports (`SPORTS`, dropdown at the left of the header)
 
-- **Soccer**, **Basketball** and **Football**. The sport picks the field drawing, the object list and the player kit.
-- Each `CATALOG` entry lists its `sports`. Shared: Player / Player 1 / Player 2, Team 1 / Team 2, Cone, Pinnie. Soccer only: Soccer Ball, Goal, Hoop, Pole, Pop-up Goal, Free Kick, Arch. Basketball only: Basketball. Football only: Football.
+- **Soccer**, **Basketball**, **Football**, **Baseball**, **Softball** and **Hockey**. The sport picks the field drawing, the object list and the player kit.
+- Each `CATALOG` entry lists its `sports`. Shared: Player / Player 1 / Player 2, Team 1 / Team 2, Cone, Pinnie. Soccer only: Soccer Ball, Goal, Hoop, Pole, Pop-up Goal, Free Kick, Arch. Basketball only: Basketball. Football only: Football. Baseball / Softball: their own ball. Hockey: Puck. Each `SPORTS` entry names its `ball` type, which is also the sidebar's Objects icon.
 - Switching sport **clears the board and undo history** (after a confirm if anything is on it), so objects never cross sports.
 - Saved plays store `sport`; older files without it open as soccer.
-- Players take `kit = sport`: basketball draws a sleeveless tank (`tankPath`) with bare arms (`armsPath`) and contrast trim (white, or dark on light colors) instead of the sleeved jersey. Football draws a wide shoulder-pad jersey (`padsPath`) with pad highlights and sleeve stripes, and swaps the head for a team-color helmet (center stripe, face opening, grey facemask).
+- Players take `kit = sport`: basketball draws a sleeveless tank (`tankPath`) with bare arms (`armsPath`) and contrast trim (white, or dark on light colors) instead of the sleeved jersey. Football draws a wide shoulder-pad jersey (`padsPath`) with pad highlights and sleeve stripes, and swaps the head for a team-color helmet (center stripe, face opening, grey facemask). Baseball and softball share `kit = 'baseball'` (`kitFor`): the sleeved jersey plus a button placket and a team-color ball cap (crown, seam, top button, brim). Hockey uses the sleeved jersey with hem + sleeve stripes, gloves at the cuffs, a stick hanging from the right glove (blade pointing out), and a smaller team-color helmet with a wire cage.
 - View labels come from `fieldLabel(f, sport)` (`FIELD_CATALOG[].names` overrides per sport).
-- The sidebar Objects icon and the Fields panel title/labels follow the sport (basketball: Courts — Full Court, Half Court, Half Court (flip), Mid Court, Blank; football: Midfield instead of Middle Third).
+- The sidebar Objects icon and the Fields panel title/labels follow the sport (basketball: Courts — Full Court, Half Court, Half Court (flip), Mid Court, Blank; football: Midfield instead of Middle Third; baseball/softball: Infield, Outfield, Home Plate; hockey: Rinks — Full Rink, Half Rink, Half Rink (flip), Neutral Zone).
 
 ## Basketball Court (`BasketballCourt`)
 
@@ -36,6 +36,19 @@
 - Mowing stripes every 5 yd, darker end zones, yard lines every 5, thick goal lines, 1-yd ticks at both sidelines and both hash lines (`HASH_IN` = 70'9"), try-line dashes, yellow goalposts on the end lines.
 - Numbers every 10 yd (`NUM_H` 3.2 yd — larger than the real 2 yd so they read at board size), tops toward the middle, with an arrow at the top pointing to the nearer goal (none at the 50).
 - Views: **Full Field** portrait, fit to height. **Half Field** landscape, end zone at the bottom, running 2 yd past the 50 so its numbers aren't cut — turned **180°, not mirrored**, so numbers stay readable. **Flip** puts the end zone on top. **Midfield** turns the field sideways, centered on the 50, ends clipped. **Blank** is plain grass.
+
+## Baseball / Softball Diamond (`DiamondField`)
+
+- One drawing for both sports, sized by `DIAMOND_SPECS` (feet): baseball 90 ft bases, 60.5 ft rubber, grass infield with a 95 ft skin arc, 330/400 ft fence; softball 60 ft bases, 43 ft rubber with an 8 ft pitching circle, all-dirt infield (60 ft arc), 200/220 ft fence.
+- Home plate at the origin, y toward center field (the Group flips y). `fenceDist` curves the fence from the foul-line distance at ±45° to the center distance; `diamondOutline` adds foul territory and a backstop arc. Layers: warning track, grass, skin (a dirt circle clipped to fair territory), infield grass (baseball), home circle, mound, foul lines (starting at the batter's boxes), running lane, batter's + catcher's boxes, on-deck circles, bases, rubber, plate, fence and yellow foul poles. Bases/plate/rubber have a minimum on-screen size so they still show when zoomed out.
+- **All diamond views are landscape** — `isFullField` (the portrait canvas) is false for diamond sports. Views fit a box of the field: **Full Field**, **Infield**, **Outfield**, **Home Plate** (close-up of the boxes), **Blank**.
+
+## Hockey Rink (`HockeyRink`)
+
+- NHL geometry in **feet** (85 × 200, 28 ft corner radius) inside a scaled Group; markings are clipped to the rounded rink (`roundRectPath`).
+- White-blue ice `#eef6fb`, red goal lines (11 ft from the boards), trapezoids, light-blue creases with red outline, nets, 4 end-zone faceoff circles (r 15, hash marks, dots), neutral-zone dots, 1-ft blue lines (75 ft from each end) and red center line, blue center circle, referee's crease. Boards: yellow kick plate inside a dark cap. Slate surround `#475569`.
+- `RinkEnd` draws one end with the boards at y = 0; the far end is the same component mirrored.
+- Views: **Full Rink** portrait; **Half Rink** landscape with the end boards at the bottom (**flip**: top) and the red line along the far edge; **Neutral Zone** turned sideways and centered on the red line; **Blank** is plain ice.
 
 ## Object Model
 
@@ -165,7 +178,7 @@ A head-and-jersey bust (same silhouette as the old icon) drawn as a shaded figur
 - **No rotation:** Rotate is hidden and rendering forces `rotation=0` so the figure stays upright
 - **Catalog cards:** `playerPreview()` for the plain player; `numberedPreview(type, n)` for the teams (shows the next number)
 
-## Generated Equipment (`ball`, `basketball`, `football`, `cone`, `hoop`, `pole`, `pinnie`)
+## Generated Equipment (`ball`, `basketball`, `football`, `baseball`, `softball`, `puck`, `cone`, `hoop`, `pole`, `pinnie`)
 
 `getEquipCanvas(type, hexColor)` dispatches to `EQUIP_RENDERERS[type]` on a 192×192 canvas (`EQUIP_PX`). Cached by `type|hex`, previewed on catalog cards by `equipPreview(type)`. These replaced the photo-based images and the old knockout/recolor/outline pixel pipeline.
 
@@ -178,13 +191,15 @@ Shared helpers: `softShadow(ctx, S, draw, dx, dy, blur, alpha)` (solid shape on 
 | `ball`   | White `#f9fafb` (the classic ball) | Shaded sphere: a center pentagon plus 5 rim pentagons squashed by the curve, seams between them, a radial shade, a blurred specular highlight and an outline. **Color = ball base**; patches are black, or white when the base is dark (luminance < 110), so every swatch keeps a visible pattern |
 | `basketball` | Orange `#e8742a` | Shaded sphere with a pebble-dot grain and black channels (equator, meridian, two curved side seams), tilted slightly toward the light. Channels turn white on very dark colors (luminance < 70) |
 | `football` | Brown `#8a4b22` | Pointed leather ball lying on a diagonal: pebble grain, white end stripes and laces (dark on light colors), a seam, then shading re-aligned so the light stays upper left |
+| `baseball` / `softball` | White `#f8fafc` / optic yellow `#e4f03c` | `drawStitchBall`: sphere with two C-shaped seams (arcs centered outside the ball) and red chevron stitches (white on a red ball), shaded and highlighted like the soccer ball |
+| `puck` | Black `#111827` | A short cylinder from above: knurled rim band with side shading, lit top face with a faint inner ring and gloss |
 | `cone`   | Red `#ef4444`    | Side-on disc cone (frustum): side shading, 2 ridge rings across the front (a dark groove with a light edge), an open top drawn as a dark hole with a lit far rim |
 | `hoop`   | Blue `#3b82f6`   | A tube ring on the grass: outline ring, color ring, then the same ring shifted down-right (shade) and up-left (highlight), so the lit side stays consistent all the way round |
 | `pole`   | Yellow `#facc15` | Disc base (a short cylinder with a lit top face), an upright rod lit on the left with a rounded cap, and a collar at the join. Its shadow stretches across the grass to the lower right |
 | `pinnie` | Red `#ef4444`    | A flat mesh vest: outline, side shading, a dot mesh texture, 2 soft folds (crease + highlight), and contrast trim on the neck, armholes and wavy hem (gold, or dark on light colors with luminance > 170). Drawn at 90% so the hem stays inside the circular clip |
 
 - **Rotation:** ball, cone, hoop and pole are upright (`isUpright`), so Rotate is hidden. The pinnie lies flat and keeps Rotate 90°.
-- `soccerball.png` is still used as the sidebar's Objects icon for soccer (basketball and football use their generated balls). The other old images (`cone.png`, `hoop.png`, `pinnie.png`, `pole.png`, `player1.png`, `popup-goal*`) are no longer used by the app.
+- `soccerball.png` is still used as the sidebar's Objects icon for soccer (the other sports use their generated balls). The other old images (`cone.png`, `hoop.png`, `pinnie.png`, `pole.png`, `player1.png`, `popup-goal*`) are no longer used by the app.
 
 ## Object Colors (8 swatches, `OBJECT_COLORS`)
 
