@@ -56,27 +56,35 @@ function walkPath(points, t) {
 const OBJECT_COLORS = ['#ef4444','#3b82f6','#facc15','#22c55e','#f9fafb','#1f2937','#f97316','#a855f7']
 
 // Types that support per-instance color picking
-const COLORIZABLE = new Set(['player', 'marker', 'marker2', 'cone', 'hoop', 'pinnie', 'popup-goal'])
+const COLORIZABLE = new Set(['player', 'player-t1', 'player-t2', 'marker', 'marker2', 'goal', 'popup-goal', 'freekick', 'arch', 'ball', 'cone', 'hoop', 'pinnie', 'pole'])
 
 // Default colors match each object's original source image
-const DEFAULT_COLORS = { player: '#ef4444', marker: '#3b82f6', marker2: '#facc15', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', 'popup-goal': '#f97316' }
+const DEFAULT_COLORS = { player: '#3b82f6', 'player-t1': '#3b82f6', 'player-t2': '#facc15', marker: '#3b82f6', marker2: '#facc15', goal: '#f9fafb', 'popup-goal': '#f97316', freekick: '#d9f21f', arch: '#f97316', ball: '#f9fafb', cone: '#ef4444', hoop: '#3b82f6', pinnie: '#ef4444', pole: '#facc15' }
 
 const CATALOG = [
-  { type: 'ball',       label: 'Soccer Ball', src: 'soccerball.png'  },
-  { type: 'player',     label: 'Player',      src: 'player1.png'     },
+  { type: 'ball',       label: 'Soccer Ball', src: null              },
+  { type: 'player',     label: 'Player',      src: null              },
+  { type: 'player-t1',  label: 'Player 1',    src: null              },
+  { type: 'player-t2',  label: 'Player 2',    src: null              },
   { type: 'marker',     label: 'Team 1',      src: null              },
   { type: 'marker2',    label: 'Team 2',      src: null              },
-  { type: 'cone',       label: 'Cone',        src: 'cone.png'        },
-  { type: 'hoop',       label: 'Hoop',        src: 'hoop.png'        },
-  { type: 'pinnie',     label: 'Pinnie',      src: 'pinnie.png'      },
-  { type: 'pole',       label: 'Pole',        src: 'pole.png'        },
-  { type: 'popup-goal', label: 'Pop-up Goal', src: 'popup-goal.jpg'  },
+  { type: 'goal',       label: 'Goal',        src: null              },
+  { type: 'cone',       label: 'Cone',        src: null              },
+  { type: 'hoop',       label: 'Hoop',        src: null              },
+  { type: 'pinnie',     label: 'Pinnie',      src: null              },
+  { type: 'pole',       label: 'Pole',        src: null              },
+  { type: 'popup-goal', label: 'Pop-up Goal', src: null              },
+  { type: 'freekick',   label: 'Free Kick',   src: null              },
+  { type: 'arch',       label: 'Arch',        src: null              },
 ]
 
-// Numbered player markers (one type per team) — each new marker takes the
-// lowest number not already used by its own team
-const MARKER_TYPES = new Set(['marker', 'marker2'])
-const MARKER_MAX   = 20
+// Numbered objects (one type per team) — each new one takes the lowest number
+// not already used by its own type. Markers and players number independently.
+const MARKER_TYPES   = new Set(['marker', 'marker2'])
+const PLAYER_TYPES   = new Set(['player', 'player-t1', 'player-t2'])   // 'player' is unnumbered
+const NUMBERED_TYPES = new Set([...MARKER_TYPES, 'player-t1', 'player-t2'])
+const NUMBER_MAX     = 20
+const PLAYER_DEFAULT_SIZE = 4   // one step up from the shared default so chest numbers stay readable
 
 const FIELD_CATALOG = [
   { id: 'full',      label: 'Full Field',       src: null           },
@@ -148,96 +156,6 @@ function DrawTypeIcon({ type, active }) {
   return null
 }
 
-// ── Equipment image processing ────────────────────────────────────────────────
-// Knocks out white background + shadow pixels and bakes a 1px black outline.
-// Cached by image object reference (stable after load).
-const _equipmentCache = new Map()
-
-// Returns the tight bounding box of non-transparent pixels in a canvas context.
-function contentBounds(ctx, w, h) {
-  const data = ctx.getImageData(0, 0, w, h).data
-  let top = h, bottom = 0, left = w, right = 0
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (data[(y * w + x) * 4 + 3] > 20) {
-        if (y < top)    top    = y
-        if (y > bottom) bottom = y
-        if (x < left)   left   = x
-        if (x > right)  right  = x
-      }
-    }
-  }
-  return top <= bottom ? { top, bottom, left, right } : null
-}
-
-function processEquipmentImage(srcImg) {
-  if (_equipmentCache.has(srcImg)) return _equipmentCache.get(srcImg)
-
-  // Step 1: pixel knockout onto temp canvas
-  const temp = document.createElement('canvas')
-  temp.width  = srcImg.width
-  temp.height = srcImg.height
-  const tCtx = temp.getContext('2d')
-  tCtx.drawImage(srcImg, 0, 0)
-
-  const imageData = tCtx.getImageData(0, 0, temp.width, temp.height)
-  const data      = imageData.data
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3]
-    if (a < 10) continue
-    // Near-white/gray background — threshold 160 catches grey rows (180,180,180)
-    // while preserving saturated colors (yellow pole b≈13, orange cone b≈0, etc.)
-    if (r > 160 && g > 160 && b > 160) { data[i+3] = 0; continue }
-    if (r < 50  && g < 50  && b < 50)  { data[i+3] = 0; continue }  // shadow/baseline
-  }
-  tCtx.putImageData(imageData, 0, 0)
-
-  // Step 2: crop to content bounding box — removes artifact rows/columns at any edge
-  const bounds = contentBounds(tCtx, temp.width, temp.height)
-  const cropW  = bounds ? bounds.right  - bounds.left + 1 : temp.width
-  const cropH  = bounds ? bounds.bottom - bounds.top  + 1 : temp.height
-  const offX   = bounds ? bounds.left : 0
-  const offY   = bounds ? bounds.top  : 0
-
-  const cropped = document.createElement('canvas')
-  cropped.width  = cropW
-  cropped.height = cropH
-  const cCtx = cropped.getContext('2d')
-  cCtx.drawImage(temp, -offX, -offY)
-
-  // Step 3: black silhouette from cropped content
-  const sil  = document.createElement('canvas')
-  sil.width  = cropped.width
-  sil.height = cropped.height
-  const sCtx = sil.getContext('2d')
-  sCtx.drawImage(cropped, 0, 0)
-  sCtx.globalCompositeOperation = 'source-in'
-  sCtx.fillStyle = '#000000'
-  sCtx.fillRect(0, 0, sil.width, sil.height)
-
-  // Step 4: outline composition
-  const T      = 1
-  const canvas = document.createElement('canvas')
-  canvas.width  = cropped.width  + T * 2
-  canvas.height = cropped.height + T * 2
-  const ctx = canvas.getContext('2d')
-  for (let dx = -T; dx <= T; dx++) {
-    for (let dy = -T; dy <= T; dy++) {
-      if (dx === 0 && dy === 0) continue
-      ctx.drawImage(sil, T + dx, T + dy)
-    }
-  }
-  ctx.drawImage(cropped, T, T)
-
-  _equipmentCache.set(srcImg, canvas)
-  return canvas
-}
-
-
-// ── Jersey colorization ───────────────────────────────────────────────────────
-// Module-level cache — persists for the session, keyed by hex color
-const _playerColorCache = new Map()
-
 function hexToRgb(hex) {
   return {
     r: parseInt(hex.slice(1, 3), 16),
@@ -246,64 +164,138 @@ function hexToRgb(hex) {
   }
 }
 
-// Recolors the red jersey in player1.png, knocks out white background,
-// and bakes a 1px black outline using the silhouette-offset technique.
-function getColorizedPlayer(srcImg, hexColor) {
-  if (_playerColorCache.has(hexColor)) return _playerColorCache.get(hexColor)
+// ── Player figure ─────────────────────────────────────────────────────────────
+// Head-and-jersey bust drawn as a shaded figurine: soft ground shadow, dark outline,
+// cylindrical light→dark shading on the jersey (light from the upper left), collar,
+// sleeve cuffs, shaded head. Optional jersey number on the chest.
+// Cached by `hexColor|number`.
+const _playerCache = new Map()
+const PLAYER_PX    = 192
+const PLAYER_SKIN  = { light: '#ffe2c2', mid: '#eab988', dark: '#c98d5a' }
 
-  // Step 1: colorize + knock out white background onto a temp canvas
-  const temp = document.createElement('canvas')
-  temp.width  = srcImg.width
-  temp.height = srcImg.height
-  const tCtx = temp.getContext('2d')
-  tCtx.drawImage(srcImg, 0, 0)
+// Jersey outline in unit coords (0–1 of the canvas), traced clockwise from the left of the collar
+function jerseyPath(ctx, S) {
+  const P = (u, v) => [u * S, v * S]
+  ctx.beginPath()
+  ctx.moveTo(...P(0.40, 0.415))
+  ctx.quadraticCurveTo(...P(0.27, 0.43), ...P(0.22, 0.47))     // left shoulder
+  ctx.lineTo(...P(0.115, 0.585))                               // left sleeve top
+  ctx.quadraticCurveTo(...P(0.13, 0.64), ...P(0.185, 0.675))   // left cuff
+  ctx.lineTo(...P(0.275, 0.615))                               // left armpit
+  ctx.lineTo(...P(0.285, 0.86))                                // left side
+  ctx.quadraticCurveTo(...P(0.5, 0.895), ...P(0.715, 0.86))    // hem
+  ctx.lineTo(...P(0.725, 0.615))                               // right armpit
+  ctx.lineTo(...P(0.815, 0.675))
+  ctx.quadraticCurveTo(...P(0.87, 0.64), ...P(0.885, 0.585))   // right cuff
+  ctx.lineTo(...P(0.78, 0.47))
+  ctx.quadraticCurveTo(...P(0.73, 0.43), ...P(0.60, 0.415))    // right shoulder
+  ctx.quadraticCurveTo(...P(0.5, 0.50), ...P(0.40, 0.415))     // collar dip
+  ctx.closePath()
+}
 
-  const imageData = tCtx.getImageData(0, 0, temp.width, temp.height)
-  const data      = imageData.data
-  const target    = hexToRgb(hexColor)
+function getPlayerCanvas(hexColor, number = null) {
+  const key = `${hexColor}|${number ?? ''}`
+  if (_playerCache.has(key)) return _playerCache.get(key)
 
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3]
-    if (a < 10) continue
-    if (r > 160 && g > 160 && b > 160) { data[i + 3] = 0; continue }  // white/gray bg (catches 180,180,180 border rows)
-    if (r < 50  && g < 50  && b < 50)  { data[i + 3] = 0; continue }  // shadow/baseline
-    if (r > 120 && r > g * 1.4 && r > b * 1.4) {
-      const lum   = r / 255
-      data[i]     = Math.round(target.r * lum)
-      data[i + 1] = Math.round(target.g * lum)
-      data[i + 2] = Math.round(target.b * lum)
-    }
-  }
-  tCtx.putImageData(imageData, 0, 0)
-
-  // Step 2: build a solid black silhouette from the colorized figure
-  const sil  = document.createElement('canvas')
-  sil.width  = temp.width
-  sil.height = temp.height
-  const sCtx = sil.getContext('2d')
-  sCtx.drawImage(temp, 0, 0)
-  sCtx.globalCompositeOperation = 'source-in'
-  sCtx.fillStyle = '#000000'
-  sCtx.fillRect(0, 0, sil.width, sil.height)
-
-  // Step 3: draw silhouette shifted in 8 directions, then the colorized figure on top
-  const T      = 1   // outline thickness in px
+  const S = PLAYER_PX
   const canvas = document.createElement('canvas')
-  canvas.width  = temp.width  + T * 2
-  canvas.height = temp.height + T * 2
+  canvas.width = canvas.height = S
   const ctx = canvas.getContext('2d')
+  const head = { x: 0.5 * S, y: 0.265 * S, r: 0.135 * S }
+  const headPath = () => { ctx.beginPath(); ctx.arc(head.x, head.y, head.r, 0, Math.PI * 2) }
+  const neckPath = () => { ctx.beginPath(); ctx.roundRect(0.435 * S, 0.33 * S, 0.13 * S, 0.15 * S, 0.03 * S) }
 
-  for (let dx = -T; dx <= T; dx++) {
-    for (let dy = -T; dy <= T; dy++) {
-      if (dx === 0 && dy === 0) continue
-      ctx.drawImage(sil, T + dx, T + dy)
-    }
+  // 1. Soft ground shadow, cast down-right
+  ctx.save()
+  ctx.filter = 'blur(4px)'
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'
+  ctx.beginPath(); ctx.ellipse(0.55 * S, 0.885 * S, 0.27 * S, 0.055 * S, 0, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+
+  // 2. Outline — strokes the silhouette wide before the fills go on top
+  ctx.lineJoin = 'round'
+  ctx.strokeStyle = 'rgba(0,0,0,0.8)'
+  ctx.lineWidth = 0.035 * S
+  jerseyPath(ctx, S); ctx.stroke()
+  headPath(); ctx.stroke()
+  neckPath(); ctx.stroke()
+
+  // Neck — shows through the collar opening, shaded darker under the chin
+  const neck = ctx.createLinearGradient(0, 0.36 * S, 0, 0.48 * S)
+  neck.addColorStop(0, PLAYER_SKIN.dark)
+  neck.addColorStop(1, PLAYER_SKIN.mid)
+  neckPath(); ctx.fillStyle = neck; ctx.fill()
+
+  // 3. Jersey: base color, then cylindrical + top-down shading clipped to the shape
+  jerseyPath(ctx, S)
+  ctx.fillStyle = hexColor; ctx.fill()
+  ctx.save()
+  jerseyPath(ctx, S); ctx.clip()
+  const side = ctx.createLinearGradient(0.11 * S, 0, 0.89 * S, 0)
+  side.addColorStop(0,    'rgba(255,255,255,0.10)')
+  side.addColorStop(0.3,  'rgba(255,255,255,0.28)')
+  side.addColorStop(0.55, 'rgba(255,255,255,0)')
+  side.addColorStop(1,    'rgba(0,0,0,0.38)')
+  ctx.fillStyle = side; ctx.fillRect(0, 0, S, S)
+  const down = ctx.createLinearGradient(0, 0.42 * S, 0, 0.9 * S)
+  down.addColorStop(0,   'rgba(255,255,255,0.12)')
+  down.addColorStop(0.5, 'rgba(0,0,0,0)')
+  down.addColorStop(1,   'rgba(0,0,0,0.25)')
+  ctx.fillStyle = down; ctx.fillRect(0, 0, S, S)
+  // Sleeve cuffs + seams where the sleeves meet the body
+  ctx.strokeStyle = shadeHex(hexColor, -0.35)
+  ctx.lineWidth = 0.022 * S
+  ctx.beginPath()
+  ctx.moveTo(0.11 * S, 0.60 * S); ctx.lineTo(0.20 * S, 0.69 * S)
+  ctx.moveTo(0.89 * S, 0.60 * S); ctx.lineTo(0.80 * S, 0.69 * S)
+  ctx.stroke()
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)'
+  ctx.lineWidth = 0.01 * S
+  ctx.beginPath()
+  ctx.moveTo(0.26 * S, 0.47 * S); ctx.quadraticCurveTo(0.25 * S, 0.55 * S, 0.275 * S, 0.615 * S)
+  ctx.moveTo(0.74 * S, 0.47 * S); ctx.quadraticCurveTo(0.75 * S, 0.55 * S, 0.725 * S, 0.615 * S)
+  ctx.stroke()
+  // Shadow the head casts on the chest
+  ctx.fillStyle = 'rgba(0,0,0,0.22)'
+  ctx.beginPath(); ctx.ellipse(0.53 * S, 0.44 * S, 0.13 * S, 0.05 * S, 0, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+
+  // Collar band
+  ctx.strokeStyle = shadeHex(hexColor, -0.4)
+  ctx.lineWidth = 0.028 * S
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(0.405 * S, 0.425 * S); ctx.quadraticCurveTo(0.5 * S, 0.49 * S, 0.595 * S, 0.425 * S)
+  ctx.stroke()
+
+  // 4. Optional jersey number
+  if (number != null) {
+    const { r, g, b } = hexToRgb(hexColor)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) > 170
+    ctx.font = `800 ${number >= 10 ? 0.2 * S : 0.23 * S}px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+    ctx.lineWidth = 0.025 * S
+    ctx.strokeStyle = light ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.55)'
+    ctx.strokeText(String(number), 0.5 * S, 0.665 * S)
+    ctx.fillStyle = light ? '#111827' : '#ffffff'
+    ctx.fillText(String(number), 0.5 * S, 0.665 * S)
   }
-  ctx.drawImage(temp, T, T)
 
-  _playerColorCache.set(hexColor, canvas)
+  // 5. Head: sphere shading + rim highlight
+  const skin = ctx.createRadialGradient(head.x - head.r * 0.35, head.y - head.r * 0.4, head.r * 0.1, head.x, head.y, head.r)
+  skin.addColorStop(0,   PLAYER_SKIN.light)
+  skin.addColorStop(0.6, PLAYER_SKIN.mid)
+  skin.addColorStop(1,   PLAYER_SKIN.dark)
+  headPath(); ctx.fillStyle = skin; ctx.fill()
+  ctx.beginPath(); ctx.arc(head.x, head.y, head.r * 0.82, Math.PI * 1.1, Math.PI * 1.55)
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.014 * S; ctx.stroke()
+
+  _playerCache.set(key, canvas)
   return canvas
 }
+
+let _playerPreview = null
+const playerPreview = () => (_playerPreview ??= getPlayerCanvas(DEFAULT_COLORS.player).toDataURL())
 
 // ── Numbered marker ──────────────────────────────────────────────────────────
 // Draws a beveled puck: darker base shows as a rim at the bottom (depth), lighter
@@ -365,143 +357,650 @@ function getMarkerCanvas(hexColor, number) {
   return canvas
 }
 
-// Lowest number (1–MARKER_MAX) not already used by that team, or null if full
-function nextMarkerNumber(objects, type) {
+// Lowest number (1–NUMBER_MAX) not already used by that type, or null if full
+function nextFreeNumber(objects, type) {
   const used = new Set(objects.filter(o => o.type === type).map(o => o.number))
-  for (let n = 1; n <= MARKER_MAX; n++) if (!used.has(n)) return n
+  for (let n = 1; n <= NUMBER_MAX; n++) if (!used.has(n)) return n
   return null
 }
 
-// Data URL of a team's default-color marker for the catalog card (shows the next number)
-const _markerPreviewCache = new Map()
-function markerPreview(type, number) {
+// Data URL of a numbered type in its default color for the catalog card (shows the next number)
+const _numberedPreviewCache = new Map()
+function numberedPreview(type, number) {
   const key = `${type}|${number}`
-  if (!_markerPreviewCache.has(key)) {
-    _markerPreviewCache.set(key, getMarkerCanvas(DEFAULT_COLORS[type], number).toDataURL())
+  if (!_numberedPreviewCache.has(key)) {
+    const canvas = PLAYER_TYPES.has(type)
+      ? getPlayerCanvas(DEFAULT_COLORS[type], number)
+      : getMarkerCanvas(DEFAULT_COLORS[type], number)
+    _numberedPreviewCache.set(key, canvas.toDataURL())
   }
-  return _markerPreviewCache.get(key)
+  return _numberedPreviewCache.get(key)
 }
 
-// ── Equipment colorization ────────────────────────────────────────────────────
-// Recolors saturated pixels (any hue — works for red cones and blue hoops).
-// Cached by `type|hexColor` so each object type gets its own color entries.
-const _colorizedEquipCache = new Map()
+// ── 3D models (goals, free-kick mannequin) ────────────────────────────────────
+// Small 3D models drawn through a fixed oblique camera looking down from the
+// south-southeast. Facing changes the model's yaw, not the Konva node's rotation, so
+// lighting and depth stay correct in every direction.
+// `facing` is a compass heading in degrees for the model's front (a goal's mouth, the
+// mannequin's front face): 0 = N, 90 = E.
+const MODEL_TYPES = new Set(['goal', 'popup-goal', 'freekick', 'arch'])   // everything drawn by getGoalCanvas
+const GOAL_FACINGS = [
+  { deg: 315, label: 'NW' }, { deg:   0, label: 'N' }, { deg:  45, label: 'NE' },
+  { deg: 270, label: 'W'  }, null,                     { deg:  90, label: 'E'  },
+  { deg: 225, label: 'SW' }, { deg: 180, label: 'S' }, { deg: 135, label: 'SE' },
+]
+const GOAL_DEFAULT_FACING = 180
+const GOAL_DEFAULT_SIZE   = { goal: 4, 'popup-goal': 3, freekick: 3, arch: 3 }   // goal ≈ true scale on the full field; freekick ≈ player height
+const GOAL_PREVIEW_FACING = 135    // 3/4 view for the catalog card
+const GOAL_RADIUS_MULT    = 2      // goals render at 2× the shared size radii
+const GOAL_PX             = 256
+const GOAL_TILT           = 0.6    // screen-y lift per unit of height (camera elevation)
+const GOAL_SKEW           = 0.25   // screen-x lean per unit of height (camera slightly to the east)
 
-function getColorizedEquipment(type, srcImg, hexColor) {
-  const key = `${type}|${hexColor}`
-  if (_colorizedEquipCache.has(key)) return _colorizedEquipCache.get(key)
+// Model format — local coords: u across the mouth, v forward (net sits at negative v), z up.
+// All widths are in model units so they scale with the goal.
+//   bars:   polylines { pts, w, color: 'frame' | hex, dark? }  — dark = 25% darker frame color
+//   nets:   grids (rows of points); mesh lines run along both directions
+//   plates: solid boards { pts, normal, t, front?, back? } — polygon + local normal (front
+//           side) + thickness. Lit by which way the visible face points; front/back hold
+//           face-only details: { dots: [{ p, r }], bands: [pts], ribs: [[p0, p1]], shade }
+//   joints: dots { p, r, color }
+//   netLine / netFill: mesh and fill colors
 
-  const temp = document.createElement('canvas')
-  temp.width  = srcImg.width
-  temp.height = srcImg.height
-  const tCtx = temp.getContext('2d')
-  tCtx.drawImage(srcImg, 0, 0)
+const lerp3 = (a, b, t) => a.map((c, i) => c + (b[i] - c) * t)
 
-  const imageData = tCtx.getImageData(0, 0, temp.width, temp.height)
-  const data      = imageData.data
-  const target    = hexToRgb(hexColor)
-
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3]
-    if (a < 10) continue
-    if (r > 160 && g > 160 && b > 160) { data[i+3] = 0; continue }  // near-white/gray bg
-    if (r < 50  && g < 50  && b < 50)  { data[i+3] = 0; continue }  // shadow
-    // Recolor any saturated pixel — works regardless of original hue
-    const maxC = Math.max(r, g, b)
-    const minC = Math.min(r, g, b)
-    if (maxC > 0 && (maxC - minC) / maxC > 0.15) {
-      const lum   = maxC / 255
-      data[i]     = Math.round(target.r * lum)
-      data[i + 1] = Math.round(target.g * lum)
-      data[i + 2] = Math.round(target.b * lum)
-    }
+// Quad → grid with ~`step` spacing between mesh lines
+function quadGrid(p0, p1, p2, p3, step) {
+  const nu = Math.max(2, Math.round(Math.hypot(...p0.map((c, i) => c - p1[i])) / step))
+  const nv = Math.max(2, Math.round(Math.hypot(...p1.map((c, i) => c - p2[i])) / step))
+  const rows = []
+  for (let j = 0; j <= nv; j++) {
+    const a = lerp3(p0, p3, j / nv), b = lerp3(p1, p2, j / nv)
+    const row = []
+    for (let i = 0; i <= nu; i++) row.push(lerp3(a, b, i / nu))
+    rows.push(row)
   }
-  tCtx.putImageData(imageData, 0, 0)
+  return rows
+}
 
-  // Crop to content bounding box
-  const bounds = contentBounds(tCtx, temp.width, temp.height)
-  const cropW  = bounds ? bounds.right  - bounds.left + 1 : temp.width
-  const cropH  = bounds ? bounds.bottom - bounds.top  + 1 : temp.height
-  const offX   = bounds ? bounds.left : 0
-  const offY   = bounds ? bounds.top  : 0
+// Full-size goal: posts + crossbar, roof supports, slanted back stanchions, box net
+const BOX_GOAL_MODEL = (() => {
+  const w = 3, h = 2, dTop = 1, dBase = 2.2
+  const P = {
+    FL: [-w, 0, 0], FR: [w, 0, 0], FLt: [-w, 0, h], FRt: [w, 0, h],
+    BLt: [-w, -dTop, h], BRt: [w, -dTop, h], BLg: [-w, -dBase, 0], BRg: [w, -dBase, 0],
+  }
+  const front = (a, b) => ({ pts: [P[a], P[b]], w: 0.225, color: 'frame' })
+  const back  = (a, b) => ({ pts: [P[a], P[b]], w: 0.125, color: 'frame', dark: true })
+  const q = (a, b, c, d) => quadGrid(P[a], P[b], P[c], P[d], 0.35)
+  return {
+    nets: [q('FLt', 'FRt', 'BRt', 'BLt'), q('BLt', 'BRt', 'BRg', 'BLg'), q('FL', 'FLt', 'BLt', 'BLg'), q('FR', 'FRt', 'BRt', 'BRg')],
+    bars: [
+      front('FL', 'FLt'), front('FR', 'FRt'), front('FLt', 'FRt'),
+      back('FLt', 'BLt'), back('FRt', 'BRt'), back('BLt', 'BRt'),
+      back('BLt', 'BLg'), back('BRt', 'BRg'), back('BLg', 'BRg'), back('FL', 'BLg'), back('FR', 'BRg'),
+    ],
+    joints:  [],
+    netLine: 'rgba(255,255,255,0.5)',
+    netFill: 'rgba(255,255,255,0.14)',
+  }
+})()
 
-  const cropped = document.createElement('canvas')
-  cropped.width  = cropW
-  cropped.height = cropH
-  cropped.getContext('2d').drawImage(temp, -offX, -offY)
+// Pop-up goal: sleeved front arch + matching ground hoop behind it, net billowing
+// between them, black strap across the front with a clip, gray corner joints
+const POPUP_GOAL_MODEL = (() => {
+  const w = 2, h = 2.3, d = 2.4, N = 24, S = 8
+  const arch   = (t) => [-w * Math.cos(t), 0, h * Math.sin(t)]
+  const ground = (t) => [-w * Math.cos(t), -d * Math.sin(t), 0]
+  const ts = Array.from({ length: N + 1 }, (_, i) => (i / N) * Math.PI)
+  const net = []
+  for (let j = 0; j <= S; j++) {
+    const s = j / S, bulge = Math.sin(Math.PI * s)
+    net.push(ts.map(t => {
+      const [u, v, z] = lerp3(arch(t), ground(t), s)
+      return [u, v - bulge * 0.15 * d * Math.sin(t), z + bulge * 0.25 * h * Math.sin(t)]
+    }))
+  }
+  const sleeve = 0.24
+  return {
+    nets: [net],
+    bars: [
+      { pts: ts.map(arch),   w: sleeve, color: 'frame' },
+      { pts: ts.map(ground), w: sleeve, color: 'frame', dark: true },
+      { pts: [[-w, 0, 0.02], [w, 0, 0.02]], w: 0.09, color: '#1f2937' },
+    ],
+    joints: [
+      { p: [-w, 0, 0.05], r: 0.13, color: '#9ca3af' },
+      { p: [ w, 0, 0.05], r: 0.13, color: '#9ca3af' },
+      { p: [ 0, 0, 0.02], r: 0.09, color: 'frame' },
+    ],
+    netLine: 'rgba(17,24,39,0.6)',
+    netFill: 'rgba(255,255,255,0.10)',
+  }
+})()
 
-  // Silhouette + 1px outline
-  const sil  = document.createElement('canvas')
-  sil.width  = cropped.width
-  sil.height = cropped.height
-  const sCtx = sil.getContext('2d')
-  sCtx.drawImage(cropped, 0, 0)
-  sCtx.globalCompositeOperation = 'source-in'
-  sCtx.fillStyle = '#000000'
-  sCtx.fillRect(0, 0, sil.width, sil.height)
+// Free-kick mannequin: flat plastic board on a ground bar — head loop, shouldered torso
+// with perforations, two splayed legs. Front (facing the kicker) has the chest band;
+// the back has stiffening ribs, so you can tell which way it faces.
+const FREEKICK_MODEL = (() => {
+  const N = [0, 1, 0], t = 0.035
+  const flat = (uz) => uz.map(([u, z]) => [u, 0, z])
+  const arch = (cz, ru, rz, from, to, n = 12) =>
+    Array.from({ length: n + 1 }, (_, i) => { const a = from + (to - from) * i / n; return [ru * Math.cos(a), cz + rz * Math.sin(a)] })
+  const torso = flat([[-0.215, 0.95], [0.215, 0.95], [0.25, 1.33], [0.245, 1.4], [0.13, 1.47], [-0.13, 1.47], [-0.245, 1.4], [-0.25, 1.33]])
+  const loop = flat([
+    [0.085, 1.44], ...arch(1.58, 0.085, 0.14, 0, Math.PI), [-0.085, 1.44],
+    [-0.045, 1.44], ...arch(1.58, 0.045, 0.1, Math.PI, 0), [0.045, 1.44],
+  ])
+  const leg = (sx) => flat([[sx * 0.09, 0.04], [sx * 0.135, 0.04], [sx * 0.2, 0.97], [sx * 0.155, 0.97]])
+  // Perforations: a 2-row block above the chest band, a larger block below it
+  const dots = []
+  const rowsOf = (z0, z1, half) => { for (let z = z0; z <= z1 + 1e-6; z += 0.03) for (let u = -half; u <= half + 1e-6; u += 0.034) dots.push({ p: [u, 0, z], r: 0.008 }) }
+  rowsOf(1.4, 1.42, 0.136)
+  rowsOf(1.0, 1.24, 0.17)
+  return {
+    nets: [],
+    plates: [
+      { pts: torso, normal: N, t,
+        front: { dots, bands: [flat([[-0.2, 1.28], [0.2, 1.28], [0.215, 1.375], [-0.215, 1.375]])] },
+        back:  { dots, shade: -0.14, ribs: [[[0, 0, 0.99], [0, 0, 1.43]], [[-0.21, 0, 1.3], [0.21, 0, 1.3]], [[-0.18, 0, 1.0], [0.18, 0, 1.0]]] } },
+      { pts: loop,     normal: N, t },
+      { pts: leg(-1),  normal: N, t },
+      { pts: leg(1),   normal: N, t },
+    ],
+    bars:   [{ pts: [[-0.21, 0, 0.03], [0.21, 0, 0.03]], w: 0.09, color: '#1f2937' }],
+    joints: [{ p: [-0.045, 0, 0.035], r: 0.018, color: '#9ca3af' }, { p: [0.045, 0, 0.035], r: 0.018, color: '#9ca3af' }],
+    netLine: 'transparent',
+    netFill: 'transparent',
+  }
+})()
 
-  const T      = 1
+// Training arch: tube arch on straight legs, black T-connectors into foot tubes with
+// black end caps. Symmetric front/back, so facings 180° apart look the same.
+const ARCH_MODEL = (() => {
+  const w = 0.5, hub = 0.12, legTop = 0.46, foot = 0.24, tube = 0.06, black = '#1f2937'
+  const curve = Array.from({ length: 25 }, (_, i) => { const a = Math.PI - (i / 24) * Math.PI; return [w * Math.cos(a), 0, legTop + w * Math.sin(a)] })
+  const side = (sx) => [
+    { pts: [[sx * w, -foot, 0.035], [sx * w, foot, 0.035]], w: tube, color: 'frame' },                     // foot tube
+    { pts: [[sx * w, -foot - 0.02, 0.035], [sx * w, -foot, 0.035]], w: tube * 1.1, color: black },         // end caps
+    { pts: [[sx * w, foot, 0.035], [sx * w, foot + 0.02, 0.035]], w: tube * 1.1, color: black },
+    { pts: [[sx * w, -0.03, 0.035], [sx * w, 0.03, 0.035]], w: tube * 1.2, color: black },                 // T hub
+    { pts: [[sx * w, 0, 0.035], [sx * w, 0, hub]], w: tube * 1.2, color: black },                          // connector sleeve
+  ]
+  return {
+    nets: [],
+    bars: [
+      ...side(-1), ...side(1),
+      { pts: [[-w, 0, hub], ...curve, [w, 0, hub]], w: tube, color: 'frame' },
+    ],
+    joints: [],
+    netLine: 'transparent',
+    netFill: 'transparent',
+  }
+})()
+
+const GOAL_MODELS = { goal: BOX_GOAL_MODEL, 'popup-goal': POPUP_GOAL_MODEL, freekick: FREEKICK_MODEL, arch: ARCH_MODEL }
+
+// Local → world (x east, y south, z up) for a given facing
+function goalWorld([u, v, z], deg) {
+  const a = deg * Math.PI / 180
+  const fx = Math.sin(a), fy = -Math.cos(a)   // facing direction
+  const rx = Math.cos(a), ry =  Math.sin(a)   // across the mouth
+  return [u * rx + v * fx, u * ry + v * fy, z]
+}
+const goalScreen = ([x, y, z]) => [x - z * GOAL_SKEW, y - z * GOAL_TILT]
+
+// Per model: a center and one scale for every facing, so the goal doesn't change size as it rotates
+const _goalFit = new Map()
+function goalFit(model) {
+  if (_goalFit.has(model)) return _goalFit.get(model)
+  const pts = [...model.bars.flatMap(b => b.pts), ...model.nets.flat(2), ...(model.plates ?? []).flatMap(pl => pl.pts)]
+  const lo = [0, 1, 2].map(i => Math.min(...pts.map(p => p[i])))
+  const hi = [0, 1, 2].map(i => Math.max(...pts.map(p => p[i])))
+  const center = lo.map((c, i) => (c + hi[i]) / 2)
+  let max = 0
+  for (let deg = 0; deg < 360; deg += 45) {
+    const [cx, cy] = goalScreen(goalWorld(center, deg))
+    pts.forEach(p => {
+      const [sx, sy] = goalScreen(goalWorld(p, deg))
+      max = Math.max(max, Math.hypot(sx - cx, sy - cy))
+    })
+  }
+  const fit = { center, scale: (GOAL_PX / 2 - 10) / max }
+  _goalFit.set(model, fit)
+  return fit
+}
+
+const _goalCache = new Map()
+
+function getGoalCanvas(type, hexColor, facing) {
+  const key = `${type}|${hexColor}|${facing}`
+  if (_goalCache.has(key)) return _goalCache.get(key)
+
+  const model = GOAL_MODELS[type]
+  const { center, scale } = goalFit(model)
+  const S = GOAL_PX
   const canvas = document.createElement('canvas')
-  canvas.width  = cropped.width  + T * 2
-  canvas.height = cropped.height + T * 2
+  canvas.width = canvas.height = S
   const ctx = canvas.getContext('2d')
-  for (let dx = -T; dx <= T; dx++) {
-    for (let dy = -T; dy <= T; dy++) {
-      if (dx === 0 && dy === 0) continue
-      ctx.drawImage(sil, T + dx, T + dy)
-    }
-  }
-  ctx.drawImage(cropped, T, T)
 
-  _colorizedEquipCache.set(key, canvas)
+  const [cx, cy] = goalScreen(goalWorld(center, facing))
+  const toPx    = (w) => { const [sx, sy] = goalScreen(w); return [S / 2 + (sx - cx) * scale, S / 2 + (sy - cy) * scale] }
+  const px      = (p) => toPx(goalWorld(p, facing))
+  // Light from the upper left, so raised points cast down-right onto the grass
+  const shadow  = (p) => { const [x, y, z] = goalWorld(p, facing); return toPx([x + z * 0.45, y + z * 0.3, 0]) }
+  const depth   = (pts) => pts.reduce((d, p) => { const [, y, z] = goalWorld(p, facing); return d + y + z * 0.5 }, 0) / pts.length
+  const path    = (c, pts, close) => { c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); if (close) c.closePath() }
+  const outline = (rows) => [...rows[0], ...rows.map(r => r[r.length - 1]), ...[...rows[rows.length - 1]].reverse(), ...rows.map(r => r[0]).reverse()]
+  const colorOf = (c, dark) => c === 'frame' ? (dark ? shadeHex(hexColor, -0.25) : hexColor) : c
+
+  // 1. Ground shadow — solid on a scratch canvas, then composited soft
+  const sh = document.createElement('canvas')
+  sh.width = sh.height = S
+  const sctx = sh.getContext('2d')
+  sctx.fillStyle = sctx.strokeStyle = 'black'
+  sctx.lineCap = sctx.lineJoin = 'round'
+  model.nets.forEach(rows => { path(sctx, outline(rows).map(shadow), true); sctx.fill() })
+  model.bars.forEach(b => { path(sctx, b.pts.map(shadow)); sctx.lineWidth = b.w * scale; sctx.stroke() })
+  ;(model.plates ?? []).forEach(pl => { path(sctx, pl.pts.map(shadow), true); sctx.fill() })
+  ctx.save()
+  ctx.globalAlpha = 0.3
+  ctx.filter = 'blur(3px)'
+  ctx.drawImage(sh, 0, 0)
+  ctx.restore()
+
+  // 2. Nets, bars and joints painted far → near (nearer = further south and higher up)
+  const items = [
+    ...model.nets.map(rows => ({ kind: 'net', rows, d: depth(rows.flat()) })),
+    ...model.bars.map(b => ({ kind: 'bar', b, d: depth(b.pts) + (b.dark ? 0 : 0.01) })),
+    ...model.joints.map(j => ({ kind: 'joint', j, d: depth([j.p]) + 0.02 })),
+    ...(model.plates ?? []).map(pl => ({ kind: 'plate', pl, d: depth(pl.pts) })),
+  ].sort((a, b) => a.d - b.d)
+
+  // Plates: the camera looks along -VIEW (points along VIEW collapse to one screen spot),
+  // so a face is visible when its normal has a positive VIEW component
+  const VIEW  = [GOAL_SKEW, GOAL_TILT, 1]
+  const LIGHT = (() => { const l = [-0.45, -0.55, 0.7], n = Math.hypot(...l); return l.map(c => c / n) })()
+  const dot3  = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+  const drawPlate = (pl) => {
+    const nW    = goalWorld(pl.normal, facing)
+    const front = dot3(nW, VIEW) > 0
+    const sgn   = front ? 1 : -1
+    const at    = (p, o) => p.map((c, i) => c + pl.normal[i] * o)
+    const face  = (o) => pl.pts.map(p => px(at(p, o)))
+    const SLICES = 5
+    const slices = Array.from({ length: SLICES + 1 }, (_, k) => face(sgn * (-pl.t / 2 + pl.t * k / SLICES)))
+    // Outline around the whole slab, then the edge (stacked slices), then the near face
+    slices.forEach(f => { path(ctx, f, true); ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = 0.03 * scale; ctx.stroke() })
+    ctx.fillStyle = shadeHex(hexColor, -0.45)
+    slices.slice(0, -1).forEach(f => { path(ctx, f, true); ctx.fill() })
+    const near = slices[SLICES]
+    const lit    = dot3(front ? nW : nW.map(c => -c), LIGHT)
+    const detail = front ? pl.front : pl.back
+    path(ctx, near, true); ctx.fillStyle = shadeHex(hexColor, 0.2 * lit + 0.18 + (detail?.shade ?? 0)); ctx.fill()
+    ctx.save()
+    path(ctx, near, true); ctx.clip()
+    const ys = near.map(p => p[1]), top = Math.min(...ys), bot = Math.max(...ys)
+    const g = ctx.createLinearGradient(0, top, 0, bot)
+    g.addColorStop(0, 'rgba(255,255,255,0.22)'); g.addColorStop(1, 'rgba(0,0,0,0.18)')
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S)
+    // Face-only details sit on the near face
+    const o = sgn * (pl.t / 2 + 0.002)
+    if (detail) {
+      ctx.fillStyle = 'rgba(17,24,39,0.85)'
+      ;(detail.bands ?? []).forEach(b => { path(ctx, b.map(p => px(at(p, o))), true); ctx.fill() })
+      ;(detail.ribs ?? []).forEach(([a, b]) => {
+        const [p0, p1] = [px(at(a, o)), px(at(b, o))]
+        path(ctx, [p0, p1]); ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = 0.05 * scale; ctx.stroke()
+        path(ctx, [p0, p1]); ctx.strokeStyle = shadeHex(hexColor, 0.05); ctx.lineWidth = 0.034 * scale; ctx.stroke()
+        path(ctx, [p0, p1].map(([x, y]) => [x - 0.008 * scale, y - 0.008 * scale])); ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.01 * scale; ctx.stroke()
+      })
+      ctx.fillStyle = shadeHex(hexColor, -0.6)
+      ;(detail.dots ?? []).forEach(d => { const [x, y] = px(at(d.p, o)); ctx.beginPath(); ctx.arc(x, y, d.r * scale, 0, Math.PI * 2); ctx.fill() })
+    }
+    ctx.restore()
+  }
+
+  ctx.lineCap = ctx.lineJoin = 'round'
+  items.forEach(item => {
+    if (item.kind === 'plate') {
+      drawPlate(item.pl)
+    } else if (item.kind === 'net') {
+      const rows = item.rows.map(r => r.map(px))
+      path(ctx, outline(rows), true)
+      ctx.fillStyle = model.netFill
+      ctx.fill()
+      ctx.strokeStyle = model.netLine
+      ctx.lineWidth = 0.035 * scale
+      rows.forEach(r => { path(ctx, r); ctx.stroke() })
+      rows[0].forEach((_, i) => { path(ctx, rows.map(r => r[i])); ctx.stroke() })
+    } else if (item.kind === 'bar') {
+      const { b } = item
+      const pts = b.pts.map(px), w = b.w * scale
+      path(ctx, pts)
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = w + 0.075 * scale; ctx.stroke()
+      ctx.strokeStyle = colorOf(b.color, b.dark); ctx.lineWidth = w; ctx.stroke()
+      // Tube highlight along the upper-left edge
+      path(ctx, pts.map(([x, y]) => [x - w * 0.18, y - w * 0.18]))
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = w * 0.3; ctx.stroke()
+    } else {
+      const { j } = item
+      const [x, y] = px(j.p), r = j.r * scale
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = colorOf(j.color); ctx.fill()
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = 0.04 * scale; ctx.stroke()
+    }
+  })
+
+  _goalCache.set(key, canvas)
   return canvas
 }
 
-// ── Canvas flip helpers ───────────────────────────────────────────────────────
-const _flipHCache = new Map()
-function flipCanvasH(src) {
-  if (_flipHCache.has(src)) return _flipHCache.get(src)
-  const out = document.createElement('canvas')
-  out.width  = src.width
-  out.height = src.height
-  const ctx  = out.getContext('2d')
-  ctx.translate(src.width, 0)
-  ctx.scale(-1, 1)
-  ctx.drawImage(src, 0, 0)
-  _flipHCache.set(src, out)
-  return out
+// Catalog card image: the goal on a rounded patch of field grass so light frames
+// and dark nets both read against the dark card
+const _goalPreview = new Map()
+function goalPreview(type) {
+  if (!_goalPreview.has(type)) {
+    const goal = getGoalCanvas(type, DEFAULT_COLORS[type], GOAL_PREVIEW_FACING)
+    const c = document.createElement('canvas')
+    c.width = c.height = GOAL_PX
+    const ctx = c.getContext('2d')
+    ctx.fillStyle = '#2d8b2d'
+    ctx.beginPath(); ctx.roundRect(0, 0, GOAL_PX, GOAL_PX, GOAL_PX * 0.12); ctx.fill()
+    ctx.drawImage(goal, 0, 0)
+    _goalPreview.set(type, c.toDataURL())
+  }
+  return _goalPreview.get(type)
 }
 
-const _flipVCache = new Map()
-function flipCanvasV(src) {
-  if (_flipVCache.has(src)) return _flipVCache.get(src)
-  const out = document.createElement('canvas')
-  out.width  = src.width
-  out.height = src.height
-  const ctx  = out.getContext('2d')
-  ctx.translate(0, src.height)
-  ctx.scale(1, -1)
-  ctx.drawImage(src, 0, 0)
-  _flipVCache.set(src, out)
-  return out
+// ── Equipment (generated) ─────────────────────────────────────────────────────
+// Ball, cone, hoop, pole and pinnie drawn in the same style as the goals and players:
+// light from the upper left, soft shadow cast down-right on the grass, dark outline.
+// Cached by `type|hexColor`.
+const EQUIP_PX = 192
+const _equipCache = new Map()
+
+const luminance = (hex) => { const { r, g, b } = hexToRgb(hex); return 0.299 * r + 0.587 * g + 0.114 * b }
+
+// Small upright equipment (cone, pole) uses a lower, more side-on view than the goals
+// so its shape reads at small sizes: ground circles become ellipses this flat
+const EQUIP_SQUASH = 0.5
+
+// Draws `draw(sctx)` solid black on a scratch canvas, then composites it soft and offset
+function softShadow(ctx, S, draw, dx, dy, blur = 4, alpha = 0.32) {
+  const sh = document.createElement('canvas')
+  sh.width = sh.height = S
+  const sctx = sh.getContext('2d')
+  sctx.fillStyle = sctx.strokeStyle = 'black'
+  sctx.lineCap = sctx.lineJoin = 'round'
+  draw(sctx)
+  ctx.save()
+  ctx.globalAlpha = alpha
+  ctx.filter = `blur(${blur}px)`
+  ctx.drawImage(sh, dx, dy)
+  ctx.restore()
 }
 
-// rotation + canvas transform per popup-goal position
-// imageKey overrides the source image (defaults to 'popup-goal')
-// C = FlipH(D) = FlipH(Rotate270(img)) = Rotate270(FlipV(img))
-// E = FlipH(A) = FlipH(Rotate0(img))   = FlipH(img) directly
-const POPUP_POS_MAP = {
-  A: { rotation: 0,   transformFn: null        },
-  B: { rotation: 0,   transformFn: null,       imageKey: 'popup-goal-rear'  },
-  C: { rotation: 270, transformFn: flipCanvasV },
-  D: { rotation: 270, transformFn: null        },
-  E: { rotation: 0,   transformFn: flipCanvasH },
-  F: { rotation: 0,   transformFn: null,       imageKey: 'popup-goal-front' },
-  G: { rotation: 0,   transformFn: null,        imageKey: 'popup-goal-dig'   },
-  H: { rotation: 0,   transformFn: flipCanvasH, imageKey: 'popup-goal-dig'   },
+// Light→dark gradient across a shape, lit from the upper left
+function sideShade(ctx, S, x0, y0, x1, y1, light = 0.3, dark = 0.38) {
+  const g = ctx.createLinearGradient(x0, y0, x1, y1)
+  g.addColorStop(0,    `rgba(255,255,255,${light})`)
+  g.addColorStop(0.45, 'rgba(255,255,255,0)')
+  g.addColorStop(1,    `rgba(0,0,0,${dark})`)
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, S, S)
 }
 
+const OUTLINE = 'rgba(0,0,0,0.8)'
 
+// Soccer ball — the color is the ball's base; patches are black, or white on dark balls
+function drawBall(ctx, S, hex) {
+  const cx = 0.47 * S, cy = 0.47 * S, R = 0.43 * S
+  const patch = luminance(hex) < 110 ? '#f9fafb' : '#111827'
+
+  softShadow(ctx, S, (c) => { c.beginPath(); c.ellipse(cx, cy, R * 0.95, R * 0.85, 0, 0, Math.PI * 2); c.fill() }, 0.06 * S, 0.07 * S, 5, 0.35)
+
+  const ball = () => { ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2) }
+  ball(); ctx.fillStyle = hex; ctx.fill()
+
+  ctx.save()
+  ball(); ctx.clip()
+  // Pentagon patches: one in the middle, five around the rim squashed by the sphere's curve
+  const deg = Math.PI / 180
+  const poly = (pts) => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath() }
+  const center = [0, 1, 2, 3, 4].map(k => { const a = (-90 + k * 72) * deg; return [cx + Math.cos(a) * R * 0.33, cy + Math.sin(a) * R * 0.33] })
+  const outer = [0, 1, 2, 3, 4].map(k => {
+    const d = (-90 + k * 72) * deg, ux = Math.cos(d), uy = Math.sin(d)
+    const pc = [cx + ux * R * 0.88, cy + uy * R * 0.88]
+    const pts = [0, 1, 2, 3, 4].map(j => {
+      const a = d + Math.PI + j * 72 * deg
+      const vx = Math.cos(a) * R * 0.36, vy = Math.sin(a) * R * 0.36
+      const radial = vx * ux + vy * uy
+      const tx = vx - radial * ux, ty = vy - radial * uy
+      return [pc[0] + radial * 0.55 * ux + tx * 0.9, pc[1] + radial * 0.55 * uy + ty * 0.9]
+    })
+    return { pc, pts }
+  })
+  ctx.fillStyle = patch
+  poly(center); ctx.fill()
+  outer.forEach(o => { poly(o.pts); ctx.fill() })
+  // Seams: center → each rim patch, and between neighbouring rim patches
+  ctx.strokeStyle = patch
+  ctx.lineWidth = 0.022 * S
+  ctx.lineCap = 'round'
+  const nearest = (pts, [x, y]) => pts.slice(1).reduce((best, p) => Math.hypot(p[0] - x, p[1] - y) < Math.hypot(best[0] - x, best[1] - y) ? p : best)
+  ctx.beginPath()
+  outer.forEach((o, k) => {
+    ctx.moveTo(...center[k]); ctx.lineTo(...o.pts[0])
+    const n = outer[(k + 1) % 5]
+    ctx.moveTo(...nearest(o.pts, n.pc)); ctx.lineTo(...nearest(n.pts, o.pc))
+  })
+  ctx.stroke()
+  // Sphere shading + specular highlight
+  const g = ctx.createRadialGradient(cx - R * 0.4, cy - R * 0.45, R * 0.05, cx, cy, R)
+  g.addColorStop(0,    'rgba(255,255,255,0.45)')
+  g.addColorStop(0.45, 'rgba(255,255,255,0)')
+  g.addColorStop(0.8,  'rgba(0,0,0,0.12)')
+  g.addColorStop(1,    'rgba(0,0,0,0.45)')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S)
+  ctx.filter = 'blur(2px)'
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'
+  ctx.beginPath(); ctx.ellipse(cx - R * 0.42, cy - R * 0.48, R * 0.16, R * 0.09, -0.6, 0, Math.PI * 2); ctx.fill()
+  ctx.restore()
+
+  ball(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
+}
+
+// Disc cone — side-on frustum with an open top and ridge rings
+function drawCone(ctx, S, hex) {
+  const bx = 0.5 * S, by = 0.68 * S, rb = 0.4 * S, rt = 0.11 * S, h = 0.24 * S
+  const ty = by - h
+  const ell = (y, r) => [bx, y, r, r * EQUIP_SQUASH]
+  const body = () => {
+    ctx.beginPath()
+    ctx.moveTo(bx - rb, by)
+    ctx.lineTo(bx - rt, ty)
+    ctx.ellipse(...ell(ty, rt), 0, Math.PI, Math.PI * 2)        // back rim of the top
+    ctx.lineTo(bx + rb, by)
+    ctx.ellipse(...ell(by, rb), 0, 0, Math.PI)                  // front of the base
+    ctx.closePath()
+  }
+
+  softShadow(ctx, S, (c) => { c.beginPath(); c.ellipse(...ell(by, rb), 0, 0, Math.PI * 2); c.fill() }, 0.05 * S, 0.02 * S, 5, 0.38)
+
+  body(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.035 * S; ctx.lineJoin = 'round'; ctx.stroke()
+  body(); ctx.fillStyle = hex; ctx.fill()
+  ctx.save()
+  body(); ctx.clip()
+  sideShade(ctx, S, bx - rb, 0, bx + rb, 0, 0.32, 0.42)
+  // Ridge rings across the front
+  ;[0.3, 0.62].forEach(f => {
+    const y = by - h * f, r = rb + (rt - rb) * f
+    ctx.beginPath(); ctx.ellipse(...ell(y, r), 0, 0, Math.PI)
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 0.012 * S; ctx.stroke()
+    ctx.beginPath(); ctx.ellipse(...ell(y + 0.01 * S, r), 0, 0.15, Math.PI - 0.15)
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 0.008 * S; ctx.stroke()
+  })
+  ctx.restore()
+  // Open top: dark hole with a lit rim on the far side
+  ctx.beginPath(); ctx.ellipse(...ell(ty, rt), 0, 0, Math.PI * 2)
+  ctx.fillStyle = shadeHex(hex, -0.6); ctx.fill()
+  ctx.strokeStyle = shadeHex(hex, -0.15); ctx.lineWidth = 0.02 * S; ctx.stroke()
+  ctx.beginPath(); ctx.ellipse(...ell(ty, rt), 0, Math.PI * 1.1, Math.PI * 1.7)
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 0.012 * S; ctx.stroke()
+}
+
+// Agility hoop — a round tube lying on the grass
+function drawHoop(ctx, S, hex) {
+  const cx = 0.48 * S, cy = 0.48 * S, R = 0.39 * S, t = 0.04 * S
+  const ring = (dx = 0, dy = 0) => { ctx.beginPath(); ctx.arc(cx + dx, cy + dy, R, 0, Math.PI * 2) }
+
+  softShadow(ctx, S, (c) => { c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.lineWidth = t * 2; c.stroke() }, 0.03 * S, 0.025 * S, 3, 0.4)
+
+  ring(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = t * 2 + 0.03 * S; ctx.stroke()
+  ring(); ctx.strokeStyle = hex; ctx.lineWidth = t * 2; ctx.stroke()
+  // Shifting the ring down-right / up-left keeps the shade / highlight on the same side of the tube all the way round
+  ring(t * 0.35, t * 0.35); ctx.strokeStyle = shadeHex(hex, -0.4); ctx.lineWidth = t * 0.7; ctx.stroke()
+  ring(-t * 0.38, -t * 0.38); ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = t * 0.35; ctx.stroke()
+}
+
+// Agility pole — weighted disc base with a tall upright pole
+function drawPole(ctx, S, hex) {
+  const bx = 0.5 * S, by = 0.84 * S, rb = 0.2 * S, hb = 0.05 * S, r = 0.035 * S, top = 0.1 * S
+  const ell = (y, rad) => [bx, y, rad, rad * EQUIP_SQUASH]
+
+  // Shadow: the base, plus the pole's shadow stretched across the grass to the lower right
+  softShadow(ctx, S, (c) => {
+    c.beginPath(); c.ellipse(...ell(by, rb), 0, 0, Math.PI * 2); c.fill()
+    c.beginPath(); c.moveTo(bx, by); c.lineTo(bx + 0.42 * S, by + 0.08 * S); c.lineWidth = r * 2; c.stroke()
+  }, 0.03 * S, 0.01 * S, 3, 0.35)
+
+  // Base: a short cylinder
+  const base = () => {
+    ctx.beginPath()
+    ctx.moveTo(bx - rb, by - hb)
+    ctx.ellipse(...ell(by - hb, rb), 0, Math.PI, Math.PI * 2)
+    ctx.lineTo(bx + rb, by)
+    ctx.ellipse(...ell(by, rb), 0, 0, Math.PI)
+    ctx.closePath()
+  }
+  base(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.03 * S; ctx.stroke()
+  base(); ctx.fillStyle = shadeHex(hex, -0.25); ctx.fill()
+  ctx.beginPath(); ctx.ellipse(...ell(by - hb, rb), 0, 0, Math.PI * 2)
+  const face = ctx.createLinearGradient(bx - rb, 0, bx + rb, 0)
+  face.addColorStop(0, shadeHex(hex, 0.3)); face.addColorStop(1, shadeHex(hex, -0.1))
+  ctx.fillStyle = face; ctx.fill()
+
+  // Pole: lit on the left, rounded top cap
+  const rod = () => { ctx.beginPath(); ctx.roundRect(bx - r, top, r * 2, by - hb - top, [r, r, 0, 0]) }
+  rod(); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.025 * S; ctx.stroke()
+  rod(); ctx.fillStyle = hex; ctx.fill()
+  ctx.save()
+  rod(); ctx.clip()
+  sideShade(ctx, S, bx - r, 0, bx + r, 0, 0.5, 0.45)
+  ctx.restore()
+  // Collar where the pole meets the base
+  ctx.beginPath(); ctx.ellipse(bx, by - hb, r * 1.6, r * 1.6 * EQUIP_SQUASH, 0, 0, Math.PI * 2)
+  ctx.fillStyle = shadeHex(hex, -0.35); ctx.fill()
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.012 * S; ctx.stroke()
+  // Rod again over the collar so it sits inside it
+  ctx.save()
+  ctx.beginPath(); ctx.rect(0, 0, S, by - hb); ctx.clip()
+  rod(); ctx.fillStyle = hex; ctx.fill()
+  rod(); ctx.clip()
+  sideShade(ctx, S, bx - r, 0, bx + r, 0, 0.5, 0.45)
+  ctx.restore()
+}
+
+// Pinnie — mesh training vest lying flat, contrast trim on the neck, armholes and hem
+function drawPinnie(ctx, S, hex) {
+  const trim = luminance(hex) > 170 ? '#1f2937' : '#facc15'
+  const P = (u, v) => [u * S, v * S]
+  // Segments traced clockwise; trimmed ones get the contrast binding
+  const segs = [
+    { trim: false, d: (c) => { c.moveTo(...P(0.30, 0.17)); c.lineTo(...P(0.40, 0.15)) } },
+    { trim: true,  d: (c) => { c.moveTo(...P(0.40, 0.15)); c.quadraticCurveTo(...P(0.5, 0.33), ...P(0.60, 0.15)) } },
+    { trim: false, d: (c) => { c.moveTo(...P(0.60, 0.15)); c.lineTo(...P(0.70, 0.17)) } },
+    { trim: true,  d: (c) => { c.moveTo(...P(0.70, 0.17)); c.quadraticCurveTo(...P(0.70, 0.43), ...P(0.82, 0.47)) } },
+    { trim: false, d: (c) => { c.moveTo(...P(0.82, 0.47)); c.lineTo(...P(0.86, 0.84)) } },
+    { trim: true,  d: (c) => {
+      c.moveTo(...P(0.86, 0.84))
+      c.quadraticCurveTo(...P(0.72, 0.90), ...P(0.58, 0.85))
+      c.quadraticCurveTo(...P(0.44, 0.80), ...P(0.30, 0.87))
+      c.quadraticCurveTo(...P(0.20, 0.91), ...P(0.14, 0.84))
+    } },
+    { trim: false, d: (c) => { c.moveTo(...P(0.14, 0.84)); c.lineTo(...P(0.18, 0.47)) } },
+    { trim: true,  d: (c) => { c.moveTo(...P(0.18, 0.47)); c.quadraticCurveTo(...P(0.30, 0.43), ...P(0.30, 0.17)) } },
+  ]
+  // One continuous outline: replay each segment without its leading moveTo
+  const vest = (c) => {
+    c.beginPath()
+    let first = true
+    segs.forEach(sg => {
+      const rec = { moveTo: (x, y) => { if (first) { c.moveTo(x, y); first = false } }, lineTo: c.lineTo.bind(c), quadraticCurveTo: c.quadraticCurveTo.bind(c) }
+      sg.d(rec)
+    })
+    c.closePath()
+  }
+
+  // Shrink a touch about the center so the hem corners stay inside the circular clip
+  ctx.save()
+  ctx.translate(S / 2, S / 2); ctx.scale(0.9, 0.9); ctx.translate(-S / 2, -S / 2)
+
+  softShadow(ctx, S, (c) => { vest(c); c.fill() }, 0.035 * S, 0.035 * S, 4, 0.35)
+
+  vest(ctx); ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.035 * S; ctx.lineJoin = 'round'; ctx.stroke()
+  vest(ctx); ctx.fillStyle = hex; ctx.fill()
+  ctx.save()
+  vest(ctx); ctx.clip()
+  sideShade(ctx, S, 0.14 * S, 0.15 * S, 0.86 * S, 0.9 * S, 0.28, 0.4)
+  // Mesh texture
+  ctx.fillStyle = 'rgba(0,0,0,0.13)'
+  const step = 0.026 * S
+  for (let y = 0; y < S; y += step) for (let x = (y / step) % 2 ? step / 2 : 0; x < S; x += step) {
+    ctx.beginPath(); ctx.arc(x, y, 0.0045 * S, 0, Math.PI * 2); ctx.fill()
+  }
+  // Soft folds: shadow creases with a highlight just above each
+  ctx.lineCap = 'round'
+  ;[[0.26, 0.58, 0.5, 0.52, 0.74, 0.6], [0.3, 0.72, 0.52, 0.66, 0.7, 0.74]].forEach(([x0, y0, qx, qy, x1, y1]) => {
+    ctx.beginPath(); ctx.moveTo(x0 * S, y0 * S); ctx.quadraticCurveTo(qx * S, qy * S, x1 * S, y1 * S)
+    ctx.strokeStyle = 'rgba(0,0,0,0.22)'; ctx.lineWidth = 0.02 * S; ctx.stroke()
+    ctx.beginPath(); ctx.moveTo(x0 * S, (y0 - 0.025) * S); ctx.quadraticCurveTo(qx * S, (qy - 0.025) * S, x1 * S, (y1 - 0.025) * S)
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 0.014 * S; ctx.stroke()
+  })
+  ctx.restore()
+  // Trim binding with a thin dark edge
+  ctx.lineCap = 'round'
+  segs.filter(sg => sg.trim).forEach(sg => {
+    ctx.beginPath(); sg.d(ctx)
+    ctx.strokeStyle = OUTLINE; ctx.lineWidth = 0.05 * S; ctx.stroke()
+    ctx.strokeStyle = trim; ctx.lineWidth = 0.032 * S; ctx.stroke()
+  })
+  ctx.restore()
+}
+
+const EQUIP_RENDERERS = { ball: drawBall, cone: drawCone, hoop: drawHoop, pole: drawPole, pinnie: drawPinnie }
+
+function getEquipCanvas(type, hexColor) {
+  const key = `${type}|${hexColor}`
+  if (_equipCache.has(key)) return _equipCache.get(key)
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = EQUIP_PX
+  EQUIP_RENDERERS[type](canvas.getContext('2d'), EQUIP_PX, hexColor)
+  _equipCache.set(key, canvas)
+  return canvas
+}
+
+// Shading is baked for light from the upper left, so these never rotate (they use
+// Facing or simply stay upright). The pinnie lies flat, so it keeps Rotate 90°.
+const isUpright = (type) =>
+  MARKER_TYPES.has(type) || PLAYER_TYPES.has(type) || MODEL_TYPES.has(type) || (type in EQUIP_RENDERERS && type !== 'pinnie')
+
+const _equipPreview = new Map()
+function equipPreview(type) {
+  if (!_equipPreview.has(type)) _equipPreview.set(type, getEquipCanvas(type, DEFAULT_COLORS[type]).toDataURL())
+  return _equipPreview.get(type)
+}
 
 // ── Sidebar button ────────────────────────────────────────────────────────────
 function SidebarBtn({ label, icon, imgSrc, active, onClick, disabled }) {
@@ -623,16 +1122,6 @@ export default function App() {
       img.src = `${import.meta.env.BASE_URL}${src}`
       img.onload = () => setImages(prev => ({ ...prev, [type]: img }))
     })
-    // Extra images used by popup-goal positions (not in catalog palette)
-    ;[
-      ['popup-goal-front', 'popup-goal-front.jpg'],
-      ['popup-goal-rear',  'popup-goal-rear.png'],
-      ['popup-goal-dig',   'popup-goal-dig.png'],
-    ].forEach(([key, src]) => {
-      const img = new window.Image()
-      img.src = `${import.meta.env.BASE_URL}${src}`
-      img.onload = () => setImages(prev => ({ ...prev, [key]: img }))
-    })
     // Deduplicate by src so halfield.png only loads once; both half and half-flip share the same image
     const seenSrcs = new Map()
     FIELD_CATALOG.filter(f => f.src).forEach(({ id, src }) => {
@@ -702,9 +1191,9 @@ export default function App() {
   // ── Object mutations ─────────────────────────────────────────────────────────
 
   const addToField = useCallback((type) => {
-    const isMarker = MARKER_TYPES.has(type)
-    const number   = isMarker ? nextMarkerNumber(placedObjects, type) : null
-    if (isMarker && number == null) return
+    const isNumbered = NUMBERED_TYPES.has(type)
+    const number     = isNumbered ? nextFreeNumber(placedObjects, type) : null
+    if (isNumbered && number == null) return
     pushHistory()
     const id = nextId.current++
     const initPos = {
@@ -714,11 +1203,11 @@ export default function App() {
     setPlacedObjects(prev => [...prev, {
       id,
       type,
-      size: DEFAULT_SIZE,
+      size: GOAL_DEFAULT_SIZE[type] ?? (PLAYER_TYPES.has(type) ? PLAYER_DEFAULT_SIZE : DEFAULT_SIZE),
       rotation: 0,
       ...(DEFAULT_COLORS[type] ? { color: DEFAULT_COLORS[type] } : {}),
-      ...(type === 'popup-goal' ? { popupPos: 'A' } : {}),
-      ...(isMarker ? { number } : {}),
+      ...(isNumbered ? { number } : {}),
+      ...(MODEL_TYPES.has(type) ? { facing: GOAL_DEFAULT_FACING } : {}),
     }])
     setFrames(prev => prev.map(f => ({
       ...f,
@@ -761,36 +1250,24 @@ export default function App() {
   const rotateObject = useCallback((id) => {
     pushHistory()
     setPlacedObjects(prev => prev.map(o =>
-      o.id === id ? { ...o, rotation: (o.rotation + 90) % 360 } : o
+      o.id !== id ? o
+        : MODEL_TYPES.has(o.type) ? { ...o, facing: ((o.facing ?? GOAL_DEFAULT_FACING) + 45) % 360 }
+        : { ...o, rotation: (o.rotation + 90) % 360 }
     ))
   }, [])
 
-  const setPopupPos = useCallback((id, pos) => {
+  const setGoalFacing = useCallback((id, facing) => {
     pushHistory()
-    setPlacedObjects(prev => prev.map(o =>
-      o.id === id ? { ...o, popupPos: pos } : o
-    ))
+    setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, facing } : o))
   }, [])
-
-  const POPUP_CYCLE = ['A', 'B', 'E', 'D', 'G', 'F', 'H', 'C']
-  const rotatePopupGoal = useCallback((id) => {
-    pushHistory()
-    setPlacedObjects(prev => prev.map(o => {
-      if (o.id !== id) return o
-      const cur  = POPUP_CYCLE.indexOf(o.popupPos ?? 'A')
-      const next = POPUP_CYCLE[(cur + 1) % POPUP_CYCLE.length]
-      return { ...o, popupPos: next }
-    }))
-  }, [])
-
 
   const duplicateObject = useCallback((id) => {
     const src = placedObjects.find(o => o.id === id)
     if (!src) return
-    // Duplicated markers take the next free number rather than copying it
-    const isMarker = MARKER_TYPES.has(src.type)
-    const number   = isMarker ? nextMarkerNumber(placedObjects, src.type) : null
-    if (isMarker && number == null) return
+    // Duplicated numbered objects take the next free number rather than copying it
+    const isNumbered = NUMBERED_TYPES.has(src.type)
+    const number     = isNumbered ? nextFreeNumber(placedObjects, src.type) : null
+    if (isNumbered && number == null) return
     pushHistory()
     const newId = nextId.current++
     setPlacedObjects(prev => [...prev, { ...src, id: newId, ...(number != null ? { number } : {}) }])
@@ -1212,11 +1689,10 @@ export default function App() {
   // ── Fill helpers ─────────────────────────────────────────────────────────────
 
   const getObjectFill = (obj, r) => {
-    // Player: runs the colorize + outline pipeline
-    if (obj.type === 'player' && images.player) {
-      const color  = obj.color ?? DEFAULT_COLORS.player
-      const canvas = getColorizedPlayer(images.player, color)
-      const scale  = (r * 2) / canvas.height
+    // Players: generated shaded figurine, numbered for the team types
+    if (PLAYER_TYPES.has(obj.type)) {
+      const canvas = getPlayerCanvas(obj.color ?? DEFAULT_COLORS[obj.type], obj.number ?? null)
+      const scale  = (r * 2) / canvas.width
       return {
         fillPatternImage:  canvas,
         fillPatternOffset: { x: canvas.width / 2, y: canvas.height / 2 },
@@ -1235,30 +1711,25 @@ export default function App() {
         fillPatternRepeat: 'no-repeat',
       }
     }
-    // Ball: non-uniform scale so image fills the full circle
-    if (obj.type === 'ball' && images.ball) {
-      const img = images.ball
+    // Goals: 3D model rendered for its facing
+    if (MODEL_TYPES.has(obj.type)) {
+      const canvas = getGoalCanvas(obj.type, obj.color ?? DEFAULT_COLORS[obj.type], obj.facing ?? GOAL_DEFAULT_FACING)
+      const scale  = (r * 2) / canvas.width
       return {
-        fillPatternImage:  img,
-        fillPatternOffset: { x: img.width / 2, y: img.height / 2 },
-        fillPatternScale:  { x: (r * 2) / img.width, y: (r * 2) / img.height },
+        fillPatternImage:  canvas,
+        fillPatternOffset: { x: canvas.width / 2, y: canvas.height / 2 },
+        fillPatternScale:  { x: scale, y: scale },
         fillPatternRepeat: 'no-repeat',
       }
     }
-    // Equipment — colorizable types use getColorizedEquipment, others use processEquipmentImage
-    const posConfig = obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A'] ?? POPUP_POS_MAP.A) : null
-    const imgKey    = posConfig?.imageKey ?? obj.type
-    const img       = images[imgKey]
-    if (img) {
-      const canvas = COLORIZABLE.has(obj.type)
-        ? getColorizedEquipment(imgKey, img, obj.color ?? DEFAULT_COLORS[obj.type])
-        : processEquipmentImage(img)
-      const finalCanvas = posConfig?.transformFn ? posConfig.transformFn(canvas) : canvas
-      const s = (r * 2) / Math.max(finalCanvas.width, finalCanvas.height)
+    // Equipment: generated ball / cone / hoop / pole / pinnie
+    if (EQUIP_RENDERERS[obj.type]) {
+      const canvas = getEquipCanvas(obj.type, obj.color ?? DEFAULT_COLORS[obj.type])
+      const scale  = (r * 2) / canvas.width
       return {
-        fillPatternImage:  finalCanvas,
-        fillPatternOffset: { x: finalCanvas.width / 2, y: finalCanvas.height / 2 },
-        fillPatternScale:  { x: s, y: s },
+        fillPatternImage:  canvas,
+        fillPatternOffset: { x: canvas.width / 2, y: canvas.height / 2 },
+        fillPatternScale:  { x: scale, y: scale },
         fillPatternRepeat: 'no-repeat',
       }
     }
@@ -1345,11 +1816,14 @@ export default function App() {
         <div className="panel-header">Objects</div>
         <div className="object-grid">
           {CATALOG.map(item => {
-            const isMarker  = MARKER_TYPES.has(item.type)
-            const markerNum = isMarker ? nextMarkerNumber(placedObjects, item.type) : null
-            const full      = isMarker && markerNum == null
-            const imgSrc    = isMarker
-              ? markerPreview(item.type, markerNum ?? MARKER_MAX)
+            const isNumbered = NUMBERED_TYPES.has(item.type)
+            const nextNum    = isNumbered ? nextFreeNumber(placedObjects, item.type) : null
+            const full       = isNumbered && nextNum == null
+            const imgSrc     = isNumbered
+              ? numberedPreview(item.type, nextNum ?? NUMBER_MAX)
+              : MODEL_TYPES.has(item.type) ? goalPreview(item.type)
+              : item.type === 'player' ? playerPreview()
+              : EQUIP_RENDERERS[item.type] ? equipPreview(item.type)
               : `${import.meta.env.BASE_URL}${item.src}`
             return (
               <button
@@ -1357,7 +1831,7 @@ export default function App() {
                 className="object-card"
                 onClick={() => addToField(item.type)}
                 disabled={full}
-                title={full ? `All ${MARKER_MAX} ${item.label} markers placed` : `Add ${item.label}${markerNum ? ` #${markerNum}` : ''}`}
+                title={full ? `All ${NUMBER_MAX} ${item.label} numbers placed` : `Add ${item.label}${nextNum ? ` #${nextNum}` : ''}`}
               >
                 <img src={imgSrc} alt={item.label} />
                 <span>{item.label}</span>
@@ -1839,7 +2313,7 @@ export default function App() {
             {/* Placed objects */}
             {placedObjects.map(obj => {
               const pos = frames[currentFrame]?.positions[obj.id] ?? { x: CX, y: CY }
-              const r   = getRadius(obj.size)
+              const r   = getRadius(obj.size) * (MODEL_TYPES.has(obj.type) ? GOAL_RADIUS_MULT : 1)
 
               return (
                 <Circle
@@ -1851,12 +2325,10 @@ export default function App() {
                   x={pos.x}
                   y={pos.y}
                   radius={r}
-                  rotation={obj.type === 'popup-goal' ? (POPUP_POS_MAP[obj.popupPos ?? 'A']?.rotation ?? 0) : MARKER_TYPES.has(obj.type) ? 0 : obj.rotation}
+                  rotation={isUpright(obj.type) ? 0 : obj.rotation}
                   {...getObjectFill(obj, r)}
                   {...(MARKER_TYPES.has(obj.type) ? { shadowColor: 'black', shadowBlur: 5, shadowOffsetY: 3, shadowOpacity: 0.45 } : {})}
-                  strokeEnabled={obj.type === 'ball'}
-                  stroke="#1a1a1a"
-                  strokeWidth={1.5}
+                  strokeEnabled={false}
                   draggable={!isPlaying && activePanel !== 'draw'}
                   onDragStart={(e) => handleFreePathDragStart(obj.id, e.target.x(), e.target.y())}
                   onDragMove={(e) => {
@@ -2009,7 +2481,7 @@ export default function App() {
             className="ctx-menu"
             style={{
               left: Math.min(contextMenu.x, viewW - 234),
-              top:  Math.min(contextMenu.y, viewH - 320),
+              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 440 : 320))),
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -2026,6 +2498,25 @@ export default function App() {
                       onClick={() => setObjectColor(contextMenu.objId, color)}
                       title={color}
                     />
+                  ))}
+                </div>
+                <div className="ctx-divider" />
+              </>
+            )}
+
+            {MODEL_TYPES.has(ctxObj?.type) && (
+              <>
+                <div className="ctx-label">Facing</div>
+                <div className="ctx-compass">
+                  {GOAL_FACINGS.map((f, i) => f ? (
+                    <button
+                      key={f.label}
+                      className={`compass-btn${(ctxObj.facing ?? GOAL_DEFAULT_FACING) === f.deg ? ' active' : ''}`}
+                      onClick={() => setGoalFacing(contextMenu.objId, f.deg)}
+                      title={`Faces ${f.label}`}
+                    >{f.label}</button>
+                  ) : (
+                    <button key="rot" className="compass-btn rotate" onClick={() => rotateObject(contextMenu.objId)} title="Rotate 45°">↻</button>
                   ))}
                 </div>
                 <div className="ctx-divider" />
@@ -2050,11 +2541,7 @@ export default function App() {
 
             <div className="ctx-divider" />
 
-            {MARKER_TYPES.has(ctxObj?.type) ? null : ctxObj?.type === 'popup-goal' ? (
-              <button className="ctx-btn" onClick={() => rotatePopupGoal(contextMenu.objId)}>
-                <span className="ctx-icon">↻</span> Rotate
-              </button>
-            ) : (
+            {isUpright(ctxObj?.type) ? null : (
               <button className="ctx-btn" onClick={() => rotateObject(contextMenu.objId)}>
                 <span className="ctx-icon">↻</span> Rotate 90°
               </button>
@@ -2063,7 +2550,7 @@ export default function App() {
             <button
               className="ctx-btn"
               onClick={() => duplicateObject(contextMenu.objId)}
-              disabled={MARKER_TYPES.has(ctxObj?.type) && nextMarkerNumber(placedObjects, ctxObj.type) == null}
+              disabled={NUMBERED_TYPES.has(ctxObj?.type) && nextFreeNumber(placedObjects, ctxObj.type) == null}
             >
               <span className="ctx-icon">⧉</span> Duplicate
             </button>
