@@ -1278,6 +1278,22 @@ export default function App() {
     setContextMenu(null)
   }, [placedObjects])
 
+  // Layer order = position in placedObjects (later entries draw on top)
+  const reorderObject = useCallback((id, mode) => {
+    const from = placedObjects.findIndex(o => o.id === id)
+    if (from < 0) return
+    const last = placedObjects.length - 1
+    const to = { front: last, forward: Math.min(from + 1, last), backward: Math.max(from - 1, 0), back: 0 }[mode]
+    if (to === from) return
+    pushHistory()
+    setPlacedObjects(prev => {
+      const next = [...prev]
+      const [obj] = next.splice(from, 1)
+      next.splice(to, 0, obj)
+      return next
+    })
+  }, [placedObjects])
+
   const resizeObject = useCallback((id, size) => {
     pushHistory()
     setPlacedObjects(prev => prev.map(o => o.id === id ? { ...o, size } : o))
@@ -1520,6 +1536,76 @@ export default function App() {
     recordingPath.current = null
     previewLineRef.current?.points([])
   }, [])
+
+  // ── Save / Open ──────────────────────────────────────────────────────────────
+  // A play is saved as a .json file holding everything on the board. Opening one
+  // replaces the board and clears undo history.
+  const SAVE_FORMAT  = 'tactics-board'
+  const SAVE_VERSION = 1
+  const fileInputRef = useRef(null)
+  const [playName, setPlayName] = useState('play')
+
+  const saveAnimation = useCallback(async () => {
+    const data = {
+      format: SAVE_FORMAT, version: SAVE_VERSION, savedAt: new Date().toISOString(),
+      field: currentField, playSpeed,
+      placedObjects, frames, freePaths, drawings, shapes, textItems,
+      nextIds: { object: nextId.current, draw: nextDrawId.current, shape: nextShapeId.current, text: nextTextId.current },
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    // Chrome/Edge: native Save dialog (pick name + folder). Elsewhere: ask for a name and download.
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: `${playName}.json`,
+          types: [{ description: 'Tactics play', accept: { 'application/json': ['.json'] } }],
+        })
+        const w = await handle.createWritable()
+        await w.write(blob); await w.close()
+        setPlayName(handle.name.replace(/\.json$/i, ''))
+        return
+      } catch (err) {
+        if (err.name === 'AbortError') return
+      }
+    }
+    const name = window.prompt('Save play as:', playName)
+    if (!name) return
+    const clean = name.trim().replace(/\.json$/i, '') || 'play'
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `${clean}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+    setPlayName(clean)
+  }, [currentField, playSpeed, placedObjects, frames, freePaths, drawings, shapes, textItems, playName])
+
+  const openAnimation = useCallback(async (file) => {
+    if (!file) return
+    let data
+    try { data = JSON.parse(await file.text()) } catch { data = null }
+    if (!data || data.format !== SAVE_FORMAT || !Array.isArray(data.frames) || !data.frames.length) {
+      window.alert(`"${file.name}" isn't a saved tactics play.`)
+      return
+    }
+    clearBoard()
+    historyRef.current = []
+    const maxId = (items) => items.reduce((m, it) => Math.max(m, Number(it.id) || 0), -1) + 1
+    const objects = data.placedObjects ?? [], draws = data.drawings ?? [], shps = data.shapes ?? [], texts = data.textItems ?? []
+    nextId.current      = Math.max(data.nextIds?.object ?? 0, maxId(objects))
+    nextDrawId.current  = Math.max(data.nextIds?.draw   ?? 0, maxId(draws))
+    nextShapeId.current = Math.max(data.nextIds?.shape  ?? 0, maxId(shps))
+    nextTextId.current  = Math.max(data.nextIds?.text   ?? 0, maxId(texts))
+    if (data.field) setCurrentField(data.field)
+    if (data.playSpeed) setPlaySpeed(data.playSpeed)
+    setPlacedObjects(objects)
+    setFrames(data.frames)
+    setFreePaths(data.freePaths ?? {})
+    setDrawings(draws)
+    setShapes(shps)
+    setTextItems(texts)
+    setCurrentFrame(0)
+    setPlayName(file.name.replace(/\.json$/i, ''))
+  }, [clearBoard])
 
   const pushHistory = useCallback(() => {
     historyRef.current = [
@@ -2069,6 +2155,19 @@ export default function App() {
       <div className="main">
         <header className="header">
           <div className="header-right">
+            <button className="file-btn" onClick={saveAnimation} disabled={isPlaying} title="Save this play to a file">
+              💾 Save
+            </button>
+            <button className="file-btn" onClick={() => fileInputRef.current?.click()} disabled={isPlaying} title="Open a saved play">
+              📂 Open
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              style={{ display: 'none' }}
+              onChange={(e) => { openAnimation(e.target.files?.[0]); e.target.value = '' }}
+            />
             <button
               className="undo-btn"
               onClick={undo}
@@ -2339,12 +2438,18 @@ export default function App() {
                     moveObject(obj.id, e.target.x(), e.target.y())
                     handleFreePathDragEnd(obj.id, e.target.x(), e.target.y())
                   }}
-                  dragBoundFunc={(p) => ({
-                    x: Math.max(PAD - GBUF + r, Math.min(p.x, PAD + aFW + GBUF - r)),
-                    y: isFullField
-                      ? Math.max(PAD - GOAL_D - GBUF + r, Math.min(p.y, PAD + aFH + GOAL_D + GBUF - r))
-                      : Math.max(PAD - GBUF + r, Math.min(p.y, PAD + aFH + GBUF - r)),
-                  })}
+                  // The center stays on the green, so an object can sit right at the edge and hang
+                  // up to half off it — the export crops anything past the canvas, but nothing gets lost.
+                  // Konva passes absolute (on-screen) coords, so the stage-unit bounds are scaled by fieldScale.
+                  dragBoundFunc={(p) => {
+                    const k = fieldScale
+                    const yMin = isFullField ? PAD - GOAL_D - GBUF : PAD - GBUF
+                    const yMax = isFullField ? PAD + aFH + GOAL_D + GBUF : PAD + aFH + GBUF
+                    return {
+                      x: Math.max((PAD - GBUF) * k, Math.min(p.x, (PAD + aFW + GBUF) * k)),
+                      y: Math.max(yMin * k, Math.min(p.y, yMax * k)),
+                    }
+                  }}
                   onDblClick={(e) => {
                     e.cancelBubble = true
                     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, objId: obj.id })
@@ -2481,7 +2586,7 @@ export default function App() {
             className="ctx-menu"
             style={{
               left: Math.min(contextMenu.x, viewW - 234),
-              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 440 : 320))),
+              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 510 : 390))),
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -2546,6 +2651,24 @@ export default function App() {
                 <span className="ctx-icon">↻</span> Rotate 90°
               </button>
             )}
+
+            {(() => {
+              const idx  = placedObjects.findIndex(o => o.id === contextMenu.objId)
+              const top  = idx === placedObjects.length - 1
+              const btm  = idx === 0
+              return (
+                <>
+                  <div className="ctx-label">Layer</div>
+                  <div className="ctx-layers">
+                    <button className="layer-btn" disabled={top} onClick={() => reorderObject(contextMenu.objId, 'front')}    title="Bring to front">⤒<span>Front</span></button>
+                    <button className="layer-btn" disabled={top} onClick={() => reorderObject(contextMenu.objId, 'forward')}  title="Bring forward one">↑<span>Forward</span></button>
+                    <button className="layer-btn" disabled={btm} onClick={() => reorderObject(contextMenu.objId, 'backward')} title="Send backward one">↓<span>Backward</span></button>
+                    <button className="layer-btn" disabled={btm} onClick={() => reorderObject(contextMenu.objId, 'back')}     title="Send to back">⤓<span>Back</span></button>
+                  </div>
+                  <div className="ctx-divider" />
+                </>
+              )
+            })()}
 
             <button
               className="ctx-btn"

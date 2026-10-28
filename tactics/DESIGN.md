@@ -22,6 +22,21 @@ Every placed object has:
 
 **Position is NOT stored on the object** — it lives in the frame system.
 
+## Drag Bounds
+
+An object's **center** is clamped to the green area (field + `GBUF` border, plus the goal depth on the full field), so any object can sit right at the edge and hang up to half off. The video export records the stage, so anything past it is simply cropped, and nothing can be lost off-screen.
+
+Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the stage-unit bounds are multiplied by `fieldScale`. (Before this fix, a scaled-down board stopped objects short of the left/top edges and let them leave the board on the right/bottom.)
+
+## Save / Open
+
+**💾 Save** writes the whole play to a `.json` file; **📂 Open** loads one (both disabled while playing).
+
+- **File:** `{ format: 'tactics-board', version: 1, savedAt, field, playSpeed, placedObjects, frames, freePaths, drawings, shapes, textItems, nextIds: { object, draw, shape, text } }`
+- **Save:** uses the native Save dialog (`showSaveFilePicker`, Chrome/Edge) to pick the name and folder; other browsers get a name prompt and a download. The last used name (`playName`) is suggested next time.
+- **Open:** a hidden file input. It validates `format` and that `frames` is non-empty (otherwise an alert, and the board is untouched), then clears the board, **resets undo history**, restores everything, and sets each ID counter to the larger of the saved value and max-id + 1 so new objects never collide.
+- Bump `SAVE_VERSION` and handle the old shape in `openAnimation` if the format changes.
+
 ## Frame System
 
 - Each frame is `{ positions: { [objectId]: { x, y } } }`
@@ -52,8 +67,9 @@ Triggered by **double-click** on any object. Contains:
 2. **Facing** — compass grid (3D models only: goals, pop-up goal, free-kick mannequin, arch)
 3. **Size** — 6 dot buttons, visually sized to match their radius
 4. **Rotate 90°** — increments `rotation` by 90 mod 360 (only the pinnie now; everything else is `isUpright` — it stays upright or uses Facing)
-5. **Duplicate** — copies all metadata + positions in every frame, offset +28px
-6. **Delete** — removes from all frames
+5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`). Layer order is the object's position in `placedObjects` (later entries draw on top); buttons disable at the top/bottom. Undoable, and saved with the play.
+6. **Duplicate** — copies all metadata + positions in every frame, offset +28px
+7. **Delete** — removes from all frames
 
 Closes on: overlay click, Escape key, or after Delete/Duplicate.
 
