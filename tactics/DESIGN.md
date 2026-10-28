@@ -8,6 +8,27 @@
 - Field dimensions at **8px per meter** (105m × 68m standard)
 - Goals render as semi-transparent white rectangles extending beyond the field boundary
 
+## Sports (`SPORTS`, dropdown at the left of the header)
+
+- **Soccer** and **Basketball**. The sport picks the field drawing, the object list and the player kit.
+- Each `CATALOG` entry lists its `sports`. Shared: Player / Player 1 / Player 2, Team 1 / Team 2, Cone, Pinnie. Soccer only: Soccer Ball, Goal, Hoop, Pole, Pop-up Goal, Free Kick, Arch. Basketball only: Basketball.
+- Switching sport **clears the board and undo history** (after a confirm if anything is on it), so objects never cross sports.
+- Saved plays store `sport`; older files without it open as soccer.
+- Players take `kit = sport`: basketball draws a sleeveless tank (`tankPath`) with bare arms (`armsPath`) and contrast trim (white, or dark on light colors) instead of the sleeved jersey.
+- The sidebar Objects icon and the Fields panel title/labels follow the sport (Courts: Full Court, Half Court, Half Court (flip), Mid Court, Blank).
+
+## Basketball Court (`BasketballCourt`)
+
+- NBA geometry in **feet** (50 × 94): drawn inside a scaled Konva Group with line width `2.2px / scale`.
+- Floor: soft orange maple planks (`getFloorPattern`, tiled), lighter tint inside the boundary, key + center circle painted `COURT_PAINT`. White lines; orange rim, white backboard.
+- `CourtEnd` draws one end with the baseline at y = 0 (key 16×19, FT circle solid/dashed halves, lane hash marks + block, 3-pt corner lines at 3 ft meeting a 23.75 ft arc, 4 ft restricted arc). The far end is the same component mirrored.
+- Views reuse the soccer canvases and drag bounds:
+  - **Full Court**: portrait 544×840, court fit to height (centered, floor apron at the sides).
+  - **Half Court**: landscape 840×544, basket at the bottom (`scaleY` negative), half-court line on the top edge. **Flip** puts the basket at the top.
+  - **Mid Court**: landscape, court turned 90° and centered on the half-court line; ends are clipped. Planks rotate with it.
+  - **Blank**: floor only.
+- Field-panel thumbnails for basketball are CSS-only (`.field-preview[data-sport="basketball"]`).
+
 ## Object Model
 
 Every placed object has:
@@ -136,7 +157,7 @@ A head-and-jersey bust (same silhouette as the old icon) drawn as a shaded figur
 - **No rotation:** Rotate is hidden and rendering forces `rotation=0` so the figure stays upright
 - **Catalog cards:** `playerPreview()` for the plain player; `numberedPreview(type, n)` for the teams (shows the next number)
 
-## Generated Equipment (`ball`, `cone`, `hoop`, `pole`, `pinnie`)
+## Generated Equipment (`ball`, `basketball`, `cone`, `hoop`, `pole`, `pinnie`)
 
 `getEquipCanvas(type, hexColor)` dispatches to `EQUIP_RENDERERS[type]` on a 192×192 canvas (`EQUIP_PX`). Cached by `type|hex`, previewed on catalog cards by `equipPreview(type)`. These replaced the photo-based images and the old knockout/recolor/outline pixel pipeline.
 
@@ -147,13 +168,14 @@ Shared helpers: `softShadow(ctx, S, draw, dx, dy, blur, alpha)` (solid shape on 
 | Type | Default | Drawing |
 |------|---------|---------|
 | `ball`   | White `#f9fafb` (the classic ball) | Shaded sphere: a center pentagon plus 5 rim pentagons squashed by the curve, seams between them, a radial shade, a blurred specular highlight and an outline. **Color = ball base**; patches are black, or white when the base is dark (luminance < 110), so every swatch keeps a visible pattern |
+| `basketball` | Orange `#e8742a` | Shaded sphere with a pebble-dot grain and black channels (equator, meridian, two curved side seams), tilted slightly toward the light. Channels turn white on very dark colors (luminance < 70) |
 | `cone`   | Red `#ef4444`    | Side-on disc cone (frustum): side shading, 2 ridge rings across the front (a dark groove with a light edge), an open top drawn as a dark hole with a lit far rim |
 | `hoop`   | Blue `#3b82f6`   | A tube ring on the grass: outline ring, color ring, then the same ring shifted down-right (shade) and up-left (highlight), so the lit side stays consistent all the way round |
 | `pole`   | Yellow `#facc15` | Disc base (a short cylinder with a lit top face), an upright rod lit on the left with a rounded cap, and a collar at the join. Its shadow stretches across the grass to the lower right |
 | `pinnie` | Red `#ef4444`    | A flat mesh vest: outline, side shading, a dot mesh texture, 2 soft folds (crease + highlight), and contrast trim on the neck, armholes and wavy hem (gold, or dark on light colors with luminance > 170). Drawn at 90% so the hem stays inside the circular clip |
 
 - **Rotation:** ball, cone, hoop and pole are upright (`isUpright`), so Rotate is hidden. The pinnie lies flat and keeps Rotate 90°.
-- `soccerball.png` is still used as the sidebar's Objects icon. The other old images (`cone.png`, `hoop.png`, `pinnie.png`, `pole.png`, `player1.png`, `popup-goal*`) are no longer used by the app.
+- `soccerball.png` is still used as the sidebar's Objects icon for soccer (basketball uses the generated ball). The other old images (`cone.png`, `hoop.png`, `pinnie.png`, `pole.png`, `player1.png`, `popup-goal*`) are no longer used by the app.
 
 ## Object Colors (8 swatches, `OBJECT_COLORS`)
 
