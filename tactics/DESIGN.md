@@ -120,13 +120,25 @@ Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the st
 - Adding a new object registers its random initial position in **all existing frames**
 - Deleting an object removes it from all frames
 
+## Removed Animation (`frame.skip[id]`, gliding frames)
+
+**Animation · frame N → ⤳ Remove animation** in the object menu (not on frame 1, where everything starts) takes away that object's own spot on that frame:
+- It **glides** through on the straight line from its last real stop to its next one, as **one eased move stretched over every frame between** — remove frames 2–9 of 10 and it takes 9 segments to get from 1 to 10, so it moves slower. Other objects still move on those frames as normal.
+- With **no later stop** (e.g. you remove frame 4 of 4), it just stays where it last moved to while the others keep going.
+- `settleFrames(frames)` keeps a gliding frame's stored position filled in on that eased curve, so the board, trails, saves and the playback redraw at segment boundaries all agree (no jump). It runs after every move, frame delete, object delete and removal. Frame 1 can never glide.
+- **Dragging** the object on a gliding frame makes that frame a real stop again (`moveObject` drops the flag), and the gliding frames on either side re-space toward it. The menu on a gliding frame says so and offers **↺ Add animation back** (keeps it where it currently is).
+- A gliding object shows at **50% opacity** on that frame (not while playing).
+- Removing drops any drawn free path into or out of that frame for that object (it no longer fits); a glide is always straight. Free paths still apply to normal one-segment moves.
+- Duplicate copies the flags; undo, save and open carry them (`skip` lives on the frame).
+
 ## Animation
 
 - Segment duration: **900ms** (`FRAME_MS`)
 - Easing: ease-in-out (`t < 0.5 ? 2t² : -1 + (4-2t)t`)
 - Animation bypasses React re-renders — uses direct `node.position()` + `layer.batchDraw()` at 60fps
 - React state (`currentFrame`) is updated only at segment boundaries, where values already match Konva's position — no visual snap
-- Objects absent from either `fromPos` or `toPos` in a segment are skipped (no crash)
+- Each object animates over its own span: from its last real stop `p` to its next one `n` (usually the segment's own two frames; wider across gliding frames — see Removed Animation), with the ease applied over the whole span
+- Objects missing a position at either end are skipped (no crash)
 
 ## Motion Trails
 
@@ -145,8 +157,9 @@ Triggered by **double-click** on any object. Contains:
    - **View** Front / Back (`.ctx-toggle`) for every player type; **Bats** Right / Left for the batter (`setPlayerOpt`)
 5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`). Layer order is the object's position in `placedObjects` (later entries draw on top); buttons disable at the top/bottom. Undoable, and saved with the play.
 6. **Position** — Movable / 🔒 Locked (see Lock)
-7. **Duplicate** — copies all metadata + positions in every frame, offset +28px
-8. **Delete** — removes from all frames
+7. **Animation · frame N** — ⤳ Remove animation / ↺ Add animation back (from frame 2 on; see Removed Animation)
+8. **Duplicate** — copies all metadata + positions in every frame, offset +28px
+9. **Delete** — removes from all frames
 
 Closes on: overlay click, Escape key, or after Delete/Duplicate.
 

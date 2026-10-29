@@ -784,6 +784,33 @@ function newObject(id, type, tag = {}) {
   }
 }
 
+// ── Removed animation (`frame.skip[id]`) ──────────────────────────────────────
+// An object whose animation is removed on a frame has no spot of its own there: it glides
+// through on the straight line between the frames around it where it does move, as one
+// eased move stretched over that many frames (so a long gap means a slower move). With no later frame it stays where it
+// last moved to. The first frame is always a real spot. Stored positions are kept filled
+// in so everything that reads a frame's positions keeps working.
+const isGlide = (frames, i, id) => i > 0 && !!frames[i]?.skip?.[id]
+
+function settleFrames(frames) {
+  if (!frames.some(f => f.skip)) return frames
+  const out = frames.map(f => ({ ...f, positions: { ...f.positions } }))
+  out.forEach((f, i) => { if (f.skip && (i === 0 || !Object.keys(f.skip).length)) delete f.skip })
+  const ids = new Set(out.flatMap(f => Object.keys(f.skip ?? {})))
+  ids.forEach(id => {
+    for (let i = 1; i < out.length; i++) {
+      if (!isGlide(out, i, id)) continue
+      let p = i - 1; while (isGlide(out, p, id)) p--
+      let n = i + 1; while (n < out.length && isGlide(out, n, id)) n++
+      const P = out[p].positions[id], N = out[n]?.positions[id]
+      if (!P) continue
+      const k = N ? easeInOut((i - p) / (n - p)) : 0   // same curve playback uses, so frame changes don't jump
+      out[i].positions[id] = N ? { x: P.x + (N.x - P.x) * k, y: P.y + (N.y - P.y) * k } : { ...P }
+    }
+  })
+  return out
+}
+
 // ── Play files ────────────────────────────────────────────────────────────────
 const SAVE_FORMAT  = 'tactics-board'
 const SAVE_VERSION = 1
@@ -2134,26 +2161,59 @@ export default function App() {
     })))
   }, [aCX, aCY, aFW, aFH, isMobile, mobileLand, activePanel, placedObjects])
 
-  // Called onDragMove / onDragEnd — updates only the current frame
+  // Called onDragMove / onDragEnd — sets the object's spot on the current frame only. Moving
+  // it on a frame where its animation was removed makes that a real stop again, and any
+  // gliding frames around it re-space themselves.
   const moveObject = useCallback((id, x, y) => {
     setFrames(prev => {
       const updated = [...prev]
-      updated[currentFrame] = {
-        ...updated[currentFrame],
-        positions: { ...updated[currentFrame].positions, [id]: { x, y } },
-      }
-      return updated
+      const f = updated[currentFrame]
+      const skip = f.skip?.[id] ? { ...f.skip } : f.skip
+      if (skip) delete skip[id]
+      updated[currentFrame] = { ...f, skip, positions: { ...f.positions, [id]: { x, y } } }
+      return settleFrames(updated)
     })
   }, [currentFrame])
+
+  // Removes this object's animation on the current frame: it glides through to its next stop
+  const removeAnimation = useCallback((id) => {
+    const at = currentFrame
+    if (at === 0) return
+    pushHistory()
+    setFrames(prev => settleFrames(prev.map((f, i) => i === at ? { ...f, skip: { ...f.skip, [id]: true } } : f)))
+    // a drawn path in or out of this frame no longer fits the glide
+    setFreePaths(prev => {
+      const next = { ...prev }
+      ;[`${at - 1}-${at}`, `${at}-${at + 1}`].forEach(key => {
+        if (!next[key]?.[id]) return
+        const seg = { ...next[key] }
+        delete seg[id]
+        if (Object.keys(seg).length) next[key] = seg; else delete next[key]
+      })
+      return next
+    })
+    setContextMenu(null)
+  }, [currentFrame])
+
+  const restoreAnimation = useCallback((id) => {
+    const pos = frames[currentFrame]?.positions[id]
+    if (!pos) return
+    pushHistory()
+    moveObject(id, pos.x, pos.y)
+    setContextMenu(null)
+  }, [frames, currentFrame, moveObject])
 
   const deleteObject = useCallback((id) => {
     pushHistory()
     setPlacedObjects(prev => prev.filter(o => o.id !== id))
-    setFrames(prev => prev.map(f => {
+    setFrames(prev => settleFrames(prev.map(f => {
       const positions = { ...f.positions }
       delete positions[id]
-      return { ...f, positions }
-    }))
+      if (!f.skip?.[id]) return { ...f, positions }
+      const skip = { ...f.skip }
+      delete skip[id]
+      return { ...f, positions, skip }
+    })))
     setFreePaths(prev => {
       const next = {}
       Object.entries(prev).forEach(([key, seg]) => {
@@ -2197,7 +2257,11 @@ export default function App() {
     setPlacedObjects(prev => [...prev, { ...src, id: newId, ...tag }])
     setFrames(prev => prev.map(f => {
       const orig = f.positions[id] ?? { x: aCX, y: aCY }
-      return { ...f, positions: { ...f.positions, [newId]: { x: orig.x + 28, y: orig.y + 28 } } }
+      return {
+        ...f,
+        positions: { ...f.positions, [newId]: { x: orig.x + 28, y: orig.y + 28 } },
+        ...(f.skip?.[id] ? { skip: { ...f.skip, [newId]: true } } : {}),
+      }
     }))
     setContextMenu(null)
   }, [placedObjects])
@@ -2576,7 +2640,7 @@ export default function App() {
   const deleteFrame = useCallback((idx) => {
     if (frames.length <= 1 || isPlaying) return
     pushHistory()
-    const updated = frames.filter((_, i) => i !== idx)
+    const updated = settleFrames(frames.filter((_, i) => i !== idx))
     setFrames(updated)
     setCurrentFrame(prev => Math.min(prev, updated.length - 1))
     setFreePaths(prev => {
@@ -2628,20 +2692,28 @@ export default function App() {
         return
       }
 
-      const fromPos  = snap[seg]
-      const toPos    = snap[seg + 1]
       const segPaths = pathsSnap[`${seg}-${seg + 1}`] ?? {}
-      const ids = [...new Set([...Object.keys(fromPos), ...Object.keys(toPos)])].map(Number)
+      const ids = [...new Set([...Object.keys(snap[seg]), ...Object.keys(snap[seg + 1])])].map(Number)
+      // Each object moves from its last real stop (p) to its next one (n) — usually this
+      // segment's two frames, but wider when its animation was removed on frames between.
+      // No later stop: it stays put.
+      const spans = {}
+      ids.forEach(id => {
+        let p = seg; while (isGlide(frames, p, id)) p--
+        let n = seg + 1; while (n < snap.length && isGlide(frames, n, id)) n++
+        spans[id] = { p, n: n < snap.length ? n : null }
+      })
 
       const tick = (now) => {
         const t = Math.min((now - startTime) / (FRAME_MS / playSpeed), 1)
-        const e = easeInOut(t)
 
         ids.forEach(id => {
-          const from = fromPos[id]
-          const to   = toPos[id]
+          const { p, n } = spans[id]
+          const from = snap[p][id]
+          const to   = n == null ? from : snap[n][id]
           if (!from || !to) return
-          const path = segPaths[id]
+          const e = easeInOut((seg - p + t) / ((n ?? seg + 1) - p))
+          const path = n === seg + 1 && p === seg ? segPaths[id] : null
           objRefs.current[id]?.position(
             path
               ? walkPath(path, e)
@@ -3459,6 +3531,7 @@ export default function App() {
                   rotation={rot}
                   hitFunc={hitFunc}
                   {...getObjectFill(obj, r)}
+                  opacity={!isPlaying && isGlide(frames, currentFrame, obj.id) ? 0.5 : 1}   // just gliding through this frame
                   {...(MARKER_TYPES.has(obj.type) ? { shadowColor: 'black', shadowBlur: 5, shadowOffsetY: 3, shadowOpacity: 0.45 } : {})}
                   strokeEnabled={false}
                   draggable={!isPlaying && activePanel !== 'draw' && !obj.locked}
@@ -3674,7 +3747,7 @@ export default function App() {
             className="ctx-menu"
             style={{
               left: Math.min(contextMenu.x, viewW - 234),
-              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 570 : PLAYER_TYPES.has(ctxObj?.type) ? 530 : 450))),
+              top:  Math.max(8, Math.min(contextMenu.y, viewH - (MODEL_TYPES.has(ctxObj?.type) ? 570 : PLAYER_TYPES.has(ctxObj?.type) ? 530 : 450) - (currentFrame > 0 ? 70 : 0))),
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -3784,6 +3857,26 @@ export default function App() {
               <button className={ctxObj?.locked ? 'active' : ''} onClick={() => setObjectOpt(contextMenu.objId, { locked: true })}>🔒 Locked</button>
             </div>
             <div className="ctx-divider" />
+
+            {/* Animation on this frame (not the first — that's where everything starts) */}
+            {currentFrame > 0 && (
+              <>
+                <div className="ctx-label">Animation · frame {currentFrame + 1}</div>
+                {isGlide(frames, currentFrame, contextMenu.objId) ? (
+                  <>
+                    <div className="ctx-note">Gliding through this frame. Drag it to give it a new stop here.</div>
+                    <button className="ctx-btn" onClick={() => restoreAnimation(contextMenu.objId)}>
+                      <span className="ctx-icon">↺</span> Add animation back
+                    </button>
+                  </>
+                ) : (
+                  <button className="ctx-btn" onClick={() => removeAnimation(contextMenu.objId)} title="This object glides through this frame to its next stop; everything else still moves here">
+                    <span className="ctx-icon">⤳</span> Remove animation
+                  </button>
+                )}
+                <div className="ctx-divider" />
+              </>
+            )}
 
             <button
               className="ctx-btn"

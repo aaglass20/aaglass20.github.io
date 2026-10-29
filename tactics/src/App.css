@@ -564,6 +564,13 @@ canvas {
   margin-bottom: 10px;
 }
 
+.ctx-note {
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.55);
+  margin: -4px 0 6px;
+}
+
 .ctx-compass {
   display: grid;
   grid-template-columns: repeat(3, 38px);
