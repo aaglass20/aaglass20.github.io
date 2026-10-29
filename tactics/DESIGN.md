@@ -120,6 +120,15 @@ Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the st
 - Adding a new object registers its random initial position in **all existing frames**
 - Deleting an object removes it from all frames
 
+## Layer Order per Frame (`frame.order`)
+
+Objects can sit in front of each other on one frame and behind on another.
+- **Frame 1** uses the base order: the order of `placedObjects` (later entries draw on top). The Layer buttons on frame 1 reorder that, as before.
+- On **a later frame**, the Layer buttons give that frame its own `order` (object ids, bottom → top). Frames without their own order use the **nearest earlier frame's**, so a change carries forward until a frame that has its own. `layerOrder(frames, i, placedObjects)` resolves it; any object not listed (added later) goes on top.
+- Objects draw in the current frame's order. During playback the order switches **when the objects arrive** at a frame (where `currentFrame` updates).
+- **+ Frame** copies the current frame's order once any frame has its own. **Deleting a frame** passes its order to the next frame so later frames look the same; deleting frame 1 makes the new frame 1's order the base order.
+- New and duplicated objects land on top in every frame; deleted objects drop out. Undo, save and open carry the orders.
+
 ## Removed Animation (`frame.skip[id]`, gliding frames)
 
 **Animation · frame N → ⤳ Remove animation** in the object menu (not on frame 1, where everything starts) takes away that object's own spot on that frame:
@@ -155,7 +164,7 @@ Triggered by **double-click** on any object. Contains:
 3. **Size** — 6 dot buttons, visually sized to match their radius
 4. **Rotate** — `rotateStep(type)`: 45° for `ROTATE_45` (bat, hit stick, home plate, base), 90° for the pinnie. Only `FLAT_TYPES` rotate; everything else is `isUpright` — it stays upright or uses Facing
    - **View** Front / Back (`.ctx-toggle`) for every player type; **Bats** Right / Left for the batter (`setPlayerOpt`)
-5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`). Layer order is the object's position in `placedObjects` (later entries draw on top); buttons disable at the top/bottom. Undoable, and saved with the play.
+5. **Layer** — Front / Forward / Backward / Back (`reorderObject(id, mode)`), **per frame** (see Layer Order per Frame); the label reads "Layer · frame N on" when there's more than one frame. Buttons disable at the top/bottom of that frame's order. Undoable, and saved with the play.
 6. **Position** — Movable / 🔒 Locked (see Lock)
 7. **Animation · frame N** — ⤳ Remove animation / ↺ Add animation back (from frame 2 on; see Removed Animation)
 8. **Duplicate** — copies all metadata + positions in every frame, offset +28px

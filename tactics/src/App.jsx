@@ -811,6 +811,20 @@ function settleFrames(frames) {
   return out
 }
 
+// ── Layer order per frame (`frame.order`) ─────────────────────────────────────
+// Frame 1's layer order is the order of placedObjects (later entries draw on top). A later
+// frame can have its own order (an array of ids, bottom → top); frames without one use the
+// nearest earlier frame's, so a change carries forward until a frame that has its own.
+function layerOrder(frames, i, objects) {
+  let k = Math.min(i, frames.length - 1)
+  while (k > 0 && !frames[k]?.order) k--
+  if (k === 0) return objects
+  const byId = new Map(objects.map(o => [o.id, o]))
+  const listed = frames[k].order.map(id => byId.get(id)).filter(Boolean)
+  const seen = new Set(listed.map(o => o.id))
+  return [...listed, ...objects.filter(o => !seen.has(o.id))]   // anything newer goes on top
+}
+
 // ── Play files ────────────────────────────────────────────────────────────────
 const SAVE_FORMAT  = 'tactics-board'
 const SAVE_VERSION = 1
@@ -2266,21 +2280,23 @@ export default function App() {
     setContextMenu(null)
   }, [placedObjects])
 
-  // Layer order = position in placedObjects (later entries draw on top)
+  // Layer order is per frame (see layerOrder): on frame 1 it reorders placedObjects; on a
+  // later frame it gives that frame its own order, which carries forward to later frames
+  // that don't have their own
   const reorderObject = useCallback((id, mode) => {
-    const from = placedObjects.findIndex(o => o.id === id)
+    const list = layerOrder(frames, currentFrame, placedObjects)
+    const from = list.findIndex(o => o.id === id)
     if (from < 0) return
-    const last = placedObjects.length - 1
+    const last = list.length - 1
     const to = { front: last, forward: Math.min(from + 1, last), backward: Math.max(from - 1, 0), back: 0 }[mode]
     if (to === from) return
     pushHistory()
-    setPlacedObjects(prev => {
-      const next = [...prev]
-      const [obj] = next.splice(from, 1)
-      next.splice(to, 0, obj)
-      return next
-    })
-  }, [placedObjects])
+    const next = [...list]
+    const [obj] = next.splice(from, 1)
+    next.splice(to, 0, obj)
+    if (currentFrame === 0) setPlacedObjects(next)
+    else setFrames(prev => prev.map((f, i) => i === currentFrame ? { ...f, order: next.map(o => o.id) } : f))
+  }, [frames, currentFrame, placedObjects])
 
   const resizeObject = useCallback((id, size) => {
     pushHistory()
@@ -2628,19 +2644,29 @@ export default function App() {
     setCurrentFrame(idx)
   }, [isPlaying])
 
-  // New frame copies current frame's object positions
+  // New frame copies current frame's object positions (and its layer order, when frames
+  // have their own)
   const addFrame = useCallback(() => {
     if (isPlaying) return
     pushHistory()
     const copy = { ...frames[currentFrame].positions }
-    setFrames(prev => [...prev, { positions: copy }])
+    const order = frames.some(f => f.order) ? { order: layerOrder(frames, currentFrame, placedObjects).map(o => o.id) } : {}
+    setFrames(prev => [...prev, { positions: copy, ...order }])
     setCurrentFrame(frames.length)   // frames.length is pre-update = new frame's index
-  }, [frames, currentFrame, isPlaying])
+  }, [frames, currentFrame, isPlaying, placedObjects])
 
   const deleteFrame = useCallback((idx) => {
     if (frames.length <= 1 || isPlaying) return
     pushHistory()
-    const updated = settleFrames(frames.filter((_, i) => i !== idx))
+    // Frames after it keep the layer order they showed: it passes to the next frame (or,
+    // when frame 1 goes, the new frame 1's order becomes the base order)
+    const kept = frames.map((f, i) => i === idx + 1 && !f.order && (idx === 0 || frames[idx].order) ? { ...f, order: layerOrder(frames, i, placedObjects).map(o => o.id) } : f)
+    if (idx === 0) {
+      setPlacedObjects(layerOrder(kept, 1, placedObjects))
+      const { order, ...rest } = kept[1]   // eslint-disable-line no-unused-vars
+      kept[1] = rest
+    }
+    const updated = settleFrames(kept.filter((_, i) => i !== idx))
     setFrames(updated)
     setCurrentFrame(prev => Math.min(prev, updated.length - 1))
     setFreePaths(prev => {
@@ -2654,7 +2680,7 @@ export default function App() {
       })
       return next
     })
-  }, [frames, isPlaying])
+  }, [frames, isPlaying, placedObjects])
 
   // ── Playback ─────────────────────────────────────────────────────────────────
 
@@ -3471,8 +3497,8 @@ export default function App() {
               return <Line key={d.id} points={d.points} {...lineProps} {...dragHandlers} />
             })}
 
-            {/* Placed objects */}
-            {placedObjects.map(obj => {
+            {/* Placed objects, bottom → top in this frame's layer order */}
+            {layerOrder(frames, currentFrame, placedObjects).map(obj => {
               const posOf = (o) => frames[currentFrame]?.positions[o.id]
               const pos  = posOf(obj) ?? { x: aCX, y: aCY }
               const r    = objRadius(obj)
@@ -3834,12 +3860,13 @@ export default function App() {
             )}
 
             {(() => {
-              const idx  = placedObjects.findIndex(o => o.id === contextMenu.objId)
-              const top  = idx === placedObjects.length - 1
+              const order = layerOrder(frames, currentFrame, placedObjects)
+              const idx  = order.findIndex(o => o.id === contextMenu.objId)
+              const top  = idx === order.length - 1
               const btm  = idx === 0
               return (
                 <>
-                  <div className="ctx-label">Layer</div>
+                  <div className="ctx-label">Layer{frames.length > 1 ? ` · frame ${currentFrame + 1} on` : ''}</div>
                   <div className="ctx-layers">
                     <button className="layer-btn" disabled={top} onClick={() => reorderObject(contextMenu.objId, 'front')}    title="Bring to front">⤒<span>Front</span></button>
                     <button className="layer-btn" disabled={top} onClick={() => reorderObject(contextMenu.objId, 'forward')}  title="Bring forward one">↑<span>Forward</span></button>
