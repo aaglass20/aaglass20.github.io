@@ -112,6 +112,15 @@ Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the st
 - **Open:** a hidden file input. It validates `format` and that `frames` is non-empty (otherwise an alert, and the board is untouched), then clears the board, **resets undo history**, restores everything, and sets each ID counter to the larger of the saved value and max-id + 1 so new objects never collide.
 - Bump `SAVE_VERSION` and handle the old shape in `openAnimation` if the format changes.
 
+## Undo (`pushHistory` / `undo`, ↩ button, ⌘Z / Ctrl+Z)
+
+- Undo covers **everything on the board**: objects and their moves, frames (positions, layer order, removed animation, segment tints/labels, label words/visibility, frame speeds, label transitions per frame), free paths, **drawings** (draw, move, delete), **shapes** (add, move, resize/rotate, split, delete), **text** (add, move, resize/rotate, edit, hide/show, transition, delete), the play speed, and **Clear**.
+- Each edit calls `pushHistory()` first, which saves a snapshot of the whole board (from refs, so it's current even inside event handlers); `undo()` restores the last one. Up to 50 steps.
+- Undo **stays on the current frame** (or the last frame if that one's gone), closes open menus/editors, and keeps a selection only if the item still exists.
+- **⌘Z / Ctrl+Z** undoes too (not while typing in a box, or playing).
+- Opening a play and switching sport clear the history; a drawn stroke shorter than a tap adds no step.
+- Drawing a stroke adds it once (it used to be added from inside the `setCurrentDraw` updater, which React may run twice, so each stroke was stored twice in development).
+
 ## Frame System
 
 - Each frame is `{ positions: { [objectId]: { x, y } } }`
@@ -119,6 +128,16 @@ Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the st
 - Adding a new frame copies the **current frame's** positions as the starting point
 - Adding a new object registers its random initial position in **all existing frames**
 - Deleting an object removes it from all frames
+
+## Playback Speed (slider, `playSpeed`, `frame.speed`)
+
+One slider replaces the old Normal / Slow / V. Slow buttons: **fast on the left, Normal (1×) in the middle** (tick mark), slow on the right. Steps (`SPEED_STEPS`): 2×, 1.5×, 1.25×, **1×**, ¾×, ½× (0.55), ⅓× (0.32) — the last two are the old Slow / V. Slow values, and `speedStep(v)` snaps any saved value to the nearest step, so older plays open unchanged.
+- A move between two frames takes `FRAME_MS / speed` (900 ms at 1×).
+- **All frames** (default): the slider sets `playSpeed` (saved with the play) and **clears every frame's own speed**. The **↺** button next to the value (shown when frames have their own speed) clears them without moving the slider.
+- **Frame N** (from frame 2 on): the slider gives that frame its own `speed` — it times the **move into that frame** (frame 1 is the start, so it has none). Setting it back to the play speed clears it. `frameSpeed(frames, i, playSpeed)` resolves it; it does **not** carry forward. A frame with its own speed shows a small blue badge (e.g. ½×) on its frame button.
+- An object gliding across several frames (removed animation) moves through each segment at that segment's speed.
+- Phone: the speed chip in the timeline shows the current speed and opens a sheet with the same slider and toggle.
+- Frame speeds live on the frame: + Frame doesn't copy them, deleting a frame drops its speed, and undo, save and open carry them.
 
 ## Layer Order per Frame (`frame.order`)
 
@@ -128,6 +147,48 @@ Objects can sit in front of each other on one frame and behind on another.
 - Objects draw in the current frame's order. During playback the order switches **when the objects arrive** at a frame (where `currentFrame` updates).
 - **+ Frame** copies the current frame's order once any frame has its own. **Deleting a frame** passes its order to the next frame so later frames look the same; deleting frame 1 makes the new frame 1's order the base order.
 - New and duplicated objects land on top in every frame; deleted objects drop out. Undo, save and open carry the orders.
+
+## Text Labels (`textItems`, Text panel)
+
+- **Type → preview → add.** The Text panel starts with a box to type in (multi-line; ⌘/Ctrl+Enter adds) and a live **preview** on a grass swatch in the chosen size, style, color, alignment and background. **+ Add Text** is disabled until there's text.
+- **No extra space:** the label's `width` is `fitTextWidth(text, fontSize, fontStyle)` — the longest line measured on a canvas in the board font (`TEXT_FONT`), so it never wraps or carries empty room. `cleanText` drops trailing spaces on each line and blank lines at the ends. The dark/navy/frost background is sized to the line count (`fontSize × (lines + 0.1) + 8`).
+- Added labels land **centered** on the field (small random nudge so repeats don't stack exactly), **selected** so they can be dragged or resized at once. The typed text clears for the next one; style settings stay.
+- **Phone:** adding minimizes the drawer (`panelMin`) so the field is clear; the drawer's header brings it back.
+- **Editing in place:** double-click (double-tap) a label and the editor opens **exactly over it**, so nothing jumps. `openTextEdit` places it at the text node's on-screen top-left (`getAbsolutePosition`) and font size × on-screen scale (`getAbsoluteScale`, which includes the board's fit-to-screen `fieldScale` and the label's own resize), rotated about that same corner. Padding and border are offset out, line height is 1 like Konva, and the box grows/shrinks with the text as you type. Blur or ⌘/Ctrl+Enter saves (the width refits to the new text); Esc cancels. Empty text becomes "Label".
+
+### Text per frame (`frame.texts`, `t.hidden`)
+
+- A label's **words** and whether it **shows** can change by frame; its position, size, style and transition are the same on every frame. Frame 1 is the label itself (`t.text`, `t.width`, `t.hidden`); a later frame can have its own entry `frame.texts[id] = { text, width, hidden }`. Frames without one use the **nearest earlier frame's** (`textAt(frames, i, t)`), so a change carries forward until a frame that has its own (same rule as layer order and segments).
+- **Editing words** on frame N (double-click / ✎) saves them to frame N on. `setTextState(id, patch, onlyHere)` does all per-frame changes; on frame 1 it changes the label itself.
+- **Adding** a label on a later frame makes it show **from that frame on** (it's hidden before it).
+- **Hide / show** (label menu, from 2+ frames): *Hide on this frame only* (the next frame keeps how it was; disabled on the last frame), *Hide from this frame on*, and on a hidden frame *Show from this frame on*. A hidden label shows at **30% opacity** while you edit (so it can still be picked) and not at all while playing.
+- **+ Frame** copies every label's current state once any frame has its own; **deleting a frame** passes its entries to the next frame, and deleting frame 1 makes frame 2's states the labels' base. Text-only (or shape-only) plays can play and export (`hasContent`).
+
+### Transitions (`t.transition`)
+
+Per label: **None**, **Fade** (old words fade out, then the new fade in), **Dissolve** (old and new cross-fade), **Typing** (the new words type in letter by letter, ~45 ms each, 250–1600 ms). Showing fades/types in; hiding fades the old words out. They play **on arriving at a frame** during playback (and in exported video) when the label's words or visibility differ from the frame before; ~700 ms or less (0.8 × that move's time). The Text panel sets the transition for new labels (default Fade).
+- **All frames or one frame** (label ⋯ menu, like the speed slider): **All frames** sets the label's `transition` and clears its per-frame ones; **Frame N** (from frame 2) sets only the change **arriving at that frame** in `frame.textFx[id]` — it does **not** carry forward, and picking the label's own transition clears it. `transitionAt(frames, i, t)` resolves it. The menu notes which frames have their own. + Frame doesn't copy them; deleting a frame or the label drops them.
+- **Only the change animates** when the words change (both frames show the label): the old and new words' shared start (and, for Typing, shared end) stay put.
+  - **Typing** backspaces the old middle, then types the new one: "Press high" → "Press very high" types just "very "; adding " now" types just that. Time scales with the keys pressed.
+  - **Fade / Dissolve** draw the shared start and the box (new size) solid on a copy underneath, and fade only the rest: the old words out, the new words in (with the label's own box hidden meanwhile). This applies when the text is one line or left-aligned; with centered/right-aligned multi-line text (where lines can shift) or nothing shared, the whole label fades.
+  - Showing / hiding still animates the whole label.
+- `animateText(group, textNode, kind, from, to, ms)` drives the Konva nodes directly: the group already shows the new state; the old words go on a throwaway clone that fades and is destroyed. A layout effect on `currentFrame` starts them (no flash), and cancels any that belong to another frame (stop, undo, picking a frame), restoring the label.
+
+### Deleting text
+
+- **Select** a label (click / tap) and a small **toolbar** appears under it (above when there's no room): **✎** edit words, **⋯** the label menu, **🗑** delete — with one frame it deletes; with more it opens the menu so you can hide it on this frame or delete it from all frames.
+- **Delete / Backspace** deletes the selected label from every frame (not while typing).
+- The label menu (right-click, or ⋯) has *Delete* / *Delete from all frames*.
+
+## Segmented Shapes (`shape.grid`, `frame.cells`)
+
+A **Rect** can be split into equal segments so a frame can spotlight one area of it and number the sequence.
+- **Split** (shape menu → *Split into segments*, Across × Down, 1–6 each, `SEG_MAX`) is stored on the shape as `grid: { cols, rows }` and is the **same on every frame**. Segments are numbered left → right, top → bottom (index 0 = top left). Changing the split clears that shape's segment tints and labels.
+- Each segment's **tint** (on/off) and **label** are **per frame**: `frame.cells[shapeId] = { off: [idx…], text: { idx: 'label' } }`. Default is all tinted, no labels. Like layer order, a frame without an entry uses the **nearest earlier frame's** (`cellsAt(frames, i, shapeId)`), so a change carries forward until a frame that has its own. Frame 1 stores in `frames[0]` like any other frame.
+- **Menu** (double-click the rect): a mini map of the segments plus a mode toggle — **Tint** (click a segment to turn its tint on/off), **Number** (click segments in order to label them 1, 2, 3…; click a numbered one to clear it), **Text** (click to type a label, up to 24 chars; Enter saves, Esc cancels, empty clears). Quick buttons: All on / All off / Clear labels. The label reads "Segments · frame N on" when there's more than one frame.
+- **Drawing:** the rect itself keeps its outline (fill goes transparent); a `listening={false}` Group under it draws the tinted segments (the style's fill: solid for *Filled*, `color + '59'` otherwise), dashed dividers in the shape color, and the labels (bold white with a shadow, sized to fit the segment). `syncSegments` keeps the Group with the rect while it's dragged or resized; `handleShapeTransformEnd` resets its scale.
+- During playback segments switch **when objects arrive** at a frame. **+ Frame** copies the current frame's segments; **deleting a frame** passes its entries to the next frame where it has none; deleting the shape strips its entries. Tint/label changes and the split are undoable (see Undo). Save and open carry both.
+- Only rects split (circles and triangles don't show the option).
 
 ## Removed Animation (`frame.skip[id]`, gliding frames)
 
@@ -299,7 +360,7 @@ Shared helpers: `softShadow(ctx, S, draw, dx, dy, blur, alpha)` (solid shape on 
 `isMobile = viewW < 640 || viewH < 500`; `mobileLand` when it's also wider than tall. JS sets the classes, so CSS and stage sizing always agree (no media queries).
 
 - **Upright:** top bar (sport, ↩ undo, ⋯ more) · field · timeline · tool dock.
-  - **Timeline** (`.m-timeline`): ▶/■, frame chips (only the selected frame shows its red × delete badge), **+** frame, speed chip (tap to cycle 1× → ½× → ⅓×), 〜 free path.
+  - **Timeline** (`.m-timeline`): ▶/■, frame chips (only the selected frame shows its red × delete badge), **+** frame, speed chip (shows the speed; tap for the speed slider sheet), 〜 free path.
   - **Tool dock:** the desktop sidebar laid along the bottom (Objects, Fields, Shapes, Text, Draw; the active tool is green).
   - **Drawers:** the side panels become bottom sheets up to 46vh, sitting above the dock, with a grab bar, **▾** peek (collapse to the header; tap the header to bring it back) and **✕** close (`PanelHeader`). A drawer peeks on its own when you start dragging an object or drawing. New objects land in the top part of the field while a drawer is open. Picking a field closes the drawer.
 - **Sideways:** a tool rail on the left, the timeline inside the top bar, and drawers sliding out from the rail (290px, no peek); new objects land on the right side.

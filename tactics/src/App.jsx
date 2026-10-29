@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, Fragment, lazy, Suspense } from 'react'
+import { useState, useRef, useCallback, useEffect, useLayoutEffect, Fragment, lazy, Suspense } from 'react'
 import { Stage, Layer, Rect, Circle, Line, Path, Arrow, Arc, Group, Image as KonvaImage, Ellipse, Transformer, Text as KonvaText } from 'react-konva'
 import './App.css'
 
@@ -39,11 +39,21 @@ const DEFAULT_SIZE = 3
 const getRadius    = (size) => SIZE_RADII[(size ?? DEFAULT_SIZE) - 1]
 
 const FRAME_MS  = 900
-const SPEED_OPTIONS = [
-  { label: 'Normal', value: 1,    short: '1×' },
-  { label: 'Slow',   value: 0.55, short: '½×' },
-  { label: 'V. Slow', value: 0.32, short: '⅓×' },
+// Speed slider steps, fast (left) → slow (right); Normal (1×) is the middle. 0.55 / 0.32 were
+// the old Slow / V. Slow buttons, so plays saved with those open at the same speed.
+const SPEED_STEPS = [
+  { value: 2,    short: '2×'    },
+  { value: 1.5,  short: '1.5×'  },
+  { value: 1.25, short: '1.25×' },
+  { value: 1,    short: '1×'    },
+  { value: 0.75, short: '¾×'    },
+  { value: 0.55, short: '½×'    },
+  { value: 0.32, short: '⅓×'    },
 ]
+const SPEED_NORMAL = 3
+const speedStep = (v) => SPEED_STEPS.reduce((best, o, i) => Math.abs(o.value - v) < Math.abs(SPEED_STEPS[best].value - v) ? i : best, SPEED_NORMAL)
+// A frame's own `speed` times the move INTO that frame; frames without one use the play speed
+const frameSpeed = (frames, i, playSpeed) => frames[i]?.speed ?? playSpeed
 const easeInOut = (t) => t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t
 
 // Walk a flat [x0,y0, x1,y1,...] polyline at progress t (0→1), returning {x,y}.
@@ -823,6 +833,146 @@ function layerOrder(frames, i, objects) {
   const listed = frames[k].order.map(id => byId.get(id)).filter(Boolean)
   const seen = new Set(listed.map(o => o.id))
   return [...listed, ...objects.filter(o => !seen.has(o.id))]   // anything newer goes on top
+}
+
+// ── Text sizing ───────────────────────────────────────────────────────────────
+// Width that fits a label's longest line exactly (no extra space, no wrapping), measured
+// with the same font the board draws it in.
+const TEXT_FONT = 'Segoe UI, system-ui, -apple-system, sans-serif'
+let _measureCtx = null
+function fitTextWidth(text, fontSize, fontStyle = 'normal') {
+  _measureCtx ??= document.createElement('canvas').getContext('2d')
+  const italic = fontStyle.includes('italic') ? 'italic ' : ''
+  const bold   = fontStyle.includes('bold')   ? 'bold '   : ''
+  _measureCtx.font = `${italic}${bold}${fontSize}px ${TEXT_FONT}`
+  const widest = Math.max(...String(text).split('\n').map(line => _measureCtx.measureText(line).width))
+  return Math.ceil(Math.max(fontSize * 0.6, widest) + 2)
+}
+// Trailing spaces on each line and blank lines at the ends would only add empty room
+const cleanText = (text) => String(text).split('\n').map(l => l.trimEnd()).join('\n').replace(/^\n+|\n+$/g, '')
+const textStyleOf = (tool) => [tool.bold && 'bold', tool.italic && 'italic'].filter(Boolean).join(' ') || 'normal'
+
+// ── Text per frame (`frame.texts`) ───────────────────────────────────────────
+// A label's words and whether it shows can change by frame. Frame 1 is the label itself
+// (`t.text`, `t.width`, `t.hidden`); a later frame can have its own entry
+// frame.texts[id] = { text, width, hidden }, and frames without one use the nearest earlier
+// frame's, so a change carries forward until a frame that has its own. Position, size,
+// style and the transition are the same on every frame.
+const TEXT_TRANSITIONS = [
+  { id: 'none',     label: 'None'     },
+  { id: 'fade',     label: 'Fade'     },
+  { id: 'dissolve', label: 'Dissolve' },
+  { id: 'type',     label: 'Typing'   },
+]
+// The transition played on arriving at frame i: that frame's own (`frame.textFx[id]`, set
+// from the label menu with "Frame N"), else the label's (`t.transition`, "All frames").
+// A frame's own doesn't carry forward.
+const transitionAt = (frames, i, t) => frames[i]?.textFx?.[t.id] ?? t.transition ?? 'none'
+function textAt(frames, i, t) {
+  for (let k = Math.min(i, frames.length - 1); k > 0; k--) {
+    const e = frames[k]?.texts?.[t.id]
+    if (e) return { text: e.text, width: e.width, hidden: !!e.hidden }
+  }
+  return { text: t.text, width: t.width, hidden: !!t.hidden }
+}
+
+// Plays a label's change on arriving at a frame (`from` / `to` are its states on the frame
+// it left and the one it reached; null when hidden there). The group already shows `to`.
+// When both show words, only the part that changed animates: Typing backspaces the old
+// middle and types the new one (the shared start and end stay put); Fade / Dissolve keep the
+// shared start and the box solid and fade just the rest (whole label when nothing's shared,
+// or when centered / right-aligned lines could shift). Returns a cancel function.
+function animateText(group, textNode, kind, from, to, ms) {
+  const layer = group.getLayer()
+  const bg    = group.findOne('Rect')
+  const ghosts = []
+  let raf = 0, done = false
+  const copy = (text, width, { withBg = true } = {}) => {
+    const c = group.clone({ listening: false, visible: true, opacity: 1, draggable: false })
+    const ct = c.findOne('Text'), cb = c.findOne('Rect')
+    ct.text(text); ct.width(width)
+    if (cb) { if (withBg) { cb.width(width + 12); cb.height(ct.fontSize() * (text.split('\n').length + 0.1) + 8) } else cb.visible(false) }
+    layer.add(c); c.zIndex(Math.max(0, group.zIndex()))   // just under the label
+    ghosts.push(c)
+    return c
+  }
+
+  // Shared start / end of the old and new words (end only used by Typing)
+  const a = from?.text ?? '', b = to?.text ?? ''
+  let pre = 0
+  while (pre < a.length && pre < b.length && a[pre] === b[pre]) pre++
+  let suf = 0
+  while (suf < a.length - pre && suf < b.length - pre && a[a.length - 1 - suf] === b[b.length - 1 - suf]) suf++
+  const both = !!from && !!to
+  const lines = Math.max(a.split('\n').length, b.split('\n').length)
+  const partial = both && pre > 0 && (lines === 1 || textNode.align() === 'left')
+
+  let total = ms, step
+  if (kind === 'type' && to) {
+    // Backspace the old middle, then type the new one
+    const head = b.slice(0, pre), tail = b.slice(b.length - suf)
+    const oldMid = both ? a.slice(pre, a.length - suf) : '', newMid = b.slice(pre, b.length - suf)
+    const keys = oldMid.length + newMid.length
+    total = Math.min(1600, Math.max(250, keys * 45))
+    textNode.text(head + oldMid + tail)
+    step = (p) => {
+      const k = Math.round(keys * p)
+      textNode.text(k <= oldMid.length ? head + oldMid.slice(0, oldMid.length - k) + tail : head + newMid.slice(0, k - oldMid.length) + tail)
+    }
+  } else if (kind === 'type') {
+    const g = copy(a, from.width)            // hiding: old words fade out
+    step = (p) => g.opacity(1 - p)
+  } else if (partial) {
+    // Shared start + box stay solid (new box size); old ending fades out, new ending in
+    copy(b.slice(0, pre), to.width)                 // solid start and box, bottom
+    const old = copy(a, from.width, { withBg: false })
+    bg?.opacity(0)
+    group.opacity(0)
+    step = kind === 'dissolve'
+      ? (p) => { old.opacity(1 - p); group.opacity(p) }
+      : (p) => { old.opacity(Math.max(0, 1 - p * 2)); group.opacity(Math.max(0, p * 2 - 1)) }
+  } else {
+    const old = from ? copy(a, from.width) : null
+    if (to) group.opacity(0)
+    step = kind === 'dissolve' || !from || !to
+      ? (p) => { old?.opacity(1 - p); if (to) group.opacity(p) }       // cross-fade (or a plain fade in / out)
+      : (p) => { old.opacity(Math.max(0, 1 - p * 2)); group.opacity(Math.max(0, p * 2 - 1)) }   // old out, then new in
+  }
+
+  const t0 = performance.now()
+  const finish = () => {
+    if (done) return
+    done = true
+    cancelAnimationFrame(raf)
+    ghosts.forEach(g => g.destroy())
+    bg?.opacity(1)
+    if (to) { group.opacity(1); textNode.text(b) }
+    layer.batchDraw()
+  }
+  const tick = (now) => {
+    const p = Math.min(1, Math.max(0, (now - t0) / total))
+    step(p)
+    layer.batchDraw()
+    if (p < 1) raf = requestAnimationFrame(tick); else finish()
+  }
+  raf = requestAnimationFrame(tick)
+  return finish
+}
+
+// ── Segmented shapes (`shape.grid`, `frame.cells`) ────────────────────────────
+// A rect can be split into grid.cols × grid.rows equal segments, numbered left → right,
+// top → bottom. Each segment's tint and label are per frame: frame.cells[shapeId] =
+// { off: [idx…], text: { idx: 'label' } }. A frame without an entry for a shape uses the
+// nearest earlier frame's, so a change carries forward until a frame that has its own.
+const NO_CELLS = { off: [], text: {} }
+const SEG_MAX  = 6
+const gridOf   = (s) => ({ cols: s?.grid?.cols ?? 1, rows: s?.grid?.rows ?? 1 })
+function cellsAt(frames, i, shapeId) {
+  for (let k = Math.min(i, frames.length - 1); k >= 0; k--) {
+    const c = frames[k]?.cells?.[shapeId]
+    if (c) return c
+  }
+  return NO_CELLS
 }
 
 // ── Play files ────────────────────────────────────────────────────────────────
@@ -1990,6 +2140,8 @@ export default function App() {
   const [currentFrame, setCurrentFrame] = useState(0)
   const [isPlaying, setIsPlaying]       = useState(false)
   const [playSpeed, setPlaySpeed]       = useState(1)
+  const [speedScope, setSpeedScope]     = useState('all')   // speed slider changes 'all' frames or just 'frame'
+  const [speedSheetOpen, setSpeedSheetOpen] = useState(false) // phone: speed slider sheet
 
   // UI state
   const [activePanel, setActivePanel] = useState(null)
@@ -2019,6 +2171,8 @@ export default function App() {
   const [selectedShapeId, setSelectedShapeId] = useState(null)
   const [shapeTool,       setShapeTool]       = useState({ type: 'rect', color: '#3b82f6', style: 'outline', keepRatio: false })
   const [shapeCtxMenu,    setShapeCtxMenu]    = useState(null)
+  const [cellMode,        setCellMode]        = useState('tint')   // segment clicks: 'tint' | 'number' | 'text'
+  const [cellEdit,        setCellEdit]        = useState(null)     // { idx, value } while typing a segment label
 
   const [textItems,      setTextItems]      = useState([])
   const [selectedTextId, setSelectedTextId] = useState(null)
@@ -2030,8 +2184,12 @@ export default function App() {
     fill: '#ffffff',
     background: 'transparent',
     align: 'left',
+    transition: 'fade',
   })
   const [textCtxMenu,    setTextCtxMenu]    = useState(null)
+  const [textFxScope,    setTextFxScope]    = useState('all')    // label menu transition: 'all' frames or this 'frame'
+  const [draggingText,   setDraggingText]   = useState(false)   // hides the label toolbar mid-drag
+  const [textDraft,      setTextDraft]      = useState('')   // Text panel: what Add Text will place
 
   // Active canvas dims — must be computed before any callbacks that reference them
   // Phones (narrow, or short when held sideways) get the drawer layout; sideways phones put
@@ -2058,13 +2216,21 @@ export default function App() {
   const hitRadius = (o) => Math.max(objRadius(o), isMobile ? 18 / fieldScale : 0)
 
   // ── History (undo) ───────────────────────────────────────────────────────────
+  // Every board edit saves the whole board first (objects, frames, paths, drawings, shapes,
+  // text, play speed); undo puts the last one back
   const historyRef         = useRef([])
   const placedObjectsRef   = useRef([])
   const framesRef          = useRef([])
   const freePathsRef       = useRef({})
+  const drawingsRef        = useRef([])
+  const textItemsRef       = useRef([])
+  const playSpeedRef       = useRef(1)
   placedObjectsRef.current = placedObjects
   framesRef.current        = frames
   freePathsRef.current     = freePaths
+  drawingsRef.current      = drawings
+  textItemsRef.current     = textItems
+  playSpeedRef.current     = playSpeed
 
   const nextId           = useRef(0)
   const nextDrawId       = useRef(0)
@@ -2076,6 +2242,7 @@ export default function App() {
   const recorderRef      = useRef(null)
   const exportStartedRef = useRef(false)  // flips true once isPlaying goes true during export
   const shapeRefs      = useRef({})
+  const segRefs        = useRef({})  // segment overlays of split rects, by shape id
   const transformerRef = useRef(null)
   const nextShapeId    = useRef(0)
   const shapesRef      = useRef([])  // mirrors shapes state for use inside event handlers
@@ -2346,26 +2513,28 @@ export default function App() {
     })
   }, [getLayerPos])
 
+  // Keeps the stroke if it's longer than a tap (adding it outside the setCurrentDraw updater:
+  // updaters can run twice, which added every stroke twice)
   const handleDrawEnd = useCallback(() => {
-    pushHistory()
-    setCurrentDraw(prev => {
-      if (!prev) return prev
-      const pts = prev.points
-      const dx = pts[pts.length - 2] - pts[0]
-      const dy = pts[pts.length - 1] - pts[1]
-      if (Math.sqrt(dx * dx + dy * dy) > 5) {
-        setDrawings(d => [...d, prev])
-      }
-      return null
-    })
-  }, [])
+    if (!currentDraw) return
+    const pts = currentDraw.points
+    const dx = pts[pts.length - 2] - pts[0]
+    const dy = pts[pts.length - 1] - pts[1]
+    if (Math.sqrt(dx * dx + dy * dy) > 5) {
+      pushHistory()
+      setDrawings(d => [...d, currentDraw])
+    }
+    setCurrentDraw(null)
+  }, [currentDraw])
 
   const deleteDrawing = useCallback((id) => {
+    pushHistory()
     setDrawings(prev => prev.filter(d => d.id !== id))
     setDrawCtxMenu(null)
   }, [])
 
   const moveDrawing = useCallback((id, dx, dy) => {
+    pushHistory()
     setDrawings(prev => prev.map(d =>
       d.id !== id ? d : {
         ...d,
@@ -2383,6 +2552,7 @@ export default function App() {
       : type === 'triangle'
         ? { width: 100, height: 87  }
         : { width: 100, height: 100 }
+    pushHistory()
     setShapes(prev => [...prev, {
       id, type,
       x: aCX + (Math.random() - 0.5) * 80,
@@ -2395,7 +2565,13 @@ export default function App() {
   }, [shapeTool, aCX, aCY])
 
   const deleteShape = useCallback((id) => {
+    pushHistory()
     setShapes(prev => prev.filter(s => s.id !== id))
+    setFrames(prev => prev.map(f => {
+      if (!f.cells?.[id]) return f
+      const { [id]: _, ...cells } = f.cells   // eslint-disable-line no-unused-vars
+      return { ...f, cells }
+    }))
     setSelectedShapeId(prev => prev === id ? null : prev)
     setShapeCtxMenu(null)
   }, [])
@@ -2404,10 +2580,12 @@ export default function App() {
     const node = e.target
     const shape = shapesRef.current.find(s => s.id === id)
     if (!shape) return
+    pushHistory()
     const scX = node.scaleX(), scY = node.scaleY()
     const newW = Math.max(10, Math.abs(shape.width  * scX))
     const newH = Math.max(10, Math.abs(shape.height * scY))
     node.scaleX(1); node.scaleY(1)
+    segRefs.current[id]?.scale({ x: 1, y: 1 })
     // Bake scale back into native Konva props to avoid flash before React re-renders
     if (shape.type === 'rect') {
       node.width(newW); node.height(newH)
@@ -2424,32 +2602,65 @@ export default function App() {
     ))
   }, [])
 
-  // ── Text tool ────────────────────────────────────────────────────────────────
-
-  const openTextEdit = useCallback((id) => {
-    const group = textGroupRefs.current[id]
-    if (!group || !stageRef.current) return
-    const stageEl = stageRef.current.container()
-    const stageRect = stageEl.getBoundingClientRect()
-    const rect = group.getClientRect({ relativeTo: stageRef.current })
-    setSelectedTextId(null)
-    setEditingText({
-      id,
-      x: stageRect.left + rect.x,
-      y: stageRect.top  + rect.y,
-      width:  Math.max(60,  rect.width),
-      height: Math.max(24, rect.height),
-    })
+  // Segments: the split is the same on every frame (changing it clears the segments'
+  // tints and labels); tint and labels are set on the current frame and carry forward
+  const setShapeGrid = useCallback((id, cols, rows) => {
+    cols = Math.max(1, Math.min(SEG_MAX, cols)); rows = Math.max(1, Math.min(SEG_MAX, rows))
+    pushHistory()
+    setShapes(prev => prev.map(s => s.id === id ? { ...s, grid: { cols, rows } } : s))
+    setFrames(prev => prev.map(f => {
+      if (!f.cells?.[id]) return f
+      const { [id]: _, ...cells } = f.cells   // eslint-disable-line no-unused-vars
+      return { ...f, cells }
+    }))
+    setCellEdit(null)
   }, [])
 
+  const setShapeCells = useCallback((id, fn) => {
+    pushHistory()
+    setFrames(prev => prev.map((f, i) => i === currentFrame
+      ? { ...f, cells: { ...f.cells, [id]: fn(cellsAt(prev, currentFrame, id)) } }
+      : f))
+  }, [currentFrame])
+
+  // Keeps a segmented rect's overlay with the rect while it's dragged or resized
+  const syncSegments = useCallback((id, node) => {
+    segRefs.current[id]?.setAttrs({ x: node.x(), y: node.y(), rotation: node.rotation(), scaleX: node.scaleX(), scaleY: node.scaleY() })
+  }, [])
+
+  // ── Text tool ────────────────────────────────────────────────────────────────
+
+  // Edits a label in place: the editor sits exactly over the text on screen (its on-screen
+  // top-left, size and rotation, through the board's fit-to-screen scale) so nothing moves
+  const openTextEdit = useCallback((id) => {
+    const node = textNodeRefs.current[id]
+    if (!node || !stageRef.current) return
+    const stageRect = stageRef.current.container().getBoundingClientRect()
+    const abs = node.getAbsolutePosition()
+    const k   = node.getAbsoluteScale().x
+    setSelectedTextId(null)
+    setEditingText({ id, x: stageRect.left + abs.x, y: stageRect.top + abs.y, k })
+  }, [])
+
+  // Places the typed text (Text panel) sized to fit it, centered on the field, and selects it
+  // so it can be dragged into place. Phones tuck the drawer away so the field is clear.
   const addText = useCallback(() => {
+    const text = cleanText(textDraft)
+    if (!text.trim()) return
+    pushHistory()
     const id = nextTextId.current++
-    const fontStyle = [textTool.bold && 'bold', textTool.italic && 'italic'].filter(Boolean).join(' ') || 'normal'
+    const fontStyle = textStyleOf(textTool)
+    const width = fitTextWidth(text, textTool.fontSize, fontStyle)
+    const lines = text.split('\n').length
+    // Added on a later frame: it shows from that frame on (hidden before it)
+    if (currentFrame > 0) setFrames(prev => prev.map((f, i) => i === currentFrame ? { ...f, texts: { ...f.texts, [id]: { text, width, hidden: false } } } : f))
     setTextItems(prev => [...prev, {
       id,
-      x: aCX + (Math.random() - 0.5) * 120,
-      y: aCY + (Math.random() - 0.5) * 80,
-      text: 'Label',
+      ...(currentFrame > 0 ? { hidden: true } : {}),
+      transition: textTool.transition,
+      x: aCX - width / 2 + (Math.random() - 0.5) * 40,
+      y: aCY - (lines * textTool.fontSize) / 2 + (Math.random() - 0.5) * 30,
+      text,
       fontSize: textTool.fontSize,
       fontStyle,
       fill: textTool.fill,
@@ -2457,19 +2668,68 @@ export default function App() {
       align: textTool.align,
       rotation: 0,
       scaleX: 1, scaleY: 1,
-      width: 110,
+      width,
     }])
-    // Defer edit until node is mounted
-    requestAnimationFrame(() => requestAnimationFrame(() => openTextEdit(id)))
-  }, [textTool, aCX, aCY, openTextEdit])
+    setTextDraft('')
+    setSelectedShapeId(null)
+    setSelectedTextId(id)
+    if (isMobileRef.current) setPanelMin(true)
+  }, [textDraft, textTool, aCX, aCY, currentFrame])
 
+  // Deletes a label from every frame
   const deleteText = useCallback((id) => {
+    pushHistory()
     setTextItems(prev => prev.filter(t => t.id !== id))
+    setFrames(prev => prev.map(f => {
+      if (!f.texts?.[id] && !f.textFx?.[id]) return f
+      const { [id]: _, ...texts } = f.texts ?? {}     // eslint-disable-line no-unused-vars
+      const { [id]: __, ...textFx } = f.textFx ?? {}  // eslint-disable-line no-unused-vars
+      return { ...f, texts, textFx }
+    }))
     setSelectedTextId(prev => prev === id ? null : prev)
     setTextCtxMenu(null)
   }, [])
 
+  // Changes a label's words / visibility on the current frame (frame 1 changes the label
+  // itself); it carries forward to later frames that don't have their own. `onlyHere` keeps
+  // the next frame as it was (e.g. hide on this frame only).
+  const setTextState = useCallback((id, patch, onlyHere = false) => {
+    const t = textItems.find(ti => ti.id === id)
+    if (!t) return
+    pushHistory()
+    const next = currentFrame + 1
+    const keep = onlyHere && next < frames.length && !frames[next].texts?.[id] ? textAt(frames, next, t) : null
+    if (currentFrame === 0) setTextItems(prev => prev.map(ti => ti.id === id ? { ...ti, ...patch } : ti))
+    setFrames(prev => prev.map((f, i) => {
+      if (i === currentFrame && i > 0) return { ...f, texts: { ...f.texts, [id]: { ...textAt(prev, i, t), ...patch } } }
+      if (i === next && keep) return { ...f, texts: { ...f.texts, [id]: keep } }
+      return f
+    }))
+  }, [textItems, frames, currentFrame])
+
+  // All frames: sets the label's transition and clears its per-frame ones. Frame N: just the
+  // change arriving at that frame (back to the label's own clears it).
+  const setTextTransition = useCallback((id, transition, frame = null) => {
+    const t = textItems.find(ti => ti.id === id)
+    if (!t) return
+    pushHistory()
+    const drop = (f) => {
+      if (!f.textFx?.[id]) return f
+      const { [id]: _, ...textFx } = f.textFx   // eslint-disable-line no-unused-vars
+      return { ...f, textFx }
+    }
+    if (frame === null) {
+      setTextItems(prev => prev.map(ti => ti.id === id ? { ...ti, transition } : ti))
+      setFrames(prev => prev.map(drop))
+      return
+    }
+    setFrames(prev => prev.map((f, i) => i !== frame ? f
+      : transition === (t.transition ?? 'none') ? drop(f)
+      : { ...f, textFx: { ...f.textFx, [id]: transition } }))
+  }, [textItems])
+
   const handleTextTransformEnd = useCallback((id, e) => {
+    pushHistory()
     const node = e.target
     setTextItems(prev => prev.map(t =>
       t.id === id
@@ -2520,6 +2780,7 @@ export default function App() {
 
   // Resets everything back to a blank board
   const clearBoard = useCallback(() => {
+    pushHistory()   // Clear can be undone (opening a play or switching sport then empties history)
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
     rafRef.current = null
     setIsPlaying(false)
@@ -2622,6 +2883,10 @@ export default function App() {
         placedObjects: placedObjectsRef.current,
         frames:        framesRef.current,
         freePaths:     freePathsRef.current,
+        drawings:      drawingsRef.current,
+        shapes:        shapesRef.current,
+        textItems:     textItemsRef.current,
+        playSpeed:     playSpeedRef.current,
       },
     ]
   }, [])
@@ -2633,9 +2898,33 @@ export default function App() {
     setPlacedObjects(snap.placedObjects)
     setFrames(snap.frames)
     setFreePaths(snap.freePaths)
-    setCurrentFrame(0)
+    setDrawings(snap.drawings)
+    setShapes(snap.shapes)
+    shapesRef.current = snap.shapes
+    setTextItems(snap.textItems)
+    setPlaySpeed(snap.playSpeed)
+    setCurrentFrame(f => Math.min(f, snap.frames.length - 1))   // stay on this frame when it still exists
     setContextMenu(null)
+    setDrawCtxMenu(null)
+    setShapeCtxMenu(null)
+    setTextCtxMenu(null)
+    setEditingText(null)
+    setCellEdit(null)
+    setSelectedShapeId(prev => snap.shapes.some(sh => sh.id === prev) ? prev : null)
+    setSelectedTextId(prev => snap.textItems.some(t => t.id === prev) ? prev : null)
   }, [])
+
+  // ⌘Z / Ctrl+Z undoes (not while typing in a box, or playing)
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!(e.metaKey || e.ctrlKey) || e.shiftKey || e.key.toLowerCase() !== 'z') return
+      if (e.target.closest?.('input, textarea, [contenteditable="true"]') || isPlaying) return
+      e.preventDefault()
+      undo()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [undo, isPlaying])
 
   // ── Frame controls ───────────────────────────────────────────────────────────
 
@@ -2651,9 +2940,14 @@ export default function App() {
     pushHistory()
     const copy = { ...frames[currentFrame].positions }
     const order = frames.some(f => f.order) ? { order: layerOrder(frames, currentFrame, placedObjects).map(o => o.id) } : {}
-    setFrames(prev => [...prev, { positions: copy, ...order }])
+    // …and the segments of split shapes as they look on the current frame
+    const split = shapes.filter(sh => frames.some(f => f.cells?.[sh.id]))
+    const cells = split.length ? { cells: Object.fromEntries(split.map(sh => [sh.id, cellsAt(frames, currentFrame, sh.id)])) } : {}
+    // …and labels' words / visibility, once any frame has its own
+    const texts = frames.some(f => f.texts) ? { texts: Object.fromEntries(textItems.map(t => [t.id, textAt(frames, currentFrame, t)])) } : {}
+    setFrames(prev => [...prev, { positions: copy, ...order, ...cells, ...texts }])
     setCurrentFrame(frames.length)   // frames.length is pre-update = new frame's index
-  }, [frames, currentFrame, isPlaying, placedObjects])
+  }, [frames, currentFrame, isPlaying, placedObjects, shapes, textItems])
 
   const deleteFrame = useCallback((idx) => {
     if (frames.length <= 1 || isPlaying) return
@@ -2661,6 +2955,19 @@ export default function App() {
     // Frames after it keep the layer order they showed: it passes to the next frame (or,
     // when frame 1 goes, the new frame 1's order becomes the base order)
     const kept = frames.map((f, i) => i === idx + 1 && !f.order && (idx === 0 || frames[idx].order) ? { ...f, order: layerOrder(frames, i, placedObjects).map(o => o.id) } : f)
+    // Same for segment tints / labels: the deleted frame's pass to the next frame where it has none
+    if (frames[idx].cells && kept[idx + 1]) kept[idx + 1] = { ...kept[idx + 1], cells: { ...frames[idx].cells, ...kept[idx + 1].cells } }
+    // …and labels: the next frame keeps how it looked; deleting frame 1 makes frame 2 the labels' base
+    if (kept[idx + 1]) {
+      const texts = Object.fromEntries(textItems.map(t => [t.id, textAt(frames, idx + 1, t)]))
+      if (idx === 0) {
+        setTextItems(prev => prev.map(t => texts[t.id] ? { ...t, ...texts[t.id] } : t))
+        const { texts: _, ...rest } = kept[1]   // eslint-disable-line no-unused-vars
+        kept[1] = rest
+      } else if (frames[idx].texts) {
+        kept[idx + 1] = { ...kept[idx + 1], texts: { ...frames[idx].texts, ...kept[idx + 1].texts } }
+      }
+    }
     if (idx === 0) {
       setPlacedObjects(layerOrder(kept, 1, placedObjects))
       const { order, ...rest } = kept[1]   // eslint-disable-line no-unused-vars
@@ -2680,7 +2987,7 @@ export default function App() {
       })
       return next
     })
-  }, [frames, isPlaying, placedObjects])
+  }, [frames, isPlaying, placedObjects, textItems])
 
   // ── Playback ─────────────────────────────────────────────────────────────────
 
@@ -2731,7 +3038,7 @@ export default function App() {
       })
 
       const tick = (now) => {
-        const t = Math.min((now - startTime) / (FRAME_MS / playSpeed), 1)
+        const t = Math.min((now - startTime) / (FRAME_MS / frameSpeed(frames, seg + 1, playSpeed)), 1)
 
         ids.forEach(id => {
           const { p, n } = spans[id]
@@ -2762,6 +3069,82 @@ export default function App() {
 
     rafRef.current = requestAnimationFrame(runSegment)
   }, [frames, isPlaying, freePaths, playSpeed])
+
+  // Where the selected label's toolbar goes: measured after the label is drawn (it may be
+  // brand new); below it, or above (past the rotate handle) when there's no room below
+  const [textBar, setTextBar] = useState(null)
+  useLayoutEffect(() => {
+    const g = selectedTextId !== null ? textGroupRefs.current[selectedTextId] : null
+    if (!g || !stageRef.current) { setTextBar(null); return }
+    const c = stageRef.current.container().getBoundingClientRect()
+    const r = g.getClientRect()
+    const left = Math.round(Math.max(8, Math.min(c.left + r.x + r.width / 2 - 66, viewW - 140)))
+    const below = c.top + r.y + r.height + 14
+    const top  = Math.round(below + 42 > viewH ? c.top + r.y - 100 : below)   // above clears the rotate handle
+    setTextBar(prev => prev?.left === left && prev?.top === top ? prev : { left, top })
+  }, [selectedTextId, textItems, frames, currentFrame, viewW, viewH, activePanel, panelMin, draggingText, editingText])
+
+  // Delete / Backspace removes the selected label (from every frame), unless you're typing
+  useEffect(() => {
+    if (selectedTextId === null) return
+    const onKey = (e) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      if (e.target.closest?.('input, textarea, [contenteditable="true"]') || editingText || isPlaying) return
+      e.preventDefault()
+      deleteText(selectedTextId)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedTextId, editingText, isPlaying, deleteText])
+
+  // Text transitions: while playing, a label whose words or visibility change on arriving
+  // at a frame plays its transition. Layout effect so a fading-in label never flashes first.
+  const textAnimsRef  = useRef({})   // id → { frame, cancel }
+  const prevFrameRef  = useRef(0)
+  useLayoutEffect(() => {
+    const prev = prevFrameRef.current
+    prevFrameRef.current = currentFrame
+    // Anything still running for another frame is stale (stopped, undone, a frame picked)
+    Object.entries(textAnimsRef.current).forEach(([id, a]) => {
+      if (a.frame === currentFrame && isPlaying) return
+      if (a.frame === currentFrame && !isPlaying && prev === currentFrame) return   // playback just ended: let it finish
+      a.cancel()
+      const t = textItems.find(ti => ti.id === Number(id))
+      const g = textGroupRefs.current[id]
+      if (t && g) g.opacity(textAt(frames, currentFrame, t).hidden ? 0.3 : 1)
+      delete textAnimsRef.current[id]
+    })
+    if (!isPlaying || currentFrame !== prev + 1) return
+    const ms = Math.min(700, 0.8 * FRAME_MS / frameSpeed(frames, currentFrame, playSpeed))
+    textItems.forEach(t => {
+      const kind = transitionAt(frames, currentFrame, t)
+      const a = textAt(frames, prev, t), b = textAt(frames, currentFrame, t)
+      if (kind === 'none' || (a.hidden && b.hidden) || (!a.hidden && !b.hidden && a.text === b.text)) return
+      const group = textGroupRefs.current[t.id], node = textNodeRefs.current[t.id]
+      if (!group || !node) return
+      textAnimsRef.current[t.id]?.cancel()
+      const cancel = animateText(group, node, kind, a.hidden ? null : a, b.hidden ? null : b, ms)
+      textAnimsRef.current[t.id] = { frame: currentFrame, cancel }
+    })
+  }, [currentFrame, isPlaying]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Speed slider. All frames: sets the play speed and clears every frame's own speed.
+  // This frame: gives the current frame its own speed (back to the play speed clears it).
+  const frameScope = speedScope === 'frame' && currentFrame > 0
+  const setSpeed = useCallback((step) => {
+    const v = SPEED_STEPS[step].value
+    pushHistory()
+    if (!frameScope) {
+      setPlaySpeed(v)
+      setFrames(prev => prev.some(f => f.speed) ? prev.map(({ speed, ...f }) => f) : prev)   // eslint-disable-line no-unused-vars
+      return
+    }
+    setFrames(prev => prev.map((f, i) => {
+      if (i !== currentFrame) return f
+      const { speed, ...rest } = f   // eslint-disable-line no-unused-vars
+      return v === playSpeed ? rest : { ...rest, speed: v }
+    }))
+  }, [frameScope, currentFrame, playSpeed])
 
   const stop = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -2850,10 +3233,54 @@ export default function App() {
   }
 
   const ctxObj  = contextMenu ? placedObjects.find(o => o.id === contextMenu.objId) : null
-  const canPlay = !isPlaying && frames.length >= 2 && placedObjects.length > 0
+  // Something to play: objects moving, or labels / segmented shapes changing between frames
+  const hasContent = placedObjects.length > 0 || textItems.length > 0 || shapes.length > 0
+  const canPlay = !isPlaying && frames.length >= 2 && hasContent
   const panelHeader = (title) => (
     <PanelHeader title={title} min={panelMin} onMin={() => setPanelMin(m => !m)} onClose={() => setActivePanel(null)} />
   )
+  const customSpeeds = frames.filter(f => f.speed).length
+  const shownSpeed    = frameScope ? frameSpeed(frames, currentFrame, playSpeed) : playSpeed
+  const speedControl = (
+    <div className="speed-ctl">
+      <div className="speed-row">
+        <span className="speed-end">Fast</span>
+        <input
+          type="range" min={0} max={SPEED_STEPS.length - 1} step={1}
+          value={speedStep(shownSpeed)}
+          onChange={(e) => setSpeed(Number(e.target.value))}
+          disabled={isPlaying}
+          aria-label="Playback speed"
+          title={frameScope ? `Speed of the move into frame ${currentFrame + 1}` : 'Speed of every move'}
+        />
+        <span className="speed-end">Slow</span>
+        <b className="speed-val">{SPEED_STEPS[speedStep(shownSpeed)].short}</b>
+        {customSpeeds > 0 && !frameScope && (
+          <button
+            className="speed-clear"
+            onClick={() => { pushHistory(); setFrames(prev => prev.map(({ speed, ...f }) => f)) }}   // eslint-disable-line no-unused-vars
+            disabled={isPlaying}
+            title={`Clear ${customSpeeds} frame speed${customSpeeds > 1 ? 's' : ''} — every frame uses this speed`}
+          >↺</button>
+        )}
+      </div>
+      <div className="ctx-toggle speed-scope">
+        <button
+          className={!frameScope ? 'active' : ''}
+          onClick={() => setSpeedScope('all')}
+          disabled={isPlaying}
+          title={customSpeeds ? `Moving the slider sets every frame (clears ${customSpeeds} frame speed${customSpeeds > 1 ? 's' : ''})` : 'Moving the slider sets every frame'}
+        >All frames</button>
+        <button
+          className={frameScope ? 'active' : ''}
+          onClick={() => setSpeedScope('frame')}
+          disabled={isPlaying || currentFrame === 0}
+          title={currentFrame === 0 ? 'Frame 1 is the start: pick a later frame to set the speed of the move into it' : `Only the move into frame ${currentFrame + 1}`}
+        >{currentFrame === 0 ? 'This frame' : `Frame ${currentFrame + 1}`}</button>
+      </div>
+    </div>
+  )
+
   const frameStrip = (
     <div className="frame-strip">
       {frames.map((_, i) => (
@@ -2864,6 +3291,7 @@ export default function App() {
             disabled={isPlaying}
           >
             {i + 1}
+            {frames[i].speed && <span className="frame-speed" title="This frame has its own speed">{SPEED_STEPS[speedStep(frames[i].speed)].short}</span>}
           </button>
           {frames.length > 1 && (
             <button
@@ -2886,11 +3314,11 @@ export default function App() {
       {frameStrip}
       <button className="m-add-frame" onClick={addFrame} disabled={isPlaying} aria-label="Add frame" title="Add frame">+</button>
       <button
-        className="m-chip"
-        onClick={() => setPlaySpeed(v => SPEED_OPTIONS[(SPEED_OPTIONS.findIndex(o => o.value === v) + 1) % SPEED_OPTIONS.length].value)}
+        className={`m-chip${speedSheetOpen ? ' active' : ''}`}
+        onClick={() => setSpeedSheetOpen(true)}
         disabled={isPlaying}
         title="Playback speed"
-      >{SPEED_OPTIONS.find(o => o.value === playSpeed)?.short}</button>
+      >{SPEED_STEPS[speedStep(shownSpeed)].short}</button>
       <button
         className={`m-chip${freePathMode ? ' active' : ''}`}
         onClick={() => setFreePathMode(p => !p)}
@@ -2996,7 +3424,30 @@ export default function App() {
         {panelHeader('Text')}
         <div className="draw-panel">
 
-          <button className="add-text-btn" onClick={addText}>+ Add Text</button>
+          <textarea
+            className="text-draft"
+            rows={2}
+            placeholder="Type your text…"
+            value={textDraft}
+            onChange={(e) => setTextDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); addText() } }}
+          />
+          <div className="text-preview" title="Preview">
+            <span
+              style={{
+                fontSize: Math.min(40, Math.max(11, textTool.fontSize * fieldScale)),
+                fontFamily: TEXT_FONT,
+                fontWeight: textTool.bold ? 'bold' : 'normal',
+                fontStyle:  textTool.italic ? 'italic' : 'normal',
+                color:      textTool.fill,
+                background: textTool.background === 'transparent' ? 'none' : textTool.background,
+                textAlign:  textTool.align,
+                outline:    '1.5px dashed rgba(96,165,250,0.8)',
+              }}
+            >{textDraft.trim() ? cleanText(textDraft) : <i className="text-preview-empty">Preview</i>}</span>
+          </div>
+          <button className="add-text-btn" onClick={addText} disabled={!textDraft.trim()}>+ Add Text</button>
+          <div className="text-hint">The box fits your words. Double-click text on the field to edit it.</div>
 
           <div className="draw-section-label">Size</div>
           <div className="text-size-row">
@@ -3086,6 +3537,14 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          <div className="draw-section-label">Transition</div>
+          <div className="ctx-toggle text-trans">
+            {TEXT_TRANSITIONS.map(o => (
+              <button key={o.id} className={textTool.transition === o.id ? 'active' : ''} onClick={() => setTextTool(t => ({ ...t, transition: o.id }))}>{o.label}</button>
+            ))}
+          </div>
+          <div className="text-hint">Plays when a label's words change, or it shows or hides, between frames. Change any label's from its ⋯ menu.</div>
 
         </div>
       </aside>
@@ -3257,7 +3716,7 @@ export default function App() {
             <button
               className="export-btn"
               onClick={exportVideo}
-              disabled={isPlaying || isExporting || frames.length < 2 || placedObjects.length === 0}
+              disabled={isPlaying || isExporting || frames.length < 2 || !hasContent}
               title="Export animation as video"
             >
               {isExporting ? 'Recording…' : '⬇ Export'}
@@ -3325,7 +3784,9 @@ export default function App() {
             {shapes.map(shape => {
               const interactive = !isPlaying && activePanel !== 'draw'
               const isDashed = shape.style === 'dashed'
-              const fillColor = shape.style === 'fill'
+              const { cols, rows } = gridOf(shape)
+              const split = shape.type === 'rect' && cols * rows > 1
+              const fillColor = split ? 'transparent' : shape.style === 'fill'
                 ? shape.color
                 : shape.style === 'semi'
                   ? shape.color + '59'
@@ -3340,17 +3801,60 @@ export default function App() {
                 draggable: interactive,
                 onClick:    interactive ? (e) => { e.cancelBubble = true; setSelectedShapeId(shape.id); setSelectedTextId(null) } : undefined,
                 onTap:      interactive ? (e) => { e.cancelBubble = true; setSelectedShapeId(shape.id); setSelectedTextId(null) } : undefined,
-                onDragEnd:  (e) => setShapes(prev => prev.map(s => s.id === shape.id ? { ...s, x: e.target.x(), y: e.target.y() } : s)),
+                onDragEnd:  (e) => { pushHistory(); setShapes(prev => prev.map(s => s.id === shape.id ? { ...s, x: e.target.x(), y: e.target.y() } : s)) },
                 onTransformEnd: (e) => handleShapeTransformEnd(shape.id, e),
+                ...(split ? { onDragMove: (e) => syncSegments(shape.id, e.target), onTransform: (e) => syncSegments(shape.id, e.target) } : {}),
                 onDblClick: (e) => { e.cancelBubble = true; setShapeCtxMenu({ x: e.evt.clientX, y: e.evt.clientY, id: shape.id }) },
                 onDblTap:   (e) => { e.cancelBubble = true; const t = e.evt.changedTouches?.[0]; if (t) setShapeCtxMenu({ x: t.clientX, y: t.clientY, id: shape.id }) },
               }
               if (shape.type === 'rect') {
-                return (
+                const rect = (
                   <Rect key={shape.id} {...common}
                     width={shape.width} height={shape.height}
                     offsetX={shape.width / 2} offsetY={shape.height / 2}
                   />
+                )
+                if (!split) return rect
+                // Split rect: segments (tint on/off, label) drawn under the rect's own outline
+                const cells = cellsAt(frames, currentFrame, shape.id)
+                const on    = shape.style === 'fill' ? shape.color : shape.color + '59'
+                const cw = shape.width / cols, ch = shape.height / rows
+                return (
+                  <Fragment key={shape.id}>
+                    <Group
+                      ref={(node) => { if (node) segRefs.current[shape.id] = node; else delete segRefs.current[shape.id] }}
+                      x={shape.x} y={shape.y} rotation={shape.rotation}
+                      offsetX={shape.width / 2} offsetY={shape.height / 2}
+                      listening={false}
+                    >
+                      {Array.from({ length: cols * rows }, (_, i) => {
+                        const cx = (i % cols) * cw, cy = Math.floor(i / cols) * ch
+                        const label = cells.text[i]
+                        const fs = label ? Math.max(9, Math.min(Math.min(cw, ch) * 0.5, cw * 1.5 / label.length, 72)) : 0
+                        return (
+                          <Fragment key={i}>
+                            {!cells.off.includes(i) && <Rect x={cx} y={cy} width={cw} height={ch} fill={on} />}
+                            {label && (
+                              <KonvaText
+                                x={cx} y={cy} width={cw} height={ch}
+                                text={label} fontSize={fs} fontStyle="bold"
+                                fontFamily="Segoe UI, system-ui, -apple-system, sans-serif"
+                                fill="#ffffff" align="center" verticalAlign="middle" wrap="word"
+                                shadowColor="rgba(0,0,0,0.8)" shadowBlur={3} shadowOffsetX={1} shadowOffsetY={1}
+                              />
+                            )}
+                          </Fragment>
+                        )
+                      })}
+                      {Array.from({ length: cols - 1 }, (_, i) => (
+                        <Line key={`c${i}`} points={[(i + 1) * cw, 0, (i + 1) * cw, shape.height]} stroke={shape.color} strokeWidth={1.5} opacity={0.8} dash={[6, 4]} />
+                      ))}
+                      {Array.from({ length: rows - 1 }, (_, i) => (
+                        <Line key={`r${i}`} points={[0, (i + 1) * ch, shape.width, (i + 1) * ch]} stroke={shape.color} strokeWidth={1.5} opacity={0.8} dash={[6, 4]} />
+                      ))}
+                    </Group>
+                    {rect}
+                  </Fragment>
                 )
               }
               if (shape.type === 'ellipse') {
@@ -3382,6 +3886,9 @@ export default function App() {
               const isEditing = editingText?.id === t.id
               const hasBg     = t.background !== 'transparent'
               const interactive = !isPlaying && activePanel !== 'draw'
+              // This frame's words / visibility; hidden labels show faintly while editing so
+              // they can still be picked (and shown again), and not at all while playing
+              const st = textAt(frames, currentFrame, t)
               return (
                 <Group
                   key={t.id}
@@ -3390,10 +3897,12 @@ export default function App() {
                   scaleX={t.scaleX ?? 1} scaleY={t.scaleY ?? 1}
                   rotation={t.rotation}
                   draggable={interactive}
-                  visible={!isEditing}
+                  visible={!isEditing && (!st.hidden || !isPlaying)}
+                  opacity={st.hidden ? 0.3 : 1}
+                  onDragStart={() => setDraggingText(true)}
                   onClick={interactive    ? (e) => { e.cancelBubble = true; setSelectedTextId(t.id); setSelectedShapeId(null) } : undefined}
                   onTap={interactive      ? (e) => { e.cancelBubble = true; setSelectedTextId(t.id); setSelectedShapeId(null) } : undefined}
-                  onDragEnd={e => setTextItems(prev => prev.map(ti => ti.id === t.id ? { ...ti, x: e.target.x(), y: e.target.y() } : ti))}
+                  onDragEnd={e => { setDraggingText(false); pushHistory(); setTextItems(prev => prev.map(ti => ti.id === t.id ? { ...ti, x: e.target.x(), y: e.target.y() } : ti)) }}
                   onTransformEnd={e => handleTextTransformEnd(t.id, e)}
                   onDblClick={interactive ? (e) => { e.cancelBubble = true; openTextEdit(t.id) } : undefined}
                   onDblTap={interactive   ? (e) => { e.cancelBubble = true; openTextEdit(t.id) } : undefined}
@@ -3402,20 +3911,20 @@ export default function App() {
                   {hasBg && (
                     <Rect
                       x={-6} y={-4}
-                      width={t.width + 12} height={t.fontSize * 1.45 + 8}
+                      width={st.width + 12} height={t.fontSize * (st.text.split('\n').length + 0.1) + 8}
                       fill={t.background} cornerRadius={4}
                       listening={false}
                     />
                   )}
                   <KonvaText
                     ref={node => { if (node) textNodeRefs.current[t.id] = node; else delete textNodeRefs.current[t.id] }}
-                    text={t.text}
+                    text={st.text}
                     fontSize={t.fontSize}
-                    fontFamily="Segoe UI, system-ui, -apple-system, sans-serif"
+                    fontFamily={TEXT_FONT}
                     fontStyle={t.fontStyle}
                     fill={t.fill}
                     align={t.align}
-                    width={t.width}
+                    width={st.width}
                     wrap="word"
                     shadowColor="rgba(0,0,0,0.7)"
                     shadowBlur={3}
@@ -3648,16 +4157,7 @@ export default function App() {
             <button className="stop-btn" onClick={stop}  disabled={!isPlaying} title="Stop">■</button>
           </div>
 
-          <div className="speed-select">
-            {SPEED_OPTIONS.map(opt => (
-              <button
-                key={opt.value}
-                className={`speed-btn${playSpeed === opt.value ? ' active' : ''}`}
-                onClick={() => setPlaySpeed(opt.value)}
-                disabled={isPlaying}
-              >{opt.label}</button>
-            ))}
-          </div>
+          {speedControl}
 
           <button
             className={`free-path-btn${freePathMode ? ' active' : ''}`}
@@ -3677,6 +4177,17 @@ export default function App() {
         )}
       </div>
 
+      {/* ── Phone: speed slider sheet ── */}
+      {speedSheetOpen && (
+        <>
+          <div className="ctx-overlay" onClick={() => setSpeedSheetOpen(false)} />
+          <div className="ctx-menu" onClick={(e) => e.stopPropagation()}>
+            <div className="ctx-label">Speed</div>
+            {speedControl}
+          </div>
+        </>
+      )}
+
       {/* ── Phone: Save / Open / Export / Clear sheet ── */}
       {fileMenuOpen && (
         <>
@@ -3694,7 +4205,7 @@ export default function App() {
                 <span className="ctx-icon">🎬</span> Play from video <span className="lab-tag">Lab</span>
               </button>
             )}
-            <button className="ctx-btn" disabled={isPlaying || isExporting || frames.length < 2 || placedObjects.length === 0} onClick={() => { setFileMenuOpen(false); exportVideo() }}>
+            <button className="ctx-btn" disabled={isPlaying || isExporting || frames.length < 2 || !hasContent} onClick={() => { setFileMenuOpen(false); exportVideo() }}>
               <span className="ctx-icon">⬇</span> Export video
             </button>
             <div className="ctx-divider" />
@@ -3940,85 +4451,255 @@ export default function App() {
         </>
       )}
 
-      {shapeCtxMenu && (
-        <>
-          <div className="ctx-overlay" onClick={() => setShapeCtxMenu(null)} />
-          <div
-            className="ctx-menu"
-            style={{
-              left: Math.min(shapeCtxMenu.x, viewW - 234),
-              top:  Math.min(shapeCtxMenu.y, viewH - 100),
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className="ctx-btn danger" onClick={() => deleteShape(shapeCtxMenu.id)}>
-              <span className="ctx-icon">✕</span> Delete
-            </button>
-          </div>
-        </>
-      )}
+      {shapeCtxMenu && (() => {
+        const shp = shapes.find(s => s.id === shapeCtxMenu.id)
+        const canSplit = shp?.type === 'rect'
+        const { cols, rows } = gridOf(shp)
+        const n = cols * rows
+        const cells = shp ? cellsAt(frames, currentFrame, shp.id) : NO_CELLS
+        const mapW = 196, mapH = shp ? Math.round(Math.max(56, Math.min(150, mapW * shp.height / shp.width))) : 100
+        const close = () => { setShapeCtxMenu(null); setCellEdit(null) }
+        const saveLabel = (idx, value) => {
+          setShapeCells(shp.id, c => {
+            const text = { ...c.text }
+            if (value.trim()) text[idx] = value.trim(); else delete text[idx]
+            return { ...c, text }
+          })
+          setCellEdit(null)
+        }
+        const clickCell = (idx) => {
+          if (cellMode === 'tint') {
+            setShapeCells(shp.id, c => ({ ...c, off: c.off.includes(idx) ? c.off.filter(x => x !== idx) : [...c.off, idx] }))
+          } else if (cellMode === 'number') {
+            // Numbers the segments in the order you click them; clicking a labeled one clears it
+            setShapeCells(shp.id, c => {
+              const text = { ...c.text }
+              if (text[idx]) delete text[idx]
+              else text[idx] = String(Math.max(0, ...Object.values(text).map(Number).filter(Number.isFinite)) + 1)
+              return { ...c, text }
+            })
+          } else {
+            setCellEdit({ idx, value: cells.text[idx] ?? '' })
+          }
+        }
+        const height = canSplit ? (n > 1 ? 300 + mapH : 170) : 60
+        return (
+          <>
+            <div className="ctx-overlay" onClick={close} />
+            <div
+              className="ctx-menu"
+              style={{
+                left: Math.min(shapeCtxMenu.x, viewW - 234),
+                top:  Math.max(8, Math.min(shapeCtxMenu.y, viewH - height)),
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {canSplit && (
+                <>
+                  <div className="ctx-label">Split into segments</div>
+                  <div className="seg-steps">
+                    <span>Across</span>
+                    <button onClick={() => setShapeGrid(shp.id, cols - 1, rows)} disabled={cols <= 1}>−</button>
+                    <b>{cols}</b>
+                    <button onClick={() => setShapeGrid(shp.id, cols + 1, rows)} disabled={cols >= SEG_MAX}>+</button>
+                    <span>Down</span>
+                    <button onClick={() => setShapeGrid(shp.id, cols, rows - 1)} disabled={rows <= 1}>−</button>
+                    <b>{rows}</b>
+                    <button onClick={() => setShapeGrid(shp.id, cols, rows + 1)} disabled={rows >= SEG_MAX}>+</button>
+                  </div>
+                  {n > 1 && (
+                    <>
+                      <div className="ctx-label">Segments{frames.length > 1 ? ` · frame ${currentFrame + 1} on` : ''}</div>
+                      <div className="ctx-toggle seg-mode">
+                        <button className={cellMode === 'tint' ? 'active' : ''}   onClick={() => { setCellMode('tint');   setCellEdit(null) }}>Tint</button>
+                        <button className={cellMode === 'number' ? 'active' : ''} onClick={() => { setCellMode('number'); setCellEdit(null) }}>Number</button>
+                        <button className={cellMode === 'text' ? 'active' : ''}   onClick={() => setCellMode('text')}>Text</button>
+                      </div>
+                      <div className="seg-map" style={{ width: mapW, height: mapH, gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)`, borderColor: shp.color }}>
+                        {Array.from({ length: n }, (_, i) => cellEdit?.idx === i ? (
+                          <input
+                            key={i}
+                            className="seg-cell seg-input"
+                            autoFocus
+                            maxLength={24}
+                            value={cellEdit.value}
+                            onChange={(e) => setCellEdit({ idx: i, value: e.target.value })}
+                            onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') setCellEdit(null) }}
+                            onBlur={() => saveLabel(i, cellEdit.value)}
+                          />
+                        ) : (
+                          <button
+                            key={i}
+                            className="seg-cell"
+                            style={{ background: cells.off.includes(i) ? 'transparent' : shp.color + (shp.style === 'fill' ? 'cc' : '59') }}
+                            onClick={() => clickCell(i)}
+                            title={cellMode === 'tint' ? 'Tint on / off' : cellMode === 'number' ? 'Number in click order (click again to clear)' : 'Type a label'}
+                          >{cells.text[i] ?? ''}</button>
+                        ))}
+                      </div>
+                      <div className="seg-quick">
+                        <button onClick={() => setShapeCells(shp.id, c => ({ ...c, off: [] }))}>All on</button>
+                        <button onClick={() => setShapeCells(shp.id, c => ({ ...c, off: Array.from({ length: n }, (_, i) => i) }))}>All off</button>
+                        <button onClick={() => { setCellEdit(null); setShapeCells(shp.id, c => ({ ...c, text: {} })) }}>Clear labels</button>
+                      </div>
+                    </>
+                  )}
+                  <div className="ctx-divider" />
+                </>
+              )}
+              <button className="ctx-btn danger" onClick={() => { setCellEdit(null); deleteShape(shapeCtxMenu.id) }}>
+                <span className="ctx-icon">✕</span> Delete
+              </button>
+            </div>
+          </>
+        )
+      })()}
 
-      {textCtxMenu && (
-        <>
-          <div className="ctx-overlay" onClick={() => setTextCtxMenu(null)} />
-          <div
-            className="ctx-menu"
-            style={{
-              left: Math.min(textCtxMenu.x, viewW - 234),
-              top:  Math.min(textCtxMenu.y, viewH - 100),
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button className="ctx-btn" onClick={() => { openTextEdit(textCtxMenu.id); setTextCtxMenu(null) }}>
-              <span className="ctx-icon">✎</span> Edit
-            </button>
-            <div className="ctx-divider" />
-            <button className="ctx-btn danger" onClick={() => deleteText(textCtxMenu.id)}>
-              <span className="ctx-icon">✕</span> Delete
-            </button>
+      {textCtxMenu && (() => {
+        const t = textItems.find(ti => ti.id === textCtxMenu.id)
+        if (!t) return null
+        const st = textAt(frames, currentFrame, t)
+        const multi = frames.length > 1
+        const close = () => setTextCtxMenu(null)
+        return (
+          <>
+            <div className="ctx-overlay" onClick={close} />
+            <div
+              className="ctx-menu"
+              style={{
+                left: Math.min(textCtxMenu.x, viewW - 234),
+                top:  Math.max(8, Math.min(textCtxMenu.y, viewH - (multi ? 390 : 110))),
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              <button className="ctx-btn" onClick={() => { close(); openTextEdit(t.id) }}>
+                <span className="ctx-icon">✎</span> Edit words{multi ? ` · frame ${currentFrame + 1} on` : ''}
+              </button>
+              {multi && (
+                <>
+                  <div className="ctx-divider" />
+                  <div className="ctx-label">Frame {currentFrame + 1}</div>
+                  {st.hidden ? (
+                    <>
+                      <div className="ctx-note">Hidden on this frame (shown faintly while you edit).</div>
+                      <button className="ctx-btn" onClick={() => { close(); setTextState(t.id, { hidden: false }) }}>
+                        <span className="ctx-icon">👁</span> Show from this frame on
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="ctx-btn" onClick={() => { close(); setTextState(t.id, { hidden: true }, true) }} disabled={currentFrame === frames.length - 1}>
+                        <span className="ctx-icon">◌</span> Hide on this frame only
+                      </button>
+                      <button className="ctx-btn" onClick={() => { close(); setTextState(t.id, { hidden: true }) }}>
+                        <span className="ctx-icon">⊘</span> Hide from this frame on
+                      </button>
+                    </>
+                  )}
+                  {(() => {
+                    const perFrame = textFxScope === 'frame' && currentFrame > 0
+                    const current  = perFrame ? transitionAt(frames, currentFrame, t) : (t.transition ?? 'none')
+                    const own      = frames.map((f, i) => f.textFx?.[t.id] ? i + 1 : null).filter(Boolean)
+                    return (
+                      <>
+                        <div className="ctx-label">Transition</div>
+                        <div className="ctx-toggle text-fx-scope">
+                          <button className={!perFrame ? 'active' : ''} onClick={() => setTextFxScope('all')}>All frames</button>
+                          <button
+                            className={perFrame ? 'active' : ''}
+                            onClick={() => setTextFxScope('frame')}
+                            disabled={currentFrame === 0}
+                            title={currentFrame === 0 ? 'Frame 1 is the start: pick a later frame to set the transition into it' : `Only the change arriving at frame ${currentFrame + 1}`}
+                          >{currentFrame === 0 ? 'This frame' : `Frame ${currentFrame + 1}`}</button>
+                        </div>
+                        <div className="ctx-toggle text-trans">
+                          {TEXT_TRANSITIONS.map(o => (
+                            <button key={o.id} className={current === o.id ? 'active' : ''} onClick={() => setTextTransition(t.id, o.id, perFrame ? currentFrame : null)}>{o.label}</button>
+                          ))}
+                        </div>
+                        {own.length > 0 && (
+                          <div className="ctx-note">
+                            Own transition on frame{own.length > 1 ? 's' : ''} {own.join(', ')}.{!perFrame && ' Picking one here sets every frame.'}
+                          </div>
+                        )}
+                      </>
+                    )
+                  })()}
+                </>
+              )}
+              <div className="ctx-divider" />
+              <button className="ctx-btn danger" onClick={() => deleteText(t.id)}>
+                <span className="ctx-icon">✕</span> Delete{multi ? ' from all frames' : ''}
+              </button>
+            </div>
+          </>
+        )
+      })()}
+
+      {/* Selected label: quick toolbar above it (edit, options, delete) */}
+      {textBar && selectedTextId !== null && !isPlaying && !editingText && !draggingText && !textCtxMenu && (() => {
+        const { left, top } = textBar
+        return (
+          <div className="text-toolbar" style={{ left, top }}>
+            <button onClick={() => openTextEdit(selectedTextId)} title="Edit words">✎</button>
+            <button onClick={(e) => { const b = e.currentTarget.getBoundingClientRect(); setTextCtxMenu({ x: b.left, y: b.bottom + 6, id: selectedTextId }) }} title="Frames, transition…">⋯</button>
+            <button className="danger" onClick={() => frames.length > 1 ? setTextCtxMenu({ x: left, y: top + 44, id: selectedTextId }) : deleteText(selectedTextId)} title={frames.length > 1 ? 'Delete or hide…' : 'Delete'}>🗑</button>
           </div>
-        </>
-      )}
+        )
+      })()}
 
       {editingText && (() => {
         const t = textItems.find(ti => ti.id === editingText.id)
         if (!t) return null
+        const st = textAt(frames, currentFrame, t)
+        const { k } = editingText
+        const PADX = 4, PADY = 3, BORDER = 1.5   // the editor's text starts this far in from its corner
+        // Sized to the text as you type (no wrapping, no extra room)
+        const fit = (el) => {
+          el.style.width  = `${Math.ceil(Math.max(fitTextWidth(el.value || ' ', t.fontSize, t.fontStyle), t.fontSize * 0.6) * k) + (PADX + BORDER) * 2 + 2}px`
+          el.style.height = `${Math.ceil(el.value.split('\n').length * t.fontSize * k) + (PADY + BORDER) * 2}px`
+        }
         return (
           <textarea
             key={editingText.id}
-            ref={textEditRef}
-            defaultValue={t.text}
+            ref={(el) => { textEditRef.current = el; if (el) fit(el) }}
+            defaultValue={st.text}
+            wrap="off"
+            spellCheck={false}
             style={{
               position: 'fixed',
-              left:   editingText.x,
-              top:    editingText.y,
-              width:  editingText.width,
-              minHeight: editingText.height,
-              fontSize:   `${t.fontSize * (t.scaleX ?? 1) * fieldScale}px`,
-              fontFamily: 'Segoe UI, system-ui, -apple-system, sans-serif',
+              left:   editingText.x - PADX - BORDER,
+              top:    editingText.y - PADY - BORDER,
+              fontSize:   `${t.fontSize * k}px`,
+              fontFamily: TEXT_FONT,
               fontWeight: t.fontStyle?.includes('bold')   ? 'bold'   : 'normal',
               fontStyle:  t.fontStyle?.includes('italic') ? 'italic' : 'normal',
               color:      t.fill,
               background: t.background === 'transparent' ? 'rgba(0,0,0,0.01)' : t.background,
-              border:     '1.5px dashed #60a5fa',
+              border:     `${BORDER}px dashed #60a5fa`,
               borderRadius: '3px',
               outline:    'none',
               resize:     'none',
               overflow:   'hidden',
-              padding:    '2px 4px',
-              lineHeight: 1.25,
+              padding:    `${PADY}px ${PADX}px`,
+              margin:     0,
+              boxSizing:  'border-box',
+              lineHeight: 1,
               textAlign:  t.align,
+              textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
               zIndex:     200,
               transform:  `rotate(${t.rotation}deg)`,
-              transformOrigin: 'top left',
+              transformOrigin: `${PADX + BORDER}px ${PADY + BORDER}px`,
             }}
+            onInput={(e) => fit(e.target)}
             onBlur={e => {
-              const val = e.target.value.trim() || 'Label'
-              setTextItems(prev => prev.map(ti => ti.id === editingText.id ? { ...ti, text: val } : ti))
+              const val = cleanText(e.target.value) || 'Label'
+              if (val !== st.text) setTextState(t.id, { text: val, width: fitTextWidth(val, t.fontSize, t.fontStyle) })
               setEditingText(null)
             }}
             onKeyDown={e => {
               if (e.key === 'Escape') setEditingText(null)
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) e.target.blur()
             }}
             autoFocus
           />

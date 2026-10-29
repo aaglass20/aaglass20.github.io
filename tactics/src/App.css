@@ -1846,3 +1846,215 @@ canvas {
   .vi-dialog { padding: 16px; }
   .vi-result { grid-template-columns: 1fr; }
 }
+
+/* ── Split rect: segment controls in the shape menu ── */
+.seg-steps {
+  display: grid;
+  grid-template-columns: auto 24px 18px 24px auto 24px 18px 24px;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 0 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+.seg-steps span:nth-of-type(2) { padding-left: 6px; }
+.seg-steps b { text-align: center; color: #fff; }
+.seg-steps button {
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #4b5563, #374151);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.seg-steps button:disabled { opacity: 0.3; cursor: default; }
+.seg-map {
+  display: grid;
+  margin: 6px auto 6px;
+  border: 2px solid;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.seg-cell {
+  min-width: 0;
+  min-height: 0;
+  border: 1px dashed rgba(255,255,255,0.35);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0 2px;
+}
+.seg-cell:hover { outline: 2px solid #4ade80; outline-offset: -2px; }
+.seg-input {
+  background: rgba(0,0,0,0.6);
+  text-align: center;
+  font: inherit;
+  font-weight: 700;
+  outline: 2px solid #4ade80;
+  outline-offset: -2px;
+}
+.seg-quick { display: flex; gap: 4px; }
+.seg-quick button {
+  flex: 1;
+  padding: 5px 0;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.seg-quick button:hover { background: rgba(255,255,255,0.16); }
+
+/* ── Speed slider (fast ← 1× → slow), all frames or one frame ── */
+.speed-ctl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.speed-ctl .speed-row { width: 250px; }
+.speed-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.speed-end {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255,255,255,0.45);
+}
+.speed-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  accent-color: #3b82f6;
+  /* tick at the middle (Normal) */
+  background: linear-gradient(90deg, transparent calc(50% - 1px), rgba(255,255,255,0.35) calc(50% - 1px), rgba(255,255,255,0.35) calc(50% + 1px), transparent calc(50% + 1px)) center / 100% 14px no-repeat;
+  cursor: pointer;
+}
+.speed-row input[type="range"]:disabled { opacity: 0.4; cursor: not-allowed; }
+.speed-val {
+  min-width: 36px;
+  text-align: right;
+  font-size: 12px;
+  color: #fff;
+}
+.speed-scope { margin: 0; width: 140px; }
+.speed-scope button { padding: 6px 0; font-size: 11px; }
+.speed-scope button:disabled { opacity: 0.35; cursor: not-allowed; }
+.ctx-menu .speed-ctl { flex-direction: column; align-items: stretch; }
+.ctx-menu .speed-ctl .speed-row, .ctx-menu .speed-scope { width: auto; }
+
+/* frame with its own speed: small badge on its button */
+.frame-btn { position: relative; }
+.frame-speed {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  padding: 0 3px;
+  border-radius: 6px;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 14px;
+  pointer-events: none;
+}
+.speed-clear {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: rgba(59,130,246,0.15);
+  color: #93c5fd;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.speed-clear:hover { background: rgba(59,130,246,0.3); color: #fff; }
+
+/* ── Text panel: type → preview → add ── */
+.text-draft {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1.5px solid rgba(96,165,250,0.35);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  font: 14px/1.3 'Segoe UI', system-ui, -apple-system, sans-serif;
+  resize: vertical;
+  outline: none;
+}
+.text-draft:focus { border-color: #60a5fa; }
+.text-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  max-height: 160px;
+  overflow: auto;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: repeating-linear-gradient(0deg, #3f8a3a 0 14px, #45933f 14px 28px);
+}
+.text-preview span {
+  display: inline-block;
+  white-space: pre;
+  line-height: 1.15;
+  padding: 2px 4px;
+  border-radius: 3px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  max-width: 100%;
+  overflow: hidden;
+}
+.text-preview-empty { color: rgba(255,255,255,0.45); font-weight: normal; font-size: 13px; }
+.add-text-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.text-hint {
+  margin: 6px 0 2px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.45);
+}
+.text-draft, .text-preview, .add-text-btn { flex-shrink: 0; }
+
+/* ── Selected label: quick toolbar (edit, options, delete) ── */
+.text-toolbar {
+  position: fixed;
+  z-index: 150;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: #1f2937;
+  border: 1px solid rgba(96,165,250,0.5);
+  border-radius: 9px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+.text-toolbar button {
+  width: 40px;
+  height: 34px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 16px;
+  cursor: pointer;
+}
+.text-toolbar button:hover { background: rgba(255,255,255,0.1); }
+.text-toolbar button.danger:hover { background: rgba(220,38,38,0.25); }
+
+/* Transition picker (4 options) */
+.text-trans button { font-size: 11px; padding: 5px 0; }
+.text-fx-scope { margin-bottom: 2px; }
+.text-fx-scope button { font-size: 11px; padding: 4px 0; }
+.text-fx-scope button:disabled { opacity: 0.35; cursor: not-allowed; }
