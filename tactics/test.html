@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved Plays</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #0f172a; color: #e5e7eb; font: 16px/1.4 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #94a3b8; font-size: 13px; margin: 0 0 20px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { border-bottom: 1px solid #1e293b; }
+  a.file { display: flex; justify-content: space-between; gap: 12px; padding: 12px 4px; color: #93c5fd; text-decoration: none; }
+  a.file:hover { background: #1e293b; }
+  .meta { color: #64748b; font-size: 13px; white-space: nowrap; }
+  video { width: 100%; margin: 4px 0 14px; border-radius: 8px; background: #000; }
+  .msg { color: #94a3b8; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Saved Plays</h1>
+  <p class="sub">Everything in <code>tactics/playssaved/</code>. Add a file there and push it, and it shows up here.</p>
+  <ul id="list"><li class="msg">Loading…</li></ul>
+</main>
+<script>
+// The folder is listed at run time, so this page never needs editing: GitHub's contents API
+// on the live site, or the dev server's directory listing (npx serve) when run locally.
+const FOLDER = 'playssaved'
+const GITHUB_API = 'https://api.github.com/repos/aaglass20/aaglass20.github.io/contents/tactics/' + FOLDER
+const VIDEO = /\.(webm|mp4|mov|m4v)$/i
+
+async function fromGithub() {
+  const r = await fetch(GITHUB_API)
+  if (!r.ok) throw new Error('GitHub ' + r.status)
+  return (await r.json()).filter(f => f.type === 'file').map(f => ({ name: f.name, size: f.size }))
+}
+
+async function fromServer() {
+  const r = await fetch(FOLDER + '/')
+  if (!r.ok) throw new Error('server ' + r.status)
+  const doc = new DOMParser().parseFromString(await r.text(), 'text/html')
+  const names = [...doc.querySelectorAll('a[href]')]
+    .map(a => decodeURIComponent(a.getAttribute('href').split('/').filter(Boolean).pop() || ''))
+  const files = [...new Set(names)].filter(n => /\.[a-z0-9]+$/i.test(n) && !/\.(html|js|css)$/i.test(n))
+  if (!files.length) throw new Error('no directory listing')   // e.g. Vite serves the app page instead
+  return files.map(name => ({ name }))
+}
+
+const fmtSize = (b) => b == null ? '' : b > 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' KB'
+
+function render(files) {
+  const list = document.getElementById('list')
+  files = files.filter(f => !f.name.startsWith('.')).sort((a, b) => a.name.localeCompare(b.name))
+  if (!files.length) { list.innerHTML = '<li class="msg">No files yet.</li>'; return }
+  list.innerHTML = ''
+  for (const f of files) {
+    const li = document.createElement('li')
+    const a = document.createElement('a')
+    a.className = 'file'
+    a.href = FOLDER + '/' + encodeURIComponent(f.name)
+    a.target = '_blank'
+    a.innerHTML = `<span></span><span class="meta"></span>`
+    a.firstChild.textContent = (VIDEO.test(f.name) ? '▶ ' : '📄 ') + f.name
+    a.lastChild.textContent = fmtSize(f.size)
+    if (VIDEO.test(f.name)) {   // videos play right here; click again to close
+      a.removeAttribute('target')
+      a.addEventListener('click', (e) => {
+        e.preventDefault()
+        const open = li.querySelector('video')
+        if (open) return open.remove()
+        const v = document.createElement('video')
+        v.src = a.href; v.controls = true; v.autoplay = true; v.playsInline = true
+        li.appendChild(v)
+      })
+    }
+    li.appendChild(a)
+    list.appendChild(li)
+  }
+}
+
+(async () => {
+  const local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+  const tries = local ? [fromServer, fromGithub] : [fromGithub, fromServer]
+  for (const t of tries) {
+    try { return render(await t()) } catch (e) { console.warn(e) }
+  }
+  document.getElementById('list').innerHTML = '<li class="msg">Couldn’t list the folder.</li>'
+})()
+</script>
+</body>
+</html>
