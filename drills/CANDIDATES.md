@@ -22,7 +22,7 @@ alternate names — many drills go by several names.
 
 ---
 
-## Soccer — 100 written
+## Soccer — 115 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Rondo 4v1 | Possession, Passing |  |
@@ -109,18 +109,18 @@ alternate names — many drills go by several names.
 | ✅ | King of the Ring | 1v1, Dribbling |  |
 | ✅ | Shuttle Runs with Ball | Conditioning, Dribbling |  |
 | ✅ | Around-the-Box Overlap & Finish | Shooting, Attacking | Added by Aaron (Drill Vault) |
-| ⬜ | 1v1 Recovery Run (attacker in front) | Defending, 1v1 | BDU defensive page |
+| ✅ | 1v1 Recovery Run | Defending, 1v1 | BDU defensive page |
 | ⬜ | 2v1 Rotational Finishing (3 groups) | 2v1, Shooting | BDU shooting page |
 | ⬜ | 4 Line Shooting | Shooting | BDU shooting page — needs setup details |
 | ⬜ | Precision Gates Diagonal Passing | Passing | BDU passing page — close to Partner Gate Passing; maybe variation |
 | ⬜ | Pattern Play Possession | Possession | BDU possession page — needs details |
 | ⬜ | Two-Player Double Ball Challenge | Receiving | BDU ball control page |
-| ⬜ | Interception Drill | Defending | BDU defensive page |
+| ✅ | Interception Game | Defending | BDU defensive page |
 | ✅ | 3-Team Possession | Possession, Transition |  |
 | ✅ | Throw-Head-Catch | Heading, Fun | U12+ only |
 | ✅ | Through-Ball 3v3 with Targets | Attacking, Passing |  |
 | ✅ | Penalty Shootout Ladder | Shooting, Goalkeeping, Fun |  |
-| ⬜ | Corner Kick / Set-Piece Walkthrough | Attacking, Defending | Team shape — may need a new Set Pieces category |
+| ✅ | Corner Kick Routines + Defending Corners | Attacking, Defending | Team shape — may need a new Set Pieces category |
 | ✅ | Box-to-Box Ball Relay | Conditioning |  |
 | ✅ | Fartlek Possession | Conditioning, Possession |  |
 
@@ -135,9 +135,21 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ✅ | Defensive Headed Clearances | Heading, Defending | U12+, low volume |
 | ✅ | Dribble Gauntlet | Conditioning, Dribbling, Defending | TOCA |
 | ✅ | 5-Second Counterpress Game | Transition, Defending, Small-Sided Game | |
-| ⬜ | Futsal-style 4v4 (low heading) | Small-Sided Game | futsal as heading-light alternative |
+| ✅ | Futsal-Style 4v4 | Small-Sided Game | futsal as heading-light alternative |
 | ⬜ | Rondo 4v2 + 2 Neutrals | Possession | |
-| ⬜ | Crossing & Finishing 2v1 in the Box | 2v1, Shooting | |
+| ✅ | Crossing and Finishing 2v1 in the Box | 2v1, Shooting | |
+| ✅ | GK Cross and Claim | Goalkeeping | Veo |
+| ✅ | GK Distribution Under Pressure | Goalkeeping, Passing | Veo, iCoachFootball |
+| ✅ | GK Three-Goal Reaction | Goalkeeping, Warmup | FIFA Training Centre |
+| ✅ | GK Set Position and Footwork | Goalkeeping, Warmup | Renderfoot |
+| ✅ | 4v4 + 1 Corner Support Rondo | Possession, Passing, Transition | SoccerXpert |
+| ✅ | Positional Grid 4v4 + 3 | Possession, Passing, Small-Sided Game | iCoachFootball |
+| ✅ | Crossing — Arrive on Time | Attacking, Shooting, Passing | |
+| ✅ | 2v1 Pick a Side | 2v1, Attacking, Transition | |
+| ✅ | Continuous 2v2 Waves | Conditioning, Small-Sided Game, Transition | |
+| ⬜ | Free Kick Wall Practice | Shooting, Goalkeeping | set pieces |
+| ⬜ | Throw-In Routines | Attacking | |
+| ⬜ | 3v1 Rondo to 3v2 Transition | 3v1, 3v2, Transition | still thin |
 
 ## Basketball — 62 written
 | Status | Drill | Categories | Notes |
