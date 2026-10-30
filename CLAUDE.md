@@ -58,6 +58,12 @@ This is a GitHub Pages mono-repo containing 8 independent projects. Most are sta
 - **Deploy:** `npm run deploy` — builds, copies `dist/assets` + `dist/images` + built `index.html` into `ca/` for GitHub Pages. **Run it after any `npm run dev` before committing**, or `/ca/` is a blank page. Source page is `index.src.html` (same pattern as `empower-playbook`).
 - **Before building out this site, read `ca/NOTES.md`** — running log of brand rules, image conventions, carousel rules, and the idea backlog. Add new rules/decisions/ideas there as you go.
 
+### /drills — Drill Lab (drill library for Coach Approach)
+- **What:** Review UI for drills gathered from the web for `/ca` — sport tabs, search, category/age/status filters, drill detail, Copy JSON / Copy Text to clipboard, ★ shortlist
+- **Stack:** Vanilla HTML/CSS/JS; no build, no database — drills live in `data/<sport>.js` (`window.DRILL_DATA.<sport>`)
+- **Key files:** `index.html`, `js/app.js`, `js/sports.js` (sports + categories), `data/*.js`, `CANDIDATES.md` (index of drills to research, with status)
+- **Before adding drills or changing the feature, read `drills/RULES.md`** — data model, field rules, how to pick the best drills, and the gathering workflow. Keep `RULES.md` and `CANDIDATES.md` up to date.
+
 ### /fuelup — Athlete Nutrition Meal Planner
 - **What:** Drag-and-drop daily nutrition planner with compliance engine, food group tracking (USDA MyPlate), and Supabase sync
 - **Stack:** Vanilla HTML/CSS/JS; SortableJS (CDN); Supabase (`fpnmnlrwhwnuefbnehuf.supabase.co`, same project as `/empower/` and `/schedule/`)

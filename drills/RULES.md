@@ -1,0 +1,118 @@
+# Drill Lab (`/drills`) — Project Rules
+
+A review library of drills, gathered by Claude from across the web, for the
+**Coach Approach** app (`/ca`). Browse by sport, search, decide what to keep,
+and copy a drill's export straight into Coach Approach.
+
+> **Self-maintaining doc.** Claude updates this file whenever a rule changes,
+> and updates `CANDIDATES.md` whenever drills are added, skipped, or found.
+
+---
+
+## Goals
+1. Collect **many** good drills per sport (Coach Approach's biggest content need).
+2. Keep only the **best** ones — clear, age-appropriate, easy to run, coachable.
+3. Every drill uses the same fields so it can drop into Coach Approach unchanged.
+
+## Ground rules
+- **All code, no database.** Drills live in `data/<sport>.js`. No Supabase, no Sheets, no fetch.
+- **No build step.** Plain HTML/CSS/JS; works from `file://` and GitHub Pages. That's why
+  data files are `.js` (they assign to `window.DRILL_DATA`) instead of `.json` — `fetch` of
+  local JSON fails on `file://`.
+- **Write in our own words.** Drills come from many sources; never paste a site's text.
+  Rewrite, combine the best ideas from several sources, and list them in `sources`.
+- **No duplicates.** Check `CANDIDATES.md` and the sport's data file before adding.
+  The same drill under another name → add the name to `altNames` instead.
+- Brand follows Coach Approach (`ca/NOTES.md`): navy `#0F1D2E`, orange `#FF6B1A`,
+  teal `#00BDB0`, Barlow Condensed headlines.
+
+## Files
+| File | What |
+|---|---|
+| `index.html` | The review UI (sport tabs, search, filters, drill detail, copy export) |
+| `css/styles.css` | Styles |
+| `js/sports.js` | Sports list + each sport's categories (`window.SPORTS`) |
+| `js/app.js` | UI logic |
+| `data/<sport>.js` | Drills for one sport — `DRILL_DATA.<sport> = [ … ]` |
+| `CANDIDATES.md` | Index of drill ideas to research + where to find them, with status |
+| `scripts/validate.js` | Checks every data file against the data model |
+| `RULES.md` | This file |
+
+**Adding a sport:** add it to `js/sports.js`, create `data/<id>.js`, and add a
+`<script src="data/<id>.js">` tag in `index.html`.
+
+---
+
+## Drill data model
+
+```js
+{
+  id: 'rondo-4v1',                 // kebab-case, unique within the sport, never renamed
+  name: 'Rondo 4v1',
+  altNames: ['Monkey in the Middle', 'Keep Away'],
+  objective: 'One or two sentences: what the drill trains and why.',
+  setup: ['Grid: 10x10 yd square', 'Players: 4 outside, 1 defender inside'],
+  instructions: ['Step 1 …', 'Step 2 …'],          // Sequence of Play, in order
+  variations: ['Easier: …', 'Harder: …'],          // label progressions Easier/Harder when it fits
+  coachingPoints: ['Open body to the field', '…'],
+  equipment: ['1 ball', '4 cones', '1 pinnie'],
+  ages: ['U8', 'U10', 'U12'],                      // from AGE_BANDS below
+  categories: ['Possession', 'Passing'],           // from the sport's list in js/sports.js; first = primary
+  // ── optional ──
+  players: '5 per group',                          // how many it needs
+  duration: '10–15 min',
+  adaptations: ['…'],                              // how to adjust for athletes with disabilities / mixed ability
+  status: 'candidate',                             // 'candidate' (default) | 'approved' | 'rejected'
+  sources: [{ name: 'Site or book', url: 'https://…' }],
+  notes: 'Why we picked it / anything to watch.'
+}
+```
+
+### Field rules
+- **Required:** `id, name, altNames, objective, setup, instructions, variations,
+  coachingPoints, equipment, ages, categories`. Use `[]` when there truly are none.
+- **Lists are arrays of short strings** — one idea per line, no paragraphs.
+- **`instructions`** read as a sequence of play: start → how it runs → scoring/rotation → end.
+- **`coachingPoints`**: 3–6 short cues a coach can shout ("Eyes up", "Low and wide").
+- **`categories`**: 1–3, primary first. Only names from that sport's list in `js/sports.js`.
+  Need a new category? Add it to `js/sports.js` and note it in the decision log below.
+- **`ages`** use the shared bands: `U6, U8, U10, U12, U14, HS, Adult`.
+- **`status`** starts as `candidate`. Aaron decides; Claude flips to `approved`/`rejected`
+  when told. Rejected drills stay in the file (so we don't re-add them) but are hidden by default.
+
+## Choosing the "best" drills
+Prefer drills that:
+- Have **lots of touches / reps** and little standing in line.
+- Are **game-like** (decisions, opponents, direction) over pure technique where possible.
+- Scale cleanly with **Easier / Harder** variations across ages.
+- Need **common equipment** (balls, cones, pinnies, goals).
+- Are **well-known** (several sources describe them) — or clearly excellent if not.
+
+Skip drills that are unsafe for youth, need special gear, or duplicate one we have.
+
+## Export (copy to clipboard)
+- **Copy JSON** — the drill object exactly as in the data file, minus review-only fields
+  (`status`, `notes`), plus `sport`. This is what gets pasted into Coach Approach.
+- **Copy Text** — a plain-text version for notes, emails, or practice plans.
+- **Shortlist** (★) is saved in this browser only (localStorage) — a convenience while reviewing.
+  "Copy shortlist" exports all starred drills as one JSON array. Final decisions go in `status`.
+
+## Gathering workflow (for Claude)
+1. Pick a sport + category from `CANDIDATES.md` (or add new ideas found while searching).
+2. Search several sources; pick the strongest version; merge good ideas.
+3. Write the drill in the data model above, in our own words, with `sources`.
+4. Mark it ✅ in `CANDIDATES.md` (or ❌ with a reason if skipped).
+5. Run `node drills/scripts/validate.js` (required fields, unique ids, valid categories/ages).
+6. Open `index.html` and check it renders; keep the counts in `CANDIDATES.md` current.
+7. Only link a source URL that was actually found/opened — otherwise list the source by name only.
+
+---
+
+## Decision log
+| Date | Decision |
+|---|---|
+| 2026-10-29 | Created `/drills`. UI first; sports match Coach Approach (`ca/src/data/sports.js`). |
+| 2026-10-29 | Drills can have several categories (primary first) so 1v1 + Attacking style tags both work. |
+| 2026-10-29 | Soccer batch 1: 31 drills added (36 total). Heading drills are U12+ only (US Soccer rules). |
+| 2026-10-29 | Soccer batch 2: 32 drills from BDU pages + 15 from the web (83 total). BDU sources link as `../BDU/<page>.html`. BDU technique videos skipped (moves, not drills). |
+| 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |

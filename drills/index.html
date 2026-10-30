@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Drill Lab · Coach Approach</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <h1 class="brand">Coach Approach <span>Drill Lab</span></h1>
+      <div class="top-actions">
+        <button id="copyShortlist" class="btn btn-ghost" type="button">★ Copy shortlist (<span id="shortCount">0</span>)</button>
+      </div>
+    </div>
+    <nav id="sportTabs" class="sport-tabs" aria-label="Sports"></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="filters" aria-label="Filters">
+      <input id="search" class="search" type="search" placeholder="Search drills, names, coaching points, equipment…" autocomplete="off">
+      <div class="filter-row">
+        <select id="ageFilter" aria-label="Age"><option value="">All ages</option></select>
+        <select id="statusFilter" aria-label="Status">
+          <option value="active">Candidate + approved</option>
+          <option value="candidate">Candidates</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="all">All</option>
+        </select>
+        <label class="check"><input id="starOnly" type="checkbox"> ★ Shortlist only</label>
+      </div>
+      <div id="catChips" class="chips" aria-label="Categories"></div>
+    </section>
+
+    <p id="resultCount" class="result-count"></p>
+    <section id="list" class="grid" aria-live="polite"></section>
+  </main>
+
+  <div id="detail" class="detail" hidden>
+    <div class="detail-backdrop" data-close></div>
+    <article class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailName">
+      <div id="detailBody"></div>
+    </article>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="js/sports.js"></script>
+  <script src="data/soccer.js"></script>
+  <script src="data/basketball.js"></script>
+  <script src="data/softball.js"></script>
+  <script src="data/baseball.js"></script>
+  <script src="data/football.js"></script>
+  <script src="data/adaptive.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
