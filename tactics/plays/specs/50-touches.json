@@ -1,0 +1,46 @@
+{
+  "title": "50 Touches — Long · Short · Turn",
+  "sport": "soccer",
+  "field": "blank",
+  "speed": 0.75,
+  "objects": [
+    { "key": "A", "type": "player-t1", "label": "A" },
+    { "key": "B", "type": "player-t1", "label": "B" },
+    { "key": "C", "type": "player-t1", "label": "C" },
+    { "key": "coneA", "type": "cone" },
+    { "key": "coneB", "type": "cone" },
+    { "key": "coneC", "type": "cone" },
+    { "key": "ball", "type": "ball" }
+  ],
+  "frames": [
+    { "caption": "Setup: A and C 25 yd apart, B in the middle",
+      "at": { "A": [210, 290], "B": [420, 290], "C": [630, 290],
+              "coneA": [210, 324], "coneB": [420, 324], "coneC": [630, 324], "ball": [232, 304] } },
+    { "caption": "1. A plays a long pass to C (strong foot)", "speed": 0.75,
+      "at": { "B": [440, 290], "ball": [608, 304] } },
+    { "caption": "2. B checks to the ball — C plays it short into B",
+      "at": { "B": [490, 290], "ball": [512, 304] } },
+    { "caption": "3. B turns, short pass to A (weak foot)",
+      "at": { "B": [430, 290], "ball": [232, 304] } },
+    { "caption": "Repeat · rotate every 10 passes · 50 touches each",
+      "at": { "B": [420, 290] } }
+  ],
+  "arrows": [
+    { "kind": "arrow",        "color": "white",  "from": [240, 228], "to": [600, 228] },
+    { "kind": "dashed-arrow", "color": "yellow", "from": [420, 254], "to": [484, 254], "thickness": 2 },
+    { "kind": "arrow",        "color": "yellow", "from": [600, 352], "to": [508, 352] },
+    { "kind": "arrow",        "color": "green",  "from": [460, 376], "to": [240, 376] }
+  ],
+  "labels": [
+    { "text": "long (strong foot)", "at": [420, 200] },
+    { "text": "short (weak foot)",  "at": [350, 386], "color": "lightgreen" }
+  ],
+  "notes": {
+    "title": "50 Touches (Long-Short-Turn Warm-up)",
+    "ages": "U10, U12, U14, HS, Adult", "players": "3 per group", "duration": "8 min",
+    "objective": "A fast warm-up with a long pass, short pass, turn, and weak-foot pass on repeat — constant movement and coming to the ball.",
+    "variations": ["Harder: one-touch for the middle player", "Harder: long pass must be in the air", "Easier: shorten the long pass to 15 yd"],
+    "coaching": ["Come to the ball instead of waiting", "On your toes the whole time", "Open up before you turn"],
+    "equipment": ["1 ball per group", "3 cones"]
+  }
+}

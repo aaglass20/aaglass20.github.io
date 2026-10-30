@@ -1,0 +1,383 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-10-30T08:24:41",
+  "sport": "soccer",
+  "field": "blank",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "A"
+    },
+    {
+      "id": 1,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "B"
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "C"
+    },
+    {
+      "id": 3,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 4,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 5,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 6,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 290
+        },
+        "1": {
+          "x": 420,
+          "y": 290
+        },
+        "2": {
+          "x": 630,
+          "y": 290
+        },
+        "3": {
+          "x": 210,
+          "y": 324
+        },
+        "4": {
+          "x": 420,
+          "y": 324
+        },
+        "5": {
+          "x": 630,
+          "y": 324
+        },
+        "6": {
+          "x": 232,
+          "y": 304
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 290
+        },
+        "1": {
+          "x": 440,
+          "y": 290
+        },
+        "2": {
+          "x": 630,
+          "y": 290
+        },
+        "3": {
+          "x": 210,
+          "y": 324
+        },
+        "4": {
+          "x": 420,
+          "y": 324
+        },
+        "5": {
+          "x": 630,
+          "y": 324
+        },
+        "6": {
+          "x": 608,
+          "y": 304
+        }
+      },
+      "speed": 0.75,
+      "texts": {
+        "1": {
+          "text": "1. A plays a long pass to C (strong foot)",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 290
+        },
+        "1": {
+          "x": 490,
+          "y": 290
+        },
+        "2": {
+          "x": 630,
+          "y": 290
+        },
+        "3": {
+          "x": 210,
+          "y": 324
+        },
+        "4": {
+          "x": 420,
+          "y": 324
+        },
+        "5": {
+          "x": 630,
+          "y": 324
+        },
+        "6": {
+          "x": 512,
+          "y": 304
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. B checks to the ball — C plays it short into B",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 290
+        },
+        "1": {
+          "x": 430,
+          "y": 290
+        },
+        "2": {
+          "x": 630,
+          "y": 290
+        },
+        "3": {
+          "x": 210,
+          "y": 324
+        },
+        "4": {
+          "x": 420,
+          "y": 324
+        },
+        "5": {
+          "x": 630,
+          "y": 324
+        },
+        "6": {
+          "x": 232,
+          "y": 304
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. B turns, short pass to A (weak foot)",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 290
+        },
+        "1": {
+          "x": 420,
+          "y": 290
+        },
+        "2": {
+          "x": 630,
+          "y": 290
+        },
+        "3": {
+          "x": 210,
+          "y": 324
+        },
+        "4": {
+          "x": 420,
+          "y": 324
+        },
+        "5": {
+          "x": 630,
+          "y": 324
+        },
+        "6": {
+          "x": 232,
+          "y": 304
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Repeat · rotate every 10 passes · 50 touches each",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [
+    {
+      "id": 0,
+      "type": "arrow",
+      "mode": "straight",
+      "color": "#ffffff",
+      "thickness": 3,
+      "points": [
+        240,
+        228,
+        600,
+        228
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dashed-arrow",
+      "mode": "straight",
+      "color": "#facc15",
+      "thickness": 2,
+      "points": [
+        420,
+        254,
+        484,
+        254
+      ]
+    },
+    {
+      "id": 2,
+      "type": "arrow",
+      "mode": "straight",
+      "color": "#facc15",
+      "thickness": 3,
+      "points": [
+        600,
+        352,
+        508,
+        352
+      ]
+    },
+    {
+      "id": 3,
+      "type": "arrow",
+      "mode": "straight",
+      "color": "#22c55e",
+      "thickness": 3,
+      "points": [
+        460,
+        376,
+        240,
+        376
+      ]
+    }
+  ],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "50 Touches — Long · Short · Turn",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 448,
+      "text": "Setup: A and C 25 yd apart, B in the middle",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 420,
+      "y": 200,
+      "text": "long (strong foot)",
+      "fontSize": 14,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 3,
+      "x": 350,
+      "y": 386,
+      "text": "short (weak foot)",
+      "fontSize": 14,
+      "fontStyle": "italic",
+      "fill": "#86efac",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 7,
+    "draw": 4,
+    "shape": 0,
+    "text": 4
+  },
+  "notes": {
+    "title": "50 Touches (Long-Short-Turn Warm-up)",
+    "ages": "U10, U12, U14, HS, Adult",
+    "players": "3 per group",
+    "duration": "8 min",
+    "objective": "A fast warm-up with a long pass, short pass, turn, and weak-foot pass on repeat — constant movement and coming to the ball.",
+    "variations": [
+      "Harder: one-touch for the middle player",
+      "Harder: long pass must be in the air",
+      "Easier: shorten the long pass to 15 yd"
+    ],
+    "coaching": [
+      "Come to the ball instead of waiting",
+      "On your toes the whole time",
+      "Open up before you turn"
+    ],
+    "equipment": [
+      "1 ball per group",
+      "3 cones"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

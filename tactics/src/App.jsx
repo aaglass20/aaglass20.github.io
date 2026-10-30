@@ -2836,7 +2836,27 @@ export default function App() {
     clearBoard()
     historyRef.current = []
     const maxId = (items) => items.reduce((m, it) => Math.max(m, Number(it.id) || 0), -1) + 1
-    const objects = data.placedObjects ?? [], draws = data.drawings ?? [], shps = data.shapes ?? [], texts = data.textItems ?? []
+    const objects = data.placedObjects ?? [], draws = data.drawings ?? [], shps = data.shapes ?? []
+    // Labels in hand-made files (e.g. a drill drawn from text) may leave out their size and
+    // styling: fill in defaults, fit each width to its words (here and per frame), and turn
+    // `anchor: 'center'` (x is the middle) into a normal left x
+    const texts = (data.textItems ?? []).map(t => {
+      const fontSize = t.fontSize ?? 18, fontStyle = t.fontStyle ?? 'normal', text = String(t.text ?? '')
+      const width = t.width ?? fitTextWidth(text, fontSize, fontStyle)
+      const { anchor, ...rest } = t
+      return {
+        fill: '#ffffff', background: 'transparent', align: 'left', rotation: 0, scaleX: 1, scaleY: 1, transition: 'none',
+        ...rest, text, fontSize, fontStyle, width,
+        x: anchor === 'center' ? Math.round((t.x ?? 0) - width / 2) : (t.x ?? 0),
+        y: t.y ?? 0,
+      }
+    })
+    const textById = new Map(texts.map(t => [t.id, t]))
+    data = { ...data, frames: data.frames.map(f => !f.texts ? f : { ...f, texts: Object.fromEntries(Object.entries(f.texts).map(([id, e]) => {
+      const t = textById.get(Number(id))
+      const text = String(e.text ?? t?.text ?? '')
+      return [id, { hidden: false, ...e, text, width: e.width ?? (t ? fitTextWidth(text, t.fontSize, t.fontStyle) : 100) }]
+    })) }) }
     nextId.current      = Math.max(data.nextIds?.object ?? 0, maxId(objects))
     nextDrawId.current  = Math.max(data.nextIds?.draw   ?? 0, maxId(draws))
     nextShapeId.current = Math.max(data.nextIds?.shape  ?? 0, maxId(shps))

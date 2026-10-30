@@ -110,6 +110,7 @@ Konva's `dragBoundFunc` works in **absolute (on-screen) coordinates**, so the st
 - **File:** `{ format: 'tactics-board', version: 1, savedAt, field, playSpeed, placedObjects, frames, freePaths, drawings, shapes, textItems, nextIds: { object, draw, shape, text } }`
 - **Save:** uses the native Save dialog (`showSaveFilePicker`, Chrome/Edge) to pick the name and folder; other browsers get a name prompt and a download. The last used name (`playName`) is suggested next time.
 - **Open:** a hidden file input. It validates `format` and that `frames` is non-empty (otherwise an alert, and the board is untouched), then clears the board, **resets undo history**, restores everything, and sets each ID counter to the larger of the saved value and max-id + 1 so new objects never collide.
+- **Hand-made files** (drills drawn from text — see `DRILL-TO-PLAY.md` and `scripts/build-play.py`): `loadPlay` fills in what they leave out — default text styling, each label's `width` fitted to its words (also per frame in `frame.texts`), and `anchor: 'center'` labels converted to a left `x`.
 - Bump `SAVE_VERSION` and handle the old shape in `openAnimation` if the format changes.
 
 ## Undo (`pushHistory` / `undo`, ↩ button, ⌘Z / Ctrl+Z)
