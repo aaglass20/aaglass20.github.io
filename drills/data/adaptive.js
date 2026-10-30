@@ -11,7 +11,7 @@ window.DRILL_DATA.adaptive = [
       'Each athlete has a ball (soccer ball to dribble, or any ball to carry/roll)',
       'Colored cards or cones: green, yellow, red',
     ],
-    instructions: [
+    directions: [
       'Athletes start on the line with their ball.',
       'Green = move forward with the ball; yellow = slow down; red = stop the ball and freeze.',
       'Coach holds up a color and says it out loud at the same time.',
@@ -53,7 +53,7 @@ window.DRILL_DATA.adaptive = [
       'Athletes and buddies stand (or sit) in a circle',
       'Visual schedule board with picture cards for today\'s activities (optional)',
     ],
-    instructions: [
+    directions: [
       'Coach says hello and each athlete says (or waves, or signs) their name; everyone waves back.',
       'Coach shows the visual schedule: "First warm-up, then kicking, then a game, then cool-down."',
       'Group copies 4–5 simple moves: arm circles, reach high, touch toes, march in place, wiggle.',
@@ -93,7 +93,7 @@ window.DRILL_DATA.adaptive = [
       'Two lines of cones 10 yd apart',
       'Animal picture cards',
     ],
-    instructions: [
+    directions: [
       'Coach shows a card and demos the animal.',
       'Athletes move to the far cones and back: bear crawl (hands and feet), frog jumps, crab walk, penguin waddle, flamingo (stand on one leg), cheetah (run).',
       'Rest and cheer between animals.',
@@ -132,7 +132,7 @@ window.DRILL_DATA.adaptive = [
       'One lightweight scarf (or plastic bag / tissue) per athlete',
       'Spread out in open space',
     ],
-    instructions: [
+    directions: [
       'Toss the scarf up with one hand and catch it with two hands.',
       'Toss and catch with the same hand; then the other hand.',
       'Toss, clap once, catch. Then clap twice.',
@@ -170,7 +170,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Athletes spread out facing the coach, each with a buddy if needed',
     ],
-    instructions: [
+    directions: [
       'Coach says "Simon says…" plus a move and demonstrates it: touch your head, jump, march, spin, reach high.',
       'If the coach does a move without "Simon says," athletes stay still.',
       'No one is "out" — anyone who moves just laughs and keeps playing.',
@@ -208,7 +208,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Each athlete has a soft ball, standing or seated',
     ],
-    instructions: [
+    directions: [
       'Coach calls a body part; athletes touch the ball to it: head, shoulders, tummy, knees, toes.',
       'Move the ball around the body: around the waist, around the head, between the legs.',
       'Put the ball down and step over it, sit on it, touch it with an elbow.',
@@ -248,7 +248,7 @@ window.DRILL_DATA.adaptive = [
       'Stations in a loop: cones to weave, hoops to step in, a tunnel or table to crawl under, a rope line to balance on, a low hurdle or pool noodle to step over',
       'Start/finish marked with a big cone',
     ],
-    instructions: [
+    directions: [
       'Coach (or a buddy) walks the course first, showing each station.',
       'Athletes go one at a time, 5–10 seconds apart, with a buddy.',
       'Celebrate at the finish, then go again.',
@@ -287,7 +287,7 @@ window.DRILL_DATA.adaptive = [
       'Poly spots, carpet squares, or hoops laid in a path 1–2 ft apart',
       '"River" between two lines of cones',
     ],
-    instructions: [
+    directions: [
       'Athletes cross the river by stepping only on the stones.',
       'Next round: two-foot jumps from stone to stone.',
       'Then try hopping on one foot (or stepping with the same foot).',
@@ -324,7 +324,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'A rope, tape line, or low beam about 10 ft long',
     ],
-    instructions: [
+    directions: [
       'Walk forward along the line, arms out like airplane wings.',
       'Walk heel-to-toe.',
       'Walk sideways (crab step), then backward with a buddy beside you.',
@@ -361,7 +361,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Open space; speaker with music',
     ],
-    instructions: [
+    directions: [
       'Play music; athletes dance, march, or move however they like.',
       'When the music stops, everyone freezes like a statue.',
       'Coach calls a statue shape (tall, small, wide, one foot) for the next freeze.',
@@ -399,7 +399,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Area 20x20 yd with cones of 4–5 colors scattered around',
     ],
-    instructions: [
+    directions: [
       'Coach calls a color ("Blue!") and holds up a matching card.',
       'Athletes move to any cone of that color and touch it.',
       'Coach calls the next color.',
@@ -439,7 +439,7 @@ window.DRILL_DATA.adaptive = [
       'Pairs (athlete + buddy) sitting or standing 3–5 yd apart',
       'One ball per pair',
     ],
-    instructions: [
+    directions: [
       'Partners sit with legs in a V and roll the ball back and forth; trap it with two hands.',
       'Stand up: roll and trap with hands, then with a foot.',
       'Count rolls in a row without missing.',
@@ -477,7 +477,7 @@ window.DRILL_DATA.adaptive = [
       '3 hoops (or laundry baskets) on the ground at 3, 5, and 7 yd',
       '5 bean bags per athlete',
     ],
-    instructions: [
+    directions: [
       'Athletes stand at the line and throw underhand into the nearest hoop.',
       'Score 1, 2, or 3 points for the near, middle, or far hoop.',
       'Collect the bean bags and switch with the next athlete.',
@@ -515,7 +515,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Pairs 3–4 yd apart with a playground or basketball',
     ],
-    instructions: [
+    directions: [
       'Athlete bounces the ball and catches it themselves (5 times).',
       'Partner bounce pass: buddy bounces the ball to the athlete, who catches it.',
       'Athlete bounces it back to the buddy.',
@@ -552,7 +552,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'One balloon per athlete (or pair)',
     ],
-    instructions: [
+    directions: [
       'Tap the balloon up and catch it with two hands.',
       'Tap it up, clap, then catch.',
       'Partner: toss the balloon to a buddy and catch it back.',
@@ -591,7 +591,7 @@ window.DRILL_DATA.adaptive = [
       'Laundry basket or bucket on the floor, on a chair, then a lowered hoop',
       'Several balls of different sizes',
     ],
-    instructions: [
+    directions: [
       'Stand next to the basket and drop the ball in.',
       'Step back 1–2 steps and toss it in with two hands.',
       'Raise the basket (chair height) and shoot.',
@@ -631,7 +631,7 @@ window.DRILL_DATA.adaptive = [
       '6–10 plastic pins (or water bottles / cones) in a triangle',
       'Throwing/kicking line 3–8 yd away',
     ],
-    instructions: [
+    directions: [
       'Athlete rolls (hands) or kicks (feet) the ball at the pins.',
       'Count how many fall; buddy resets them.',
       'Two tries per turn; next athlete.',
@@ -669,7 +669,7 @@ window.DRILL_DATA.adaptive = [
       'Small or pop-up goal; kicking spots (poly spots) at 3, 5, and 8 yd',
       'Balls at each spot',
     ],
-    instructions: [
+    directions: [
       'Athlete picks a spot and kicks the ball into the goal.',
       'Everyone does a goal celebration together (arms up, dance).',
       'Move back to the next spot after scoring.',
@@ -708,7 +708,7 @@ window.DRILL_DATA.adaptive = [
       'Lanes 3 yd wide x 15 yd long marked with cones (one lane per athlete-buddy pair)',
       'Cones inside the lane as "cars" to go around',
     ],
-    instructions: [
+    directions: [
       'Athlete dribbles from the start to the end of the lane, going around the cars.',
       'Buddy walks alongside, cheering and helping keep the ball in the lane.',
       'At the end, stop the ball (the "parking lot"), turn, and dribble back.',
@@ -747,7 +747,7 @@ window.DRILL_DATA.adaptive = [
       'Small diamond: home plate and one base (cone) 10–15 yd away',
       'Large soft ball; fielders spread out',
     ],
-    instructions: [
+    directions: [
       'Coach rolls the ball slowly to the kicker (or the kicker kicks from a stationary spot).',
       'Kicker kicks and runs (or pushes) to the base and back home with a buddy.',
       'Fielders get the ball and bring it to the coach.',
@@ -788,7 +788,7 @@ window.DRILL_DATA.adaptive = [
       'Pairs or small groups; one balloon each',
       'Optional: rope or row of cones as a "net"',
     ],
-    instructions: [
+    directions: [
       'Hit the balloon up with an open hand and keep it in the air.',
       'Partner volley: hit it to your buddy, who hits it back.',
       'Use a paddle (or paper plate on a stick, or pool noodle) to strike.',
@@ -827,7 +827,7 @@ window.DRILL_DATA.adaptive = [
       'Batting tee at waist height; large plastic bat; big soft ball (or beach ball)',
       'Fence, net, or open field to hit into',
     ],
-    instructions: [
+    directions: [
       'Athlete stands sideways to the tee, feet apart.',
       'Buddy helps with the grip (hands together, bottom hand near the knob).',
       'Swing level and hit the ball off the tee.',
@@ -866,7 +866,7 @@ window.DRILL_DATA.adaptive = [
       'Area 15x20 yd with a small goal (or two cones) at one end',
       'Pool noodles cut to stick length; large soft ball or foam puck',
     ],
-    instructions: [
+    directions: [
       'Practice: push the ball along the ground with the noodle, around a cone, and back.',
       'Shoot: push the ball into the goal from 5 yd.',
       'Game: 3v3 with noodles; everyone touches the ball before a team shoots.',
@@ -905,7 +905,7 @@ window.DRILL_DATA.adaptive = [
       'Play parachute (12–20 ft) spread out; athletes and buddies holding the edge all around',
       '2–4 soft balls',
     ],
-    instructions: [
+    directions: [
       'Wave: small waves, then big waves together on the count.',
       'Mushroom: everyone lifts on "1-2-3 up!", then brings it down.',
       'Ball roll: put a ball on top and work together to roll it around the edge (or keep it from falling off).',
@@ -948,7 +948,7 @@ window.DRILL_DATA.adaptive = [
       'Circle of 6–12 athletes and buddies, 2–3 yd apart',
       'One soft ball',
     ],
-    instructions: [
+    directions: [
       'Athlete says a teammate\'s name, makes eye contact, and passes (roll, bounce, throw, or kick).',
       'Receiver catches or traps, says thank you, and picks the next person.',
       'Try to pass to everyone once.',
@@ -987,7 +987,7 @@ window.DRILL_DATA.adaptive = [
       'Area 20x20 yd with 20–30 cones or balls scattered',
       'Two team "homes" (hoops or baskets) on opposite sides',
     ],
-    instructions: [
+    directions: [
       'On "go," athletes collect one item at a time and bring it to their team home.',
       'When the field is clear, count each team\'s items.',
       'Second round: put them all back out (everyone wins).',
@@ -1025,7 +1025,7 @@ window.DRILL_DATA.adaptive = [
       'Small field (20x30 yd) with two small goals',
       'Teams of 3–5 athletes, each paired with a buddy; pinnies for athletes',
     ],
-    instructions: [
+    directions: [
       'Play a normal game with simple rules: kick-ins from the side, no offside.',
       'Buddies help their athlete, but only athletes may score.',
       'Coach makes sure each athlete gets the ball; rotate positions every few minutes.',
@@ -1066,7 +1066,7 @@ window.DRILL_DATA.adaptive = [
       'Quiet indoor area; tape lines for a 6x9 yd court with a goal line at each end',
       'A ball with bells inside; blindfolds/eyeshades optional for sighted athletes',
     ],
-    instructions: [
+    directions: [
       'Everyone stays quiet so the ball can be heard.',
       'Athlete rolls the ball toward the other team\'s goal line.',
       'Defenders listen, then slide or kneel to block the ball with their bodies.',
@@ -1104,7 +1104,7 @@ window.DRILL_DATA.adaptive = [
     setup: [
       'Open space; bubble wand or bubble machine',
     ],
-    instructions: [
+    directions: [
       'Coach blows bubbles; athletes move to pop them.',
       'Change how to pop: clap them, poke with one finger, stomp the low ones, jump for high ones.',
       'Freeze when the bubbles stop.',
@@ -1143,7 +1143,7 @@ window.DRILL_DATA.adaptive = [
       'Athletes and buddies sit or stand in a circle',
       'Optional soft music',
     ],
-    instructions: [
+    directions: [
       'Breathing: "smell the flower" (breathe in), "blow out the candle" (breathe out) — 3 times.',
       'Reach up high to the sky, then down to the toes.',
       'Arm across the body; neck rolls; ankle circles.',
@@ -1183,7 +1183,7 @@ window.DRILL_DATA.adaptive = [
       'Mats or soft grass; athletes spread out facing the coach',
       'Pose picture cards',
     ],
-    instructions: [
+    directions: [
       'Coach shows a card and demos the pose; hold for 3–5 slow breaths.',
       'Poses: tree (stand on one foot), cat and cow (hands and knees), downward dog, butterfly (sitting), cobra (lying on tummy), turtle (curl up).',
       'Finish lying still (or sitting) with eyes closed for 30 seconds.',

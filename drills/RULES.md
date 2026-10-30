@@ -52,7 +52,7 @@ and copy a drill's export straight into Coach Approach.
   altNames: ['Monkey in the Middle', 'Keep Away'],
   objective: 'One or two sentences: what the drill trains and why.',
   setup: ['Grid: 10x10 yd square', 'Players: 4 outside, 1 defender inside'],
-  instructions: ['Step 1 …', 'Step 2 …'],          // Sequence of Play, in order
+  directions: ['Step 1 …', 'Step 2 …'],            // Directions (sequence of play), in order
   variations: ['Easier: …', 'Harder: …'],          // label progressions Easier/Harder when it fits
   coachingPoints: ['Open body to the field', '…'],
   equipment: ['1 ball', '4 cones', '1 pinnie'],
@@ -70,10 +70,10 @@ and copy a drill's export straight into Coach Approach.
 ```
 
 ### Field rules
-- **Required:** `id, name, altNames, objective, setup, instructions, variations,
+- **Required:** `id, name, altNames, objective, setup, directions, variations,
   coachingPoints, equipment, ages, categories`. Use `[]` when there truly are none.
 - **Lists are arrays of short strings** — one idea per line, no paragraphs.
-- **`instructions`** read as a sequence of play: start → how it runs → scoring/rotation → end.
+- **`directions`** read as a sequence of play: start → how it runs → scoring/rotation → end.
 - **`coachingPoints`**: 3–6 short cues a coach can shout ("Eyes up", "Low and wide").
 - **`categories`**: 1–3, primary first. Only names from that sport's list in `js/sports.js`.
   Need a new category? Add it to `js/sports.js` and note it in the decision log below.
@@ -125,4 +125,5 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Soccer batch 1: 31 drills added (36 total). Heading drills are U12+ only (US Soccer rules). |
 | 2026-10-29 | Soccer batch 2: 32 drills from BDU pages + 15 from the web (83 total). BDU sources link as `../BDU/<page>.html`. BDU technique videos skipped (moves, not drills). |
 | 2026-10-29 | Adaptive batch 1: 29 drills (30 total). Added optional `sportFocus` (Coach Approach adaptive programs have a sport focus). |
+| 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |

@@ -38,7 +38,7 @@
 
   const haystack = d => [
     d.name, ...(d.altNames || []), d.objective, ...(d.categories || []), ...(d.setup || []),
-    ...(d.instructions || []), ...(d.variations || []), ...(d.coachingPoints || []),
+    ...(d.directions || []), ...(d.variations || []), ...(d.coachingPoints || []),
     ...(d.equipment || []), ...(d.adaptations || []), ...(d.sportFocus || []), d.players, d.notes,
   ].join(' ').toLowerCase();
 
@@ -86,7 +86,7 @@
       d.sportFocus && d.sportFocus.length ? `Sport focus: ${d.sportFocus.join(', ')}` : '',
       `\nOBJECTIVE\n${d.objective}\n`,
       list('SETUP', d.setup),
-      list('INSTRUCTIONS (SEQUENCE OF PLAY)', d.instructions, true),
+      list('DIRECTIONS', d.directions, true),
       list('VARIATIONS', d.variations),
       list('COACHING POINTS', d.coachingPoints),
       list('EQUIPMENT', d.equipment),
@@ -207,7 +207,7 @@
         </div>
         <section class="d-sec"><h4>Objective</h4><p>${esc(d.objective)}</p></section>
         ${section('Setup', d.setup)}
-        ${section('Instructions (Sequence of Play)', d.instructions, true)}
+        ${section('Directions', d.directions, true)}
         ${section('Variations', d.variations)}
         ${section('Coaching Points', d.coachingPoints)}
         ${section('Equipment', d.equipment)}

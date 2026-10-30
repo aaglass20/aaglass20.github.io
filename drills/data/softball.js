@@ -10,7 +10,7 @@ window.DRILL_DATA.softball = [
       'Partners face each other in two lines, starting 15 ft apart',
       'One ball per pair',
     ],
-    instructions: [
+    directions: [
       'Wrist flicks: from one knee, throw using only the wrist (10 throws).',
       'Kneeling: throwing-side knee down, full arm circle, chest faces target on release (10 throws).',
       'Standing: feet shoulder-width, glove side to target, step and throw (10 throws).',

@@ -11,7 +11,7 @@ window.DRILL_DATA.soccer = [
       'Players: 4 attackers on the outside edges, 1 defender in the middle',
       'Start with the ball at one attacker\'s feet',
     ],
-    instructions: [
+    directions: [
       'Attackers pass the ball around and across the square; they may move along their edge but not into the grid.',
       'Defender tries to win the ball or knock it out of the grid.',
       'Count consecutive passes — 10 passes in a row scores a point for the attackers.',
@@ -52,7 +52,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x30 yd rectangle with an end line on each short side',
       'Players: every "minnow" has a ball; 1–2 "sharks" without a ball start in the middle',
     ],
-    instructions: [
+    directions: [
       'Minnows line up on one end line with a ball each.',
       'On the coach\'s call ("Fishy, fishy, cross my sea!"), minnows dribble to the far end line.',
       'Sharks try to kick minnows\' balls out of the grid.',
@@ -96,7 +96,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 15x20 yd channel with a small goal (or pop-up goal) at one end',
       'Players: attackers in a line at the far end with balls; defenders in a line next to the goal',
     ],
-    instructions: [
+    directions: [
       'Defender passes the ball to the first attacker, then sprints out to defend.',
       'Attacker takes a positive first touch forward and tries to beat the defender and score.',
       'Play until a goal, the defender wins it and dribbles over the far line, or the ball goes out.',
@@ -131,7 +131,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x25 yd with a goal and goalkeeper at one end',
       'Players: two attacking lines at the far end, one defender line by the goal',
     ],
-    instructions: [
+    directions: [
       'Defender passes to one of the two front attackers and steps out.',
       'The two attackers combine to beat the defender and shoot.',
       'Rep ends on a goal, save, defender win, or ball out of play.',
@@ -166,7 +166,7 @@ window.DRILL_DATA.soccer = [
       'Set up 8–12 "gates" (two cones 2 yd apart) scattered around the grid',
       'Players: each player has a ball',
     ],
-    instructions: [
+    directions: [
       'Players dribble freely and try to dribble through as many gates as they can in 60 seconds.',
       'They may not go through the same gate twice in a row.',
       'Players count their gates; try to beat the score next round.',
@@ -204,7 +204,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 12x12 yd (U12) up to 15x15 yd (HS)',
       'Players: 5 attackers on the edges (one may play inside), 2 defenders in pinnies inside',
     ],
-    instructions: [
+    directions: [
       'Attackers keep possession around the grid; two-touch limit to start.',
       'Defenders work together to win the ball or force it out.',
       '10 passes in a row = 1 point; a pass that splits the two defenders = 1 bonus point.',
@@ -240,7 +240,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 10x10 yd square',
       'Players: 3 attackers, 1 defender',
     ],
-    instructions: [
+    directions: [
       'Three attackers keep the ball from one defender inside the square; attackers may move anywhere.',
       'Count passes; 5 in a row = 1 point.',
       'If the defender touches the ball, they swap with the attacker who lost it.',
@@ -274,7 +274,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x20 yd outer square with a 10x10 yd "hot box" in the middle',
       'Players: 4 servers on the outer edges (one per side), 3–4 players inside the hot box, 1–2 defenders in the box',
     ],
-    instructions: [
+    directions: [
       'An outside server passes into a player in the hot box.',
       'The receiver controls and plays out to a different server (not the one who passed in).',
       'Defenders try to win the ball inside the box.',
@@ -310,7 +310,7 @@ window.DRILL_DATA.soccer = [
       'Each player has a ball in their own space (about 3x3 yd)',
       'Players face the coach so they can copy the demo',
     ],
-    instructions: [
+    directions: [
       'Coach demos a move; players do it for 30 seconds, rest 15 seconds.',
       'Suggested order: toe taps → inside-inside rolls (tic-tocs) → sole rolls across → pull-push → V-pull → step-over.',
       'Repeat the circuit twice, faster the second time.',
@@ -346,7 +346,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x25 yd; start line at one end',
       'Each player has a ball; coach stands at the far end',
     ],
-    instructions: [
+    directions: [
       'Green light = dribble toward the coach; yellow = slow dribble; red = stop the ball with the sole.',
       'Players caught moving on red go back 5 steps.',
       'First player to reach the coach\'s line becomes the traffic light.',
@@ -378,7 +378,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x20 yd',
       'Every player has a ball except 2 taggers in pinnies',
     ],
-    instructions: [
+    directions: [
       'Taggers try to tag dribblers with a hand.',
       'Tagged players freeze, pick up their ball, and stand with legs wide.',
       'A teammate unfreezes them by passing a ball through their legs.',
@@ -411,7 +411,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 15x20 yd',
       'Each player has a ball and a pinnie tucked into the back of their shorts as a tail',
     ],
-    instructions: [
+    directions: [
       'Everyone dribbles inside the grid and tries to grab other players\' tails.',
       'Players must keep dribbling — no picking up the ball or standing still.',
       'If you lose your tail, do 5 toe taps and keep playing (you can still steal tails).',
@@ -444,7 +444,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20 yd wide x 30 yd long, split into 3–4 lanes across the field',
       'One defender ("car") in each lane, who must stay in their lane; dribblers each have a ball at one end',
     ],
-    instructions: [
+    directions: [
       'Dribblers ("frogs") try to get across all lanes to the far end line.',
       'Cars try to kick balls away but may only move side to side in their lane.',
       'A frog who loses their ball goes back to the start and tries again.',
@@ -477,7 +477,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 25x25 yd with a 5x5 yd home base in each corner',
       'All balls start in the center circle; 4 teams of 2–4 players, one per home base',
     ],
-    instructions: [
+    directions: [
       'On "go," one player from each team runs out, takes a ball, and dribbles it back to their base.',
       'Next player goes once the first is home (relay style).',
       'When the middle is empty, players may steal from other bases — no defending your base.',
@@ -513,7 +513,7 @@ window.DRILL_DATA.soccer = [
       '3–4 lines of 3–4 players; each line has 6 cones in a row, 1–2 yd apart',
       'A turning cone 5 yd past the last cone',
     ],
-    instructions: [
+    directions: [
       'First player in each line weaves through the cones, rounds the turning cone, and dribbles straight back.',
       'Stop the ball for the next player with the sole; they go.',
       'First team to have everyone finish sits down and wins.',
@@ -548,7 +548,7 @@ window.DRILL_DATA.soccer = [
       'Two teams line up on opposite sidelines; each player has a number (1, 2, 3…) matching a player on the other team',
       'Coach stands at midfield with the balls',
     ],
-    instructions: [
+    directions: [
       'Coach calls one or more numbers and plays a ball into the field.',
       'Players with those numbers sprint on and play until a goal or the ball goes out.',
       'Players go back to their line; coach calls new numbers.',
@@ -583,7 +583,7 @@ window.DRILL_DATA.soccer = [
       'Three cones in a triangle, 10 yd apart',
       'Players: 4–5 per triangle — 2 at the starting cone, 1 at each other cone',
     ],
-    instructions: [
+    directions: [
       'Player at cone A passes to cone B, then jogs to cone B.',
       'B receives across the body, passes to C, and follows the pass.',
       'Continue around the triangle for 60 seconds, then switch direction.',
@@ -620,7 +620,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 25x25 yd with 8–12 gates (2 cones, 2 yd apart)',
       'Players in pairs, one ball per pair',
     ],
-    instructions: [
+    directions: [
       'Pairs pass the ball to each other through a gate (one player on each side).',
       'After each pass, both find a new gate.',
       'Count gates in 60 seconds; rest; repeat.',
@@ -654,7 +654,7 @@ window.DRILL_DATA.soccer = [
       'Cones in a Y shape: A (base), B 15 yd ahead, C and D 10 yd diagonally beyond B to each side',
       'Players: 6–8, with balls at A',
     ],
-    instructions: [
+    directions: [
       'A passes to B, who checks toward the ball.',
       'B lays it back to A (wall pass); A plays a first-time pass into C.',
       'B spins and runs to C; C passes to B in stride; B finishes at D or dribbles to D.',
@@ -688,7 +688,7 @@ window.DRILL_DATA.soccer = [
       'Four cones in a diamond, 12 yd apart',
       'Players: 2 at the starting cone, 1–2 at each other cone',
     ],
-    instructions: [
+    directions: [
       'Pass clockwise around the diamond; each player follows their pass.',
       'Receivers open their body and take a first touch toward the next cone.',
       'After 90 seconds, switch to counter-clockwise (works the other foot).',
@@ -721,7 +721,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 15x20 yd with a small goal (or end line) for the receiver to attack',
       'Server with balls at one end; receiver facing the server; defender behind the receiver',
     ],
-    instructions: [
+    directions: [
       'Server passes to the receiver, who has their back to goal.',
       'Defender starts passive (one step off), then live.',
       'Receiver turns and scores if there is space, or shields and plays back to the server if tight.',
@@ -755,7 +755,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Each player with a ball in their own space',
     ],
-    instructions: [
+    directions: [
       'Level 1: drop, one touch with the foot, catch.',
       'Level 2: two touches (foot–foot) then catch; then three, four, five.',
       'Level 3: alternate feet; then thigh–foot–thigh.',
@@ -789,7 +789,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x20 yd',
       'Every player has a ball; coach moves around inside the grid',
     ],
-    instructions: [
+    directions: [
       'Players dribble and try to hit the coach below the knees with a pass.',
       'Each hit = 1 point; the coach reacts dramatically.',
       'Players must collect their ball and dribble again before the next shot.',
@@ -824,7 +824,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Partners 3–5 yd apart; one ball per pair (a lighter or slightly under-inflated ball is best)',
     ],
-    instructions: [
+    directions: [
       'Seated: partner tosses softly; header uses the forehead to send it back to the partner\'s hands (5 reps).',
       'Kneeling: same, using the upper body to generate power (5 reps).',
       'Standing: step into the header and aim back to the tosser\'s hands (5 reps).',
@@ -861,7 +861,7 @@ window.DRILL_DATA.soccer = [
       'Field: 30x35 yd with a goal and GK at one end',
       'Three attacking lines at midfield (left, center, right); two defending lines by the goal posts',
     ],
-    instructions: [
+    directions: [
       'Center attacker dribbles forward; wide players run with them.',
       'Two defenders step out to defend.',
       'Attackers have 15 seconds to score.',
@@ -896,7 +896,7 @@ window.DRILL_DATA.soccer = [
       'One goal with GK (or coach in goal); 18x25 yd field in front of it',
       'Players in pairs; each pair picks a country',
     ],
-    instructions: [
+    directions: [
       'Coach throws a ball in; everyone plays every pair for themselves.',
       'When a player scores, their pair is through to the next round and steps off.',
       'The last pair without a goal is out.',
@@ -930,7 +930,7 @@ window.DRILL_DATA.soccer = [
       'Goal with GK; a server/target player standing at the top of the 18',
       'Two shooting lines 25 yd out, left and right of center, with balls',
     ],
-    instructions: [
+    directions: [
       'Shooter passes into the target player and follows.',
       'Target lays the ball off into the shooter\'s path.',
       'Shooter strikes first time or after one touch from 16–20 yd.',
@@ -964,7 +964,7 @@ window.DRILL_DATA.soccer = [
       'Goal with GK; full or half field width',
       'Wide players with balls on each wing; strikers in two lines at the top of the 18',
     ],
-    instructions: [
+    directions: [
       'Winger dribbles down the line toward the end line and crosses.',
       'Two strikers time their runs: one near post, one far post.',
       'Finish first time if possible.',
@@ -1000,7 +1000,7 @@ window.DRILL_DATA.soccer = [
       'Channel: 5 yd wide x 10 yd long per pair',
       'Pairs: one attacker, one defender facing each other',
     ],
-    instructions: [
+    directions: [
       'Without a ball: attacker moves forward, side to side, and changes pace; defender mirrors while backpedaling in a sideways stance.',
       '30 seconds per round, switch roles.',
       'With a ball: attacker dribbles to cross the far line; defender jockeys and only tackles when the touch is too big.',
@@ -1034,7 +1034,7 @@ window.DRILL_DATA.soccer = [
       'Field: 20x25 yd with two small goals (or end line) for attackers; defenders defend a line or goal',
       '2 attackers vs 2 defenders; extras wait at each end',
     ],
-    instructions: [
+    directions: [
       'Coach serves to the attackers.',
       'Nearest defender pressures the ball; the second defender takes a cover position about 3–5 yd behind at an angle.',
       'Attackers try to score; defenders try to win it and dribble over the attackers\' end line.',
@@ -1074,7 +1074,7 @@ window.DRILL_DATA.soccer = [
       'Field: 25x35 yd; two small goals on each end line, near the corners',
       'Two teams of 4 (no GKs)',
     ],
-    instructions: [
+    directions: [
       'Play 4v4; each team can score in either of the two goals they attack.',
       'Restarts: kick-ins from the sideline, corners from the end line.',
       'Play 3–4 minute games; rest 1 minute.',
@@ -1109,7 +1109,7 @@ window.DRILL_DATA.soccer = [
       'Field: 20x25 yd with a 2–3 yd end zone at each end',
       'Two teams of 3–5',
     ],
-    instructions: [
+    directions: [
       'Teams score by passing into the end zone to a teammate who runs onto it and stops it inside the zone.',
       'The receiver may not enter the zone before the ball (like offside).',
       'After a score, the scoring team keeps the ball and attacks the other end.',
@@ -1142,7 +1142,7 @@ window.DRILL_DATA.soccer = [
       'Field: 30x40 yd with full-size or medium goals and GKs',
       'Two teams of 4 + a third team waiting behind one goal',
     ],
-    instructions: [
+    directions: [
       'Play 4v4. A goal scored within 6 seconds of winning the ball counts double.',
       'When a team scores, the defending team leaves and the waiting team enters immediately with a ball from the GK.',
       'The scoring team must instantly defend.',
@@ -1177,7 +1177,7 @@ window.DRILL_DATA.soccer = [
       'Soft grass or mats; goal or two cones as a goal',
       'Coach with balls 3–5 yd from the keeper',
     ],
-    instructions: [
+    directions: [
       'Sitting: keeper sits, coach rolls a ball to the side; keeper falls onto their side and catches (5 each side).',
       'Kneeling: keeper on knees, coach throws at hip height to the side; keeper dives and catches (5 each side).',
       'Crouching (squat): same, pushing off the near foot.',
@@ -1211,7 +1211,7 @@ window.DRILL_DATA.soccer = [
       'Two goals (or cone goals 6 yd wide) facing each other 15–20 yd apart',
       'One keeper in each goal; balls next to each goal',
     ],
-    instructions: [
+    directions: [
       'Keepers take turns trying to score on each other by throwing, rolling, or kicking from their own goal line.',
       'Saves earn the right to shoot back immediately.',
       'First to 5 goals wins; rotate in other keepers.',
@@ -1246,7 +1246,7 @@ window.DRILL_DATA.soccer = [
       'Two lines of cones 15–20 yd apart',
       'Players in pairs or small groups at the start cones',
     ],
-    instructions: [
+    directions: [
       'Jog out and back.',
       'Hip out (open the gate), hip in (close the gate).',
       'Side shuffle, carioca (grapevine), high knees, butt kicks.',
@@ -1283,7 +1283,7 @@ window.DRILL_DATA.soccer = [
       'Court: 8x16 yd split by a "net" (row of cones, rope, or a bench)',
       '1v1 or 2v2; one ball',
     ],
-    instructions: [
+    directions: [
       'Server drops the ball and kicks it over the net into the opponent\'s half.',
       'Ball may bounce once; receiver controls with the first touch and plays it back over with the second.',
       'Doubles: team gets up to 3 touches total, one per player.',
@@ -1317,7 +1317,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Open grass; each player (or pair) has a ball',
     ],
-    instructions: [
+    directions: [
       'Player kicks (or tosses then kicks) the ball straight up as high as they can.',
       'They do a forward somersault, pop up, and try to catch the ball before it lands.',
       'Count successful catches; team challenge — how many can the whole team get in 2 minutes?',
@@ -1351,7 +1351,7 @@ window.DRILL_DATA.soccer = [
       'Field 1 = Champions Court on one end, lowest field on the other',
       'Teams of 1, 2, or 3 depending on space',
     ],
-    instructions: [
+    directions: [
       'All fields play 2-minute games at the same time.',
       'When the whistle blows, winners move up one field, losers move down one.',
       'Ties: rock-paper-scissors or a 1-shot shootout.',
@@ -1386,7 +1386,7 @@ window.DRILL_DATA.soccer = [
       'Two teams of 3–5 in lines; each team has 3 pinnies of one color',
       'Optional slalom cones between the start and the grid',
     ],
-    instructions: [
+    directions: [
       'On "go," the first player from each team dribbles through the slalom to the grid and places a pinnie on a cone.',
       'They dribble back and tag the next player.',
       'After all 3 pinnies are placed, players may move one of their own pinnies to a new spot each turn.',
@@ -1422,7 +1422,7 @@ window.DRILL_DATA.soccer = [
       '3x3 yd box in the middle, with a server 10 yd away on each side',
       'Groups of 3: one inside the box, two servers outside',
     ],
-    instructions: [
+    directions: [
       'Server A passes into the middle player.',
       'Middle player\'s first touch turns the ball toward Server B; second touch passes to B.',
       'B passes back in; repeat for 45–60 seconds.',
@@ -1457,7 +1457,7 @@ window.DRILL_DATA.soccer = [
       'Pairs: coach/server and player 8–10 yd apart',
       'Player faces away from the server, bouncing on their toes',
     ],
-    instructions: [
+    directions: [
       'Server calls "Left," "Right," or "Drop" as they pass.',
       'Player turns to face the ball.',
       '"Left": first touch out to their left, then pass back. "Right": touch to the right, pass back.',
@@ -1492,7 +1492,7 @@ window.DRILL_DATA.soccer = [
       '6–8 cones in a zig-zag (diagonal) pattern, 3–4 yd apart',
       '2–3 players per line, each with a ball',
     ],
-    instructions: [
+    directions: [
       'Round 1: right foot only, cutting at each cone.',
       'Round 2: left foot only.',
       'Round 3: alternate feet — inside of one foot, then the other.',
@@ -1527,7 +1527,7 @@ window.DRILL_DATA.soccer = [
       'Two cones 3 yd apart per player',
       'Each player has a ball',
     ],
-    instructions: [
+    directions: [
       'Dribble in a figure 8 around the cones for 30 seconds per surface.',
       'Order: right foot only → left foot only → insides → outsides → sole rolls → scissors at each cone → V-turns.',
       '15-second rest between sets.',
@@ -1559,7 +1559,7 @@ window.DRILL_DATA.soccer = [
       'Channels 5 yd wide x 15 yd long',
       'Pairs: one attacker with a ball, one defender',
     ],
-    instructions: [
+    directions: [
       'Warm-up: attacker dribbles slowly; defender shadows ("running like a defender") down the channel.',
       'Defender shifts hips every time the attacker changes direction.',
       'Coach calls "Attack!": defender steps across the attacker\'s body — arm first, post on the body — and tackles.',
@@ -1594,7 +1594,7 @@ window.DRILL_DATA.soccer = [
       'Small square (6x6 yd) inside a larger area',
       'Attacker with a ball starts inside; defender starts inside too',
     ],
-    instructions: [
+    directions: [
       'Attacker tries to dribble out of any side of the zone under control.',
       'Defender tries to keep them in and win the ball.',
       '20-second rounds; attacker scores 1 point for escaping, defender 1 point for winning it.',
@@ -1627,7 +1627,7 @@ window.DRILL_DATA.soccer = [
       'Two passers 10 yd apart; two pressure players each by a cone 5 yd off to the side',
       'Groups of 4',
     ],
-    instructions: [
+    directions: [
       'Passers pass back and forth.',
       'As a player receives, the pressure player on that side runs from their cone and touches them on the back.',
       'Receiver controls and passes back; the pressure player returns to their cone.',
@@ -1660,7 +1660,7 @@ window.DRILL_DATA.soccer = [
       '4–5 cones each with a ball on top, spread across the top of the box (18–20 yd out)',
       'Goal with a GK; one attacker and one defender',
     ],
-    instructions: [
+    directions: [
       'Attacker moves between the balls, faking toward one and then going to another.',
       'Defender shuffles to stay in front of the attacker.',
       'When the attacker gets a step on the defender, they strike the nearest ball at goal.',
@@ -1692,7 +1692,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Two players 10–12 yd apart with a 2-yd gate of cones in the middle',
     ],
-    instructions: [
+    directions: [
       'Players pass to each other through the middle gate.',
       'Receiver must take the first touch wide (outside the line of the gate), then pass back through the gate.',
       'Lose a point for hitting a cone, taking more than two touches, or missing the gate.',
@@ -1724,7 +1724,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Two cones 5 yd apart; server 8 yd in front',
     ],
-    instructions: [
+    directions: [
       'Player starts at the left cone; server passes to them.',
       'Player touches left (away from the middle) and passes back.',
       'Player shuffles to the right cone; server passes; touch right, pass back.',
@@ -1757,7 +1757,7 @@ window.DRILL_DATA.soccer = [
       'Two lines 25 yd from goal; a pole, mannequin, or tall cone 10 yd in front of each line',
       'Goal (with or without GK)',
     ],
-    instructions: [
+    directions: [
       'Player dribbles at the pole and feints (one line feints left, the other right).',
       'Controlled dribble toward goal; low side-foot shot.',
       'Player collects the ball, speed-dribbles back around the outside, and rejoins the line.',
@@ -1789,7 +1789,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Partners 8–10 yd apart; a line of 3 cones (2 yd apart) on each player\'s side to move along',
     ],
-    instructions: [
+    directions: [
       'Partner passes; player moves up a cone to meet it, receives with the right foot, passes back.',
       'Player moves back a cone, receives with the left foot, passes back.',
       'Coach calls "one touch" or "two touch" to change the rule.',
@@ -1822,7 +1822,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Three side-by-side grids (3x3 yd each) facing a server 8 yd away',
     ],
-    instructions: [
+    directions: [
       'Zone 1: two-touch, left foot.',
       'Zone 2: one-touch.',
       'Zone 3: two-touch, right foot.',
@@ -1855,7 +1855,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Groups of 3 in a line: A and C on the ends (25 yd apart), B in the middle',
     ],
-    instructions: [
+    directions: [
       'A plays a long pass (dominant foot) to C.',
       'C plays a short pass into B, who checks toward the ball.',
       'B turns and plays a short pass with the non-dominant foot to A.',
@@ -1888,7 +1888,7 @@ window.DRILL_DATA.soccer = [
       '6–8 cones in a circle, 10 yd apart; one player at each cone',
       'One or two balls',
     ],
-    instructions: [
+    directions: [
       'Player 1 passes to player 2.',
       'Player 2 receives, turns (coach names the turn: inside, outside, drag back, Cruyff), and passes to player 3.',
       'Continue around the circle; switch direction after 1 minute.',
@@ -1921,7 +1921,7 @@ window.DRILL_DATA.soccer = [
       'Field: 20 yd wide, split into three 10-yd zones',
       'Rows of 4 in each end zone (attackers), 2–3 defenders in the middle zone',
     ],
-    instructions: [
+    directions: [
       'Top row passes horizontally until they find a gap in the middle defenders.',
       'They play a pass through to the bottom row = 1 point.',
       'Bottom row repeats the other direction.',
@@ -1955,7 +1955,7 @@ window.DRILL_DATA.soccer = [
       'Area 30x30 yd with 4–5 hoop/cone circles scattered inside',
       'One team (6–10 players), one ball',
     ],
-    instructions: [
+    directions: [
       'Turns alternate: first a pass, then one player without the ball makes a move.',
       'The goal is to receive the ball inside a circle.',
       'A player who receives in a circle is "through" and steps out.',
@@ -1988,7 +1988,7 @@ window.DRILL_DATA.soccer = [
       '5 balls spread along the 18-yd line',
       'Striker on one side of the balls, defender on the goal side; GK in goal',
     ],
-    instructions: [
+    directions: [
       'Striker runs side to side along the line of balls.',
       'Defender may only shuffle and get their body in front — no tackling.',
       'Striker shoots any ball when they find an opening.',
@@ -2021,7 +2021,7 @@ window.DRILL_DATA.soccer = [
       'Two center cones and two wide cones 20–25 yd from goal; GK in goal',
       'Coach/server with 4 balls',
     ],
-    instructions: [
+    directions: [
       'Ball 1: dribble past the center cone and shoot on the dribble.',
       'Ball 2: run outside the left cone, cut in, shoot with the left foot.',
       'Ball 3: run outside the right cone, cut in, shoot with the right foot.',
@@ -2055,7 +2055,7 @@ window.DRILL_DATA.soccer = [
       'Top of the box; GK in goal',
       'Coach/server with balls 20 yd out; forward with a defender behind them',
     ],
-    instructions: [
+    directions: [
       'Coach passes to the forward.',
       'Forward posts on the defender (shields), feels where they are.',
       'Forward turns quickly away from the defender and shoots.',
@@ -2088,7 +2088,7 @@ window.DRILL_DATA.soccer = [
       'Two lines 30 yd from goal: passers at the center, partners at a cone 10 yd ahead',
       'GK in goal',
     ],
-    instructions: [
+    directions: [
       'Player A passes into B (checking toward the ball).',
       'B bounces (lays) it back to A.',
       'A plays a through ball into space; B spins and sprints onto it — or B plays it and A runs.',
@@ -2122,7 +2122,7 @@ window.DRILL_DATA.soccer = [
       'Striker 12–14 yd from goal facing the goal; coach behind them with balls',
       'GK in goal',
     ],
-    instructions: [
+    directions: [
       'Coach tosses a ball over the striker\'s head at varying heights and speeds.',
       'Striker finds the ball and shoots first time or within two bounces.',
       '5 balls each; rotate.',
@@ -2154,7 +2154,7 @@ window.DRILL_DATA.soccer = [
       'Goal with GK; field 25x30 yd',
       'Red team in one line, yellow team in another, both 25 yd out',
     ],
-    instructions: [
+    directions: [
       'A red player dribbles and shoots on goal, then sprints to touch the goal post.',
       'When they touch the post, a yellow player attacks with a ball; the red player becomes the defender.',
       'When that play ends, the yellow player touches the post and the next red player attacks.',
@@ -2186,7 +2186,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Goal with GK; three lines 20–25 yd out (left, center, right)',
     ],
-    instructions: [
+    directions: [
       'Station 1: player takes a two-touch open shot.',
       'Station 2: that player becomes the defender in a 1v1 against the next attacker.',
       'Station 3: the same defender now defends a 2v1.',
@@ -2219,7 +2219,7 @@ window.DRILL_DATA.soccer = [
       '5–10 cones in a semicircle around the goal box, 10–16 yd out',
       'GK optional; one ball per player',
     ],
-    instructions: [
+    directions: [
       'Shoot from the first cone; if you score, move to the next.',
       'Miss and you start over (or go back one cone for younger players).',
       'First player to score from every cone wins.',
@@ -2251,7 +2251,7 @@ window.DRILL_DATA.soccer = [
       'Goal; cones marking an arc 2–4 yd off the goal line',
       'Servers/shooters with balls at 5–6 positions around the 18',
     ],
-    instructions: [
+    directions: [
       'Coach points to a shooter; keeper shuffles along the arc and gets set on the line between ball and center of goal.',
       'Coach checks the position (look from behind the ball: are both posts equally covered?).',
       'Add live shots: shooter shoots after the keeper is set.',
@@ -2284,7 +2284,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Goal with GK; attackers in a line 25 yd out with balls',
     ],
-    instructions: [
+    directions: [
       'Attacker dribbles toward goal at 70% speed.',
       'Keeper comes out to narrow the angle, gets set when the attacker is about to shoot.',
       'Keeper uses a leg block (one knee down, body spread) or smothers if the touch is too big.',
@@ -2317,7 +2317,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Keeper in goal or between cones; server 8–10 yd away with balls',
     ],
-    instructions: [
+    directions: [
       'Server rolls the ball straight at the keeper: keeper scoops (pinky fingers together) and brings it to the chest.',
       'Server rolls to the side: keeper shuffles, gets behind the ball, scoops.',
       'Server hits low, firm shots: keeper uses the knee-down (K-barrier) scoop.',
@@ -2352,7 +2352,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x20 yd; players with a ball on one end line',
       'Coach (the monster) stands at the far end, "asleep"',
     ],
-    instructions: [
+    directions: [
       'Players dribble slowly toward the sleeping monster.',
       'When the monster "wakes up" (roars), players turn with the ball and dribble back to the safe end line.',
       'Anyone the monster tags (or whose ball the monster steals) becomes a monster helper.',
@@ -2387,7 +2387,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Grid: 15x15 yd; each player with a ball',
     ],
-    instructions: [
+    directions: [
       'Players dribble freely.',
       'Coach calls commands: "Simon says toe taps," "Simon says stop with your sole," "Simon says left foot only."',
       'If the coach gives a command without "Simon says" and a player does it, they do 5 toe taps and rejoin.',
@@ -2420,7 +2420,7 @@ window.DRILL_DATA.soccer = [
       'Grid: 20x20 yd',
       'Pairs or groups of 3, each player with a ball',
     ],
-    instructions: [
+    directions: [
       'Leader dribbles anywhere in the grid, changing speed, direction, and moves.',
       'Followers copy exactly while staying a few yards behind.',
       'Switch leaders every 45 seconds.',
@@ -2451,7 +2451,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Grid: 15x15 yd; each player with a ball',
     ],
-    instructions: [
+    directions: [
       'Coach calls an animal and players dribble like it:',
       'Mouse = tiny, quick touches. Elephant = big slow stomps next to the ball. Kangaroo = hop, then touch.',
       'Bees = buzz around fast and "sting" (pass) the coach\'s legs.',
@@ -2483,7 +2483,7 @@ window.DRILL_DATA.soccer = [
       'Box: 10x15 yd per pair',
       'Attacker and defender face each other on opposite end lines',
     ],
-    instructions: [
+    directions: [
       'Defender passes to the attacker and closes down.',
       'Attacker scores by stopping the ball on the defender\'s end line.',
       'Defender scores by winning it and dribbling over the attacker\'s line.',
@@ -2517,7 +2517,7 @@ window.DRILL_DATA.soccer = [
       'Channel 15x25 yd; small goal or end line at the far end',
       'Attacker with ball, a "wall" player (teammate) to the side, one defender',
     ],
-    instructions: [
+    directions: [
       'Stage 1 (no defender): attacker passes to the wall, runs past a cone, receives the return pass.',
       'Stage 2: passive defender; attacker dribbles at the defender, passes to the wall, sprints around the defender, receives and scores.',
       'Stage 3: live defender; attacker chooses wall pass or dribble.',
@@ -2550,7 +2550,7 @@ window.DRILL_DATA.soccer = [
       'Grid 20x30 yd with two small goals',
       '2v2 plus one neutral server outside who only plays balls in the air',
     ],
-    instructions: [
+    directions: [
       'Every restart comes from the neutral server with a lofted pass.',
       'The team that controls it attacks the opposite goal.',
       'Goal scored after controlling an aerial ball = 2 points.',
@@ -2583,7 +2583,7 @@ window.DRILL_DATA.soccer = [
       'Field 30x20 yd; 3 defenders in a line in the middle zone',
       '4 attackers on each end line passing across',
     ],
-    instructions: [
+    directions: [
       'Attackers on one side try to pass through the defensive line to the other side.',
       'Nearest defender presses the ball; the other two shift to cover the gaps.',
       'If the ball gets through: 1 point to attackers; if intercepted: 1 point to defenders.',
@@ -2616,7 +2616,7 @@ window.DRILL_DATA.soccer = [
       'Arena 20x25 yd with small goals (no GKs)',
       'Teams of 4; waiting teams outside acting as bumpers on the sidelines',
     ],
-    instructions: [
+    directions: [
       'Play 2–3 minute games.',
       'Sideline players are bumpers: they can pass back in to the team that played it to them (one touch).',
       'Winner stays; loser rotates out to the sideline.',
@@ -2648,7 +2648,7 @@ window.DRILL_DATA.soccer = [
       'Grid 20x20 yd',
       'Two teams of 4 + 3 neutral players (one in the middle, two on opposite sides)',
     ],
-    instructions: [
+    directions: [
       'Team in possession plays with the neutrals (7v4).',
       '8 passes = 1 point.',
       'When the defending team wins the ball, they immediately become the possession team with the neutrals.',
@@ -2681,7 +2681,7 @@ window.DRILL_DATA.soccer = [
       'Field 40x30 yd split into two 15-yd wide zones with a 10-yd neutral channel between',
       '4v2 in each zone (or 3v1 for younger players)',
     ],
-    instructions: [
+    directions: [
       'Team keeps the ball in zone A against 2 defenders.',
       'After 3 passes, they may switch with a long pass to teammates in zone B = 1 point.',
       'Defenders shift: one defender from zone A runs to help in zone B (or stays).',
@@ -2713,7 +2713,7 @@ window.DRILL_DATA.soccer = [
     setup: [
       'Keeper at the edge of the box; cone gates or teammates at 15, 25, and 40 yd',
     ],
-    instructions: [
+    directions: [
       'Roll (bowling action) to the 15-yd gate (5 reps).',
       'Overarm throw to the 25-yd gate (5 reps).',
       'Drop kick or punt to the 40-yd target (5 reps).',
@@ -2750,7 +2750,7 @@ window.DRILL_DATA.soccer = [
       'Goal with keeper; servers on each wing with balls',
       'Optional: 1–2 passive attackers in the box',
     ],
-    instructions: [
+    directions: [
       'Stage 1: coach tosses high balls in front of the keeper; keeper calls "Keeper!" and catches at the highest point (W hands).',
       'Stage 2: crosses from the wings; keeper decides to come or stay.',
       'Stage 3: passive then live attackers; keeper claims or punches.',
@@ -2784,7 +2784,7 @@ window.DRILL_DATA.soccer = [
       'Circle or square about 15x15 yd (shrink as players are knocked out)',
       'Every player with a ball',
     ],
-    instructions: [
+    directions: [
       'Players dribble inside the area, protecting their ball while kicking others\' balls out.',
       'If your ball leaves the area, collect it and do a quick challenge (10 toe taps) to return.',
       'Last-player-standing version: players who are out wait for the next round.',
@@ -2817,7 +2817,7 @@ window.DRILL_DATA.soccer = [
       'Cones at 0, 5, 10, and 15 yd; one line per 2–3 players',
       'Each player with a ball',
     ],
-    instructions: [
+    directions: [
       'Dribble to the 5-yd cone, turn, back to start; then 10, then 15.',
       'Rest 30 seconds; repeat 4–6 sets.',
       'Use a different turn at each cone (pull-back, inside cut, outside cut).',
@@ -2852,7 +2852,7 @@ window.DRILL_DATA.soccer = [
       'Stations 2 and 3: a cone (or pole) at each top corner of the 18-yd box, with a short line of players at each',
       'Full-size goal with a GK',
     ],
-    instructions: [
+    directions: [
       'Station 1 plays a firm pass to either flank (e.g. Station 2), then jogs to the back of that line.',
       'Station 2 takes a positive touch and plays a diagonal pass across the top of the box to Station 3.',
       'Right after passing, Station 2 sprints an overlapping run around the outside of Station 3 toward the box.',

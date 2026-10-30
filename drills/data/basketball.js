@@ -10,7 +10,7 @@ window.DRILL_DATA.basketball = [
       'One player under the basket with a ball',
       'One basket per 1–2 players',
     ],
-    instructions: [
+    directions: [
       'Start on the right block; shoot a right-handed layup off the backboard.',
       'Catch the ball out of the net without letting it hit the floor.',
       'Step to the left side and shoot a left-handed layup.',
@@ -44,7 +44,7 @@ window.DRILL_DATA.basketball = [
       'All players in one line at the free-throw line (closer for younger players)',
       'First two players in line each have a ball',
     ],
-    instructions: [
+    directions: [
       'First player shoots; the second may shoot as soon as the first shot leaves the hand.',
       'If you miss, rebound and keep shooting from anywhere until you score.',
       'If the player behind you scores before you, you are knocked out.',

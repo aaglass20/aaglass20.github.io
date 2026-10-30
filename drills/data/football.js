@@ -10,7 +10,7 @@ window.DRILL_DATA.football = [
       'Channel: 5 yd wide x 10 yd long marked with cones',
       'Ball carriers wear flag belts and line up at one end; defenders line up at the other',
     ],
-    instructions: [
+    directions: [
       'Coach signals; the ball carrier jogs, then runs, trying to get past the defender inside the channel.',
       'Defender approaches, breaks down into an athletic stance, and mirrors the carrier.',
       'Defender pulls a flag; the carrier must stay inside the cones.',

@@ -10,7 +10,7 @@ window.DRILL_DATA.baseball = [
       'One player at each base (home, 1st, 2nd, 3rd); extra players line up behind them',
       'Start with one ball at home',
     ],
-    instructions: [
+    directions: [
       'Home throws to 1st; 1st catches, turns, and throws to 2nd; continue around the bases.',
       'After throwing, the player goes to the back of the line at the next base.',
       'Count how many full trips around the bases the group makes in 60 seconds.',
