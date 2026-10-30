@@ -265,7 +265,7 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Running Slap (Slapper Progression 2) | Hitting, Baserunning | |
 | ⬜ | Slapper Defense | Team Defense | |
 
-## Baseball — 28 written
+## Baseball — 47 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
 
 | Status | Drill | Categories | Notes |
@@ -298,14 +298,28 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ✅ | Pitcher Covers First | Pitching, Team Defense | |
 | ✅ | Leadoffs and Pitcher Reads | Baserunning | |
 | ✅ | Dynamic Throwers Warm-up | Warmup, Conditioning | |
-| ⬜ | Catcher Pop Time / Throw-Downs | Catcher, Throwing |  |
-| ⬜ | Outfield Do-or-Die | Outfield |  |
-| ⬜ | First Base Stretch and Picks | Infield |  |
-| ⬜ | Bunt Defense Wheel | Team Defense, Bunting |  |
-| ⬜ | First-to-Third Baserunning | Baserunning |  |
-| ⬜ | Sliding Drill | Baserunning |  |
-| ⬜ | Hitting Stations: One-Hand Drills | Hitting |  |
-| ⬜ | Pitcher Pickoff Moves | Pitching | 12U+ |
+| ✅ | Catcher Throw-Downs | Catcher, Throwing |  |
+| ✅ | Outfield Do-or-Die | Outfield |  |
+| ✅ | First Base Stretch and Picks | Infield |  |
+| ✅ | Bunt Defense Wheel | Team Defense, Bunting |  |
+| ✅ | First to Third | Baserunning |  |
+| ✅ | Slide Practice (Bent-Leg) | Baserunning |  |
+| ✅ | One-Hand Hitting Drills | Hitting |  |
+| ✅ | Pitcher Pickoff Moves | Pitching | 12U+ |
+| ✅ | Balance Point Hold | Pitching, Warmup | Veo, CoachTube |
+| ✅ | Towel Drill | Pitching | CoachTube, PlaySportsTV |
+| ✅ | Stride Direction Drill | Pitching | Veo |
+| ✅ | Pitch Location Ladder | Pitching, Catcher, Fun | pair |
+| ✅ | Fielding Position Finish | Pitching, Infield | Veo |
+| ✅ | Catcher Bunt Pounce | Catcher, Bunting, Infield | pair |
+| ✅ | Short Game Stations | Bunting, Hitting | pair |
+| ✅ | Pitch Recognition | Hitting, Pitching | pair |
+| ✅ | Fence Drill | Outfield, Catching | pair |
+| ✅ | Primary and Secondary Leads | Baserunning | Veo, TeamSnap; lead-off leagues only |
+| ✅ | Quick Hands Glove Warm-up | Warmup, Catching, Infield | pair |
+| ⬜ | Wall Drill (pitching) | Pitching | CoachTube |
+| ⬜ | 1st & 3rd Defense | Team Defense | Dugout Captain |
+| ⬜ | Baseball Conditioning: Base Sprints | Conditioning | |
 
 ## Football — 36 written
 | Status | Drill | Categories | Notes |
