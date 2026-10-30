@@ -22,7 +22,7 @@ alternate names — many drills go by several names.
 
 ---
 
-## Soccer — 84 written
+## Soccer — 100 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Rondo 4v1 | Possession, Passing |  |
@@ -116,15 +116,28 @@ alternate names — many drills go by several names.
 | ⬜ | Pattern Play Possession | Possession | BDU possession page — needs details |
 | ⬜ | Two-Player Double Ball Challenge | Receiving | BDU ball control page |
 | ⬜ | Interception Drill | Defending | BDU defensive page |
-| ⬜ | 3-Team Possession (3 colors) | Possession, Transition |  |
-| ⬜ | Throw-Head-Catch Game | Heading, Fun | U12+ only |
-| ⬜ | Through-Ball 3v3 + Targets | Attacking, Passing |  |
-| ⬜ | Penalty Shootout Ladder | Shooting, Goalkeeping, Fun |  |
+| ✅ | 3-Team Possession | Possession, Transition |  |
+| ✅ | Throw-Head-Catch | Heading, Fun | U12+ only |
+| ✅ | Through-Ball 3v3 with Targets | Attacking, Passing |  |
+| ✅ | Penalty Shootout Ladder | Shooting, Goalkeeping, Fun |  |
 | ⬜ | Corner Kick / Set-Piece Walkthrough | Attacking, Defending | Team shape — may need a new Set Pieces category |
-| ⬜ | Conditioning: Box-to-Box Relay with Ball | Conditioning |  |
-| ⬜ | Conditioning: Fartlek Possession | Conditioning, Possession |  |
+| ✅ | Box-to-Box Ball Relay | Conditioning |  |
+| ✅ | Fartlek Possession | Conditioning, Possession |  |
 
 Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, body feints, defending explainer videos) — these are skill demos, not drills. Could become a separate "Moves" library later.
+| ✅ | Attack in Overload — 3v2 Waves | 3v2, Attacking, Defending | easy2coach |
+| ✅ | 3v2 to 4v3 Transition | 3v2, Transition, Attacking | FinéSoccer |
+| ✅ | Rob the Nest | Fun, Dribbling, Conditioning | |
+| ✅ | 3v1 Rondo Breakout | 3v1, Possession, Transition | |
+| ✅ | 3v1 to Goal | 3v1, Attacking, Shooting | |
+| ✅ | 2v1 Overlap Down the Wing | 2v1, Attacking, Passing | |
+| ✅ | Heading Progression (Light Ball) | Heading | U12+, low volume |
+| ✅ | Defensive Headed Clearances | Heading, Defending | U12+, low volume |
+| ✅ | Dribble Gauntlet | Conditioning, Dribbling, Defending | TOCA |
+| ✅ | 5-Second Counterpress Game | Transition, Defending, Small-Sided Game | |
+| ⬜ | Futsal-style 4v4 (low heading) | Small-Sided Game | futsal as heading-light alternative |
+| ⬜ | Rondo 4v2 + 2 Neutrals | Possession | |
+| ⬜ | Crossing & Finishing 2v1 in the Box | 2v1, Shooting | |
 
 ## Basketball — 40 written
 | Status | Drill | Categories | Notes |
