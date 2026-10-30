@@ -83,6 +83,12 @@ and copy a drill's export straight into Coach Approach.
 - **`status`** starts as `candidate`. Aaron decides; Claude flips to `approved`/`rejected`
   when told. Rejected drills stay in the file (so we don't re-add them) but are hidden by default.
 
+### Softball + baseball pairs
+- Most diamond drills live in **both** `data/softball.js` and `data/baseball.js` with the **same `id`**,
+  adjusted per sport (ball, base distance, pitching style).
+- When you edit or add one, check whether its twin in the other file should change too.
+- Sport-only drills: windmill pitching / slap hitting (softball); overhand pitching, PFP, leadoffs (baseball).
+
 ## Choosing the "best" drills
 Prefer drills that:
 - Have **lots of touches / reps** and little standing in line.
@@ -127,4 +133,5 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Adaptive batch 1: 29 drills (30 total). Added optional `sportFocus` (Coach Approach adaptive programs have a sport focus). |
 | 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
 | 2026-10-29 | Basketball batch 1: 38 drills (40 total), covering every basketball category. |
+| 2026-10-29 | Softball + baseball batch 1: 26 softball / 27 baseball drills added (27 / 28 total); shared drills kept as same-`id` pairs. |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |

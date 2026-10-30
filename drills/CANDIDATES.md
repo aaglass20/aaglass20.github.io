@@ -183,34 +183,87 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Suicides with Ball / 17s | Conditioning |  |
 | ⬜ | Bump and Contain (help defense) | Defense |  |
 
-## Softball — 1 written
+## Softball — 27 written
+Most drills exist in both softball and baseball with the same `id` (see RULES.md).
+
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
-| ✅ | Partner Throwing Progression | Throwing, Warmup | |
-| ⬜ | Tee Work Stations | Hitting | |
-| ⬜ | Soft Toss | Hitting | |
-| ⬜ | Bunt Target Zones | Bunting | |
-| ⬜ | Ground Ball Alligator Hands | Infield | |
-| ⬜ | Fly Ball Drop Step | Outfield | |
-| ⬜ | Windmill Pitching K-Drill | Pitching | |
-| ⬜ | Catcher Blocking | Catcher | |
-| ⬜ | Base Running Relays | Baserunning, Fun | |
-| ⬜ | Situational Defense (runners on) | Team Defense | |
-| ⬜ | Pepper | Hitting, Infield | |
+| ✅ | Partner Throwing Progression | Throwing, Catching | |
+| ✅ | Tee Work Stations | Hitting | |
+| ✅ | Soft Toss | Hitting | |
+| ✅ | Front Toss Batting | Hitting | |
+| ✅ | Bunt Target Zones | Bunting, Fun | |
+| ✅ | Pepper | Hitting, Infield | |
+| ✅ | Alligator Hands Ground Balls | Infield, Catching | |
+| ✅ | Triangle Fielding Drill | Infield, Throwing | |
+| ✅ | Short Hops | Infield, Catching | |
+| ✅ | Double Play Feeds | Infield, Team Defense | |
+| ✅ | Hot Potato | Catching, Throwing | |
+| ✅ | Fly Ball Drop Step | Outfield, Catching | |
+| ✅ | Crow Hop Throws | Outfield, Throwing | |
+| ✅ | 500 | Outfield, Catching | |
+| ✅ | Relay Race | Team Defense, Throwing | |
+| ✅ | Rundown Drill | Team Defense, Baserunning | |
+| ✅ | Pop-Up Communication | Team Defense, Catching | |
+| ✅ | Where's the Play? | Team Defense | |
+| ✅ | Catcher Blocking | Catcher | |
+| ✅ | Catcher Receiving and Framing | Catcher, Catching | |
+| ✅ | Run Through First | Baserunning, Conditioning | |
+| ✅ | Baserunning Relay Race | Baserunning, Fun | |
+| ✅ | Tag Up Drill | Baserunning, Team Defense | |
+| ✅ | Four Corners | Throwing, Catching | |
+| ✅ | Windmill Pitching Progression | Pitching | |
+| ✅ | Slap Hitting Footwork | Hitting, Bunting | |
+| ✅ | Dynamic Throwers Warm-up | Warmup, Conditioning | |
+| ⬜ | Drop Ball / Rise Ball Spin Drills | Pitching | HS+ |
+| ⬜ | Catcher Pop Time / Throw-Downs | Catcher, Throwing |  |
+| ⬜ | Outfield Do-or-Die | Outfield |  |
+| ⬜ | First Base Stretch and Picks | Infield |  |
+| ⬜ | Bunt Defense Wheel | Team Defense, Bunting |  |
+| ⬜ | Sliding (bent-leg) on Slip-n-Slide | Baserunning, Fun |  |
+| ⬜ | Hitting Stations: One-Hand Drills | Hitting |  |
 
-## Baseball — 1 written
+## Baseball — 28 written
+Most drills exist in both softball and baseball with the same `id` (see RULES.md).
+
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Four Corners | Throwing, Catching | |
-| ⬜ | Tee Work Stations | Hitting | Share ideas with softball, write separately |
-| ⬜ | Short Hops | Infield, Catching | |
-| ⬜ | Double Play Feeds | Infield | |
-| ⬜ | Crow Hop Long Toss | Outfield, Throwing | |
-| ⬜ | Rundown Drill | Team Defense | |
-| ⬜ | Pitchers' Fielding Practice (PFP) | Pitching, Team Defense | |
-| ⬜ | Catcher Framing | Catcher | |
-| ⬜ | First-to-Third Baserunning | Baserunning | |
-| ⬜ | Hot Potato | Catching, Fun | |
+| ✅ | Tee Work Stations | Hitting | |
+| ✅ | Soft Toss | Hitting | |
+| ✅ | Front Toss Batting | Hitting | |
+| ✅ | Bunt Target Zones | Bunting, Fun | |
+| ✅ | Pepper | Hitting, Infield | |
+| ✅ | Alligator Hands Ground Balls | Infield, Catching | |
+| ✅ | Triangle Fielding Drill | Infield, Throwing | |
+| ✅ | Short Hops | Infield, Catching | |
+| ✅ | Double Play Feeds | Infield, Team Defense | |
+| ✅ | Hot Potato | Catching, Throwing | |
+| ✅ | Fly Ball Drop Step | Outfield, Catching | |
+| ✅ | Crow Hop Throws | Outfield, Throwing | |
+| ✅ | 500 | Outfield, Catching | |
+| ✅ | Relay Race | Team Defense, Throwing | |
+| ✅ | Rundown Drill | Team Defense, Baserunning | |
+| ✅ | Pop-Up Communication | Team Defense, Catching | |
+| ✅ | Where's the Play? | Team Defense | |
+| ✅ | Catcher Blocking | Catcher | |
+| ✅ | Catcher Receiving and Framing | Catcher, Catching | |
+| ✅ | Run Through First | Baserunning, Conditioning | |
+| ✅ | Baserunning Relay Race | Baserunning, Fun | |
+| ✅ | Tag Up Drill | Baserunning, Team Defense | |
+| ✅ | Partner Throwing Progression | Throwing, Catching | |
+| ✅ | Pitching Balance Point | Pitching | |
+| ✅ | Pitcher Covers First | Pitching, Team Defense | |
+| ✅ | Leadoffs and Pitcher Reads | Baserunning | |
+| ✅ | Dynamic Throwers Warm-up | Warmup, Conditioning | |
+| ⬜ | Catcher Pop Time / Throw-Downs | Catcher, Throwing |  |
+| ⬜ | Outfield Do-or-Die | Outfield |  |
+| ⬜ | First Base Stretch and Picks | Infield |  |
+| ⬜ | Bunt Defense Wheel | Team Defense, Bunting |  |
+| ⬜ | First-to-Third Baserunning | Baserunning |  |
+| ⬜ | Sliding Drill | Baserunning |  |
+| ⬜ | Hitting Stations: One-Hand Drills | Hitting |  |
+| ⬜ | Pitcher Pickoff Moves | Pitching | 12U+ |
 
 ## Football — 1 written
 | Status | Drill | Categories | Notes |
