@@ -2874,6 +2874,9 @@ export default function App() {
     setPlayName(name)
   }, [clearBoard])
 
+  // A finished recording is named after the play's saved/opened file ("play" if it has none)
+  useEffect(() => { if (exportBlob) setExportName(playName) }, [exportBlob])  // eslint-disable-line react-hooks/exhaustive-deps
+
   const openAnimation = useCallback(async (file) => {
     if (!file) return
     let data

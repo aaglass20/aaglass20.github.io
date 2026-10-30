@@ -1,0 +1,849 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-10-30T16:42:20",
+  "sport": "soccer",
+  "field": "blank",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "1"
+    },
+    {
+      "id": 1,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "2"
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "3"
+    },
+    {
+      "id": 3,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "4"
+    },
+    {
+      "id": 4,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "5"
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "6"
+    },
+    {
+      "id": 6,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#ef4444",
+      "number": "S"
+    },
+    {
+      "id": 7,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#ef4444",
+      "number": "S"
+    },
+    {
+      "id": 8,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 9,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 10,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 11,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 12,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 13,
+      "type": "ball",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f9fafb"
+    },
+    {
+      "id": 14,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 15,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 16,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 17,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 18,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 19,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 158,
+          "y": 120
+        },
+        "1": {
+          "x": 158,
+          "y": 174
+        },
+        "2": {
+          "x": 158,
+          "y": 228
+        },
+        "3": {
+          "x": 158,
+          "y": 282
+        },
+        "4": {
+          "x": 158,
+          "y": 336
+        },
+        "5": {
+          "x": 158,
+          "y": 390
+        },
+        "8": {
+          "x": 180,
+          "y": 134
+        },
+        "9": {
+          "x": 180,
+          "y": 188
+        },
+        "10": {
+          "x": 180,
+          "y": 242
+        },
+        "11": {
+          "x": 180,
+          "y": 296
+        },
+        "12": {
+          "x": 180,
+          "y": 350
+        },
+        "13": {
+          "x": 180,
+          "y": 404
+        },
+        "6": {
+          "x": 420,
+          "y": 200
+        },
+        "7": {
+          "x": 420,
+          "y": 320
+        }
+      }
+    },
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 290,
+          "y": 124
+        },
+        "1": {
+          "x": 300,
+          "y": 174
+        },
+        "2": {
+          "x": 285,
+          "y": 232
+        },
+        "3": {
+          "x": 295,
+          "y": 278
+        },
+        "4": {
+          "x": 290,
+          "y": 336
+        },
+        "5": {
+          "x": 285,
+          "y": 386
+        },
+        "8": {
+          "x": 312,
+          "y": 138
+        },
+        "9": {
+          "x": 322,
+          "y": 188
+        },
+        "10": {
+          "x": 307,
+          "y": 246
+        },
+        "11": {
+          "x": 317,
+          "y": 292
+        },
+        "12": {
+          "x": 312,
+          "y": 350
+        },
+        "13": {
+          "x": 307,
+          "y": 400
+        },
+        "6": {
+          "x": 390,
+          "y": 190
+        },
+        "7": {
+          "x": 390,
+          "y": 316
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. \"Fishy, fishy, cross my sea!\" — minnows dribble for the far end line",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 450,
+          "y": 118
+        },
+        "1": {
+          "x": 400,
+          "y": 174
+        },
+        "2": {
+          "x": 440,
+          "y": 236
+        },
+        "3": {
+          "x": 455,
+          "y": 270
+        },
+        "4": {
+          "x": 430,
+          "y": 382
+        },
+        "5": {
+          "x": 460,
+          "y": 396
+        },
+        "8": {
+          "x": 472,
+          "y": 132
+        },
+        "9": {
+          "x": 500,
+          "y": 70
+        },
+        "10": {
+          "x": 462,
+          "y": 250
+        },
+        "11": {
+          "x": 477,
+          "y": 284
+        },
+        "12": {
+          "x": 452,
+          "y": 396
+        },
+        "13": {
+          "x": 482,
+          "y": 404
+        },
+        "6": {
+          "x": 430,
+          "y": 164
+        },
+        "7": {
+          "x": 420,
+          "y": 330
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Sharks try to kick the balls out of the grid",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 682,
+          "y": 124
+        },
+        "1": {
+          "x": 430,
+          "y": 150
+        },
+        "2": {
+          "x": 682,
+          "y": 228
+        },
+        "3": {
+          "x": 682,
+          "y": 282
+        },
+        "4": {
+          "x": 682,
+          "y": 336
+        },
+        "5": {
+          "x": 682,
+          "y": 390
+        },
+        "8": {
+          "x": 704,
+          "y": 138
+        },
+        "9": {
+          "x": 500,
+          "y": 70
+        },
+        "10": {
+          "x": 704,
+          "y": 242
+        },
+        "11": {
+          "x": 704,
+          "y": 296
+        },
+        "12": {
+          "x": 704,
+          "y": 350
+        },
+        "13": {
+          "x": 704,
+          "y": 404
+        },
+        "6": {
+          "x": 470,
+          "y": 190
+        },
+        "7": {
+          "x": 470,
+          "y": 320
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Minnows who reach the far end line are safe",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 682,
+          "y": 124
+        },
+        "1": {
+          "x": 430,
+          "y": 256
+        },
+        "2": {
+          "x": 682,
+          "y": 228
+        },
+        "3": {
+          "x": 682,
+          "y": 282
+        },
+        "4": {
+          "x": 682,
+          "y": 336
+        },
+        "5": {
+          "x": 682,
+          "y": 390
+        },
+        "8": {
+          "x": 704,
+          "y": 138
+        },
+        "9": {
+          "x": 500,
+          "y": 70
+        },
+        "10": {
+          "x": 704,
+          "y": 242
+        },
+        "11": {
+          "x": 704,
+          "y": 296
+        },
+        "12": {
+          "x": 704,
+          "y": 350
+        },
+        "13": {
+          "x": 704,
+          "y": 404
+        },
+        "6": {
+          "x": 430,
+          "y": 176
+        },
+        "7": {
+          "x": 430,
+          "y": 336
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Minnow 2 lost the ball — becomes a shark for the next crossing",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "14": {
+          "x": 180,
+          "y": 96
+        },
+        "15": {
+          "x": 420,
+          "y": 96
+        },
+        "16": {
+          "x": 660,
+          "y": 96
+        },
+        "17": {
+          "x": 180,
+          "y": 416
+        },
+        "18": {
+          "x": 420,
+          "y": 416
+        },
+        "19": {
+          "x": 660,
+          "y": 416
+        },
+        "0": {
+          "x": 540,
+          "y": 124
+        },
+        "1": {
+          "x": 470,
+          "y": 256
+        },
+        "2": {
+          "x": 530,
+          "y": 232
+        },
+        "3": {
+          "x": 545,
+          "y": 282
+        },
+        "4": {
+          "x": 535,
+          "y": 336
+        },
+        "5": {
+          "x": 540,
+          "y": 390
+        },
+        "8": {
+          "x": 518,
+          "y": 138
+        },
+        "9": {
+          "x": 500,
+          "y": 70
+        },
+        "10": {
+          "x": 508,
+          "y": 246
+        },
+        "11": {
+          "x": 523,
+          "y": 296
+        },
+        "12": {
+          "x": 513,
+          "y": 350
+        },
+        "13": {
+          "x": 518,
+          "y": 404
+        },
+        "6": {
+          "x": 470,
+          "y": 196
+        },
+        "7": {
+          "x": 470,
+          "y": 330
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Cross back with 3 sharks · repeat until one minnow is left",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [
+    {
+      "id": 0,
+      "type": "line",
+      "mode": "straight",
+      "color": "#ffffff",
+      "thickness": 4,
+      "points": [
+        180,
+        96,
+        180,
+        416
+      ]
+    },
+    {
+      "id": 1,
+      "type": "line",
+      "mode": "straight",
+      "color": "#ffffff",
+      "thickness": 4,
+      "points": [
+        660,
+        96,
+        660,
+        416
+      ]
+    },
+    {
+      "id": 2,
+      "type": "dashed",
+      "mode": "straight",
+      "color": "#ffffff",
+      "thickness": 2,
+      "points": [
+        180,
+        96,
+        660,
+        96
+      ]
+    },
+    {
+      "id": 3,
+      "type": "dashed",
+      "mode": "straight",
+      "color": "#ffffff",
+      "thickness": 2,
+      "points": [
+        180,
+        416,
+        660,
+        416
+      ]
+    }
+  ],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Sharks and Minnows",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 448,
+      "text": "Setup: minnows on one end line with a ball each · sharks in the middle",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 180,
+      "y": 78,
+      "text": "end line",
+      "fontSize": 14,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 3,
+      "x": 660,
+      "y": 78,
+      "text": "end line",
+      "fontSize": 14,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 4,
+      "x": 420,
+      "y": 432,
+      "text": "30 yd × 20 yd",
+      "fontSize": 12,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 20,
+    "draw": 4,
+    "shape": 0,
+    "text": 5
+  },
+  "notes": {
+    "title": "Sharks and Minnows (also: Pirates, Shark Attack)",
+    "category": "Dribbling, Fun, Warmup",
+    "ages": "U6, U8, U10",
+    "players": "8–16",
+    "duration": "10 min",
+    "objective": "Dribble with close control and keep the ball protected while escaping defenders. A high-energy game that also teaches tackling.",
+    "variations": [
+      "Easier: sharks must walk, or hold a pinnie in their hand to tag the ball",
+      "Harder: minnows must stop the ball on the end line with the sole to be safe",
+      "Harder: shrink the grid width, or add a third shark",
+      "Use a specific move (scissors, pull-back) to earn a free life",
+      "Passing version (BDU): 3 sharks vs 4 minnows; a minnow who loses their ball becomes a stationary passing option"
+    ],
+    "coaching": [
+      "Keep the ball close — small touches when a shark is near",
+      "Eyes up to find open space",
+      "Change speed and direction to escape",
+      "Put your body between the shark and the ball"
+    ],
+    "equipment": [
+      "1 ball per player",
+      "4–6 cones",
+      "Pinnies for sharks"
+    ],
+    "adaptations": [
+      "A safe-zone cone players can stop at once per crossing",
+      "Sharks partnered hand in hand to slow them down"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

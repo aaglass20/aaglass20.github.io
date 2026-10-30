@@ -1,0 +1,73 @@
+{
+  "title": "Sharks and Minnows",
+  "sport": "soccer",
+  "field": "blank",
+  "speed": 0.75,
+  "objects": [
+    { "key": "m1", "type": "player-t1", "label": "1" },
+    { "key": "m2", "type": "player-t1", "label": "2" },
+    { "key": "m3", "type": "player-t1", "label": "3" },
+    { "key": "m4", "type": "player-t1", "label": "4" },
+    { "key": "m5", "type": "player-t1", "label": "5" },
+    { "key": "m6", "type": "player-t1", "label": "6" },
+    { "key": "s1", "type": "player-t2", "label": "S", "color": "red" },
+    { "key": "s2", "type": "player-t2", "label": "S", "color": "red" },
+    { "key": "b1", "type": "ball" }, { "key": "b2", "type": "ball" }, { "key": "b3", "type": "ball" },
+    { "key": "b4", "type": "ball" }, { "key": "b5", "type": "ball" }, { "key": "b6", "type": "ball" },
+    { "key": "c1", "type": "cone" }, { "key": "c2", "type": "cone" }, { "key": "c3", "type": "cone" },
+    { "key": "c4", "type": "cone" }, { "key": "c5", "type": "cone" }, { "key": "c6", "type": "cone" }
+  ],
+  "frames": [
+    { "caption": "Setup: minnows on one end line with a ball each · sharks in the middle",
+      "at": { "c1": [180, 96], "c2": [420, 96], "c3": [660, 96], "c4": [180, 416], "c5": [420, 416], "c6": [660, 416],
+              "m1": [158, 120], "m2": [158, 174], "m3": [158, 228], "m4": [158, 282], "m5": [158, 336], "m6": [158, 390],
+              "b1": [180, 134], "b2": [180, 188], "b3": [180, 242], "b4": [180, 296], "b5": [180, 350], "b6": [180, 404],
+              "s1": [420, 200], "s2": [420, 320] } },
+    { "caption": "1. \"Fishy, fishy, cross my sea!\" — minnows dribble for the far end line",
+      "at": { "m1": [290, 124], "m2": [300, 174], "m3": [285, 232], "m4": [295, 278], "m5": [290, 336], "m6": [285, 386],
+              "b1": [312, 138], "b2": [322, 188], "b3": [307, 246], "b4": [317, 292], "b5": [312, 350], "b6": [307, 400],
+              "s1": [390, 190], "s2": [390, 316] } },
+    { "caption": "2. Sharks try to kick the balls out of the grid",
+      "at": { "m1": [450, 118], "m2": [400, 174], "m3": [440, 236], "m4": [455, 270], "m5": [430, 382], "m6": [460, 396],
+              "b1": [472, 132], "b2": [500, 70], "b3": [462, 250], "b4": [477, 284], "b5": [452, 396], "b6": [482, 404],
+              "s1": [430, 164], "s2": [420, 330] } },
+    { "caption": "3. Minnows who reach the far end line are safe",
+      "at": { "m1": [682, 124], "m3": [682, 228], "m4": [682, 282], "m5": [682, 336], "m6": [682, 390],
+              "b1": [704, 138], "b3": [704, 242], "b4": [704, 296], "b5": [704, 350], "b6": [704, 404],
+              "m2": [430, 150], "s1": [470, 190], "s2": [470, 320] } },
+    { "caption": "4. Minnow 2 lost the ball — becomes a shark for the next crossing",
+      "at": { "m2": [430, 256], "s1": [430, 176], "s2": [430, 336] } },
+    { "caption": "Cross back with 3 sharks · repeat until one minnow is left",
+      "at": { "m1": [540, 124], "m3": [530, 232], "m4": [545, 282], "m5": [535, 336], "m6": [540, 390],
+              "b1": [518, 138], "b3": [508, 246], "b4": [523, 296], "b5": [513, 350], "b6": [518, 404],
+              "m2": [470, 256], "s1": [470, 196], "s2": [470, 330] } }
+  ],
+  "arrows": [
+    { "kind": "line",   "color": "white", "from": [180, 96],  "to": [180, 416], "thickness": 4 },
+    { "kind": "line",   "color": "white", "from": [660, 96],  "to": [660, 416], "thickness": 4 },
+    { "kind": "dashed", "color": "white", "from": [180, 96],  "to": [660, 96],  "thickness": 2 },
+    { "kind": "dashed", "color": "white", "from": [180, 416], "to": [660, 416], "thickness": 2 }
+  ],
+  "labels": [
+    { "text": "end line", "at": [180, 78] },
+    { "text": "end line", "at": [660, 78] },
+    { "text": "30 yd × 20 yd", "at": [420, 432], "size": 12 }
+  ],
+  "notes": {
+    "title": "Sharks and Minnows (also: Pirates, Shark Attack)",
+    "category": "Dribbling, Fun, Warmup",
+    "ages": "U6, U8, U10", "players": "8–16", "duration": "10 min",
+    "objective": "Dribble with close control and keep the ball protected while escaping defenders. A high-energy game that also teaches tackling.",
+    "variations": [
+      "Easier: sharks must walk, or hold a pinnie in their hand to tag the ball",
+      "Harder: minnows must stop the ball on the end line with the sole to be safe",
+      "Harder: shrink the grid width, or add a third shark",
+      "Use a specific move (scissors, pull-back) to earn a free life",
+      "Passing version (BDU): 3 sharks vs 4 minnows; a minnow who loses their ball becomes a stationary passing option"
+    ],
+    "coaching": ["Keep the ball close — small touches when a shark is near", "Eyes up to find open space",
+                 "Change speed and direction to escape", "Put your body between the shark and the ball"],
+    "equipment": ["1 ball per player", "4–6 cones", "Pinnies for sharks"],
+    "adaptations": ["A safe-zone cone players can stop at once per crossing", "Sharks partnered hand in hand to slow them down"]
+  }
+}

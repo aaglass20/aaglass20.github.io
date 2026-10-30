@@ -1,0 +1,68 @@
+{
+  "title": "2v1 to Goal",
+  "sport": "soccer",
+  "field": "blank",
+  "speed": 0.75,
+  "objects": [
+    { "key": "A1", "type": "player-t1", "label": "A" },
+    { "key": "A2", "type": "player-t1", "label": "A" },
+    { "key": "A3", "type": "player-t1", "label": "A" },
+    { "key": "B1", "type": "player-t1", "label": "B" },
+    { "key": "B2", "type": "player-t1", "label": "B" },
+    { "key": "B3", "type": "player-t1", "label": "B" },
+    { "key": "D1", "type": "player-t2", "label": "D" },
+    { "key": "D2", "type": "player-t2", "label": "D" },
+    { "key": "D3", "type": "player-t2", "label": "D" },
+    { "key": "GK", "type": "player-t2", "label": "GK", "color": "green" },
+    { "key": "goal", "type": "goal", "facing": 270 },
+    { "key": "ball", "type": "ball" },
+    { "key": "c1", "type": "cone" }, { "key": "c2", "type": "cone" },
+    { "key": "c3", "type": "cone" }, { "key": "c4", "type": "cone" }
+  ],
+  "frames": [
+    { "caption": "Setup: two attacking lines at the far end · defender line by the goal",
+      "at": { "c1": [220, 96], "c2": [620, 96], "c3": [220, 416], "c4": [620, 416],
+              "goal": [634, 256], "GK": [600, 256],
+              "A1": [200, 186], "A2": [158, 186], "A3": [116, 186],
+              "B1": [200, 326], "B2": [158, 326], "B3": [116, 326],
+              "D1": [660, 120], "D2": [702, 120], "D3": [744, 120], "ball": [638, 134] } },
+    { "caption": "1. Defender passes to a front attacker and steps out",
+      "at": { "ball": [222, 200], "D1": [500, 200] } },
+    { "caption": "2. A dribbles at the defender to commit them · B stays wide and level",
+      "at": { "A1": [380, 210], "ball": [402, 224], "B1": [380, 336], "D1": [460, 236] } },
+    { "caption": "3. Defender commits — A passes to B's front foot",
+      "at": { "A1": [416, 182], "D1": [456, 240], "ball": [478, 340], "B1": [456, 326] } },
+    { "caption": "4. B shoots first time",
+      "at": { "B1": [500, 316], "A1": [500, 210], "ball": [646, 278], "GK": [604, 286] } },
+    { "caption": "Rotate: attackers join the defender line · defender joins an attacking line",
+      "at": { "A1": [786, 120], "B1": [828, 120], "D1": [74, 186], "GK": [600, 256], "ball": [680, 134] } }
+  ],
+  "arrows": [
+    { "kind": "dashed", "color": "white", "from": [220, 96],  "to": [620, 96],  "thickness": 2 },
+    { "kind": "dashed", "color": "white", "from": [220, 416], "to": [620, 416], "thickness": 2 },
+    { "kind": "dashed", "color": "white", "from": [220, 96],  "to": [220, 416], "thickness": 2 },
+    { "kind": "line",   "color": "white", "from": [620, 96],  "to": [620, 416], "thickness": 4 }
+  ],
+  "labels": [
+    { "text": "attacking lines", "at": [150, 256] },
+    { "text": "defender line", "at": [702, 82] },
+    { "text": "25 yd × 20 yd", "at": [420, 432], "size": 12 }
+  ],
+  "notes": {
+    "title": "2v1 to Goal (also: 2v1 Overload, Wall Pass 2v1)",
+    "category": "2v1, Attacking, Shooting",
+    "ages": "U10, U12, U14, HS, Adult", "players": "6–12 + GK", "duration": "12–15 min",
+    "objective": "Use a numbers-up attack to decide when to dribble and when to pass, finishing with a shot.",
+    "rules": ["Rep ends on a goal, save, defender win, or ball out of play"],
+    "variations": [
+      "Easier: defender must start from the goal line",
+      "Harder: a recovering second defender starts behind the attackers after a 2-second delay",
+      "Harder: attackers must score within 3 passes or 8 seconds"
+    ],
+    "coaching": ["Ball carrier: dribble at the defender to commit them, then pass",
+                 "Supporting player: stay wide and level or slightly ahead — give a clear angle",
+                 "If the defender doesn't commit, keep going and shoot",
+                 "Pass to the front foot of your teammate so they can shoot first time"],
+    "equipment": ["Balls", "1 full-size or small goal", "4 cones", "Pinnies"]
+  }
+}
