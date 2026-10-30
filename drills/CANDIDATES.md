@@ -126,27 +126,62 @@ alternate names — many drills go by several names.
 
 Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, body feints, defending explainer videos) — these are skill demos, not drills. Could become a separate "Moves" library later.
 
-## Basketball — 2 written
+## Basketball — 40 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Mikan Drill | Finishing, Footwork | |
 | ✅ | Knockout | Shooting, Fun | |
-| ⬜ | Two-Ball Dribbling | Ball Handling | |
-| ⬜ | Dribble Tag | Ball Handling, Fun | |
-| ⬜ | Figure 8 / Ball Wraps | Ball Handling, Warmup | |
-| ⬜ | Partner Passing (chest/bounce/overhead) | Passing | |
-| ⬜ | 3-Man Weave | Passing, Transition | |
-| ⬜ | Form Shooting | Shooting | |
-| ⬜ | Around the World | Shooting, Fun | |
-| ⬜ | Layup Lines | Finishing, Warmup | |
-| ⬜ | Box Out Drill | Rebounding | |
-| ⬜ | Defensive Slides / Zig-Zag | Defense, Footwork | |
-| ⬜ | Closeout Drill | Defense | |
-| ⬜ | 1v1 Full Court | 1v1, Ball Handling | |
-| ⬜ | 2v1 Fast Break | 2v1, Transition | |
-| ⬜ | 3v2 / 2v1 Continuous | 3v2, Transition | |
-| ⬜ | Shell Drill (4v4) | Defense, Team Offense | |
-| ⬜ | Pivot Footwork | Footwork | |
+| ✅ | Stationary Ball Handling Series | Ball Handling, Warmup | |
+| ✅ | Ball Wraps and Figure 8 | Ball Handling, Warmup | |
+| ✅ | Two-Ball Dribbling | Ball Handling | |
+| ✅ | Dribble Knockout | Ball Handling, Fun | |
+| ✅ | Dribble Tag | Ball Handling, Fun | |
+| ✅ | Sharks and Minnows (Basketball) | Ball Handling, Fun | |
+| ✅ | Zig-Zag Dribble Moves | Ball Handling, Finishing | |
+| ✅ | Gauntlet | Ball Handling, Finishing | |
+| ✅ | Red Light, Green Light (Basketball) | Ball Handling, Footwork | |
+| ✅ | Partner Passing | Passing, Warmup | |
+| ✅ | Monkey in the Middle (Passing) | Passing, Footwork | |
+| ✅ | Triangle Passing | Passing, Footwork | |
+| ✅ | 3-Man Weave | Passing, Transition | |
+| ✅ | Drive and Dish | Passing, Team Offense | |
+| ✅ | Form Shooting | Shooting, Warmup | |
+| ✅ | Around the World | Shooting, Fun | |
+| ✅ | H-O-R-S-E | Shooting, Fun | |
+| ✅ | Partner Spot Shooting | Shooting | |
+| ✅ | Free Throw Pressure | Shooting, Conditioning | |
+| ✅ | Layup Lines | Finishing, Warmup | |
+| ✅ | Layup Footwork Progression | Finishing, Footwork | |
+| ✅ | Circle Box Out | Rebounding, Defense | |
+| ✅ | Rebound and Outlet | Rebounding, Transition | |
+| ✅ | Jump Stop and Pivot | Footwork, Ball Handling | |
+| ✅ | Triple Threat Moves | Footwork, 1v1 | |
+| ✅ | Zig-Zag Defensive Slides | Defense, Footwork | |
+| ✅ | Closeout Drill | Defense, 1v1 | |
+| ✅ | Shell Drill | Defense, Team Offense | |
+| ✅ | Mirror Drill | Defense, Footwork | |
+| ✅ | 1v1 Full Court | 1v1, Ball Handling | |
+| ✅ | 1v1 from the Wing | 1v1, Finishing | |
+| ✅ | 2v1 Fast Break | 2v1, Transition | |
+| ✅ | 3v2 to 2v1 Continuous | 3v2, 2v1 | |
+| ✅ | Give-and-Go | Team Offense, Passing | |
+| ✅ | 3v3 Half Court | Small-Sided Game, Team Offense | |
+| ✅ | Full-Court Layup Race | Conditioning, Finishing | |
+| ✅ | Post Moves: Drop Step and Up-and-Under | Post Play, Footwork | |
+| ✅ | Seal and Entry Pass | Post Play, Passing | |
+| ⬜ | Mikan Variations / Post Finishing | Post Play, Finishing |  |
+| ⬜ | Tip Drill (backboard tips) | Rebounding |  |
+| ⬜ | Deny Wing Drill | Defense |  |
+| ⬜ | Charge Drill | Defense | HS+ only |
+| ⬜ | Pick-and-Roll Basics (2v2) | Team Offense |  |
+| ⬜ | Motion Offense Pass-Cut-Replace | Team Offense |  |
+| ⬜ | Press Break 4v4 | Team Offense, Transition |  |
+| ⬜ | 11-Man Break | Transition, Conditioning |  |
+| ⬜ | Dribble Limbo | Ball Handling, Fun | Young kids |
+| ⬜ | Hot Shot | Shooting, Fun |  |
+| ⬜ | Lightning (Knockout variation) | Shooting | Already alias of Knockout |
+| ⬜ | Suicides with Ball / 17s | Conditioning |  |
+| ⬜ | Bump and Contain (help defense) | Defense |  |
 
 ## Softball — 1 written
 | Status | Drill | Categories | Notes |

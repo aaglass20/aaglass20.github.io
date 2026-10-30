@@ -126,4 +126,5 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Soccer batch 2: 32 drills from BDU pages + 15 from the web (83 total). BDU sources link as `../BDU/<page>.html`. BDU technique videos skipped (moves, not drills). |
 | 2026-10-29 | Adaptive batch 1: 29 drills (30 total). Added optional `sportFocus` (Coach Approach adaptive programs have a sport focus). |
 | 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
+| 2026-10-29 | Basketball batch 1: 38 drills (40 total), covering every basketball category. |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |
