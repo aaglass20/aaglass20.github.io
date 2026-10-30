@@ -93,6 +93,12 @@ Prefer drills that:
 
 Skip drills that are unsafe for youth, need special gear, or duplicate one we have.
 
+## Drills Aaron pastes in
+- Reshape into the data model; keep his sequence and coaching points, tighten the wording.
+- Fill any missing fields (`altNames`, `setup`, `variations`, `ages`, `categories`) and say so in `notes`.
+- `sources`: the name he gives (e.g. "Drill Vault (shared by Aaron)"). Check for duplicates first.
+- Append under the `// ── Added by Aaron ──` section of the sport's data file.
+
 ## Export (copy to clipboard)
 - **Copy JSON** — the drill object exactly as in the data file, minus review-only fields
   (`status`, `notes`), plus `sport`. This is what gets pasted into Coach Approach.

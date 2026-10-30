@@ -22,7 +22,7 @@ alternate names — many drills go by several names.
 
 ---
 
-## Soccer — 83 written
+## Soccer — 84 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Rondo 4v1 | Possession, Passing |  |
@@ -108,6 +108,7 @@ alternate names — many drills go by several names.
 | ✅ | Goalkeeper High Balls and Crosses | Goalkeeping | BDU |
 | ✅ | King of the Ring | 1v1, Dribbling |  |
 | ✅ | Shuttle Runs with Ball | Conditioning, Dribbling |  |
+| ✅ | Around-the-Box Overlap & Finish | Shooting, Attacking | Added by Aaron (Drill Vault) |
 | ⬜ | 1v1 Recovery Run (attacker in front) | Defending, 1v1 | BDU defensive page |
 | ⬜ | 2v1 Rotational Finishing (3 groups) | 2v1, Shooting | BDU shooting page |
 | ⬜ | 4 Line Shooting | Shooting | BDU shooting page — needs setup details |
