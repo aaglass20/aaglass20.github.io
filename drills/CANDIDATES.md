@@ -210,7 +210,7 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | 3v3 Rebounding League | Rebounding, Small-Sided Game | Coach's Clipboard |
 | ⬜ | Zone Offense Basics (vs 2-3) | Team Offense | |
 
-## Softball — 27 written
+## Softball — 46 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
 
 | Status | Drill | Categories | Notes |
@@ -242,13 +242,28 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ✅ | Windmill Pitching Progression | Pitching | |
 | ✅ | Slap Hitting Footwork | Hitting, Bunting | |
 | ✅ | Dynamic Throwers Warm-up | Warmup, Conditioning | |
-| ⬜ | Drop Ball / Rise Ball Spin Drills | Pitching | HS+ |
-| ⬜ | Catcher Pop Time / Throw-Downs | Catcher, Throwing |  |
-| ⬜ | Outfield Do-or-Die | Outfield |  |
-| ⬜ | First Base Stretch and Picks | Infield |  |
-| ⬜ | Bunt Defense Wheel | Team Defense, Bunting |  |
-| ⬜ | Sliding (bent-leg) on Slip-n-Slide | Baserunning, Fun |  |
-| ⬜ | Hitting Stations: One-Hand Drills | Hitting |  |
+| ✅ | Drop Ball Spin Drill | Pitching | HS+ |
+| ✅ | Catcher Throw-Downs | Catcher, Throwing |  |
+| ✅ | Outfield Do-or-Die | Outfield |  |
+| ✅ | First Base Stretch and Picks | Infield |  |
+| ✅ | Bunt Defense Wheel | Team Defense, Bunting |  |
+| ✅ | Slide Practice (Bent-Leg) | Baserunning, Fun |  |
+| ✅ | One-Hand Hitting Drills | Hitting |  |
+| ✅ | Wrist Snap Drill | Pitching, Warmup | Active, WSSA |
+| ✅ | K Drill | Pitching | YouthSports, WSSA |
+| ✅ | Walk-Through Pitching | Pitching | MOJO |
+| ✅ | Pitch Location Ladder | Pitching, Catcher, Fun | |
+| ✅ | Change-Up Progression | Pitching | Human Kinetics |
+| ✅ | Catcher Bunt Pounce | Catcher, Bunting, Infield | |
+| ✅ | Short Game Stations | Bunting, Hitting | |
+| ✅ | Pitch Recognition | Hitting, Pitching | |
+| ✅ | Fence Drill | Outfield, Catching | |
+| ✅ | Leave on Release | Baserunning | softball rocking start |
+| ✅ | Quick Hands Glove Warm-up | Warmup, Catching, Infield | Raleigh |
+| ✅ | Softball Gassers | Conditioning | NFCA |
+| ⬜ | Rise Ball Spin | Pitching | HS+ |
+| ⬜ | Running Slap (Slapper Progression 2) | Hitting, Baserunning | |
+| ⬜ | Slapper Defense | Team Defense | |
 
 ## Baseball — 28 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
