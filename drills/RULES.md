@@ -134,6 +134,7 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
 | 2026-10-29 | Basketball batch 1: 38 drills (40 total), covering every basketball category. |
 | 2026-10-29 | Softball + baseball batch 1: 26 softball / 27 baseball drills added (27 / 28 total); shared drills kept as same-`id` pairs. |
+| 2026-10-30 | Adaptive batch 2: 18 drills, 49 total. Filled thin sport focuses (Football, Baseball/Softball, Volleyball, Tennis, Hockey) and thin categories (Striking, Cool Down, Balance); added blind/low-vision games (beep baseball, goalball). |
 | 2026-10-30 | Baseball batch 2: 19 drills, 47 total. 12 are same-id pairs of softball drills (adjusted for baseball); 7 are baseball-only (balance point, towel, stride direction, fielding finish, pickoffs, leads, first to third). Lead/pickoff/steal drills note that many Little League divisions ban leadoffs. |
 | 2026-10-30 | Softball batch 2: 19 softball-only drills, 46 total (windmill pitching progressions, catcher, short game, outfield, softball baserunning). None paired with baseball. |
 | 2026-10-29 | Basketball batch 2: 22 drills filling thin categories, 62 total (Rebounding, Post Play, Team Offense, Small-Sided Game, 2v1/3v2, Conditioning). Contact box-outs flagged U12+. |

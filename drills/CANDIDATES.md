@@ -368,7 +368,7 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Flag Guarding Avoidance (offense) |  |  |
 | ⬜ | Zone Coverage Drops |  |  |
 
-## Adaptive Sports — 31 written
+## Adaptive Sports — 49 written
 Last column = `sportFocus`.
 
 | Status | Drill | Categories | Sport focus / Notes |
@@ -404,15 +404,25 @@ Last column = `sportFocus`.
 | ✅ | Bubble Chase | Sensory-Friendly, Locomotor | Any |
 | ✅ | Calm-Down Stretch Circle | Cool Down, Sensory-Friendly | Any |
 | ✅ | Yoga Animal Poses | Cool Down, Balance & Coordination | Any |
-| ⬜ | Unified Relay Races | Teamwork, Locomotor | Unified Sports — mixed-ability teams |
-| ⬜ | Sitting Volleyball Lite (beach ball) | Striking, Teamwork | Volleyball |
-| ⬜ | Wheelchair Basketball Passing Lanes | Ball Skills, Teamwork | Basketball |
-| ⬜ | Beep Baseball Intro | Striking, Sensory-Friendly | Baseball/Softball — audible ball + base |
-| ⬜ | Hula Hoop Tag | Locomotor, Fun | Any |
-| ⬜ | Tunnel Crawl Relay | Locomotor, Teamwork | Any |
-| ⬜ | I Spy Movement Game | Following Directions, Fun | Special Olympics YA foundational skills |
-| ⬜ | Run and Stop Signals (Track) | Locomotor, Following Directions | Track / Any |
-| ⬜ | Flag Pull Buddy Game | Fun, Teamwork | Football |
-| ⬜ | Target Kick Wall | Kicking | Soccer |
-| ⬜ | Sensory Path (floor stickers) | Sensory-Friendly, Locomotor | Any |
+| ✅ | Unified Relay Races | Teamwork, Locomotor | Unified Sports — mixed-ability teams |
+| ✅ | Sitting Volleyball Lite | Striking, Teamwork | Volleyball |
+| ✅ | Rolling Passing Lanes | Ball Skills, Teamwork | Basketball |
+| ✅ | Beep Baseball Intro | Striking, Sensory-Friendly | Baseball/Softball — audible ball + base |
+| ✅ | Hula Hoop Tag | Locomotor, Fun | Any |
+| ✅ | Tunnel Crawl Relay | Locomotor, Teamwork | Any |
+| ✅ | I Spy Movement Game | Following Directions, Fun | Special Olympics YA foundational skills |
+| ✅ | Run and Stop Signals | Locomotor, Following Directions | Track / Any |
+| ✅ | Flag Pull Buddy Game | Fun, Teamwork | Football |
+| ✅ | Target Kick Wall | Kicking | Soccer |
+| ✅ | Sensory Path | Sensory-Friendly, Locomotor | Any |
 | ⬜ | Young Athletes lesson plans 2–4 / 5–7 (full harvest) | — | https://media.specialolympics.org/resources/community-building/young-athletes/lesson-plans/YA_LessonPlans_5to7_July2024_INTRO.pdf |
+| ✅ | Goalball Roll | Sensory-Friendly, Throwing & Catching | TSBVI — blind/low-vision |
+| ✅ | Balloon Racket Tennis | Striking | Tennis |
+| ✅ | Noodle Golf | Striking, Ball Skills | Hockey / Any |
+| ✅ | Foam Football Toss | Throwing & Catching | Football |
+| ✅ | One-Foot Statues | Balance & Coordination | |
+| ✅ | Bubble Breathing | Cool Down | |
+| ✅ | Squeeze and Release | Cool Down | |
+| ⬜ | Scooter Board Basketball | Ball Skills | Basketball — standing athletes try seated play |
+| ⬜ | Adapted Kickball with Ramp | Kicking | Baseball/Softball |
+| ⬜ | Unified Sled Hockey Intro | Striking | Hockey |
