@@ -139,7 +139,7 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Rondo 4v2 + 2 Neutrals | Possession | |
 | ⬜ | Crossing & Finishing 2v1 in the Box | 2v1, Shooting | |
 
-## Basketball — 40 written
+## Basketball — 62 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Mikan Drill | Finishing, Footwork | |
@@ -182,19 +182,33 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ✅ | Full-Court Layup Race | Conditioning, Finishing | |
 | ✅ | Post Moves: Drop Step and Up-and-Under | Post Play, Footwork | |
 | ✅ | Seal and Entry Pass | Post Play, Passing | |
-| ⬜ | Mikan Variations / Post Finishing | Post Play, Finishing |  |
-| ⬜ | Tip Drill (backboard tips) | Rebounding |  |
-| ⬜ | Deny Wing Drill | Defense |  |
+| ✅ | Hook Shot Progression | Post Play, Finishing |  |
+| ✅ | Backboard Tip Drill | Rebounding |  |
+| ✅ | Deny the Wing | Defense |  |
 | ⬜ | Charge Drill | Defense | HS+ only |
-| ⬜ | Pick-and-Roll Basics (2v2) | Team Offense |  |
-| ⬜ | Motion Offense Pass-Cut-Replace | Team Offense |  |
-| ⬜ | Press Break 4v4 | Team Offense, Transition |  |
-| ⬜ | 11-Man Break | Transition, Conditioning |  |
-| ⬜ | Dribble Limbo | Ball Handling, Fun | Young kids |
-| ⬜ | Hot Shot | Shooting, Fun |  |
+| ✅ | Pick-and-Roll 2v2 | Team Offense |  |
+| ✅ | Pass, Cut, Replace | Team Offense |  |
+| ✅ | Press Break 4v4 | Team Offense, Transition |  |
+| ✅ | 11-Man Break | Transition, Conditioning |  |
+| ✅ | Dribble Limbo | Ball Handling, Fun | Young kids |
+| ✅ | Hot Shot | Shooting, Fun |  |
 | ⬜ | Lightning (Knockout variation) | Shooting | Already alias of Knockout |
-| ⬜ | Suicides with Ball / 17s | Conditioning |  |
-| ⬜ | Bump and Contain (help defense) | Defense |  |
+| ✅ | 17s | Conditioning |  |
+| ✅ | Help and Recover 2v2 | Defense |  |
+| ✅ | Box Out the Shooter | Rebounding, Defense | Coach's Clipboard |
+| ✅ | Close Out Box Out | Rebounding, Defense, 1v1 | Breakthrough |
+| ✅ | Fight For It | Rebounding, Finishing, Fun | Breakthrough |
+| ✅ | Post Catch and Face-Up | Post Play, Footwork, 1v1 | |
+| ✅ | 2v1 Half Court Drive and Kick | 2v1, Passing, Finishing | |
+| ✅ | 3v2 Half Court Advantage | 3v2, Team Offense, Passing | |
+| ✅ | 4v4 Scramble | Small-Sided Game, Transition, Conditioning | |
+| ✅ | 2v2 Make It, Take It | Small-Sided Game, Fun, Team Offense | |
+| ✅ | Hot Seat | Shooting, Fun | MOJO |
+| ✅ | 21 Cones | Shooting, Conditioning, Fun | Basketball for Coaches |
+| ✅ | Four Square Shooting | Shooting, Footwork | CoachTube |
+| ⬜ | Partner Resistance Box-Out | Rebounding | U12+ |
+| ⬜ | 3v3 Rebounding League | Rebounding, Small-Sided Game | Coach's Clipboard |
+| ⬜ | Zone Offense Basics (vs 2-3) | Team Offense | |
 
 ## Softball — 27 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
