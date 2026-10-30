@@ -192,17 +192,51 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Punt Catching | Special Teams, Catching | |
 | ⬜ | Sharks & Minnows (flag) | Flag Pulling, Fun | |
 
-## Adaptive Sports — 1 written
-| Status | Drill | Categories | Notes |
+## Adaptive Sports — 31 written
+Last column = `sportFocus`.
+
+| Status | Drill | Categories | Sport focus / Notes |
 |---|---|---|---|
-| ✅ | Red Light, Green Light Dribble | Following Directions, Ball Skills | |
-| ⬜ | Bowling Pins (roll or kick) | Ball Skills, Kicking | |
-| ⬜ | Parachute Games | Teamwork, Sensory-Friendly | |
-| ⬜ | Bean Bag Toss Targets | Throwing & Catching | |
-| ⬜ | Balloon Volley | Striking, Balance & Coordination | |
-| ⬜ | Animal Walks | Locomotor, Warmup | |
-| ⬜ | Obstacle Course | Locomotor, Balance & Coordination | |
-| ⬜ | Simon Says Moves | Following Directions, Warmup | |
-| ⬜ | Pass and Name | Teamwork, Ball Skills | |
-| ⬜ | Tee-Ball Striking Station | Striking | |
-| ⬜ | Calm-Down Stretch Circle | Cool Down, Sensory-Friendly | |
+| ✅ | Red Light, Green Light Dribble | Following Directions, Ball Skills | Any, Soccer |
+| ✅ | Hello Circle | Warmup, Teamwork | Any |
+| ✅ | Animal Walks | Warmup, Locomotor | Any |
+| ✅ | Scarf Toss and Catch | Throwing & Catching, Warmup | Any |
+| ✅ | Simon Says Moves | Following Directions, Warmup | Any |
+| ✅ | Ball Body Awareness | Ball Skills, Warmup | Any |
+| ✅ | Obstacle Course | Locomotor, Balance & Coordination | Any |
+| ✅ | Stepping Stones | Locomotor, Balance & Coordination | Any |
+| ✅ | Balance Line Walk | Balance & Coordination, Locomotor | Any |
+| ✅ | Freeze Dance | Fun, Following Directions | Any |
+| ✅ | Color Cone Hunt | Following Directions, Locomotor | Any |
+| ✅ | Partner Roll and Trap | Ball Skills, Throwing & Catching | Any, Soccer |
+| ✅ | Bean Bag Toss Targets | Throwing & Catching, Fun | Any, Baseball/Softball, Basketball |
+| ✅ | Bounce and Catch | Ball Skills, Throwing & Catching | Any, Basketball |
+| ✅ | Balloon Catch | Throwing & Catching, Sensory-Friendly | Any |
+| ✅ | Basket Drop | Throwing & Catching, Ball Skills | Basketball |
+| ✅ | Bowling Pins | Kicking, Ball Skills | Any, Soccer |
+| ✅ | Goal Kick Party | Kicking, Fun | Soccer |
+| ✅ | Buddy Dribble Highway | Kicking, Ball Skills | Soccer |
+| ✅ | Mini Kickball | Kicking, Teamwork | Baseball/Softball, Soccer |
+| ✅ | Balloon Volley | Striking, Balance & Coordination | Any, Volleyball, Tennis |
+| ✅ | Tee Striking Station | Striking, Ball Skills | Baseball/Softball |
+| ✅ | Pool Noodle Hockey | Striking, Teamwork | Hockey, Any |
+| ✅ | Parachute Games | Teamwork, Sensory-Friendly | Any |
+| ✅ | Pass and Name | Teamwork, Ball Skills | Any, Soccer, Basketball |
+| ✅ | Cone Clean-Up Race | Teamwork, Locomotor | Any |
+| ✅ | Buddy Scrimmage | Teamwork, Kicking | Soccer, Basketball |
+| ✅ | Sound Ball Roll | Sensory-Friendly, Ball Skills | Any |
+| ✅ | Bubble Chase | Sensory-Friendly, Locomotor | Any |
+| ✅ | Calm-Down Stretch Circle | Cool Down, Sensory-Friendly | Any |
+| ✅ | Yoga Animal Poses | Cool Down, Balance & Coordination | Any |
+| ⬜ | Unified Relay Races | Teamwork, Locomotor | Unified Sports — mixed-ability teams |
+| ⬜ | Sitting Volleyball Lite (beach ball) | Striking, Teamwork | Volleyball |
+| ⬜ | Wheelchair Basketball Passing Lanes | Ball Skills, Teamwork | Basketball |
+| ⬜ | Beep Baseball Intro | Striking, Sensory-Friendly | Baseball/Softball — audible ball + base |
+| ⬜ | Hula Hoop Tag | Locomotor, Fun | Any |
+| ⬜ | Tunnel Crawl Relay | Locomotor, Teamwork | Any |
+| ⬜ | I Spy Movement Game | Following Directions, Fun | Special Olympics YA foundational skills |
+| ⬜ | Run and Stop Signals (Track) | Locomotor, Following Directions | Track / Any |
+| ⬜ | Flag Pull Buddy Game | Fun, Teamwork | Football |
+| ⬜ | Target Kick Wall | Kicking | Soccer |
+| ⬜ | Sensory Path (floor stickers) | Sensory-Friendly, Locomotor | Any |
+| ⬜ | Young Athletes lesson plans 2–4 / 5–7 (full harvest) | — | https://media.specialolympics.org/resources/community-building/young-athletes/lesson-plans/YA_LessonPlans_5to7_July2024_INTRO.pdf |

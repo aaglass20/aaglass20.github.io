@@ -39,7 +39,7 @@
   const haystack = d => [
     d.name, ...(d.altNames || []), d.objective, ...(d.categories || []), ...(d.setup || []),
     ...(d.instructions || []), ...(d.variations || []), ...(d.coachingPoints || []),
-    ...(d.equipment || []), ...(d.adaptations || []), d.players, d.notes,
+    ...(d.equipment || []), ...(d.adaptations || []), ...(d.sportFocus || []), d.players, d.notes,
   ].join(' ').toLowerCase();
 
   const matchesStatus = d => {
@@ -83,6 +83,7 @@
       `Ages: ${(d.ages || []).join(', ')}`,
       d.players ? `Players: ${d.players}` : '',
       d.duration ? `Duration: ${d.duration}` : '',
+      d.sportFocus && d.sportFocus.length ? `Sport focus: ${d.sportFocus.join(', ')}` : '',
       `\nOBJECTIVE\n${d.objective}\n`,
       list('SETUP', d.setup),
       list('INSTRUCTIONS (SEQUENCE OF PLAY)', d.instructions, true),
@@ -202,6 +203,7 @@
           <div class="fact"><b>Ages</b>${esc((d.ages || []).join(', ') || 'All')}</div>
           ${d.players ? `<div class="fact"><b>Players</b>${esc(d.players)}</div>` : ''}
           ${d.duration ? `<div class="fact"><b>Duration</b>${esc(d.duration)}</div>` : ''}
+          ${d.sportFocus && d.sportFocus.length ? `<div class="fact"><b>Sport focus</b>${esc(d.sportFocus.join(', '))}</div>` : ''}
         </div>
         <section class="d-sec"><h4>Objective</h4><p>${esc(d.objective)}</p></section>
         ${section('Setup', d.setup)}

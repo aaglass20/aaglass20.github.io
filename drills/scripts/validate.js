@@ -15,6 +15,7 @@ for (const s of window.SPORTS) {
     if (ids.has(d.id)) err.push('dup id'); ids.add(d.id);
     (d.categories||[]).forEach(c => !s.categories.includes(c) && err.push('bad cat ' + c));
     (d.ages||[]).forEach(a => !window.AGE_BANDS.includes(a) && err.push('bad age ' + a));
+    (d.sportFocus||[]).forEach(f => !window.SPORT_FOCUS.includes(f) && err.push('bad sportFocus ' + f));
     if (err.length) { bad++; console.log(s.id, d.id, err.join('; ')); }
   }
   console.log(s.id, list.length);

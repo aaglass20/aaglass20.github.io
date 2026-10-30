@@ -3,6 +3,9 @@
 
 window.AGE_BANDS = ['U6', 'U8', 'U10', 'U12', 'U14', 'HS', 'Adult'];
 
+// Optional `sportFocus` on a drill: which program sports it fits (mainly Adaptive). See RULES.md.
+window.SPORT_FOCUS = ['Any', 'Soccer', 'Basketball', 'Baseball/Softball', 'Football', 'Volleyball', 'Tennis', 'Hockey'];
+
 window.SPORTS = [
   {
     id: 'soccer', label: 'Soccer', icon: '⚽',

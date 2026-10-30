@@ -62,6 +62,7 @@ and copy a drill's export straight into Coach Approach.
   players: '5 per group',                          // how many it needs
   duration: '10–15 min',
   adaptations: ['…'],                              // how to adjust for athletes with disabilities / mixed ability
+  sportFocus: ['Any', 'Soccer'],                   // which program sports it fits — list in js/sports.js (SPORT_FOCUS); mainly for Adaptive
   status: 'candidate',                             // 'candidate' (default) | 'approved' | 'rejected'
   sources: [{ name: 'Site or book', url: 'https://…' }],
   notes: 'Why we picked it / anything to watch.'
@@ -76,6 +77,8 @@ and copy a drill's export straight into Coach Approach.
 - **`coachingPoints`**: 3–6 short cues a coach can shout ("Eyes up", "Low and wide").
 - **`categories`**: 1–3, primary first. Only names from that sport's list in `js/sports.js`.
   Need a new category? Add it to `js/sports.js` and note it in the decision log below.
+- **Adaptive Sports drills** always fill `adaptations` (wheelchair, visual/hearing, sensory, buddy support) and `sportFocus`
+  (`Any` for general movement; a sport when it builds toward that sport, e.g. Basket Drop → Basketball).
 - **`ages`** use the shared bands: `U6, U8, U10, U12, U14, HS, Adult`.
 - **`status`** starts as `candidate`. Aaron decides; Claude flips to `approved`/`rejected`
   when told. Rejected drills stay in the file (so we don't re-add them) but are hidden by default.
@@ -115,4 +118,5 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Drills can have several categories (primary first) so 1v1 + Attacking style tags both work. |
 | 2026-10-29 | Soccer batch 1: 31 drills added (36 total). Heading drills are U12+ only (US Soccer rules). |
 | 2026-10-29 | Soccer batch 2: 32 drills from BDU pages + 15 from the web (83 total). BDU sources link as `../BDU/<page>.html`. BDU technique videos skipped (moves, not drills). |
+| 2026-10-29 | Adaptive batch 1: 29 drills (30 total). Added optional `sportFocus` (Coach Approach adaptive programs have a sport focus). |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |
