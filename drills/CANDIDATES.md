@@ -151,7 +151,7 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Throw-In Routines | Attacking | |
 | ⬜ | 3v1 Rondo to 3v2 Transition | 3v1, 3v2, Transition | still thin |
 
-## Basketball — 62 written
+## Basketball — 78 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Mikan Drill | Finishing, Footwork | |
@@ -218,9 +218,25 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ✅ | Hot Seat | Shooting, Fun | MOJO |
 | ✅ | 21 Cones | Shooting, Conditioning, Fun | Basketball for Coaches |
 | ✅ | Four Square Shooting | Shooting, Footwork | CoachTube |
-| ⬜ | Partner Resistance Box-Out | Rebounding | U12+ |
-| ⬜ | 3v3 Rebounding League | Rebounding, Small-Sided Game | Coach's Clipboard |
-| ⬜ | Zone Offense Basics (vs 2-3) | Team Offense | |
+| ✅ | Back-to-Back Box Outs | Rebounding | U12+ |
+| ✅ | 3v3 Rebounding Game | Rebounding, Small-Sided Game | Coach's Clipboard |
+| ✅ | Zone Offense Basics (1-3-1 vs 2-3) | Team Offense | |
+| ✅ | Circle Layups (No Ball) | Finishing, Footwork, Warmup | Breakthrough |
+| ✅ | Speed Layup Chase | Finishing, 1v1, Transition | Breakthrough |
+| ✅ | Euro Step Finishing | Finishing, Footwork | Sportplan |
+| ✅ | Reverse Layup | Finishing | Sportplan |
+| ✅ | Power Layup | Finishing, Post Play, Footwork | |
+| ✅ | Superman Rebounding | Rebounding, Conditioning | |
+| ✅ | 2-3 Zone Slides | Defense, Footwork | |
+| ✅ | Baseline Out of Bounds — Box Set | Team Offense, Passing | Coach's Clipboard |
+| ✅ | Shooting Off Screens | Shooting, Team Offense, Footwork | |
+| ✅ | 2v1 into 3v2 Continuous | 2v1, 3v2, Transition | Sportplan |
+| ✅ | High-Low Post 2v2 | Post Play, Passing, Team Offense | |
+| ✅ | 3v3 Cutthroat | Small-Sided Game, Fun, Defense | |
+| ✅ | Line Touch Dribble Sprints | Conditioning, Ball Handling | |
+| ⬜ | Sideline Out of Bounds Play | Team Offense | |
+| ⬜ | Free Throw Routine + Pressure Ladder | Shooting | |
+| ⬜ | 1-2-2 / 2-2-1 Press Basics | Defense, Transition | HS+ |
 
 ## Softball — 46 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
