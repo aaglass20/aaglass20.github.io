@@ -265,21 +265,52 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Hitting Stations: One-Hand Drills | Hitting |  |
 | ⬜ | Pitcher Pickoff Moves | Pitching | 12U+ |
 
-## Football — 1 written
+## Football — 36 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
-| ✅ | Flag Pull Gauntlet | Flag Pulling, Agility | |
-| ⬜ | Route Tree Walk-Through | Route Running | |
-| ⬜ | Hands Drill (tennis ball / jugs) | Catching | |
-| ⬜ | QB Footwork (3/5-step drops) | Quarterback | |
-| ⬜ | Gauntlet (ball security) | Ball Security, Ball Carrying | |
-| ⬜ | Heads Up Tackling — Breakdown | Tackling | Safe tackling progressions only |
-| ⬜ | Hawk Tackle (shoulder) | Tackling | |
-| ⬜ | Mirror Drill | Coverage, Agility | |
-| ⬜ | Cone Agility (L-drill, pro shuttle) | Agility | |
-| ⬜ | Sled / Fit-and-Drive Blocking | Blocking | |
-| ⬜ | Punt Catching | Special Teams, Catching | |
-| ⬜ | Sharks & Minnows (flag) | Flag Pulling, Fun | |
+| ✅ | Flag Pull Gauntlet | Flag Pulling, Agility, Fun |  |
+| ✅ | Dynamic Warm-up | Warmup, Agility | Flag and tackle |
+| ✅ | Ladder Footwork | Agility, Warmup | Flag and tackle |
+| ✅ | 3-Cone L-Drill | Agility, Conditioning | Flag and tackle |
+| ✅ | Pro Shuttle (5-10-5) | Agility, Conditioning | Flag and tackle |
+| ✅ | Stance and Start | Warmup, Agility, Blocking | Flag and tackle |
+| ✅ | High and Tight Carry | Ball Carrying, Ball Security | Flag and tackle |
+| ✅ | Ball Security Gauntlet | Ball Security, Ball Carrying | Flag and tackle |
+| ✅ | Handoff Exchange | Ball Carrying, Quarterback, Ball Security | Flag and tackle |
+| ✅ | Running Back Cut Drill | Ball Carrying, Agility | Flag and tackle |
+| ✅ | Snap Drill | Quarterback, Ball Security | Flag and tackle |
+| ✅ | QB Drops and Throws | Quarterback, Passing | Flag and tackle |
+| ✅ | Target Throwing | Passing, Quarterback, Fun | Flag and tackle |
+| ✅ | Throwing on the Move | Quarterback, Passing | Flag and tackle |
+| ✅ | Diamond Hands Catching | Catching, Warmup | Flag and tackle |
+| ✅ | Tennis Ball Hands | Catching | Flag and tackle |
+| ✅ | Route Tree with Cones | Route Running, Catching, Passing | Flag and tackle |
+| ✅ | Over the Shoulder Catch | Catching, Route Running | Flag and tackle |
+| ✅ | Bad Ball Drill | Catching | Flag and tackle |
+| ✅ | Backpedal and Break | Coverage, Agility, Catching | Flag and tackle |
+| ✅ | Mirror Drill | Coverage, Agility, Flag Pulling | Flag and tackle |
+| ✅ | Intercept Drill | Coverage, Catching | Flag and tackle |
+| ✅ | Flag Tag | Flag Pulling, Warmup, Fun | Flag |
+| ✅ | Sharks and Minnows (Flag) | Flag Pulling, Fun, Agility | Flag |
+| ✅ | Pursuit Angles | Flag Pulling, Tackling, Coverage | Flag and tackle (tackle version uses bags/wheels) |
+| ✅ | Fit and Drive | Blocking | Tackle only (pads) |
+| ✅ | Mirror Blocking | Blocking, Agility | Tackle |
+| ✅ | Breakdown and Buzz | Tackling, Flag Pulling, Agility | Flag and tackle |
+| ✅ | Thigh and Drive Tackle | Tackling | Tackle only |
+| ✅ | Roll Tackle on the Wheel | Tackling | Tackle only |
+| ✅ | Punt and Kick Catching | Special Teams, Catching | Tackle (flag leagues often have no kicking) |
+| ✅ | Punting and Place-Kicking Basics | Special Teams | Tackle |
+| ✅ | Bulldog | Fun, Flag Pulling, Agility | Flag (or flag belts at tackle practice) |
+| ✅ | Tick Tock | Quarterback, Passing, Fun | Flag |
+| ✅ | Ultimate Football | Fun, Passing, Catching | Flag and tackle |
+| ✅ | Team Pursuit Drill | Conditioning, Coverage, Flag Pulling | Flag and tackle |
+| ⬜ | Screen Pass Timing |  |  |
+| ⬜ | Kickoff Coverage Lanes |  |  |
+| ⬜ | Long Snapping |  |  |
+| ⬜ | Strip Drill (defense) |  |  |
+| ⬜ | Sideline Toe-Tap Catches |  |  |
+| ⬜ | Flag Guarding Avoidance (offense) |  |  |
+| ⬜ | Zone Coverage Drops |  |  |
 
 ## Adaptive Sports — 31 written
 Last column = `sportFocus`.

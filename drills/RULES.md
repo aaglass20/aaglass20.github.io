@@ -134,4 +134,5 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
 | 2026-10-29 | Basketball batch 1: 38 drills (40 total), covering every basketball category. |
 | 2026-10-29 | Softball + baseball batch 1: 26 softball / 27 baseball drills added (27 / 28 total); shared drills kept as same-`id` pairs. |
+| 2026-10-29 | Football batch: 36 drills covering every football category (flag + tackle). Tackling drills follow USA Football's Shoulder Tackling System (near foot, near shoulder; bags/wheels, limited live contact); notes say "Flag", "Tackle", or both. |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |
