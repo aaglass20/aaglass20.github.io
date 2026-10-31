@@ -5,7 +5,7 @@ window.DRILL_DATA.soccer = [
     id: 'rondo-4v1',
     name: 'Rondo 4v1',
     altNames: ['Monkey in the Middle', 'Piggy in the Middle', 'Keep Away'],
-    objective: 'Keep possession under light pressure by passing quickly and moving to open angles. Builds first touch, body shape, and passing under pressure.',
+    description: 'Keep possession under light pressure by passing quickly and moving to open angles. Builds first touch, body shape, and passing under pressure.',
     setup: [
       'Grid: 8x8 yd square for U8–U10, 10x10 yd for older players',
       'Players: 4 attackers on the outside edges, 1 defender in the middle',
@@ -47,7 +47,7 @@ window.DRILL_DATA.soccer = [
     id: 'sharks-and-minnows',
     name: 'Sharks and Minnows',
     altNames: ['Pirates', 'Shark Attack'],
-    objective: 'Dribble with close control and keep the ball protected while escaping defenders. A high-energy game that also teaches tackling.',
+    description: 'Dribble with close control and keep the ball protected while escaping defenders. A high-energy game that also teaches tackling.',
     setup: [
       'Grid: 20x30 yd rectangle with an end line on each short side',
       'Players: every "minnow" has a ball; 1–2 "sharks" without a ball start in the middle',
@@ -91,7 +91,7 @@ window.DRILL_DATA.soccer = [
     id: '1v1-to-goal',
     name: '1v1 to Goal',
     altNames: ['1v1 Duels', 'Attack the Defender'],
-    objective: 'Attack a defender with confidence and finish; defenders practice closing down and staying on their feet.',
+    description: 'Attack a defender with confidence and finish; defenders practice closing down and staying on their feet.',
     setup: [
       'Grid: 15x20 yd channel with a small goal (or pop-up goal) at one end',
       'Players: attackers in a line at the far end with balls; defenders in a line next to the goal',
@@ -126,7 +126,7 @@ window.DRILL_DATA.soccer = [
     id: '2v1-to-goal',
     name: '2v1 to Goal',
     altNames: ['2v1 Overload', 'Wall Pass 2v1'],
-    objective: 'Use a numbers-up attack to decide when to dribble and when to pass, finishing with a shot.',
+    description: 'Use a numbers-up attack to decide when to dribble and when to pass, finishing with a shot.',
     setup: [
       'Grid: 20x25 yd with a goal and goalkeeper at one end',
       'Players: two attacking lines at the far end, one defender line by the goal',
@@ -160,7 +160,7 @@ window.DRILL_DATA.soccer = [
     id: 'gates-dribbling',
     name: 'Gates Dribbling',
     altNames: ['Cone Gates', 'Through the Gates'],
-    objective: 'Dribble with the head up, find open space, and change direction through small targets.',
+    description: 'Dribble with the head up, find open space, and change direction through small targets.',
     setup: [
       'Grid: 25x25 yd area',
       'Set up 8–12 "gates" (two cones 2 yd apart) scattered around the grid',
@@ -199,7 +199,7 @@ window.DRILL_DATA.soccer = [
     id: 'rondo-5v2',
     name: 'Rondo 5v2',
     altNames: ['5v2 Keep Away', 'Split Pass Rondo'],
-    objective: 'Keep the ball against two defenders; find passes that split them. Trains angles of support, one- and two-touch passing, and defensive teamwork.',
+    description: 'Keep the ball against two defenders; find passes that split them. Trains angles of support, one- and two-touch passing, and defensive teamwork.',
     setup: [
       'Grid: 12x12 yd (U12) up to 15x15 yd (HS)',
       'Players: 5 attackers on the edges (one may play inside), 2 defenders in pinnies inside',
@@ -235,7 +235,7 @@ window.DRILL_DATA.soccer = [
     id: '3v1-keep-away',
     name: '3v1 Keep Away',
     altNames: ['Triangle Rondo', '3v1 Possession'],
-    objective: 'First possession game for young players: move to make a triangle so the ball carrier always has two passing options.',
+    description: 'First possession game for young players: move to make a triangle so the ball carrier always has two passing options.',
     setup: [
       'Grid: 10x10 yd square',
       'Players: 3 attackers, 1 defender',
@@ -269,7 +269,7 @@ window.DRILL_DATA.soccer = [
     id: 'hot-box-passing',
     name: 'Hot Box Passing',
     altNames: ['Hot Box', 'Box Passing'],
-    objective: 'Pass and receive quickly in a crowded center area, then play out to a teammate on the outside. Builds scanning and first touch under pressure.',
+    description: 'Pass and receive quickly in a crowded center area, then play out to a teammate on the outside. Builds scanning and first touch under pressure.',
     setup: [
       'Grid: 20x20 yd outer square with a 10x10 yd "hot box" in the middle',
       'Players: 4 servers on the outer edges (one per side), 3–4 players inside the hot box, 1–2 defenders in the box',
@@ -305,7 +305,7 @@ window.DRILL_DATA.soccer = [
     id: 'ball-mastery-circuit',
     name: 'Ball Mastery Circuit',
     altNames: ['Coerver Ball Mastery', 'Footwork Circuit', 'Toe Taps'],
-    objective: 'Get hundreds of touches in a few minutes to build comfort and control with every surface of both feet.',
+    description: 'Get hundreds of touches in a few minutes to build comfort and control with every surface of both feet.',
     setup: [
       'Each player has a ball in their own space (about 3x3 yd)',
       'Players face the coach so they can copy the demo',
@@ -341,7 +341,7 @@ window.DRILL_DATA.soccer = [
     id: 'red-light-green-light-soccer',
     name: 'Red Light, Green Light',
     altNames: ['Traffic Lights', 'Red Card, Green Card'],
-    objective: 'Dribble with control and stop the ball on command. Great first-day game for listening and close control.',
+    description: 'Dribble with control and stop the ball on command. Great first-day game for listening and close control.',
     setup: [
       'Grid: 20x25 yd; start line at one end',
       'Each player has a ball; coach stands at the far end',
@@ -373,7 +373,7 @@ window.DRILL_DATA.soccer = [
     id: 'freeze-tag-with-ball',
     name: 'Freeze Tag with Ball',
     altNames: ['Soccer Freeze Tag', 'Tunnel Tag'],
-    objective: 'Dribble with eyes up and change direction to avoid taggers; teammates rescue each other with a pass.',
+    description: 'Dribble with eyes up and change direction to avoid taggers; teammates rescue each other with a pass.',
     setup: [
       'Grid: 20x20 yd',
       'Every player has a ball except 2 taggers in pinnies',
@@ -406,7 +406,7 @@ window.DRILL_DATA.soccer = [
     id: 'tail-tag',
     name: 'Tail Tag',
     altNames: ['Steal the Tail', 'Pinnie Tag'],
-    objective: 'Dribble while protecting your "tail" and steal others\' — builds agility, awareness, and close control.',
+    description: 'Dribble while protecting your "tail" and steal others\' — builds agility, awareness, and close control.',
     setup: [
       'Grid: 15x20 yd',
       'Each player has a ball and a pinnie tucked into the back of their shorts as a tail',
@@ -439,7 +439,7 @@ window.DRILL_DATA.soccer = [
     id: 'frogger',
     name: 'Frogger',
     altNames: ['Cross the Road', 'Traffic Jam'],
-    objective: 'Dribble through lanes of defenders with low pressure to build confidence going past opponents.',
+    description: 'Dribble through lanes of defenders with low pressure to build confidence going past opponents.',
     setup: [
       'Grid: 20 yd wide x 30 yd long, split into 3–4 lanes across the field',
       'One defender ("car") in each lane, who must stay in their lane; dribblers each have a ball at one end',
@@ -472,7 +472,7 @@ window.DRILL_DATA.soccer = [
     id: 'pirate-treasure',
     name: 'Pirate Treasure',
     altNames: ['Gold Rush', 'Treasure Hunt', 'Capture the Flag (with balls)', 'Hungry Hippos'],
-    objective: 'Dribble to collect "treasure" (balls) and bring it home; teaches dribbling with purpose and changing direction.',
+    description: 'Dribble to collect "treasure" (balls) and bring it home; teaches dribbling with purpose and changing direction.',
     setup: [
       'Grid: 25x25 yd with a 5x5 yd home base in each corner',
       'All balls start in the center circle; 4 teams of 2–4 players, one per home base',
@@ -508,7 +508,7 @@ window.DRILL_DATA.soccer = [
     id: 'cone-weave-relay',
     name: 'Cone Weave Relay',
     altNames: ['Slalom Relay', 'Dribble Relay'],
-    objective: 'Dribble through tight cones with both feet at speed in a team race.',
+    description: 'Dribble through tight cones with both feet at speed in a team race.',
     setup: [
       '3–4 lines of 3–4 players; each line has 6 cones in a row, 1–2 yd apart',
       'A turning cone 5 yd past the last cone',
@@ -542,7 +542,7 @@ window.DRILL_DATA.soccer = [
     id: 'numbers-game',
     name: 'Numbers Game',
     altNames: ['Numbers Called', 'Coach Calls', 'Match Ups'],
-    objective: 'Compete in 1v1, 2v2, or 3v3 battles to goal with instant reactions — fun, competitive, and game-like.',
+    description: 'Compete in 1v1, 2v2, or 3v3 battles to goal with instant reactions — fun, competitive, and game-like.',
     setup: [
       'Field: 20x30 yd with a small goal at each end (or GKs in full goals for older ages)',
       'Two teams line up on opposite sidelines; each player has a number (1, 2, 3…) matching a player on the other team',
@@ -578,7 +578,7 @@ window.DRILL_DATA.soccer = [
     id: 'triangle-passing',
     name: 'Triangle Passing',
     altNames: ['Pass and Follow Triangle', 'Three-Cone Passing'],
-    objective: 'Pass and move: play the ball, follow your pass, and receive on the back foot to keep the ball moving.',
+    description: 'Pass and move: play the ball, follow your pass, and receive on the back foot to keep the ball moving.',
     setup: [
       'Three cones in a triangle, 10 yd apart',
       'Players: 4–5 per triangle — 2 at the starting cone, 1 at each other cone',
@@ -615,7 +615,7 @@ window.DRILL_DATA.soccer = [
     id: 'partner-gate-passing',
     name: 'Partner Gate Passing',
     altNames: ['Passing Through Gates', 'Gate Passing'],
-    objective: 'Pass accurately with a partner while moving and finding open gates — lots of passes and lots of decisions.',
+    description: 'Pass accurately with a partner while moving and finding open gates — lots of passes and lots of decisions.',
     setup: [
       'Grid: 25x25 yd with 8–12 gates (2 cones, 2 yd apart)',
       'Players in pairs, one ball per pair',
@@ -649,7 +649,7 @@ window.DRILL_DATA.soccer = [
     id: 'y-passing',
     name: 'Y-Passing Pattern',
     altNames: ['Y Drill', 'Passing Y'],
-    objective: 'Rehearse a game-like passing pattern with a wall pass and third-player run.',
+    description: 'Rehearse a game-like passing pattern with a wall pass and third-player run.',
     setup: [
       'Cones in a Y shape: A (base), B 15 yd ahead, C and D 10 yd diagonally beyond B to each side',
       'Players: 6–8, with balls at A',
@@ -683,7 +683,7 @@ window.DRILL_DATA.soccer = [
     id: 'diamond-passing',
     name: 'Diamond Passing',
     altNames: ['Square Passing', 'Passing Square'],
-    objective: 'Receive and turn in a continuous passing square, practicing open-body receiving to both sides.',
+    description: 'Receive and turn in a continuous passing square, practicing open-body receiving to both sides.',
     setup: [
       'Four cones in a diamond, 12 yd apart',
       'Players: 2 at the starting cone, 1–2 at each other cone',
@@ -716,7 +716,7 @@ window.DRILL_DATA.soccer = [
     id: 'receiving-back-to-goal',
     name: 'Receiving with Back to Goal',
     altNames: ['Turn or Lay Off', 'Back to Goal 1v1'],
-    objective: 'Receive with a defender behind you and decide: turn, shield, or play back.',
+    description: 'Receive with a defender behind you and decide: turn, shield, or play back.',
     setup: [
       'Grid: 15x20 yd with a small goal (or end line) for the receiver to attack',
       'Server with balls at one end; receiver facing the server; defender behind the receiver',
@@ -751,7 +751,7 @@ window.DRILL_DATA.soccer = [
     id: 'juggling-ladder',
     name: 'Juggling Ladder',
     altNames: ['Juggling Challenge', 'Keepy Uppy'],
-    objective: 'Develop touch and receiving with all surfaces by juggling in levels.',
+    description: 'Develop touch and receiving with all surfaces by juggling in levels.',
     setup: [
       'Each player with a ball in their own space',
     ],
@@ -784,7 +784,7 @@ window.DRILL_DATA.soccer = [
     id: 'hit-the-coach',
     name: 'Hit the Coach',
     altNames: ['Shoot the Coach', 'Target Practice'],
-    objective: 'Dribble and pass at a moving target — a silly, high-energy way to practice passing accuracy.',
+    description: 'Dribble and pass at a moving target — a silly, high-energy way to practice passing accuracy.',
     setup: [
       'Grid: 20x20 yd',
       'Every player has a ball; coach moves around inside the grid',
@@ -820,7 +820,7 @@ window.DRILL_DATA.soccer = [
     id: 'toss-and-head',
     name: 'Toss and Head',
     altNames: ['Partner Heading', 'Heading Progression'],
-    objective: 'Learn safe heading technique — forehead contact, eyes open, neck firm — with soft, low-volume reps.',
+    description: 'Learn safe heading technique — forehead contact, eyes open, neck firm — with soft, low-volume reps.',
     setup: [
       'Partners 3–5 yd apart; one ball per pair (a lighter or slightly under-inflated ball is best)',
     ],
@@ -856,7 +856,7 @@ window.DRILL_DATA.soccer = [
     id: '3v2-to-goal',
     name: '3v2 to Goal',
     altNames: ['3v2 Overload', '3v2 Attack'],
-    objective: 'Use width and support to create a free player in a 3v2 attack and finish.',
+    description: 'Use width and support to create a free player in a 3v2 attack and finish.',
     setup: [
       'Field: 30x35 yd with a goal and GK at one end',
       'Three attacking lines at midfield (left, center, right); two defending lines by the goal posts',
@@ -891,7 +891,7 @@ window.DRILL_DATA.soccer = [
     id: 'world-cup',
     name: 'World Cup',
     altNames: ['Survivor', 'World Cup Elimination'],
-    objective: 'Finish under pressure in a fun knockout tournament.',
+    description: 'Finish under pressure in a fun knockout tournament.',
     setup: [
       'One goal with GK (or coach in goal); 18x25 yd field in front of it',
       'Players in pairs; each pair picks a country',
@@ -925,7 +925,7 @@ window.DRILL_DATA.soccer = [
     id: 'shooting-gallery',
     name: 'Shooting Gallery',
     altNames: ['Lay-off and Shoot', 'Shooting Lines'],
-    objective: 'Strike the ball cleanly on goal from a lay-off, with many reps and fast turnover.',
+    description: 'Strike the ball cleanly on goal from a lay-off, with many reps and fast turnover.',
     setup: [
       'Goal with GK; a server/target player standing at the top of the 18',
       'Two shooting lines 25 yd out, left and right of center, with balls',
@@ -959,7 +959,7 @@ window.DRILL_DATA.soccer = [
     id: 'finishing-wave-crosses',
     name: 'Crossing and Finishing Wave',
     altNames: ['Crossing Waves', 'Wide Play and Finish'],
-    objective: 'Deliver crosses from wide areas and make attacking runs to finish (near post, far post, top of box).',
+    description: 'Deliver crosses from wide areas and make attacking runs to finish (near post, far post, top of box).',
     setup: [
       'Goal with GK; full or half field width',
       'Wide players with balls on each wing; strikers in two lines at the top of the 18',
@@ -995,7 +995,7 @@ window.DRILL_DATA.soccer = [
     id: 'jockey-mirror',
     name: 'Jockey Mirror Drill',
     altNames: ['Shadow Defending', 'Mirror Jockey'],
-    objective: 'Learn defensive footwork — sideways stance, short steps, and staying goal-side — without the ball, then with it.',
+    description: 'Learn defensive footwork — sideways stance, short steps, and staying goal-side — without the ball, then with it.',
     setup: [
       'Channel: 5 yd wide x 10 yd long per pair',
       'Pairs: one attacker, one defender facing each other',
@@ -1029,7 +1029,7 @@ window.DRILL_DATA.soccer = [
     id: 'pressure-cover-2v2',
     name: 'Pressure and Cover 2v2',
     altNames: ['First and Second Defender', 'Pressure-Cover'],
-    objective: 'Teach two defenders to work together: the first presses the ball, the second covers at an angle behind.',
+    description: 'Teach two defenders to work together: the first presses the ball, the second covers at an angle behind.',
     setup: [
       'Field: 20x25 yd with two small goals (or end line) for attackers; defenders defend a line or goal',
       '2 attackers vs 2 defenders; extras wait at each end',
@@ -1069,7 +1069,7 @@ window.DRILL_DATA.soccer = [
     id: 'four-goal-game',
     name: '4 Goal Game',
     altNames: ['Four Goal Game', 'Two Goal Directional Game'],
-    objective: 'Find the open goal: teams attack two goals each, which rewards switching play and scanning.',
+    description: 'Find the open goal: teams attack two goals each, which rewards switching play and scanning.',
     setup: [
       'Field: 25x35 yd; two small goals on each end line, near the corners',
       'Two teams of 4 (no GKs)',
@@ -1104,7 +1104,7 @@ window.DRILL_DATA.soccer = [
     id: 'end-zone-game',
     name: 'End Zone Game',
     altNames: ['Touchdown Soccer', 'Line Soccer'],
-    objective: 'Keep possession and time a pass into the end zone for a running teammate — teaches penetrating passes and runs.',
+    description: 'Keep possession and time a pass into the end zone for a running teammate — teaches penetrating passes and runs.',
     setup: [
       'Field: 20x25 yd with a 2–3 yd end zone at each end',
       'Two teams of 3–5',
@@ -1137,7 +1137,7 @@ window.DRILL_DATA.soccer = [
     id: 'counter-attack-4v4',
     name: '4v4 + GKs Transition Game',
     altNames: ['Counter-Attack Game', 'Win It and Go'],
-    objective: 'React quickly when the ball changes hands: attack fast after winning it, recover fast after losing it.',
+    description: 'React quickly when the ball changes hands: attack fast after winning it, recover fast after losing it.',
     setup: [
       'Field: 30x40 yd with full-size or medium goals and GKs',
       'Two teams of 4 + a third team waiting behind one goal',
@@ -1172,7 +1172,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-diving-progression',
     name: 'Goalkeeper Diving Progression',
     altNames: ['Diving Ladder', 'Knee to Feet Diving'],
-    objective: 'Teach keepers to dive safely and catch, starting low to the ground and building height.',
+    description: 'Teach keepers to dive safely and catch, starting low to the ground and building height.',
     setup: [
       'Soft grass or mats; goal or two cones as a goal',
       'Coach with balls 3–5 yd from the keeper',
@@ -1206,7 +1206,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-shot-stopping-gates',
     name: 'Goalkeeper Gate Battle',
     altNames: ['Keeper Wars', 'Goalie Wars', 'GK Shot Stopping Gates'],
-    objective: 'Keepers face each other between two small goals, saving shots and distributing — reps of handling, footwork, and throwing.',
+    description: 'Keepers face each other between two small goals, saving shots and distributing — reps of handling, footwork, and throwing.',
     setup: [
       'Two goals (or cone goals 6 yd wide) facing each other 15–20 yd apart',
       'One keeper in each goal; balls next to each goal',
@@ -1241,7 +1241,7 @@ window.DRILL_DATA.soccer = [
     id: 'dynamic-warmup',
     name: 'Dynamic Warm-up',
     altNames: ['Injury-Prevention Warm-up', 'Movement Prep'],
-    objective: 'Prepare muscles and joints for play and reduce injury risk with running, strength, and balance moves.',
+    description: 'Prepare muscles and joints for play and reduce injury risk with running, strength, and balance moves.',
     setup: [
       'Two lines of cones 15–20 yd apart',
       'Players in pairs or small groups at the start cones',
@@ -1278,7 +1278,7 @@ window.DRILL_DATA.soccer = [
     id: 'two-touch-tennis',
     name: 'Two Touch Tennis',
     altNames: ['Soccer Tennis', 'Foot Tennis'],
-    objective: 'Control a bouncing ball and play it back over a net in two touches — builds first touch, volleys, and juggling skill in a fun game.',
+    description: 'Control a bouncing ball and play it back over a net in two touches — builds first touch, volleys, and juggling skill in a fun game.',
     setup: [
       'Court: 8x16 yd split by a "net" (row of cones, rope, or a bench)',
       '1v1 or 2v2; one ball',
@@ -1313,7 +1313,7 @@ window.DRILL_DATA.soccer = [
     id: 'roly-poly',
     name: 'Roly Poly',
     altNames: ['Kick, Roll, Catch'],
-    objective: 'A silly team-building challenge: kick the ball up, do a forward roll, and catch it before it lands. Builds coordination and laughs.',
+    description: 'A silly team-building challenge: kick the ball up, do a forward roll, and catch it before it lands. Builds coordination and laughs.',
     setup: [
       'Open grass; each player (or pair) has a ball',
     ],
@@ -1345,7 +1345,7 @@ window.DRILL_DATA.soccer = [
     id: 'champions-court',
     name: 'Champions Court',
     altNames: ['World Cup with Promotions and Relegations', 'King of the Court', 'Up and Down the River'],
-    objective: 'Short, intense small-sided games where winners move up a field and losers move down — maximum competition and touches.',
+    description: 'Short, intense small-sided games where winners move up a field and losers move down — maximum competition and touches.',
     setup: [
       '3–5 small fields side by side (about 15x20 yd each) with small goals',
       'Field 1 = Champions Court on one end, lowest field on the other',
@@ -1380,7 +1380,7 @@ window.DRILL_DATA.soccer = [
     id: 'tic-tac-toe-relay',
     name: 'Tic Tac Toe Relay',
     altNames: ['Tic Tac Toe Race', 'Noughts and Crosses'],
-    objective: 'Combine a dribbling (or sprint) relay with quick team decisions — race to get three in a row.',
+    description: 'Combine a dribbling (or sprint) relay with quick team decisions — race to get three in a row.',
     setup: [
       '3x3 grid of cones (or hoops) 15–20 yd from the start line',
       'Two teams of 3–5 in lines; each team has 3 pinnies of one color',
@@ -1417,7 +1417,7 @@ window.DRILL_DATA.soccer = [
     id: 'two-touch-box',
     name: 'Two Touch Box',
     altNames: ['Middle Man', 'Receive and Release'],
-    objective: 'Middle player receives and plays out the other side in exactly two touches — directional first touch and passing rhythm.',
+    description: 'Middle player receives and plays out the other side in exactly two touches — directional first touch and passing rhythm.',
     setup: [
       '3x3 yd box in the middle, with a server 10 yd away on each side',
       'Groups of 3: one inside the box, two servers outside',
@@ -1452,7 +1452,7 @@ window.DRILL_DATA.soccer = [
     id: 'left-right-drop',
     name: 'Left, Right, Drop',
     altNames: ['O Drill', 'Reaction Turns'],
-    objective: 'React to a call, turn, and receive — trains communication, reaction time, and a controlled first touch out to the side.',
+    description: 'React to a call, turn, and receive — trains communication, reaction time, and a controlled first touch out to the side.',
     setup: [
       'Pairs: coach/server and player 8–10 yd apart',
       'Player faces away from the server, bouncing on their toes',
@@ -1487,7 +1487,7 @@ window.DRILL_DATA.soccer = [
     id: 'diagonal-cone-dribbling',
     name: 'Diagonal Cone Dribbling Series',
     altNames: ['Zig-Zag Dribbling', '5 Ways Dribbling'],
-    objective: 'Five progressive dribbling techniques through the same zig-zag cone line: strong foot, weak foot, alternating, pull-push, and step-over.',
+    description: 'Five progressive dribbling techniques through the same zig-zag cone line: strong foot, weak foot, alternating, pull-push, and step-over.',
     setup: [
       '6–8 cones in a zig-zag (diagonal) pattern, 3–4 yd apart',
       '2–3 players per line, each with a ball',
@@ -1522,7 +1522,7 @@ window.DRILL_DATA.soccer = [
     id: 'figure-8-control',
     name: 'Figure 8 Cone Control',
     altNames: ['Figure 8s', 'Two-Cone Figure 8'],
-    objective: 'Tight dribbling around two cones using every surface of the foot.',
+    description: 'Tight dribbling around two cones using every surface of the foot.',
     setup: [
       'Two cones 3 yd apart per player',
       'Each player has a ball',
@@ -1554,7 +1554,7 @@ window.DRILL_DATA.soccer = [
     id: 'defensive-containment-progression',
     name: 'Defensive Containment Progression',
     altNames: ['Body Up, Don\'t Poke', 'Channel Defending'],
-    objective: 'Teach defenders to shift their hips with the attacker, step across the body, and tackle with the body first instead of poking.',
+    description: 'Teach defenders to shift their hips with the attacker, step across the body, and tackle with the body first instead of poking.',
     setup: [
       'Channels 5 yd wide x 15 yd long',
       'Pairs: one attacker with a ball, one defender',
@@ -1589,7 +1589,7 @@ window.DRILL_DATA.soccer = [
     id: 'get-out-of-the-zone',
     name: 'Can You Get Out of the Zone?',
     altNames: ['Escape the Zone', 'Box Escape 1v1'],
-    objective: 'Attacker tries to escape a tight zone; defender stays in position and picks the right moment to tackle.',
+    description: 'Attacker tries to escape a tight zone; defender stays in position and picks the right moment to tackle.',
     setup: [
       'Small square (6x6 yd) inside a larger area',
       'Attacker with a ball starts inside; defender starts inside too',
@@ -1622,7 +1622,7 @@ window.DRILL_DATA.soccer = [
     id: 'touch-and-feel',
     name: 'Touch & Feel',
     altNames: ['Pressure Passing'],
-    objective: 'Pass and receive while a player runs in and touches you — learn to keep composure when you feel pressure.',
+    description: 'Pass and receive while a player runs in and touches you — learn to keep composure when you feel pressure.',
     setup: [
       'Two passers 10 yd apart; two pressure players each by a cone 5 yd off to the side',
       'Groups of 4',
@@ -1655,7 +1655,7 @@ window.DRILL_DATA.soccer = [
     id: 'multi-ball-deception',
     name: 'Multi-Ball Deception Game',
     altNames: ['Ball Stations 1v1', 'Pick a Ball'],
-    objective: 'Attacker uses fakes to choose one of several balls and shoot; defender stays in front to block.',
+    description: 'Attacker uses fakes to choose one of several balls and shoot; defender stays in front to block.',
     setup: [
       '4–5 cones each with a ball on top, spread across the top of the box (18–20 yd out)',
       'Goal with a GK; one attacker and one defender',
@@ -1688,7 +1688,7 @@ window.DRILL_DATA.soccer = [
     id: 'two-touch-passing-game',
     name: 'Two Touch Passing Game',
     altNames: ['Through the Middle'],
-    objective: 'Partners compete to pass through a cone gate using strict two-touch: touch wide, then pass through the middle.',
+    description: 'Partners compete to pass through a cone gate using strict two-touch: touch wide, then pass through the middle.',
     setup: [
       'Two players 10–12 yd apart with a 2-yd gate of cones in the middle',
     ],
@@ -1720,7 +1720,7 @@ window.DRILL_DATA.soccer = [
     id: 'side-to-side-first-touch',
     name: 'Side to Side First Touch',
     altNames: ['Cone to Cone Receiving'],
-    objective: 'Receive while moving laterally: touch left and pass, shuffle, touch right and pass.',
+    description: 'Receive while moving laterally: touch left and pass, shuffle, touch right and pass.',
     setup: [
       'Two cones 5 yd apart; server 8 yd in front',
     ],
@@ -1752,7 +1752,7 @@ window.DRILL_DATA.soccer = [
     id: 'feint-dribble-shoot-relay',
     name: 'Feint, Dribble, Shoot Relay',
     altNames: ['Feint and Finish Relay'],
-    objective: 'Practice a feint at a "defender" (wall/mannequin), a controlled dribble, and a placed side-foot shot — with a speed dribble back for fitness.',
+    description: 'Practice a feint at a "defender" (wall/mannequin), a controlled dribble, and a placed side-foot shot — with a speed dribble back for fitness.',
     setup: [
       'Two lines 25 yd from goal; a pole, mannequin, or tall cone 10 yd in front of each line',
       'Goal (with or without GK)',
@@ -1785,7 +1785,7 @@ window.DRILL_DATA.soccer = [
     id: 'passing-ladder-two-touch',
     name: 'Two-Touch Passing Ladder',
     altNames: ['Dynamic Passing Ladder', 'Right Up, Left Back'],
-    objective: 'Quick-footed passing with both feet on a partner line — move to the ball, stay on your toes.',
+    description: 'Quick-footed passing with both feet on a partner line — move to the ball, stay on your toes.',
     setup: [
       'Partners 8–10 yd apart; a line of 3 cones (2 yd apart) on each player\'s side to move along',
     ],
@@ -1818,7 +1818,7 @@ window.DRILL_DATA.soccer = [
     id: 'three-zone-touch',
     name: 'Three Zone Touch',
     altNames: ['Touch Left, 1 Touch, 2 Touch Right'],
-    objective: 'Move sideways through three zones with a different touch rule in each — both feet, quick decisions, head up.',
+    description: 'Move sideways through three zones with a different touch rule in each — both feet, quick decisions, head up.',
     setup: [
       'Three side-by-side grids (3x3 yd each) facing a server 8 yd away',
     ],
@@ -1851,7 +1851,7 @@ window.DRILL_DATA.soccer = [
     id: 'fifty-touches',
     name: '50 Touches',
     altNames: ['Long-Short-Turn Warm-up'],
-    objective: 'A fast warm-up with a long pass, short pass, turn, and weak-foot pass on repeat — constant movement and coming to the ball.',
+    description: 'A fast warm-up with a long pass, short pass, turn, and weak-foot pass on repeat — constant movement and coming to the ball.',
     setup: [
       'Groups of 3 in a line: A and C on the ends (25 yd apart), B in the middle',
     ],
@@ -1883,7 +1883,7 @@ window.DRILL_DATA.soccer = [
     id: 'circle-receive-turn',
     name: 'Circle Receive and Turn',
     altNames: ['Circle Drill', 'Reception & Turn Circle'],
-    objective: 'Receive, turn, and pass to the next player around a circle — continuous turning reps.',
+    description: 'Receive, turn, and pass to the next player around a circle — continuous turning reps.',
     setup: [
       '6–8 cones in a circle, 10 yd apart; one player at each cone',
       'One or two balls',
@@ -1916,7 +1916,7 @@ window.DRILL_DATA.soccer = [
     id: 'break-the-line',
     name: 'Break the Line',
     altNames: ['Break the Lock', 'Three Zones Through'],
-    objective: 'Move the ball across a line until a gap opens, then pass through the defenders to the far zone.',
+    description: 'Move the ball across a line until a gap opens, then pass through the defenders to the far zone.',
     setup: [
       'Field: 20 yd wide, split into three 10-yd zones',
       'Rows of 4 in each end zone (attackers), 2–3 defenders in the middle zone',
@@ -1950,7 +1950,7 @@ window.DRILL_DATA.soccer = [
     id: 'player-chess',
     name: 'Player Chess',
     altNames: ['Pass and Move to the Circles'],
-    objective: 'A team-building puzzle: pass, then move — the team must get every player into the target circles.',
+    description: 'A team-building puzzle: pass, then move — the team must get every player into the target circles.',
     setup: [
       'Area 30x30 yd with 4–5 hoop/cone circles scattered inside',
       'One team (6–10 players), one ball',
@@ -1983,7 +1983,7 @@ window.DRILL_DATA.soccer = [
     id: 'striking-windows',
     name: 'Striking Windows',
     altNames: ['Shot Selection Challenge', 'Shoot When Open'],
-    objective: 'Striker moves along the 18 and shoots only when a window opens; defender can only shuffle and block.',
+    description: 'Striker moves along the 18 and shoots only when a window opens; defender can only shuffle and block.',
     setup: [
       '5 balls spread along the 18-yd line',
       'Striker on one side of the balls, defender on the goal side; GK in goal',
@@ -2016,7 +2016,7 @@ window.DRILL_DATA.soccer = [
     id: 'striker-series-four-phase',
     name: 'Striker Series (4 Shots)',
     altNames: ['Complete Striker Series', '4-Phase Finishing'],
-    objective: 'Four finishing types in one rep: dribble and shoot, cut in left, cut in right, and a combination volley — great for strikers and keepers.',
+    description: 'Four finishing types in one rep: dribble and shoot, cut in left, cut in right, and a combination volley — great for strikers and keepers.',
     setup: [
       'Two center cones and two wide cones 20–25 yd from goal; GK in goal',
       'Coach/server with 4 balls',
@@ -2050,7 +2050,7 @@ window.DRILL_DATA.soccer = [
     id: 'post-up-flip-hit',
     name: 'Post Up, Flip, Hit',
     altNames: ['Shield, Turn, Shoot'],
-    objective: 'Forwards receive with back to goal, post up on a defender, turn sharply, and shoot quickly.',
+    description: 'Forwards receive with back to goal, post up on a defender, turn sharply, and shoot quickly.',
     setup: [
       'Top of the box; GK in goal',
       'Coach/server with balls 20 yd out; forward with a defender behind them',
@@ -2083,7 +2083,7 @@ window.DRILL_DATA.soccer = [
     id: 'bounce-through-finish',
     name: 'Bounce, Through Ball, Finish',
     altNames: ['Liverpool Finishing Drill', 'Ireland Finishing Drill', 'Set and Go'],
-    objective: 'Combination finish: bounce pass to a partner, run in behind, receive the through ball, and finish first time.',
+    description: 'Combination finish: bounce pass to a partner, run in behind, receive the through ball, and finish first time.',
     setup: [
       'Two lines 30 yd from goal: passers at the center, partners at a cone 10 yd ahead',
       'GK in goal',
@@ -2117,7 +2117,7 @@ window.DRILL_DATA.soccer = [
     id: 'reaction-finishing',
     name: 'Reaction Finishing',
     altNames: ['Over the Shoulder Finishing', 'Drop and Shoot'],
-    objective: 'Find the ball quickly and finish first time (or within two bounces) when it drops from behind.',
+    description: 'Find the ball quickly and finish first time (or within two bounces) when it drops from behind.',
     setup: [
       'Striker 12–14 yd from goal facing the goal; coach behind them with balls',
       'GK in goal',
@@ -2149,7 +2149,7 @@ window.DRILL_DATA.soccer = [
     id: 'shoot-and-defend-transition',
     name: 'Shoot and Track Back',
     altNames: ['Transitional Shooting', 'Post Touch Transition'],
-    objective: 'After shooting, the shooter must transition immediately to defend the other team\'s attack.',
+    description: 'After shooting, the shooter must transition immediately to defend the other team\'s attack.',
     setup: [
       'Goal with GK; field 25x30 yd',
       'Red team in one line, yellow team in another, both 25 yd out',
@@ -2182,7 +2182,7 @@ window.DRILL_DATA.soccer = [
     id: 'three-station-finishing',
     name: '3 Station Finishing',
     altNames: ['Open Shot, 1v1, 2v1'],
-    objective: 'A rotating finishing circuit: open shot, then 1v1, then 2v1 — the shooter becomes the next defender.',
+    description: 'A rotating finishing circuit: open shot, then 1v1, then 2v1 — the shooter becomes the next defender.',
     setup: [
       'Goal with GK; three lines 20–25 yd out (left, center, right)',
     ],
@@ -2214,7 +2214,7 @@ window.DRILL_DATA.soccer = [
     id: 'around-the-world-shooting',
     name: 'Around the World',
     altNames: ['Shooting Around the World'],
-    objective: 'Score from every cone around the box in order — accuracy under a little pressure.',
+    description: 'Score from every cone around the box in order — accuracy under a little pressure.',
     setup: [
       '5–10 cones in a semicircle around the goal box, 10–16 yd out',
       'GK optional; one ball per player',
@@ -2246,7 +2246,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-angle-play',
     name: 'Goalkeeper Angle Play',
     altNames: ['Be at the 6 When They\'re at the 18', 'Defend the Smallest Goal', 'Arc Positioning'],
-    objective: 'Teach keepers to move along an arc and position between ball and goal to make the target as small as possible.',
+    description: 'Teach keepers to move along an arc and position between ball and goal to make the target as small as possible.',
     setup: [
       'Goal; cones marking an arc 2–4 yd off the goal line',
       'Servers/shooters with balls at 5–6 positions around the 18',
@@ -2280,7 +2280,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-breakaway-1v1',
     name: 'Goalkeeper Breakaway 1v1',
     altNames: ['Leg Block Breakaway', 'Narrowing the Angle'],
-    objective: 'Keepers learn when to come out, how to stay big, and how to use a leg block or smother on a breakaway.',
+    description: 'Keepers learn when to come out, how to stay big, and how to use a leg block or smother on a breakaway.',
     setup: [
       'Goal with GK; attackers in a line 25 yd out with balls',
     ],
@@ -2313,7 +2313,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-scoop-and-cover',
     name: 'Goalkeeper Scoop and Cover',
     altNames: ['Low Ball Collection', 'Scoop and Cover'],
-    objective: 'Securely collect rolled and low shots using a scoop, then protect the ball against the body.',
+    description: 'Securely collect rolled and low shots using a scoop, then protect the ball against the body.',
     setup: [
       'Keeper in goal or between cones; server 8–10 yd away with balls',
     ],
@@ -2347,7 +2347,7 @@ window.DRILL_DATA.soccer = [
     id: 'monster-turns',
     name: 'Monster Turns',
     altNames: ['Monster Invasion', 'Run from the Monster'],
-    objective: 'Young players dribble toward a "monster," then turn away with the ball when it wakes up — first lesson in turning away from pressure.',
+    description: 'Young players dribble toward a "monster," then turn away with the ball when it wakes up — first lesson in turning away from pressure.',
     setup: [
       'Grid: 20x20 yd; players with a ball on one end line',
       'Coach (the monster) stands at the far end, "asleep"',
@@ -2383,7 +2383,7 @@ window.DRILL_DATA.soccer = [
     id: 'simon-says-ball',
     name: 'Simon Says (with a Ball)',
     altNames: ['Coach Says', 'Simon Says Dribbling'],
-    objective: 'Close control and listening: players only do the ball move if "Simon says."',
+    description: 'Close control and listening: players only do the ball move if "Simon says."',
     setup: [
       'Grid: 15x15 yd; each player with a ball',
     ],
@@ -2415,7 +2415,7 @@ window.DRILL_DATA.soccer = [
     id: 'follow-the-leader-dribble',
     name: 'Follow the Leader',
     altNames: ['Copy Cat Dribbling'],
-    objective: 'Dribble while copying a leader\'s path and moves — eyes up and changes of direction.',
+    description: 'Dribble while copying a leader\'s path and moves — eyes up and changes of direction.',
     setup: [
       'Grid: 20x20 yd',
       'Pairs or groups of 3, each player with a ball',
@@ -2447,7 +2447,7 @@ window.DRILL_DATA.soccer = [
     id: 'animal-soccer',
     name: 'Animal Soccer',
     altNames: ['Soccer Zoo', 'Soccer Bees'],
-    objective: 'Imaginative dribbling for the youngest players: move with the ball like different animals.',
+    description: 'Imaginative dribbling for the youngest players: move with the ball like different animals.',
     setup: [
       'Grid: 15x15 yd; each player with a ball',
     ],
@@ -2478,7 +2478,7 @@ window.DRILL_DATA.soccer = [
     id: '1v1-dribble-box',
     name: '1v1 Dribble Box',
     altNames: ['1v1 Line Battles', 'Beat Your Man'],
-    objective: 'Beat a defender 1v1 by dribbling over their end line under control.',
+    description: 'Beat a defender 1v1 by dribbling over their end line under control.',
     setup: [
       'Box: 10x15 yd per pair',
       'Attacker and defender face each other on opposite end lines',
@@ -2512,7 +2512,7 @@ window.DRILL_DATA.soccer = [
     id: 'give-and-go',
     name: 'Give-and-Go (Wall Pass)',
     altNames: ['Wall Pass', '1-2 Combination', 'One-Two'],
-    objective: 'Beat a defender with a quick pass-and-run combination.',
+    description: 'Beat a defender with a quick pass-and-run combination.',
     setup: [
       'Channel 15x25 yd; small goal or end line at the far end',
       'Attacker with ball, a "wall" player (teammate) to the side, one defender',
@@ -2545,7 +2545,7 @@ window.DRILL_DATA.soccer = [
     id: 'flighted-ball-receiving',
     name: '2v2 + 1 Flighted Receiving',
     altNames: ['Aerial Control Game', 'Lofted Ball Receiving'],
-    objective: 'Control lofted balls (thigh, chest, instep) and play on in a small game.',
+    description: 'Control lofted balls (thigh, chest, instep) and play on in a small game.',
     setup: [
       'Grid 20x30 yd with two small goals',
       '2v2 plus one neutral server outside who only plays balls in the air',
@@ -2578,7 +2578,7 @@ window.DRILL_DATA.soccer = [
     id: 'cover-me',
     name: 'Cover Me',
     altNames: ['Defensive Line Shift', 'Shift and Close'],
-    objective: 'Defenders learn to shift as a line: nearest defender presses, teammates slide over to close passing gaps.',
+    description: 'Defenders learn to shift as a line: nearest defender presses, teammates slide over to close passing gaps.',
     setup: [
       'Field 30x20 yd; 3 defenders in a line in the middle zone',
       '4 attackers on each end line passing across',
@@ -2611,7 +2611,7 @@ window.DRILL_DATA.soccer = [
     id: 'gladiators-arena',
     name: 'Gladiators Arena',
     altNames: ['4v4 Gladiators', 'Arena Battles'],
-    objective: 'Intense 4v4 games in a tight arena with quick rotations — attacking and defending duels everywhere.',
+    description: 'Intense 4v4 games in a tight arena with quick rotations — attacking and defending duels everywhere.',
     setup: [
       'Arena 20x25 yd with small goals (no GKs)',
       'Teams of 4; waiting teams outside acting as bumpers on the sidelines',
@@ -2643,7 +2643,7 @@ window.DRILL_DATA.soccer = [
     id: 'rondo-transition-4v4-3',
     name: '4v4 + 3 Possession Transition',
     altNames: ['Rondo with Transition', '4v4 + 3 Neutrals'],
-    objective: 'Keep the ball with neutral players\' help (7v4), and react immediately when possession changes.',
+    description: 'Keep the ball with neutral players\' help (7v4), and react immediately when possession changes.',
     setup: [
       'Grid 20x20 yd',
       'Two teams of 4 + 3 neutral players (one in the middle, two on opposite sides)',
@@ -2676,7 +2676,7 @@ window.DRILL_DATA.soccer = [
     id: 'switch-play-long-pass',
     name: 'Switch the Play',
     altNames: ['Long Ball Switch', 'Two-Zone Switch'],
-    objective: 'Keep the ball in one zone, then switch with a long pass to teammates on the far side.',
+    description: 'Keep the ball in one zone, then switch with a long pass to teammates on the far side.',
     setup: [
       'Field 40x30 yd split into two 15-yd wide zones with a 10-yd neutral channel between',
       '4v2 in each zone (or 3v1 for younger players)',
@@ -2709,7 +2709,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-distribution-targets',
     name: 'Goalkeeper Distribution Targets',
     altNames: ['Throw and Kick Targets', 'Distribution Gates'],
-    objective: 'Distribute accurately with rolls, throws, drop kicks, and punts to targets at different distances.',
+    description: 'Distribute accurately with rolls, throws, drop kicks, and punts to targets at different distances.',
     setup: [
       'Keeper at the edge of the box; cone gates or teammates at 15, 25, and 40 yd',
     ],
@@ -2745,7 +2745,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-high-balls',
     name: 'Goalkeeper High Balls and Crosses',
     altNames: ['Claiming Crosses', 'Keeper! Drill'],
-    objective: 'Catch high balls at the highest point and claim crosses with confidence and a loud call.',
+    description: 'Catch high balls at the highest point and claim crosses with confidence and a loud call.',
     setup: [
       'Goal with keeper; servers on each wing with balls',
       'Optional: 1–2 passive attackers in the box',
@@ -2779,7 +2779,7 @@ window.DRILL_DATA.soccer = [
     id: 'king-of-the-ring',
     name: 'King of the Ring',
     altNames: ['Shielding Circle', 'Knockout'],
-    objective: 'Shield your own ball while trying to knock others\' balls out of the circle.',
+    description: 'Shield your own ball while trying to knock others\' balls out of the circle.',
     setup: [
       'Circle or square about 15x15 yd (shrink as players are knocked out)',
       'Every player with a ball',
@@ -2812,7 +2812,7 @@ window.DRILL_DATA.soccer = [
     id: 'shuttle-with-ball',
     name: 'Shuttle Runs with Ball',
     altNames: ['Dribble Shuttles', 'Ball Suicides'],
-    objective: 'Conditioning with the ball: repeated dribble sprints to build game fitness while keeping touches clean.',
+    description: 'Conditioning with the ball: repeated dribble sprints to build game fitness while keeping touches clean.',
     setup: [
       'Cones at 0, 5, 10, and 15 yd; one line per 2–3 players',
       'Each player with a ball',
@@ -2846,7 +2846,7 @@ window.DRILL_DATA.soccer = [
     id: 'overload-waves-3v2',
     name: 'Attack in Overload — 3v2 Waves',
     altNames: ['3v2 Waves', 'Two Sets of 3v2'],
-    objective: 'Use the extra attacker to score quickly, and practice defending outnumbered.',
+    description: 'Use the extra attacker to score quickly, and practice defending outnumbered.',
     setup: [
       'Field 30x40 yd with a goal (and GK) at each end',
       'Two teams; each team split into 3 attackers and 2 defenders',
@@ -2880,7 +2880,7 @@ window.DRILL_DATA.soccer = [
     id: '3v2-to-4v3-transition',
     name: '3v2 to 4v3 Transition',
     altNames: ['Overload Transition to Goal', '3v2 into 4v3'],
-    objective: 'Attack an overload, then react when possession changes and a bigger game starts the other way.',
+    description: 'Attack an overload, then react when possession changes and a bigger game starts the other way.',
     setup: [
       'Field 35x45 yd, goals at each end with GKs',
       '3 attackers vs 2 defenders in one half; 1 extra defender waits at midfield',
@@ -2916,7 +2916,7 @@ window.DRILL_DATA.soccer = [
     id: 'rob-the-nest',
     name: 'Rob the Nest',
     altNames: ['Steal the Eggs', 'Hungry Hippos'],
-    objective: 'A fast, fun game that builds dribbling, scanning, and fitness.',
+    description: 'A fast, fun game that builds dribbling, scanning, and fitness.',
     setup: [
       'Center circle (or 10x10 yd square) filled with balls',
       '3–4 teams, each with a small cone square "nest" around the outside, 15 yd from the center',
@@ -2949,7 +2949,7 @@ window.DRILL_DATA.soccer = [
     id: '3v1-rondo-breakout',
     name: '3v1 Rondo Breakout',
     altNames: ['3v1 Split Pass', 'Rondo Escape'],
-    objective: 'Keep the ball 3v1 in a triangle and find the moment to play out of pressure.',
+    description: 'Keep the ball 3v1 in a triangle and find the moment to play out of pressure.',
     setup: [
       'Two 8x8 yd boxes, 10 yd apart',
       '3 attackers + 1 defender in box A; 1 defender waits in box B',
@@ -2982,7 +2982,7 @@ window.DRILL_DATA.soccer = [
     id: '3v1-to-goal',
     name: '3v1 to Goal',
     altNames: ['Triangle Attack', '3v1 Finishing'],
-    objective: 'Combine with two teammates to beat one defender and finish.',
+    description: 'Combine with two teammates to beat one defender and finish.',
     setup: [
       'Field 25x30 yd with a goal and GK',
       '3 attackers at midfield; 1 defender at the top of the box',
@@ -3015,7 +3015,7 @@ window.DRILL_DATA.soccer = [
     id: '2v1-overlap-wide',
     name: '2v1 Overlap Down the Wing',
     altNames: ['Wide 2v1', 'Overlap and Cross'],
-    objective: 'Beat a fullback 2v1 with an overlapping run, then cross or cut in.',
+    description: 'Beat a fullback 2v1 with an overlapping run, then cross or cut in.',
     setup: [
       'Wide channel 15 yd wide along the touchline from midfield to the box; goal + GK; 1–2 target forwards in the box',
       'Winger and overlapping fullback; 1 defender in the channel',
@@ -3048,7 +3048,7 @@ window.DRILL_DATA.soccer = [
     id: 'heading-progression',
     name: 'Heading Progression (Light Ball)',
     altNames: ['Kneeling Headers', 'Seated to Standing Headers'],
-    objective: 'Teach safe heading technique — forehead, eyes open, neck firm — in a few low-force reps.',
+    description: 'Teach safe heading technique — forehead, eyes open, neck firm — in a few low-force reps.',
     setup: [
       'Partners 3–4 yd apart; lightweight or size-down balls (or balloons/beach balls first)',
     ],
@@ -3085,7 +3085,7 @@ window.DRILL_DATA.soccer = [
     id: 'throw-head-catch',
     name: 'Throw-Head-Catch',
     altNames: ['Head-Catch Game', 'Handball Heading Game'],
-    objective: 'A hand-passing game that rewards well-directed headers — fun and low-volume.',
+    description: 'A hand-passing game that rewards well-directed headers — fun and low-volume.',
     setup: [
       'Field 20x30 yd with small goals; two teams of 4–6; lightweight ball',
     ],
@@ -3118,7 +3118,7 @@ window.DRILL_DATA.soccer = [
     id: 'headed-clearances',
     name: 'Defensive Headed Clearances',
     altNames: ['High, Far, Wide', 'Clear the Lines'],
-    objective: 'Defenders clear crosses with headers that go high, far, and wide.',
+    description: 'Defenders clear crosses with headers that go high, far, and wide.',
     setup: [
       'Defender stands near the penalty spot; server 10 yd away with lightweight balls',
       'Cones 15 yd out on each side as clearance targets',
@@ -3152,7 +3152,7 @@ window.DRILL_DATA.soccer = [
     id: 'box-to-box-relay',
     name: 'Box-to-Box Ball Relay',
     altNames: ['Dribble Relay Race', 'Speed Dribble Relay'],
-    objective: 'Fitness with the ball: fast dribbling relays that add competition.',
+    description: 'Fitness with the ball: fast dribbling relays that add competition.',
     setup: [
       'Teams of 3–4 in lines; cone 20–30 yd away for each team',
     ],
@@ -3183,7 +3183,7 @@ window.DRILL_DATA.soccer = [
     id: 'fartlek-possession',
     name: 'Fartlek Possession',
     altNames: ['Work-Rest Possession', 'Interval Keep Away'],
-    objective: 'Conditioning through possession: high-intensity bursts and active rest, all with the ball.',
+    description: 'Conditioning through possession: high-intensity bursts and active rest, all with the ball.',
     setup: [
       'Area 30x30 yd; two teams of 4–6',
     ],
@@ -3215,7 +3215,7 @@ window.DRILL_DATA.soccer = [
     id: 'dribble-gauntlet',
     name: 'Dribble Gauntlet',
     altNames: ['Run the Gauntlet', 'Defender Lanes'],
-    objective: 'Dribble at speed past defenders in zones while defenders work on recovery runs.',
+    description: 'Dribble at speed past defenders in zones while defenders work on recovery runs.',
     setup: [
       'Field 20x40 yd split into 3 zones; one defender in each zone',
       'Attackers with balls on one end line',
@@ -3248,7 +3248,7 @@ window.DRILL_DATA.soccer = [
     id: 'three-team-possession',
     name: '3-Team Possession',
     altNames: ['3 Colors', 'Two vs One Team Keep Away'],
-    objective: 'Two teams combine to keep the ball from a third; whoever loses it becomes the defenders.',
+    description: 'Two teams combine to keep the ball from a third; whoever loses it becomes the defenders.',
     setup: [
       'Area 25x25 yd; three teams of 3–4 in different colors',
     ],
@@ -3280,7 +3280,7 @@ window.DRILL_DATA.soccer = [
     id: 'five-second-counterpress',
     name: '5-Second Counterpress Game',
     altNames: ['Win It Back in 5', 'Gegenpress Game'],
-    objective: 'React immediately when the ball is lost and try to win it back within 5 seconds.',
+    description: 'React immediately when the ball is lost and try to win it back within 5 seconds.',
     setup: [
       'Field 30x40 yd; 2 small goals at each end; two teams of 4–6',
     ],
@@ -3312,7 +3312,7 @@ window.DRILL_DATA.soccer = [
     id: 'through-ball-3v3-targets',
     name: 'Through-Ball 3v3 with Targets',
     altNames: ['Target Player Game', 'Play Through the Lines'],
-    objective: 'Find a target player with a through ball and support them to score.',
+    description: 'Find a target player with a through ball and support them to score.',
     setup: [
       'Field 25x35 yd; target zone 5 yd deep at each end with one target player per team',
       'Teams of 3 in the middle',
@@ -3345,7 +3345,7 @@ window.DRILL_DATA.soccer = [
     id: 'penalty-shootout-ladder',
     name: 'Penalty Shootout Ladder',
     altNames: ['Penalty Kings', 'PK Ladder'],
-    objective: 'Practice penalties under pressure while every player gets a turn in goal.',
+    description: 'Practice penalties under pressure while every player gets a turn in goal.',
     setup: [
       'Goal with a penalty spot; everyone in a line',
     ],
@@ -3378,7 +3378,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-cross-claim',
     name: 'GK Cross and Claim',
     altNames: ['High Ball Claim', 'Catch the Cross'],
-    objective: 'Goalkeepers judge, attack, and catch crosses at the highest point, then start the attack.',
+    description: 'Goalkeepers judge, attack, and catch crosses at the highest point, then start the attack.',
     setup: [
       'GK in goal; servers on each wing 20–25 yd out with balls',
       'Two small target gates near midfield for the GK\'s distribution',
@@ -3414,7 +3414,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-distribution-pressure',
     name: 'GK Distribution Under Pressure',
     altNames: ['Play Out from the Back', 'Pressured Goal Kicks'],
-    objective: 'Goalkeepers receive a back pass under pressure and pick the right distribution.',
+    description: 'Goalkeepers receive a back pass under pressure and pick the right distribution.',
     setup: [
       'GK in goal; 2 defenders wide at the edge of the box; 1–2 pressing attackers; target gates on the wings and center',
     ],
@@ -3449,7 +3449,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-three-goal-reaction',
     name: 'GK Three-Goal Reaction',
     altNames: ['Mini-Goal Activation', 'Backpedal and Rush'],
-    objective: 'Footwork and reaction: GK moves quickly between a full goal and two angled mini-goals.',
+    description: 'Footwork and reaction: GK moves quickly between a full goal and two angled mini-goals.',
     setup: [
       'Full goal plus two mini-goals set at 45° about 15 yd out on each side',
       'Coach with balls at the top of the box',
@@ -3482,7 +3482,7 @@ window.DRILL_DATA.soccer = [
     id: 'gk-set-position-footwork',
     name: 'GK Set Position and Footwork',
     altNames: ['Ready Position Drill', 'Set and Catch'],
-    objective: 'Young goalkeepers build a balanced set position, quick feet, and a secure catch.',
+    description: 'Young goalkeepers build a balanced set position, quick feet, and a secure catch.',
     setup: [
       'Cones in a small arc in front of the goal; coach with balls 6–8 yd out',
     ],
@@ -3517,7 +3517,7 @@ window.DRILL_DATA.soccer = [
     id: 'rondo-4v4-plus-1-corners',
     name: '4v4 + 1 Corner Support Rondo',
     altNames: ['4v4 + Corner Players', 'Corner Rondo'],
-    objective: 'Possession with support from the corners: find the free player, move to new angles.',
+    description: 'Possession with support from the corners: find the free player, move to new angles.',
     setup: [
       '15x15 yd square; 4v4 inside; one neutral in each corner (or one central neutral +1)',
     ],
@@ -3552,7 +3552,7 @@ window.DRILL_DATA.soccer = [
     id: 'positional-grid-4v4-3',
     name: 'Positional Grid 4v4 + 3',
     altNames: ['Guardiola Grid', '4v4 + 3 Neutrals'],
-    objective: 'Build possession with a permanent 7v4 overload and look to split the defenders.',
+    description: 'Build possession with a permanent 7v4 overload and look to split the defenders.',
     setup: [
       '30x25 yd area; 4v4 inside; 3 neutrals: one on each end line and one central',
     ],
@@ -3584,7 +3584,7 @@ window.DRILL_DATA.soccer = [
     id: 'futsal-4v4',
     name: 'Futsal-Style 4v4',
     altNames: ['Futsal Game', 'Low-Ball 4v4'],
-    objective: 'Small, fast games with a low-bounce ball — lots of touches, quick decisions, and almost no heading.',
+    description: 'Small, fast games with a low-bounce ball — lots of touches, quick decisions, and almost no heading.',
     setup: [
       'Hard court or small field 20x30 yd; futsal goals or small goals; futsal (low-bounce) ball',
       'Two teams of 4 (+ GK optional)',
@@ -3618,7 +3618,7 @@ window.DRILL_DATA.soccer = [
     id: 'corner-kick-attack',
     name: 'Corner Kick Routines (Attacking)',
     altNames: ['Corner Kicks', 'Set Piece Attack'],
-    objective: 'Run a simple corner routine: good delivery, timed runs, and attacking the ball.',
+    description: 'Run a simple corner routine: good delivery, timed runs, and attacking the ball.',
     setup: [
       'Penalty box with a goal and GK; corner taker; attackers and defenders',
     ],
@@ -3654,7 +3654,7 @@ window.DRILL_DATA.soccer = [
     id: 'corner-kick-defense',
     name: 'Defending Corners',
     altNames: ['Set Piece Defense', 'Zonal and Man Marking'],
-    objective: 'Defend corners with clear jobs: post players, zone players, and markers.',
+    description: 'Defend corners with clear jobs: post players, zone players, and markers.',
     setup: [
       'Penalty box with goal and GK; servers taking corners; attackers vs defenders',
     ],
@@ -3687,7 +3687,7 @@ window.DRILL_DATA.soccer = [
     id: 'cross-arrive-on-time',
     name: 'Crossing — Arrive on Time',
     altNames: ['Timed Runs Crossing', 'Near Post / Far Post Runs'],
-    objective: 'Finish crosses by timing the run into the box instead of arriving early and standing.',
+    description: 'Finish crosses by timing the run into the box instead of arriving early and standing.',
     setup: [
       'Goal and GK; wide players at the wings with balls; 2 attackers starting 25 yd out',
     ],
@@ -3722,7 +3722,7 @@ window.DRILL_DATA.soccer = [
     id: '2v1-pick-a-side',
     name: '2v1 Pick a Side',
     altNames: ['Receiver Attacks, Other Defends', '2v1 Read'],
-    objective: 'Read a 2v1: the player who receives attacks, the other becomes the defender — quick decisions every rep.',
+    description: 'Read a 2v1: the player who receives attacks, the other becomes the defender — quick decisions every rep.',
     setup: [
       'Goal and GK; coach with balls 30 yd out; 2 players side by side at 25 yd; 1 extra player as a supporting attacker',
     ],
@@ -3754,7 +3754,7 @@ window.DRILL_DATA.soccer = [
     id: 'crossing-2v1-box',
     name: 'Crossing and Finishing 2v1 in the Box',
     altNames: ['2v1 Box Finishing', 'Cross into an Overload'],
-    objective: 'Two attackers vs one defender in the box: use runs to get free and finish the cross.',
+    description: 'Two attackers vs one defender in the box: use runs to get free and finish the cross.',
     setup: [
       'Goal and GK; winger with balls on each side; 2 attackers vs 1 defender in the box',
     ],
@@ -3786,7 +3786,7 @@ window.DRILL_DATA.soccer = [
     id: '1v1-recovery-run',
     name: '1v1 Recovery Run',
     altNames: ['Chase-Back Defending', 'Recover and Defend'],
-    objective: 'Defenders recover from behind an attacker, get goal-side, and defend the 1v1.',
+    description: 'Defenders recover from behind an attacker, get goal-side, and defend the 1v1.',
     setup: [
       'Goal and GK; attacker starts 30 yd out with the ball; defender starts 3–5 yd behind the attacker',
     ],
@@ -3818,7 +3818,7 @@ window.DRILL_DATA.soccer = [
     id: 'interception-game',
     name: 'Interception Game',
     altNames: ['Read and Steal', 'Cut Out the Pass'],
-    objective: 'Defenders read the passer and step in front to intercept instead of tackling from behind.',
+    description: 'Defenders read the passer and step in front to intercept instead of tackling from behind.',
     setup: [
       '20x20 yd box; pairs of passers on opposite sides; 2–3 defenders inside',
     ],
@@ -3850,7 +3850,7 @@ window.DRILL_DATA.soccer = [
     id: 'continuous-2v2-conditioning',
     name: 'Continuous 2v2 Waves',
     altNames: ['2v2 Fitness Waves', 'Non-Stop 2v2'],
-    objective: 'High-intensity 2v2 to small goals — fitness and decision-making together.',
+    description: 'High-intensity 2v2 to small goals — fitness and decision-making together.',
     setup: [
       'Field 20x30 yd with a small goal at each end; teams of 2 waiting at each end line',
     ],
@@ -3884,7 +3884,7 @@ window.DRILL_DATA.soccer = [
     id: 'around-the-box-overlap-finish',
     name: 'Around-the-Box Overlap & Finish',
     altNames: ['Box Overlap Finishing', 'Switch, Overlap, Finish'],
-    objective: 'High-tempo attacking pattern: switch the ball across the top of the box, overlap around the outside, and finish from a weighted through ball at match speed.',
+    description: 'High-tempo attacking pattern: switch the ball across the top of the box, overlap around the outside, and finish from a weighted through ball at match speed.',
     setup: [
       'Station 1: line of players with balls in or near the center circle',
       'Stations 2 and 3: a cone (or pole) at each top corner of the 18-yd box, with a short line of players at each',

@@ -37,7 +37,7 @@
   const sportById = id => SPORTS.find(s => s.id === id);
 
   const haystack = d => [
-    d.name, ...(d.altNames || []), d.objective, ...(d.categories || []), ...(d.setup || []),
+    d.name, ...(d.altNames || []), d.description, ...(d.categories || []), ...(d.setup || []),
     ...(d.directions || []), ...(d.variations || []), ...(d.coachingPoints || []),
     ...(d.equipment || []), ...(d.adaptations || []), ...(d.sportFocus || []), d.players, d.notes,
   ].join(' ').toLowerCase();
@@ -84,7 +84,7 @@
       d.players ? `Players: ${d.players}` : '',
       d.duration ? `Duration: ${d.duration}` : '',
       d.sportFocus && d.sportFocus.length ? `Sport focus: ${d.sportFocus.join(', ')}` : '',
-      `\nOBJECTIVE\n${d.objective}\n`,
+      `\nDESCRIPTION\n${d.description}\n`,
       list('SETUP', d.setup),
       list('DIRECTIONS', d.directions, true),
       list('VARIATIONS', d.variations),
@@ -140,7 +140,7 @@
         <button class="star" type="button" data-star="${esc(d.id)}" aria-pressed="${starred}" aria-label="Shortlist ${esc(d.name)}">★</button>
         <h3>${esc(d.name)}</h3>
         ${d.altNames && d.altNames.length ? `<p class="alt">aka ${esc(d.altNames.join(' · '))}</p>` : ''}
-        <p class="obj">${esc(d.objective)}</p>
+        <p class="obj">${esc(d.description)}</p>
         <div class="meta">
           ${(d.categories || []).map((c, i) => `<span class="tag${i === 0 ? ' primary' : ''}">${esc(c)}</span>`).join('')}
           <span class="tag age">${esc(ageRange(d.ages))}</span>
@@ -205,7 +205,7 @@
           ${d.duration ? `<div class="fact"><b>Duration</b>${esc(d.duration)}</div>` : ''}
           ${d.sportFocus && d.sportFocus.length ? `<div class="fact"><b>Sport focus</b>${esc(d.sportFocus.join(', '))}</div>` : ''}
         </div>
-        <section class="d-sec"><h4>Objective</h4><p>${esc(d.objective)}</p></section>
+        <section class="d-sec"><h4>Description</h4><p>${esc(d.description)}</p></section>
         ${section('Setup', d.setup)}
         ${section('Directions', d.directions, true)}
         ${section('Variations', d.variations)}

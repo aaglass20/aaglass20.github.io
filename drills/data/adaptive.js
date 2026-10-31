@@ -5,7 +5,7 @@ window.DRILL_DATA.adaptive = [
     id: 'red-light-green-light-dribble',
     name: 'Red Light, Green Light Dribble',
     altNames: ['Traffic Lights', 'Stop and Go'],
-    objective: 'Practice moving with a ball, stopping on a cue, and following directions in a familiar, low-pressure game.',
+    description: 'Practice moving with a ball, stopping on a cue, and following directions in a familiar, low-pressure game.',
     setup: [
       'Open area about 20x20 yd; start line on one side',
       'Each athlete has a ball (soccer ball to dribble, or any ball to carry/roll)',
@@ -48,7 +48,7 @@ window.DRILL_DATA.adaptive = [
     id: 'hello-circle',
     name: 'Hello Circle',
     altNames: ['Name and Wave', 'Opening Circle'],
-    objective: 'Start every session the same way: greet each athlete by name, preview the plan, and warm up together. Predictable routines lower anxiety.',
+    description: 'Start every session the same way: greet each athlete by name, preview the plan, and warm up together. Predictable routines lower anxiety.',
     setup: [
       'Athletes and buddies stand (or sit) in a circle',
       'Visual schedule board with picture cards for today\'s activities (optional)',
@@ -88,7 +88,7 @@ window.DRILL_DATA.adaptive = [
     id: 'animal-walks',
     name: 'Animal Walks',
     altNames: ['Animal Exercises', 'Zoo Moves'],
-    objective: 'Warm up and build strength, coordination, and body awareness by moving like animals.',
+    description: 'Warm up and build strength, coordination, and body awareness by moving like animals.',
     setup: [
       'Two lines of cones 10 yd apart',
       'Animal picture cards',
@@ -127,7 +127,7 @@ window.DRILL_DATA.adaptive = [
     id: 'scarf-toss-catch',
     name: 'Scarf Toss and Catch',
     altNames: ['Scarf Games', 'Juggling Scarves'],
-    objective: 'Practice tracking and catching with slow-floating scarves before moving to balls.',
+    description: 'Practice tracking and catching with slow-floating scarves before moving to balls.',
     setup: [
       'One lightweight scarf (or plastic bag / tissue) per athlete',
       'Spread out in open space',
@@ -166,7 +166,7 @@ window.DRILL_DATA.adaptive = [
     id: 'simon-says-moves',
     name: 'Simon Says Moves',
     altNames: ['Coach Says', 'Copy Me'],
-    objective: 'Practice listening, imitating movements, and body awareness in a familiar game.',
+    description: 'Practice listening, imitating movements, and body awareness in a familiar game.',
     setup: [
       'Athletes spread out facing the coach, each with a buddy if needed',
     ],
@@ -204,7 +204,7 @@ window.DRILL_DATA.adaptive = [
     id: 'body-part-ball-taps',
     name: 'Ball Body Awareness',
     altNames: ['Ball on Body Parts', 'Ball Touch'],
-    objective: 'Get comfortable holding and moving a ball while learning body parts — a gentle first touch for new athletes.',
+    description: 'Get comfortable holding and moving a ball while learning body parts — a gentle first touch for new athletes.',
     setup: [
       'Each athlete has a soft ball, standing or seated',
     ],
@@ -243,7 +243,7 @@ window.DRILL_DATA.adaptive = [
     id: 'obstacle-course',
     name: 'Obstacle Course',
     altNames: ['Adventure Course', 'Movement Course'],
-    objective: 'Practice many movement skills in one fun route: walk, step, crawl, jump, and balance.',
+    description: 'Practice many movement skills in one fun route: walk, step, crawl, jump, and balance.',
     setup: [
       'Stations in a loop: cones to weave, hoops to step in, a tunnel or table to crawl under, a rope line to balance on, a low hurdle or pool noodle to step over',
       'Start/finish marked with a big cone',
@@ -282,7 +282,7 @@ window.DRILL_DATA.adaptive = [
     id: 'stepping-stones',
     name: 'Stepping Stones',
     altNames: ['Cross the River', 'Spot Hop'],
-    objective: 'Practice stepping, hopping, and balance by moving across "stones" without falling in the river.',
+    description: 'Practice stepping, hopping, and balance by moving across "stones" without falling in the river.',
     setup: [
       'Poly spots, carpet squares, or hoops laid in a path 1–2 ft apart',
       '"River" between two lines of cones',
@@ -320,7 +320,7 @@ window.DRILL_DATA.adaptive = [
     id: 'balance-line-walk',
     name: 'Balance Line Walk',
     altNames: ['Tightrope Walk', 'Balance Beam'],
-    objective: 'Improve balance and foot control by walking along a line forward, sideways, and backward.',
+    description: 'Improve balance and foot control by walking along a line forward, sideways, and backward.',
     setup: [
       'A rope, tape line, or low beam about 10 ft long',
     ],
@@ -357,7 +357,7 @@ window.DRILL_DATA.adaptive = [
     id: 'freeze-dance',
     name: 'Freeze Dance',
     altNames: ['Musical Statues', 'Dance and Freeze'],
-    objective: 'Move freely to music and stop on cue — body control, listening, and fun.',
+    description: 'Move freely to music and stop on cue — body control, listening, and fun.',
     setup: [
       'Open space; speaker with music',
     ],
@@ -395,7 +395,7 @@ window.DRILL_DATA.adaptive = [
     id: 'color-cone-hunt',
     name: 'Color Cone Hunt',
     altNames: ['Go to the Color', 'Rainbow Run'],
-    objective: 'Move to the named color as fast as you can — following directions, color recognition, and changing direction.',
+    description: 'Move to the named color as fast as you can — following directions, color recognition, and changing direction.',
     setup: [
       'Area 20x20 yd with cones of 4–5 colors scattered around',
     ],
@@ -434,7 +434,7 @@ window.DRILL_DATA.adaptive = [
     id: 'partner-roll-and-trap',
     name: 'Partner Roll and Trap',
     altNames: ['Rolling and Trapping', 'Roll and Stop'],
-    objective: 'Roll a ball to a partner and stop (trap) it with hands or feet — the first step to passing and catching.',
+    description: 'Roll a ball to a partner and stop (trap) it with hands or feet — the first step to passing and catching.',
     setup: [
       'Pairs (athlete + buddy) sitting or standing 3–5 yd apart',
       'One ball per pair',
@@ -472,7 +472,7 @@ window.DRILL_DATA.adaptive = [
     id: 'bean-bag-toss-targets',
     name: 'Bean Bag Toss Targets',
     altNames: ['Hoop Toss', 'Bean Bag Bullseye'],
-    objective: 'Practice underhand and overhand throwing accuracy at big, easy targets.',
+    description: 'Practice underhand and overhand throwing accuracy at big, easy targets.',
     setup: [
       '3 hoops (or laundry baskets) on the ground at 3, 5, and 7 yd',
       '5 bean bags per athlete',
@@ -511,7 +511,7 @@ window.DRILL_DATA.adaptive = [
     id: 'bounce-and-catch',
     name: 'Bounce and Catch',
     altNames: ['Bounce Pass Catch'],
-    objective: 'Track a bouncing ball and catch it — builds hand-eye coordination for basketball and other ball games.',
+    description: 'Track a bouncing ball and catch it — builds hand-eye coordination for basketball and other ball games.',
     setup: [
       'Pairs 3–4 yd apart with a playground or basketball',
     ],
@@ -548,7 +548,7 @@ window.DRILL_DATA.adaptive = [
     id: 'balloon-catch',
     name: 'Balloon Catch',
     altNames: ['Keep It Up', 'Balloon Float'],
-    objective: 'Catch slow, floating balloons to build tracking and catching confidence without fear of being hit.',
+    description: 'Catch slow, floating balloons to build tracking and catching confidence without fear of being hit.',
     setup: [
       'One balloon per athlete (or pair)',
     ],
@@ -586,7 +586,7 @@ window.DRILL_DATA.adaptive = [
     id: 'basket-drop',
     name: 'Basket Drop',
     altNames: ['Ball in the Bucket', 'Laundry Basket Basketball'],
-    objective: 'First basketball shooting: drop, toss, and shoot a ball into a low target.',
+    description: 'First basketball shooting: drop, toss, and shoot a ball into a low target.',
     setup: [
       'Laundry basket or bucket on the floor, on a chair, then a lowered hoop',
       'Several balls of different sizes',
@@ -626,7 +626,7 @@ window.DRILL_DATA.adaptive = [
     id: 'bowling-pins-kick-roll',
     name: 'Bowling Pins',
     altNames: ['Soccer Bowling', 'Knock Down the Pins'],
-    objective: 'Roll or kick a ball to knock down pins — aim, power control, and a satisfying crash.',
+    description: 'Roll or kick a ball to knock down pins — aim, power control, and a satisfying crash.',
     setup: [
       '6–10 plastic pins (or water bottles / cones) in a triangle',
       'Throwing/kicking line 3–8 yd away',
@@ -664,7 +664,7 @@ window.DRILL_DATA.adaptive = [
     id: 'kick-to-goal-party',
     name: 'Goal Kick Party',
     altNames: ['Penalty Kick Party', 'Score a Goal'],
-    objective: 'Kick a ball into a goal from a spot, then celebrate — builds kicking technique and confidence.',
+    description: 'Kick a ball into a goal from a spot, then celebrate — builds kicking technique and confidence.',
     setup: [
       'Small or pop-up goal; kicking spots (poly spots) at 3, 5, and 8 yd',
       'Balls at each spot',
@@ -703,7 +703,7 @@ window.DRILL_DATA.adaptive = [
     id: 'buddy-dribble-highway',
     name: 'Buddy Dribble Highway',
     altNames: ['Dribble Lanes', 'Cone Road'],
-    objective: 'Dribble a ball down a "highway" of cones with a buddy — the TOPSoccer staple of moving with the ball.',
+    description: 'Dribble a ball down a "highway" of cones with a buddy — the TOPSoccer staple of moving with the ball.',
     setup: [
       'Lanes 3 yd wide x 15 yd long marked with cones (one lane per athlete-buddy pair)',
       'Cones inside the lane as "cars" to go around',
@@ -742,7 +742,7 @@ window.DRILL_DATA.adaptive = [
     id: 'mini-kickball',
     name: 'Mini Kickball',
     altNames: ['Kick and Run', 'Adapted Kickball'],
-    objective: 'Kick a rolled ball and run to a base — combines kicking, running, and game rules in a simple team game.',
+    description: 'Kick a rolled ball and run to a base — combines kicking, running, and game rules in a simple team game.',
     setup: [
       'Small diamond: home plate and one base (cone) 10–15 yd away',
       'Large soft ball; fielders spread out',
@@ -783,7 +783,7 @@ window.DRILL_DATA.adaptive = [
     id: 'balloon-volley',
     name: 'Balloon Volley',
     altNames: ['Balloon Tennis', 'Paddle Balloon'],
-    objective: 'Strike a slow balloon with hands, paddles, or pool noodles — hand-eye coordination with lots of success.',
+    description: 'Strike a slow balloon with hands, paddles, or pool noodles — hand-eye coordination with lots of success.',
     setup: [
       'Pairs or small groups; one balloon each',
       'Optional: rope or row of cones as a "net"',
@@ -822,7 +822,7 @@ window.DRILL_DATA.adaptive = [
     id: 'tee-ball-striking',
     name: 'Tee Striking Station',
     altNames: ['Tee Ball', 'Hit off the Tee'],
-    objective: 'Hit a ball off a batting tee with a large bat — the first step to softball and baseball.',
+    description: 'Hit a ball off a batting tee with a large bat — the first step to softball and baseball.',
     setup: [
       'Batting tee at waist height; large plastic bat; big soft ball (or beach ball)',
       'Fence, net, or open field to hit into',
@@ -861,7 +861,7 @@ window.DRILL_DATA.adaptive = [
     id: 'pool-noodle-hockey',
     name: 'Pool Noodle Hockey',
     altNames: ['Noodle Hockey', 'Floor Hockey Lite'],
-    objective: 'Push a ball into a goal with a pool noodle — safe striking and aiming for everyone.',
+    description: 'Push a ball into a goal with a pool noodle — safe striking and aiming for everyone.',
     setup: [
       'Area 15x20 yd with a small goal (or two cones) at one end',
       'Pool noodles cut to stick length; large soft ball or foam puck',
@@ -900,7 +900,7 @@ window.DRILL_DATA.adaptive = [
     id: 'parachute-games',
     name: 'Parachute Games',
     altNames: ['Parachute Wave', 'Parachute Ball Roll', 'Mushroom'],
-    objective: 'Work together around a parachute: wave, lift, roll balls, and take turns under it — cooperation, arm strength, and sensory fun.',
+    description: 'Work together around a parachute: wave, lift, roll balls, and take turns under it — cooperation, arm strength, and sensory fun.',
     setup: [
       'Play parachute (12–20 ft) spread out; athletes and buddies holding the edge all around',
       '2–4 soft balls',
@@ -943,7 +943,7 @@ window.DRILL_DATA.adaptive = [
     id: 'pass-and-name',
     name: 'Pass and Name',
     altNames: ['Name Pass', 'Circle Pass'],
-    objective: 'Pass a ball across the circle and say the receiver\'s name — passing, catching, and learning teammates\' names.',
+    description: 'Pass a ball across the circle and say the receiver\'s name — passing, catching, and learning teammates\' names.',
     setup: [
       'Circle of 6–12 athletes and buddies, 2–3 yd apart',
       'One soft ball',
@@ -982,7 +982,7 @@ window.DRILL_DATA.adaptive = [
     id: 'cone-clean-up-race',
     name: 'Cone Clean-Up Race',
     altNames: ['Clean Up the Field', 'Team Collect'],
-    objective: 'Teams race to collect cones (or balls) and bring them home — teamwork, running, and bending/reaching.',
+    description: 'Teams race to collect cones (or balls) and bring them home — teamwork, running, and bending/reaching.',
     setup: [
       'Area 20x20 yd with 20–30 cones or balls scattered',
       'Two team "homes" (hoops or baskets) on opposite sides',
@@ -1020,7 +1020,7 @@ window.DRILL_DATA.adaptive = [
     id: 'buddy-scrimmage',
     name: 'Buddy Scrimmage',
     altNames: ['TOPSoccer Scrimmage', 'Everyone Scores Game'],
-    objective: 'A small-sided game where every athlete plays with a buddy and everyone touches the ball — the real-game experience.',
+    description: 'A small-sided game where every athlete plays with a buddy and everyone touches the ball — the real-game experience.',
     setup: [
       'Small field (20x30 yd) with two small goals',
       'Teams of 3–5 athletes, each paired with a buddy; pinnies for athletes',
@@ -1061,7 +1061,7 @@ window.DRILL_DATA.adaptive = [
     id: 'sound-ball-roll',
     name: 'Sound Ball Roll',
     altNames: ['Goalball Lite', 'Bell Ball Roll'],
-    objective: 'Roll and stop a ball by listening for it — inspired by goalball, and playable by athletes with and without vision.',
+    description: 'Roll and stop a ball by listening for it — inspired by goalball, and playable by athletes with and without vision.',
     setup: [
       'Quiet indoor area; tape lines for a 6x9 yd court with a goal line at each end',
       'A ball with bells inside; blindfolds/eyeshades optional for sighted athletes',
@@ -1100,7 +1100,7 @@ window.DRILL_DATA.adaptive = [
     id: 'bubble-chase',
     name: 'Bubble Chase',
     altNames: ['Pop the Bubbles'],
-    objective: 'Chase and pop bubbles — tracking, reaching, running, and jumping in a calm, joyful activity.',
+    description: 'Chase and pop bubbles — tracking, reaching, running, and jumping in a calm, joyful activity.',
     setup: [
       'Open space; bubble wand or bubble machine',
     ],
@@ -1138,7 +1138,7 @@ window.DRILL_DATA.adaptive = [
     id: 'calm-down-stretch-circle',
     name: 'Calm-Down Stretch Circle',
     altNames: ['Cool-Down Circle', 'Stretch and Breathe'],
-    objective: 'End the session calmly with slow stretches and breathing, then celebrate the day.',
+    description: 'End the session calmly with slow stretches and breathing, then celebrate the day.',
     setup: [
       'Athletes and buddies sit or stand in a circle',
       'Optional soft music',
@@ -1178,7 +1178,7 @@ window.DRILL_DATA.adaptive = [
     id: 'yoga-animal-poses',
     name: 'Yoga Animal Poses',
     altNames: ['Animal Yoga', 'Kids Yoga'],
-    objective: 'Build balance, flexibility, and calm with simple yoga poses named after animals.',
+    description: 'Build balance, flexibility, and calm with simple yoga poses named after animals.',
     setup: [
       'Mats or soft grass; athletes spread out facing the coach',
       'Pose picture cards',
@@ -1217,7 +1217,7 @@ window.DRILL_DATA.adaptive = [
     id: 'unified-relay-races',
     name: 'Unified Relay Races',
     altNames: ['Mixed-Ability Relays', 'Buddy Relays'],
-    objective: 'Team relays where athletes of all abilities contribute, each moving in their own way.',
+    description: 'Team relays where athletes of all abilities contribute, each moving in their own way.',
     setup: [
       'Teams of 3–4 (mixed ability) in lines; a cone 10–15 yd away for each team',
       'A baton, beanbag, or ball to pass',
@@ -1257,7 +1257,7 @@ window.DRILL_DATA.adaptive = [
     id: 'sitting-volleyball-lite',
     name: 'Sitting Volleyball Lite',
     altNames: ['Beach Ball Sitting Volleyball', 'Seated Volley'],
-    objective: 'Seated volleyball with a beach ball and low net — everyone plays at the same level.',
+    description: 'Seated volleyball with a beach ball and low net — everyone plays at the same level.',
     setup: [
       'Low net or rope at about 3 ft; small court marked with tape or cones',
       'Beach ball or balloon; athletes sit on the floor (or in chairs)',
@@ -1297,7 +1297,7 @@ window.DRILL_DATA.adaptive = [
     id: 'wheelchair-passing-lanes',
     name: 'Rolling Passing Lanes',
     altNames: ['Wheelchair Basketball Passing', 'Chair Passing'],
-    objective: 'Pass and catch while moving down the court, with or without a wheelchair.',
+    description: 'Pass and catch while moving down the court, with or without a wheelchair.',
     setup: [
       'Two lanes marked with cones down the court; pairs side by side 3–4 yd apart',
       'Basketballs (or lighter playground balls)',
@@ -1337,7 +1337,7 @@ window.DRILL_DATA.adaptive = [
     id: 'beep-baseball-intro',
     name: 'Beep Baseball Intro',
     altNames: ['Sound Ball Batting', 'Buzzing Base Run'],
-    objective: 'Hit and run to a sound: athletes track an audible ball and a buzzing base.',
+    description: 'Hit and run to a sound: athletes track an audible ball and a buzzing base.',
     setup: [
       'Tee or coach pitcher; beeping ball (or a ball with a bell); a speaker or buzzing cone as a base 30–50 ft down the line',
     ],
@@ -1379,7 +1379,7 @@ window.DRILL_DATA.adaptive = [
     id: 'goalball-roll',
     name: 'Goalball Roll',
     altNames: ['Bell Ball Bowling', 'Listen and Block'],
-    objective: 'Roll and block a sound ball — tracking by hearing, used in goalball.',
+    description: 'Roll and block a sound ball — tracking by hearing, used in goalball.',
     setup: [
       'Two teams of 2–3 at opposite ends of a 10–15 yd area, each guarding a wide goal line',
       'Ball with a bell inside; tape lines on the floor for orientation',
@@ -1419,7 +1419,7 @@ window.DRILL_DATA.adaptive = [
     id: 'balloon-racket-tennis',
     name: 'Balloon Racket Tennis',
     altNames: ['Paddle Balloon', 'Racket Rally'],
-    objective: 'Learn to strike with a racket or paddle using a slow balloon.',
+    description: 'Learn to strike with a racket or paddle using a slow balloon.',
     setup: [
       'Short plastic rackets, paddles, or paper-plate paddles; balloons',
       'Pairs or a low net/rope',
@@ -1459,7 +1459,7 @@ window.DRILL_DATA.adaptive = [
     id: 'noodle-golf',
     name: 'Noodle Golf',
     altNames: ['Hoop Golf', 'Pool Noodle Putting'],
-    objective: 'Strike a ball along the ground into a target with a pool noodle or stick.',
+    description: 'Strike a ball along the ground into a target with a pool noodle or stick.',
     setup: [
       'Hula hoops or cones as "holes" 3–10 yd apart; pool noodles or hockey sticks; large playground balls',
     ],
@@ -1498,7 +1498,7 @@ window.DRILL_DATA.adaptive = [
     id: 'flag-pull-buddy',
     name: 'Flag Pull Buddy Game',
     altNames: ['Buddy Flag Tag', 'Catch the Tail'],
-    objective: 'An intro to flag football: chase and pull flags with a buddy.',
+    description: 'An intro to flag football: chase and pull flags with a buddy.',
     setup: [
       'Area 15x15 yd; flag belts or scarves tucked into waistbands',
       'Athletes in pairs (athlete + buddy)',
@@ -1538,7 +1538,7 @@ window.DRILL_DATA.adaptive = [
     id: 'foam-football-toss',
     name: 'Foam Football Toss',
     altNames: ['Football Target Throw', 'Touchdown Toss'],
-    objective: 'Throw and catch a small foam football at targets and to a partner.',
+    description: 'Throw and catch a small foam football at targets and to a partner.',
     setup: [
       'Hula hoops on the ground or hanging from a fence; small foam footballs',
       'Partners 3–5 yd apart',
@@ -1577,7 +1577,7 @@ window.DRILL_DATA.adaptive = [
     id: 'hula-hoop-tag',
     name: 'Hula Hoop Tag',
     altNames: ['Safe Base Tag', 'Hoop Hop Tag'],
-    objective: 'A tag game with hoops as safe spots — moving, stopping, and taking turns.',
+    description: 'A tag game with hoops as safe spots — moving, stopping, and taking turns.',
     setup: [
       'Area 15x15 yd with hoops spread out as safe bases (one per 2 athletes)',
       'One or two taggers with a pool noodle',
@@ -1617,7 +1617,7 @@ window.DRILL_DATA.adaptive = [
     id: 'tunnel-crawl-relay',
     name: 'Tunnel Crawl Relay',
     altNames: ['Crawl Tunnel Race', 'Under and Over'],
-    objective: 'Crawl, climb, and move through tunnels and over cushions — body awareness and fun.',
+    description: 'Crawl, climb, and move through tunnels and over cushions — body awareness and fun.',
     setup: [
       'Play tunnel (or a line of chairs with a sheet over it), a mat, and a cone to go around',
       'Teams in lines',
@@ -1656,7 +1656,7 @@ window.DRILL_DATA.adaptive = [
     id: 'i-spy-movement',
     name: 'I Spy Movement Game',
     altNames: ['I Spy and Go', 'Find and Move'],
-    objective: 'Listen, look, and move to the object the coach "spies."',
+    description: 'Listen, look, and move to the object the coach "spies."',
     setup: [
       'Colored cones, balls, hoops, and pictures spread around a 15x15 yd area',
     ],
@@ -1695,7 +1695,7 @@ window.DRILL_DATA.adaptive = [
     id: 'run-and-stop-signals',
     name: 'Run and Stop Signals',
     altNames: ['Go and Whoa', 'Track Starts'],
-    objective: 'Start and stop on a signal — basic track skills and body control.',
+    description: 'Start and stop on a signal — basic track skills and body control.',
     setup: [
       'Straight lane 15–20 yd with start and finish lines',
       'Flag and/or whistle',
@@ -1735,7 +1735,7 @@ window.DRILL_DATA.adaptive = [
     id: 'target-kick-wall',
     name: 'Target Kick Wall',
     altNames: ['Kick the Pictures', 'Wall Targets'],
-    objective: 'Kick a ball at bright targets on a wall to practice aim and control.',
+    description: 'Kick a ball at bright targets on a wall to practice aim and control.',
     setup: [
       'Paper targets or pictures taped on a wall or fence at ground level',
       'Balls; kicking spot 3–6 yd away',
@@ -1775,7 +1775,7 @@ window.DRILL_DATA.adaptive = [
     id: 'sensory-path',
     name: 'Sensory Path',
     altNames: ['Floor Sticker Path', 'Movement Trail'],
-    objective: 'Follow a path of floor stickers with different movements — calming and coordinating.',
+    description: 'Follow a path of floor stickers with different movements — calming and coordinating.',
     setup: [
       'Floor stickers, tape shapes, or poly spots in a path: footprints, handprints, lines, circles',
     ],
@@ -1813,7 +1813,7 @@ window.DRILL_DATA.adaptive = [
     id: 'one-foot-statues',
     name: 'One-Foot Statues',
     altNames: ['Flamingo Freeze', 'Balance Statues'],
-    objective: 'Practice standing on one foot (or holding still) with fun statue poses.',
+    description: 'Practice standing on one foot (or holding still) with fun statue poses.',
     setup: [
       'Open space; athletes spread out; picture cards of poses (flamingo, tree, airplane)',
     ],
@@ -1852,7 +1852,7 @@ window.DRILL_DATA.adaptive = [
     id: 'bubble-breathing',
     name: 'Bubble Breathing',
     altNames: ['Balloon Breaths', 'Calm Breaths'],
-    objective: 'A calm-down routine using slow breaths, visualized as blowing bubbles.',
+    description: 'A calm-down routine using slow breaths, visualized as blowing bubbles.',
     setup: [
       'Athletes sit in a circle; bubble wands (optional)',
     ],
@@ -1891,7 +1891,7 @@ window.DRILL_DATA.adaptive = [
     id: 'squeeze-and-release',
     name: 'Squeeze and Release',
     altNames: ['Lemon Squeeze', 'Muscle Relax'],
-    objective: 'Relax at the end of practice by tensing and relaxing muscles.',
+    description: 'Relax at the end of practice by tensing and relaxing muscles.',
     setup: [
       'Athletes sit or lie on mats; soft foam ball for each athlete (optional)',
     ],

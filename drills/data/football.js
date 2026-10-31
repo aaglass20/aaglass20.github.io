@@ -5,7 +5,7 @@ window.DRILL_DATA.football = [
     id: 'flag-pull-gauntlet',
     name: 'Flag Pull Gauntlet',
     altNames: ['Flag Tag', 'Pull the Flag'],
-    objective: 'Teach defenders to break down, mirror the ball carrier, and pull a flag with good body position.',
+    description: 'Teach defenders to break down, mirror the ball carrier, and pull a flag with good body position.',
     setup: [
       'Channel: 5 yd wide x 10 yd long marked with cones',
       'Ball carriers wear flag belts and line up at one end; defenders line up at the other',
@@ -39,7 +39,7 @@ window.DRILL_DATA.football = [
     id: 'football-dynamic-warmup',
     name: 'Dynamic Warm-up',
     altNames: ['Lines Warm-up', 'Movement Prep'],
-    objective: 'Get every player warm and moving well before contact or sprinting.',
+    description: 'Get every player warm and moving well before contact or sprinting.',
     setup: [
       'Two lines of cones 15–20 yd apart; players in 3–4 lines',
     ],
@@ -71,7 +71,7 @@ window.DRILL_DATA.football = [
     id: 'ladder-footwork',
     name: 'Ladder Footwork',
     altNames: ['Agility Ladder', 'Speed Ladder'],
-    objective: 'Quick, coordinated feet for every position.',
+    description: 'Quick, coordinated feet for every position.',
     setup: [
       '1–2 agility ladders (or cones/tape squares) on the ground; players in lines',
     ],
@@ -105,7 +105,7 @@ window.DRILL_DATA.football = [
     id: 'three-cone-l-drill',
     name: '3-Cone L-Drill',
     altNames: ['L-Drill', 'Three Cone'],
-    objective: 'Sharpen change of direction and bending around corners.',
+    description: 'Sharpen change of direction and bending around corners.',
     setup: [
       'Three cones in an L, 5 yd apart',
     ],
@@ -138,7 +138,7 @@ window.DRILL_DATA.football = [
     id: 'pro-shuttle',
     name: 'Pro Shuttle (5-10-5)',
     altNames: ['20-Yard Shuttle', 'Short Shuttle'],
-    objective: 'Explode, plant, and change direction quickly.',
+    description: 'Explode, plant, and change direction quickly.',
     setup: [
       'Three cones in a line, 5 yd apart; player straddles the middle cone',
     ],
@@ -171,7 +171,7 @@ window.DRILL_DATA.football = [
     id: 'stance-and-start',
     name: 'Stance and Start',
     altNames: ['Get-Offs', 'Snap Count Starts'],
-    objective: 'Get into a good stance and explode off the snap count without false starts.',
+    description: 'Get into a good stance and explode off the snap count without false starts.',
     setup: [
       'Players on a line in their position stance (2-point or 3-point); coach as QB',
     ],
@@ -206,7 +206,7 @@ window.DRILL_DATA.football = [
     id: 'high-and-tight',
     name: 'High and Tight Carry',
     altNames: ['5 Points of Pressure', 'Ball Carry Drill'],
-    objective: 'Carry the ball securely with five points of pressure and switch hands correctly.',
+    description: 'Carry the ball securely with five points of pressure and switch hands correctly.',
     setup: [
       'Cones in a zig-zag 5 yd apart; each player with a ball',
     ],
@@ -239,7 +239,7 @@ window.DRILL_DATA.football = [
     id: 'ball-security-gauntlet',
     name: 'Ball Security Gauntlet',
     altNames: ['Strip Gauntlet', 'Run the Gauntlet'],
-    objective: 'Protect the ball while defenders try to strip it.',
+    description: 'Protect the ball while defenders try to strip it.',
     setup: [
       'Two lines of 3–4 players facing each other, 2 yd apart, forming a chute',
       'Ball carriers in a line at one end',
@@ -273,7 +273,7 @@ window.DRILL_DATA.football = [
     id: 'handoff-exchange',
     name: 'Handoff Exchange',
     altNames: ['Mesh Drill', 'Pocket Drill'],
-    objective: 'Clean handoffs between quarterback and running back with no fumbles.',
+    description: 'Clean handoffs between quarterback and running back with no fumbles.',
     setup: [
       'QB line and RB line set up 5 yd apart, as in the backfield',
     ],
@@ -306,7 +306,7 @@ window.DRILL_DATA.football = [
     id: 'rb-cut-drill',
     name: 'Running Back Cut Drill',
     altNames: ['Jump Cut', 'Cone Cuts'],
-    objective: 'Make sharp cuts and accelerate out of them while protecting the ball.',
+    description: 'Make sharp cuts and accelerate out of them while protecting the ball.',
     setup: [
       'Cones at 5, 10, and 15 yd, offset left and right',
     ],
@@ -341,7 +341,7 @@ window.DRILL_DATA.football = [
     id: 'center-qb-exchange',
     name: 'Snap Drill',
     altNames: ['Center-QB Exchange', 'Shotgun Snaps'],
-    objective: 'Reliable snaps every play — under center or shotgun.',
+    description: 'Reliable snaps every play — under center or shotgun.',
     setup: [
       'Centers and QBs in pairs; shotgun depth 4–5 yd (flag: often 5 yd)',
     ],
@@ -374,7 +374,7 @@ window.DRILL_DATA.football = [
     id: 'qb-drops-and-throws',
     name: 'QB Drops and Throws',
     altNames: ['3-Step / 5-Step Drops', 'Snap-Drop-Throw'],
-    objective: 'Quarterbacks learn proper drops and set feet before throwing.',
+    description: 'Quarterbacks learn proper drops and set feet before throwing.',
     setup: [
       'QB with a center (or self-snap); receiver or target 10–15 yd away',
     ],
@@ -407,7 +407,7 @@ window.DRILL_DATA.football = [
     id: 'target-throwing',
     name: 'Target Throwing',
     altNames: ['Hoop Throws', 'Bucket Throws', 'Bullseye'],
-    objective: 'Improve passing accuracy by throwing at targets at different distances.',
+    description: 'Improve passing accuracy by throwing at targets at different distances.',
     setup: [
       'Hula hoops hanging from a goalpost or held by a coach, or trash cans/buckets at 5, 10, and 15 yd',
     ],
@@ -440,7 +440,7 @@ window.DRILL_DATA.football = [
     id: 'rollout-throws',
     name: 'Throwing on the Move',
     altNames: ['Rollout Drill', 'Sprint-Out Passing'],
-    objective: 'Throw accurately while rolling out — square the shoulders to the target.',
+    description: 'Throw accurately while rolling out — square the shoulders to the target.',
     setup: [
       'QB in the shotgun; receivers running a flat or comeback on each side',
     ],
@@ -475,7 +475,7 @@ window.DRILL_DATA.football = [
     id: 'diamond-hands',
     name: 'Diamond Hands Catching',
     altNames: ['High-Low Catching', 'Hands Drill'],
-    objective: 'Catch with the hands (not the body) using the right hand shape for each ball location.',
+    description: 'Catch with the hands (not the body) using the right hand shape for each ball location.',
     setup: [
       'Partners 5–8 yd apart, one ball per pair',
     ],
@@ -508,7 +508,7 @@ window.DRILL_DATA.football = [
     id: 'tennis-ball-hands',
     name: 'Tennis Ball Hands',
     altNames: ['Tennis Ball Catches', 'Quick Hands'],
-    objective: 'Build hand-eye coordination and soft hands with small, fast tennis balls.',
+    description: 'Build hand-eye coordination and soft hands with small, fast tennis balls.',
     setup: [
       'Partners 5 yd apart with one or two tennis balls',
     ],
@@ -541,7 +541,7 @@ window.DRILL_DATA.football = [
     id: 'route-tree-walkthrough',
     name: 'Route Tree with Cones',
     altNames: ['Cone Routes', 'Route Running'],
-    objective: 'Learn the basic routes (slant, out, curl, post, go) and run them at the right depth.',
+    description: 'Learn the basic routes (slant, out, curl, post, go) and run them at the right depth.',
     setup: [
       'Cones marking the break point for each route (e.g. 5 yd for slant/out/curl)',
       'Receivers in a line; QB or coach throwing',
@@ -575,7 +575,7 @@ window.DRILL_DATA.football = [
     id: 'over-the-shoulder-catch',
     name: 'Over the Shoulder Catch',
     altNames: ['Deep Ball Drill', 'Go Route Catches'],
-    objective: 'Track and catch deep passes over the shoulder at full speed.',
+    description: 'Track and catch deep passes over the shoulder at full speed.',
     setup: [
       'Receivers in a line on the sideline; QB/coach 5 yd inside them',
     ],
@@ -608,7 +608,7 @@ window.DRILL_DATA.football = [
     id: 'bad-ball-drill',
     name: 'Bad Ball Drill',
     altNames: ['Off-Target Catching', 'Make the Play'],
-    objective: 'Catch passes that aren\'t perfect: high, low, behind, and wide.',
+    description: 'Catch passes that aren\'t perfect: high, low, behind, and wide.',
     setup: [
       'Receiver jogging across the field 5–8 yd from the coach',
     ],
@@ -642,7 +642,7 @@ window.DRILL_DATA.football = [
     id: 'backpedal-and-break',
     name: 'Backpedal and Break',
     altNames: ['W Drill', 'Break on the Ball'],
-    objective: 'Defensive backs backpedal, read the QB, and break on the throw.',
+    description: 'Defensive backs backpedal, read the QB, and break on the throw.',
     setup: [
       'DBs in a line facing the coach (QB), 5 yd away',
     ],
@@ -675,7 +675,7 @@ window.DRILL_DATA.football = [
     id: 'mirror-drill-football',
     name: 'Mirror Drill',
     altNames: ['Shadow Drill', 'Mirror Coverage'],
-    objective: 'Stay in front of a receiver or ball carrier by mirroring their movement.',
+    description: 'Stay in front of a receiver or ball carrier by mirroring their movement.',
     setup: [
       'Pairs face each other in a 5-yd wide box marked by cones',
     ],
@@ -708,7 +708,7 @@ window.DRILL_DATA.football = [
     id: 'intercept-drill',
     name: 'Intercept Drill',
     altNames: ['Tip Drill', 'High Point Interceptions'],
-    objective: 'Read the QB\'s eyes, react to the throw, and catch it at the highest point.',
+    description: 'Read the QB\'s eyes, react to the throw, and catch it at the highest point.',
     setup: [
       'Defenders in a line at their spots; coach as QB 10 yd away',
     ],
@@ -743,7 +743,7 @@ window.DRILL_DATA.football = [
     id: 'flag-tag',
     name: 'Flag Tag',
     altNames: ['Steal the Flags', 'Flag Grab'],
-    objective: 'A fun warm-up: pull others\' flags while protecting your own — agility and flag-pulling technique.',
+    description: 'A fun warm-up: pull others\' flags while protecting your own — agility and flag-pulling technique.',
     setup: [
       'Area 20x20 yd; every player wears a flag belt',
     ],
@@ -775,7 +775,7 @@ window.DRILL_DATA.football = [
     id: 'sharks-and-minnows-flag',
     name: 'Sharks and Minnows (Flag)',
     altNames: ['Flag Sharks'],
-    objective: 'Run past defenders with the ball while sharks practice breaking down and pulling flags.',
+    description: 'Run past defenders with the ball while sharks practice breaking down and pulling flags.',
     setup: [
       'Field 25 yd wide x 30 yd long; minnows on one end line with flag belts (and a football)',
       '1–2 sharks in the middle',
@@ -809,7 +809,7 @@ window.DRILL_DATA.football = [
     id: 'pursuit-angle-flag',
     name: 'Pursuit Angles',
     altNames: ['Angle Pursuit', 'Cut-Off Angle Drill'],
-    objective: 'Take the right angle to cut off a ball carrier near the sideline instead of chasing from behind.',
+    description: 'Take the right angle to cut off a ball carrier near the sideline instead of chasing from behind.',
     setup: [
       'Ball carrier starts at a cone 10 yd in from the sideline; defender 10 yd away, inside and in front',
     ],
@@ -844,7 +844,7 @@ window.DRILL_DATA.football = [
     id: 'fit-and-drive',
     name: 'Fit and Drive',
     altNames: ['Sled Drive', 'Pad Drive'],
-    objective: 'Teach linemen to fit hands and hips correctly and drive with short, choppy steps.',
+    description: 'Teach linemen to fit hands and hips correctly and drive with short, choppy steps.',
     setup: [
       'Players in pairs; one holds a hand shield or blocking pad (or use a sled)',
     ],
@@ -878,7 +878,7 @@ window.DRILL_DATA.football = [
     id: 'mirror-blocking',
     name: 'Mirror Blocking',
     altNames: ['Pass Pro Mirror', 'Kick Slide Drill'],
-    objective: 'Pass-blocking footwork: stay between the rusher and the QB without crossing feet.',
+    description: 'Pass-blocking footwork: stay between the rusher and the QB without crossing feet.',
     setup: [
       'Pairs in a 3-yd wide lane; QB marked by a cone behind the blocker',
     ],
@@ -913,7 +913,7 @@ window.DRILL_DATA.football = [
     id: 'breakdown-and-buzz',
     name: 'Breakdown and Buzz',
     altNames: ['Breakdown Drill', 'Hit Position'],
-    objective: 'Approach a ball carrier and get into a balanced breakdown position — the base of every safe tackle.',
+    description: 'Approach a ball carrier and get into a balanced breakdown position — the base of every safe tackle.',
     setup: [
       'Players in lines 5 yd from a cone (or a stationary ball carrier)',
     ],
@@ -946,7 +946,7 @@ window.DRILL_DATA.football = [
     id: 'thigh-and-drive',
     name: 'Thigh and Drive Tackle',
     altNames: ['Shoulder Tackle', 'Near Foot, Near Shoulder'],
-    objective: 'Tackle with the shoulder to the thigh and the head out of the contact, then drive the feet.',
+    description: 'Tackle with the shoulder to the thigh and the head out of the contact, then drive the feet.',
     setup: [
       'Tackling bags, tube dummies, or a tackling wheel',
       'Players in a line 5 yd away; helmets and pads on',
@@ -983,7 +983,7 @@ window.DRILL_DATA.football = [
     id: 'hawk-roll-tackle',
     name: 'Roll Tackle on the Wheel',
     altNames: ['Hawk Tackle', 'Thigh and Roll', 'Tackling Wheel'],
-    objective: 'Finish a near-shoulder tackle by rolling the ball carrier to the ground, with the head safely out.',
+    description: 'Finish a near-shoulder tackle by rolling the ball carrier to the ground, with the head safely out.',
     setup: [
       'Tackling wheel or soft tube dummy; mats if available',
       'Players in a line 5 yd away; helmets and pads on',
@@ -1019,7 +1019,7 @@ window.DRILL_DATA.football = [
     id: 'punt-catching',
     name: 'Punt and Kick Catching',
     altNames: ['Punt Return Catches', 'Fielding Punts'],
-    objective: 'Get under kicked balls, catch them securely, and tuck them away.',
+    description: 'Get under kicked balls, catch them securely, and tuck them away.',
     setup: [
       'Coach (or JUGS machine) punting or throwing high balls; returners 15–30 yd away',
     ],
@@ -1052,7 +1052,7 @@ window.DRILL_DATA.football = [
     id: 'punting-and-placekicking',
     name: 'Punting and Place-Kicking Basics',
     altNames: ['Kicking Station', 'Punt Technique'],
-    objective: 'Teach players the basic punt and kick technique so everyone tries kicking.',
+    description: 'Teach players the basic punt and kick technique so everyone tries kicking.',
     setup: [
       'Kicking tees; footballs; a target zone or goalposts',
     ],
@@ -1087,7 +1087,7 @@ window.DRILL_DATA.football = [
     id: 'bulldog',
     name: 'Bulldog',
     altNames: ['British Bulldog', 'Flag Bulldog'],
-    objective: 'A classic running game: get across the field without the bulldogs pulling your flag.',
+    description: 'A classic running game: get across the field without the bulldogs pulling your flag.',
     setup: [
       'Field 20x30 yd; one "bulldog" in the middle; everyone else on one end line with flag belts',
     ],
@@ -1119,7 +1119,7 @@ window.DRILL_DATA.football = [
     id: 'tick-tock',
     name: 'Tick Tock',
     altNames: ['Beat the Clock', '4-Second Throw'],
-    objective: 'Quarterbacks practice getting the ball out under time pressure; receivers get open fast.',
+    description: 'Quarterbacks practice getting the ball out under time pressure; receivers get open fast.',
     setup: [
       'QB with a center; 2–3 receivers; one rusher 7 yd back (flag rush distance)',
     ],
@@ -1152,7 +1152,7 @@ window.DRILL_DATA.football = [
     id: 'ultimate-football',
     name: 'Ultimate Football',
     altNames: ['Keep Away Football', 'End Zone Passing Game'],
-    objective: 'A passing game where everyone throws and catches — move the ball to the end zone with passes only.',
+    description: 'A passing game where everyone throws and catches — move the ball to the end zone with passes only.',
     setup: [
       'Field 25x35 yd with end zones; two teams of 4–7',
     ],
@@ -1185,7 +1185,7 @@ window.DRILL_DATA.football = [
     id: 'team-pursuit-drill',
     name: 'Team Pursuit Drill',
     altNames: ['Pursuit', 'Angle Sprints'],
-    objective: 'All defenders take pursuit angles to the ball on every play — great for effort and conditioning.',
+    description: 'All defenders take pursuit angles to the ball on every play — great for effort and conditioning.',
     setup: [
       'Defense lined up in formation; cones near each sideline 10–15 yd downfield',
       'Coach with a ball',

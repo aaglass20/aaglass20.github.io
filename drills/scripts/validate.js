@@ -5,7 +5,7 @@ const dir = require("path").resolve(__dirname, "..");
 require(dir + '/js/sports.js');
 const fs = require('fs');
 fs.readdirSync(dir + '/data').forEach(f => require(dir + '/data/' + f));
-const REQ = ['id','name','altNames','objective','setup','directions','variations','coachingPoints','equipment','ages','categories'];
+const REQ = ['id','name','altNames','description','setup','directions','variations','coachingPoints','equipment','ages','categories'];
 let bad = 0;
 for (const s of window.SPORTS) {
   const list = window.DRILL_DATA[s.id] || [], ids = new Set();

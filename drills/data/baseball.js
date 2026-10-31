@@ -5,7 +5,7 @@ window.DRILL_DATA.baseball = [
     id: 'four-corners',
     name: 'Four Corners',
     altNames: ['Around the Horn', 'Box Throwing'],
-    objective: 'Practice catching, quick footwork, and accurate throws to a base under time pressure.',
+    description: 'Practice catching, quick footwork, and accurate throws to a base under time pressure.',
     setup: [
       'One player at each base (home, 1st, 2nd, 3rd); extra players line up behind them',
       'Start with one ball at home',
@@ -41,7 +41,7 @@ window.DRILL_DATA.baseball = [
     id: 'tee-work-stations',
     name: 'Tee Work Stations',
     altNames: ['Tee Hitting', 'Batting Tee Drills'],
-    objective: 'Build a consistent swing path and solid contact by hitting off a tee at several stations.',
+    description: 'Build a consistent swing path and solid contact by hitting off a tee at several stations.',
     setup: [
       '3–4 tees hitting into a net or fence; one coach/parent per 2 tees',
       'Baseballs or wiffle balls in a bucket at each tee',
@@ -76,7 +76,7 @@ window.DRILL_DATA.baseball = [
     id: 'soft-toss',
     name: 'Soft Toss',
     altNames: ['Side Toss', 'Flip Drill'],
-    objective: 'Hit a moving ball with a short, quick swing; lots of reps in little space.',
+    description: 'Hit a moving ball with a short, quick swing; lots of reps in little space.',
     setup: [
       'Hitter facing a net or fence 8–10 ft away',
       'Tosser kneeling at a 45° angle in front of the hitter (safely to the side)',
@@ -110,7 +110,7 @@ window.DRILL_DATA.baseball = [
     id: 'front-toss',
     name: 'Front Toss Batting',
     altNames: ['Short Toss', 'Screen BP'],
-    objective: 'Game-like batting practice with a coach tossing from behind a screen at short distance.',
+    description: 'Game-like batting practice with a coach tossing from behind a screen at short distance.',
     setup: [
       'Coach sits or kneels behind an L-screen 15–20 ft in front of home plate',
       'Hitter at the plate; fielders or a net to hit into',
@@ -143,7 +143,7 @@ window.DRILL_DATA.baseball = [
     id: 'bunt-target-zones',
     name: 'Bunt Target Zones',
     altNames: ['Bunting Targets', 'Bunt Game'],
-    objective: 'Square or pivot to bunt and place the ball into target zones down the lines.',
+    description: 'Square or pivot to bunt and place the ball into target zones down the lines.',
     setup: [
       'Cone boxes (about 6x6 ft) up the first- and third-base lines, 15–20 ft from home',
       'Pitcher/tosser 20–30 ft away',
@@ -176,7 +176,7 @@ window.DRILL_DATA.baseball = [
     id: 'pepper',
     name: 'Pepper',
     altNames: ['Pepper Game', 'Bunt Pepper'],
-    objective: 'Quick bat control and fielding reps: a hitter taps soft grounders to a line of fielders.',
+    description: 'Quick bat control and fielding reps: a hitter taps soft grounders to a line of fielders.',
     setup: [
       'Hitter with a bat; 3–4 fielders in a line 20 ft away facing the hitter',
     ],
@@ -208,7 +208,7 @@ window.DRILL_DATA.baseball = [
     id: 'ground-ball-alligator',
     name: 'Alligator Hands Ground Balls',
     altNames: ['Alligator Drill', 'Ready Position Grounders'],
-    objective: 'Field ground balls with the glove down and the throwing hand on top (alligator mouth).',
+    description: 'Field ground balls with the glove down and the throwing hand on top (alligator mouth).',
     setup: [
       'Partners 15–20 ft apart, one ball per pair',
       'Fielder in ready position',
@@ -242,7 +242,7 @@ window.DRILL_DATA.baseball = [
     id: 'triangle-fielding',
     name: 'Triangle Fielding Drill',
     altNames: ['Triangle Footwork', 'Ground Ball Triangle'],
-    objective: 'Teach the footwork to approach, field, and throw: right-left-field-shuffle-throw.',
+    description: 'Teach the footwork to approach, field, and throw: right-left-field-shuffle-throw.',
     setup: [
       'Fielder stands behind a triangle of three cones (point toward the hitter)',
       'Coach or partner 20 ft away with balls',
@@ -275,7 +275,7 @@ window.DRILL_DATA.baseball = [
     id: 'short-hops',
     name: 'Short Hops',
     altNames: ['Short Hop Drill', 'Pick Drill'],
-    objective: 'Read the bounce and pick short hops cleanly — key for infielders and first basemen.',
+    description: 'Read the bounce and pick short hops cleanly — key for infielders and first basemen.',
     setup: [
       'Partners kneeling or in a wide stance 10–12 ft apart',
       'One ball per pair',
@@ -308,7 +308,7 @@ window.DRILL_DATA.baseball = [
     id: 'double-play-feeds',
     name: 'Double Play Feeds',
     altNames: ['DP Turns', 'Middle Infield Feeds'],
-    objective: 'Middle infielders practice the feed and pivot at second base to turn the double play.',
+    description: 'Middle infielders practice the feed and pivot at second base to turn the double play.',
     setup: [
       'Shortstop and second baseman at their positions; first baseman at first',
       'Coach hitting or rolling grounders',
@@ -341,7 +341,7 @@ window.DRILL_DATA.baseball = [
     id: 'hot-potato',
     name: 'Hot Potato',
     altNames: ['Quick Hands', 'Quick Transfer Drill'],
-    objective: 'Catch and get rid of the ball fast — improves the glove-to-hand transfer.',
+    description: 'Catch and get rid of the ball fast — improves the glove-to-hand transfer.',
     setup: [
       'Groups of 4–6 in a circle about 20 ft across',
       'One ball per group',
@@ -373,7 +373,7 @@ window.DRILL_DATA.baseball = [
     id: 'fly-ball-drop-step',
     name: 'Fly Ball Drop Step',
     altNames: ['Drop Step Drill', 'Over the Shoulder'],
-    objective: 'Teach outfielders to drop step and run to where the fly ball will land.',
+    description: 'Teach outfielders to drop step and run to where the fly ball will land.',
     setup: [
       'Outfielders in a line; coach 30–40 ft away with balls',
     ],
@@ -405,7 +405,7 @@ window.DRILL_DATA.baseball = [
     id: 'crow-hop-throws',
     name: 'Crow Hop Throws',
     altNames: ['Crow Hop Long Toss', 'Outfield Throws to Target'],
-    objective: 'Use the crow hop to generate momentum and throw long and accurately from the outfield.',
+    description: 'Use the crow hop to generate momentum and throw long and accurately from the outfield.',
     setup: [
       'Partners 60–120 ft apart (by age)',
       'Optional: target cone or bucket at the base',
@@ -438,7 +438,7 @@ window.DRILL_DATA.baseball = [
     id: 'five-hundred',
     name: '500',
     altNames: ['500 Fly Ball Game', 'Flies Up'],
-    objective: 'Fun fly-ball and grounder game — first to 500 points gets to hit.',
+    description: 'Fun fly-ball and grounder game — first to 500 points gets to hit.',
     setup: [
       'Coach (hitter) at home; all fielders in the outfield',
     ],
@@ -470,7 +470,7 @@ window.DRILL_DATA.baseball = [
     id: 'relay-race-cutoff',
     name: 'Relay Race',
     altNames: ['Cutoff Relay', 'Relay Throw Race'],
-    objective: 'Teams race to relay a ball from the outfield to home using cutoff throws.',
+    description: 'Teams race to relay a ball from the outfield to home using cutoff throws.',
     setup: [
       'Two teams of 3–5, each in a straight line from the outfield fence to home, 40–60 ft apart',
     ],
@@ -502,7 +502,7 @@ window.DRILL_DATA.baseball = [
     id: 'rundown-drill',
     name: 'Rundown Drill',
     altNames: ['Pickle', 'Hot Box'],
-    objective: 'Defenders run down a runner caught between bases with as few throws as possible.',
+    description: 'Defenders run down a runner caught between bases with as few throws as possible.',
     setup: [
       'Two bases 60 ft apart; a line of fielders at each base',
       'A runner starts between the bases',
@@ -535,7 +535,7 @@ window.DRILL_DATA.baseball = [
     id: 'pop-up-communication',
     name: 'Pop-Up Communication',
     altNames: ['I Got It!', 'Priority Fly Balls'],
-    objective: 'Avoid collisions: practice calling pop-ups and who has priority.',
+    description: 'Avoid collisions: practice calling pop-ups and who has priority.',
     setup: [
       'Two or three fielders positioned near each other (e.g. SS, LF, 3B)',
       'Coach tosses or hits pop-ups between them',
@@ -568,7 +568,7 @@ window.DRILL_DATA.baseball = [
     id: 'where-is-the-play',
     name: 'Where\'s the Play?',
     altNames: ['Situational Defense', 'Situations'],
-    objective: 'Know where to throw before the ball is hit: practice game situations with runners on.',
+    description: 'Know where to throw before the ball is hit: practice game situations with runners on.',
     setup: [
       'Full defense in position; runners at bases; coach hitting or throwing',
     ],
@@ -599,7 +599,7 @@ window.DRILL_DATA.baseball = [
     id: 'catcher-blocking',
     name: 'Catcher Blocking',
     altNames: ['Block Drill', 'Balls in the Dirt'],
-    objective: 'Catchers drop to their knees and keep balls in the dirt in front of them.',
+    description: 'Catchers drop to their knees and keep balls in the dirt in front of them.',
     setup: [
       'Catcher in full gear in the stance; coach 15–20 ft away with soft or regular balls',
     ],
@@ -631,7 +631,7 @@ window.DRILL_DATA.baseball = [
     id: 'catcher-framing',
     name: 'Catcher Receiving and Framing',
     altNames: ['Framing Drill', 'Soft Hands Receiving'],
-    objective: 'Receive pitches quietly at the edges of the zone and hold them as strikes.',
+    description: 'Receive pitches quietly at the edges of the zone and hold them as strikes.',
     setup: [
       'Catcher in a receiving stance; coach or pitcher throwing from 30–40 ft',
     ],
@@ -663,7 +663,7 @@ window.DRILL_DATA.baseball = [
     id: 'run-through-first',
     name: 'Run Through First',
     altNames: ['First Base Turn', 'Home to First'],
-    objective: 'Run hard through first base on a grounder, or round it on a hit.',
+    description: 'Run hard through first base on a grounder, or round it on a hit.',
     setup: [
       'Runners at home with helmets; a coach at first base',
     ],
@@ -695,7 +695,7 @@ window.DRILL_DATA.baseball = [
     id: 'baserunning-relay-race',
     name: 'Baserunning Relay Race',
     altNames: ['Around the Bases Relay'],
-    objective: 'Practice rounding bases at full speed in a team race.',
+    description: 'Practice rounding bases at full speed in a team race.',
     setup: [
       'Two teams: one starts at home, one at second base',
     ],
@@ -727,7 +727,7 @@ window.DRILL_DATA.baseball = [
     id: 'tag-up-drill',
     name: 'Tag Up Drill',
     altNames: ['Tagging Up', 'Fly Ball Baserunning'],
-    objective: 'Runners learn when to tag up on fly balls and when to go halfway.',
+    description: 'Runners learn when to tag up on fly balls and when to go halfway.',
     setup: [
       'Runners at third (and second); coach hits or throws fly balls to outfielders',
     ],
@@ -759,7 +759,7 @@ window.DRILL_DATA.baseball = [
     id: 'long-toss-progression',
     name: 'Partner Throwing Progression',
     altNames: ['Warm-up Throwing', 'Throwing Ladder'],
-    objective: 'Warm up the arm and groove good throwing mechanics by building distance gradually.',
+    description: 'Warm up the arm and groove good throwing mechanics by building distance gradually.',
     setup: [
       'Partners face each other in two lines, starting 15 ft apart',
       'One ball per pair',
@@ -795,7 +795,7 @@ window.DRILL_DATA.baseball = [
     id: 'pitching-balance-point',
     name: 'Pitching Balance Point',
     altNames: ['Balance Drill', 'Leg Lift and Hold'],
-    objective: 'Build a repeatable overhand delivery from a balanced leg lift.',
+    description: 'Build a repeatable overhand delivery from a balanced leg lift.',
     setup: [
       'Pitcher and catcher 30–45 ft apart (flat ground)',
     ],
@@ -829,7 +829,7 @@ window.DRILL_DATA.baseball = [
     id: 'pfp-covering-first',
     name: 'Pitcher Covers First',
     altNames: ['PFP', 'Pitchers Fielding Practice'],
-    objective: 'Pitchers learn to break toward first on balls hit to the right side and take the throw.',
+    description: 'Pitchers learn to break toward first on balls hit to the right side and take the throw.',
     setup: [
       'Pitcher on the mound; first baseman at first; coach hitting or rolling balls to the right side',
     ],
@@ -861,7 +861,7 @@ window.DRILL_DATA.baseball = [
     id: 'leadoffs-and-reads',
     name: 'Leadoffs and Pitcher Reads',
     altNames: ['Lead and Read', 'Steal Jumps'],
-    objective: 'Take a safe lead, read the pitcher, and get a good jump (leagues with leadoffs).',
+    description: 'Take a safe lead, read the pitcher, and get a good jump (leagues with leadoffs).',
     setup: [
       'Runners at first; a pitcher on the mound and a first baseman holding the runner',
     ],
@@ -894,7 +894,7 @@ window.DRILL_DATA.baseball = [
     id: 'throwers-warmup',
     name: 'Dynamic Throwers Warm-up',
     altNames: ['Arm Care Warm-up', 'Pre-Throw Warm-up'],
-    objective: 'Warm up the body and arm before throwing to prevent injuries.',
+    description: 'Warm up the body and arm before throwing to prevent injuries.',
     setup: [
       'Two lines of cones 20 yd apart; players in lines',
     ],
@@ -928,7 +928,7 @@ window.DRILL_DATA.baseball = [
     id: 'balance-point-hold',
     name: 'Balance Point Hold',
     altNames: ['Leg Lift Hold', 'Knee Up, Foot Out, Toe Down'],
-    objective: 'Learn a controlled leg lift and balance point — the base of a repeatable delivery.',
+    description: 'Learn a controlled leg lift and balance point — the base of a repeatable delivery.',
     setup: [
       'Pitchers in a line on the foul line or on a mound; partner or net 30–40 ft away',
     ],
@@ -963,7 +963,7 @@ window.DRILL_DATA.baseball = [
     id: 'towel-drill',
     name: 'Towel Drill',
     altNames: ['Towel Pitching', 'Dry Throws'],
-    objective: 'Practice arm path and extension without throwing a ball — lots of reps, no arm stress.',
+    description: 'Practice arm path and extension without throwing a ball — lots of reps, no arm stress.',
     setup: [
       'Pitcher holds a small towel by one corner; partner holds a glove at chest height at the pitcher\'s full stride + arm length',
     ],
@@ -999,7 +999,7 @@ window.DRILL_DATA.baseball = [
     id: 'stride-direction',
     name: 'Stride Direction Drill',
     altNames: ['Line Drill', 'Step to the Target'],
-    objective: 'Stride straight toward the target for accuracy and less arm strain.',
+    description: 'Stride straight toward the target for accuracy and less arm strain.',
     setup: [
       'A chalk line or rope from the pitching rubber (or a cone) to the catcher',
     ],
@@ -1031,7 +1031,7 @@ window.DRILL_DATA.baseball = [
     id: 'pitch-location-ladder',
     name: 'Pitch Location Ladder',
     altNames: ['Hit the Spots', 'Four-Corner Pitching'],
-    objective: 'Pitch to a target: in, out, high, low — move up the ladder by hitting spots.',
+    description: 'Pitch to a target: in, out, high, low — move up the ladder by hitting spots.',
     setup: [
       'Catcher with a target; or a strike zone net with four corners marked',
     ],
@@ -1064,7 +1064,7 @@ window.DRILL_DATA.baseball = [
     id: 'pitchers-fielding-position',
     name: 'Fielding Position Finish',
     altNames: ['Finish and Field', 'Pitcher Comebackers'],
-    objective: 'Finish every pitch in a balanced fielding position and handle comebackers.',
+    description: 'Finish every pitch in a balanced fielding position and handle comebackers.',
     setup: [
       'Pitcher on the mound; coach at the plate with a fungo or soft balls',
     ],
@@ -1096,7 +1096,7 @@ window.DRILL_DATA.baseball = [
     id: 'pickoff-moves',
     name: 'Pitcher Pickoff Moves',
     altNames: ['Pickoff to First', 'Step-Off and Throw'],
-    objective: 'Pitchers learn a legal pickoff to first and how to vary their timing to hold runners.',
+    description: 'Pitchers learn a legal pickoff to first and how to vary their timing to hold runners.',
     setup: [
       'Pitcher on the mound in the stretch; first baseman holding the bag; runner at first',
     ],
@@ -1129,7 +1129,7 @@ window.DRILL_DATA.baseball = [
     id: 'catcher-throw-downs',
     name: 'Catcher Throw-Downs',
     altNames: ['Pop Time', 'Steal Read'],
-    objective: 'Catch, transfer, and throw to second (or third) quickly and accurately to stop steals.',
+    description: 'Catch, transfer, and throw to second (or third) quickly and accurately to stop steals.',
     setup: [
       'Catcher in gear, pitcher (or coach) feeding pitches, middle infielder covering second',
       'Optional runner at first',
@@ -1163,7 +1163,7 @@ window.DRILL_DATA.baseball = [
     id: 'catcher-bunt-pounce',
     name: 'Catcher Bunt Pounce',
     altNames: ['Catcher Fielding Bunts', 'Pop and Pounce'],
-    objective: 'Catchers pop out, field bunts in front of the plate, and throw to the right base.',
+    description: 'Catchers pop out, field bunts in front of the plate, and throw to the right base.',
     setup: [
       'Catcher in the crouch; coach rolls balls in front of the plate; first baseman covering',
     ],
@@ -1195,7 +1195,7 @@ window.DRILL_DATA.baseball = [
     id: 'bunt-defense-wheel',
     name: 'Bunt Defense Wheel',
     altNames: ['Bunt Coverage', 'Wheel Play'],
-    objective: 'Every fielder learns where to go on a bunt and who fields it.',
+    description: 'Every fielder learns where to go on a bunt and who fields it.',
     setup: [
       'Full infield at C, P, 1B, 2B, 3B, SS; coach bunting or rolling balls',
     ],
@@ -1227,7 +1227,7 @@ window.DRILL_DATA.baseball = [
     id: 'short-game-stations',
     name: 'Short Game Stations',
     altNames: ['Bunt Types', 'Sacrifice / Drag / Push'],
-    objective: 'Learn the key bunts: sacrifice, drag (bunt for a hit), and push.',
+    description: 'Learn the key bunts: sacrifice, drag (bunt for a hit), and push.',
     setup: [
       'Three stations with a feeder each; cone targets down each line and between pitcher and 1B',
     ],
@@ -1259,7 +1259,7 @@ window.DRILL_DATA.baseball = [
     id: 'one-hand-hitting',
     name: 'One-Hand Hitting Drills',
     altNames: ['Top Hand / Bottom Hand', 'One-Arm Tee'],
-    objective: 'Train each hand\'s job in the swing for a shorter, stronger path to the ball.',
+    description: 'Train each hand\'s job in the swing for a shorter, stronger path to the ball.',
     setup: [
       'Tee and net; a short bat or the player chokes up',
     ],
@@ -1290,7 +1290,7 @@ window.DRILL_DATA.baseball = [
     id: 'pitch-recognition',
     name: 'Pitch Recognition',
     altNames: ['Call It', 'Ball or Strike'],
-    objective: 'See the pitch early: hitters call strike or ball (and pitch type) before swinging.',
+    description: 'See the pitch early: hitters call strike or ball (and pitch type) before swinging.',
     setup: [
       'Hitter in the box during a pitcher\'s bullpen; catcher in gear',
     ],
@@ -1323,7 +1323,7 @@ window.DRILL_DATA.baseball = [
     id: 'outfield-do-or-die',
     name: 'Outfield Do-or-Die',
     altNames: ['Charge and Throw', 'Do or Die'],
-    objective: 'Outfielders charge a ground ball and throw home to stop a run.',
+    description: 'Outfielders charge a ground ball and throw home to stop a run.',
     setup: [
       'Outfielders in a line in center or left; coach hitting or rolling grounders; catcher at the plate',
     ],
@@ -1356,7 +1356,7 @@ window.DRILL_DATA.baseball = [
     id: 'fence-drill',
     name: 'Fence Drill',
     altNames: ['Find the Fence', 'Warning Track Drill'],
-    objective: 'Outfielders locate the fence while tracking a fly ball, then make the catch safely.',
+    description: 'Outfielders locate the fence while tracking a fly ball, then make the catch safely.',
     setup: [
       'Outfielder 15 ft in from the fence; coach throwing or hitting flies',
     ],
@@ -1388,7 +1388,7 @@ window.DRILL_DATA.baseball = [
     id: 'first-base-stretch-picks',
     name: 'First Base Stretch and Picks',
     altNames: ['First Base Footwork', 'Scoop Drill'],
-    objective: 'First basemen find the bag, stretch to the throw, and scoop low throws.',
+    description: 'First basemen find the bag, stretch to the throw, and scoop low throws.',
     setup: [
       'First baseman at the bag; coach or infielders throwing from SS, 2B, and 3B',
     ],
@@ -1420,7 +1420,7 @@ window.DRILL_DATA.baseball = [
     id: 'slide-practice',
     name: 'Slide Practice (Bent-Leg)',
     altNames: ['Slip-n-Slide Sliding', 'Sliding Drill'],
-    objective: 'Learn a safe bent-leg slide on a soft surface before doing it on dirt.',
+    description: 'Learn a safe bent-leg slide on a soft surface before doing it on dirt.',
     setup: [
       'Grass with a slip-n-slide or wet tarp; or a sliding mat; players in socks or sliding shorts',
     ],
@@ -1453,7 +1453,7 @@ window.DRILL_DATA.baseball = [
     id: 'secondary-lead',
     name: 'Primary and Secondary Leads',
     altNames: ['Lead-Off Drill', 'Shuffle Leads'],
-    objective: 'Take a safe primary lead, then a secondary lead as the pitch is delivered.',
+    description: 'Take a safe primary lead, then a secondary lead as the pitch is delivered.',
     setup: [
       'Runners at first; coach on the mound simulating pitches and pickoffs',
     ],
@@ -1489,7 +1489,7 @@ window.DRILL_DATA.baseball = [
     id: 'first-to-third',
     name: 'First to Third',
     altNames: ['1st to 3rd on a Single', 'Read and Go'],
-    objective: 'Runners get a good jump, read the ball, and take third on a single; defense practices the throw.',
+    description: 'Runners get a good jump, read the ball, and take third on a single; defense practices the throw.',
     setup: [
       'Runner at first; outfielders in position; coach hitting singles to the outfield; third baseman and cutoff in place',
     ],
@@ -1521,7 +1521,7 @@ window.DRILL_DATA.baseball = [
     id: 'quick-hands-warmup',
     name: 'Quick Hands Glove Warm-up',
     altNames: ['Quick Transfers', 'Glove Work'],
-    objective: 'Warm up the hands with quick catches and fast transfers.',
+    description: 'Warm up the hands with quick catches and fast transfers.',
     setup: [
       'Partners 15–20 ft apart, one ball',
     ],

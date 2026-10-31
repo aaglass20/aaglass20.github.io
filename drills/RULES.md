@@ -50,7 +50,7 @@ and copy a drill's export straight into Coach Approach.
   id: 'rondo-4v1',                 // kebab-case, unique within the sport, never renamed
   name: 'Rondo 4v1',
   altNames: ['Monkey in the Middle', 'Keep Away'],
-  objective: 'One or two sentences: what the drill trains and why.',
+  description: 'One or two sentences: what the drill trains and why.',
   setup: ['Grid: 10x10 yd square', 'Players: 4 outside, 1 defender inside'],
   directions: ['Step 1 …', 'Step 2 …'],            // Directions (sequence of play), in order
   variations: ['Easier: …', 'Harder: …'],          // label progressions Easier/Harder when it fits
@@ -70,7 +70,7 @@ and copy a drill's export straight into Coach Approach.
 ```
 
 ### Field rules
-- **Required:** `id, name, altNames, objective, setup, directions, variations,
+- **Required:** `id, name, altNames, description, setup, directions, variations,
   coachingPoints, equipment, ages, categories`. Use `[]` when there truly are none.
 - **Lists are arrays of short strings** — one idea per line, no paragraphs.
 - **`directions`** read as a sequence of play: start → how it runs → scoring/rotation → end.

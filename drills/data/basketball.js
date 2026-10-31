@@ -5,7 +5,7 @@ window.DRILL_DATA.basketball = [
     id: 'mikan-drill',
     name: 'Mikan Drill',
     altNames: ['Mikan Layups', 'Alternating Layups'],
-    objective: 'Build soft touch and footwork around the rim by finishing continuous layups with both hands.',
+    description: 'Build soft touch and footwork around the rim by finishing continuous layups with both hands.',
     setup: [
       'One player under the basket with a ball',
       'One basket per 1–2 players',
@@ -39,7 +39,7 @@ window.DRILL_DATA.basketball = [
     id: 'knockout',
     name: 'Knockout',
     altNames: ['Lightning', 'Bump'],
-    objective: 'Shoot under game-like pressure in a fun elimination game.',
+    description: 'Shoot under game-like pressure in a fun elimination game.',
     setup: [
       'All players in one line at the free-throw line (closer for younger players)',
       'First two players in line each have a ball',
@@ -75,7 +75,7 @@ window.DRILL_DATA.basketball = [
     id: 'stationary-ball-handling',
     name: 'Stationary Ball Handling Series',
     altNames: ['Pound Dribbles', 'Dribble Series', 'Ball Handling Warm-up'],
-    objective: 'Build a strong, controlled dribble with both hands through a quick series of stationary dribbles.',
+    description: 'Build a strong, controlled dribble with both hands through a quick series of stationary dribbles.',
     setup: [
       'Each player with a ball, spread out facing the coach',
     ],
@@ -111,7 +111,7 @@ window.DRILL_DATA.basketball = [
     id: 'ball-wraps-figure-8',
     name: 'Ball Wraps and Figure 8',
     altNames: ['Ball Slaps', 'Around the World (ball handling)', 'Figure 8s'],
-    objective: 'Develop hand speed and comfort with the ball by moving it around the body.',
+    description: 'Develop hand speed and comfort with the ball by moving it around the body.',
     setup: [
       'Each player with a ball in an athletic stance',
     ],
@@ -143,7 +143,7 @@ window.DRILL_DATA.basketball = [
     id: 'two-ball-dribbling',
     name: 'Two-Ball Dribbling',
     altNames: ['Double Dribble Drill', 'Two-Ball Series'],
-    objective: 'Strengthen the weak hand and improve coordination by dribbling two balls at once.',
+    description: 'Strengthen the weak hand and improve coordination by dribbling two balls at once.',
     setup: [
       'Each player with two balls (pair up and share if needed)',
     ],
@@ -175,7 +175,7 @@ window.DRILL_DATA.basketball = [
     id: 'dribble-knockout',
     name: 'Dribble Knockout',
     altNames: ['Bump Out', 'King of the Court (dribble)', 'Dribble Survivor'],
-    objective: 'Protect your dribble with eyes up while trying to knock away others\' balls.',
+    description: 'Protect your dribble with eyes up while trying to knock away others\' balls.',
     setup: [
       'Every player with a ball inside the 3-point line (or half court for big groups)',
     ],
@@ -207,7 +207,7 @@ window.DRILL_DATA.basketball = [
     id: 'dribble-tag',
     name: 'Dribble Tag',
     altNames: ['Basketball Tag'],
-    objective: 'Dribble while running and dodging — head up, quick changes of direction.',
+    description: 'Dribble while running and dodging — head up, quick changes of direction.',
     setup: [
       'Half court; every player has a ball; 1–2 taggers wear pinnies',
     ],
@@ -239,7 +239,7 @@ window.DRILL_DATA.basketball = [
     id: 'sharks-and-minnows-basketball',
     name: 'Sharks and Minnows (Basketball)',
     altNames: ['Dribble Sharks'],
-    objective: 'Dribble the length of the court under pressure without losing the ball.',
+    description: 'Dribble the length of the court under pressure without losing the ball.',
     setup: [
       'Full or half court; minnows each with a ball on one baseline',
       '1–2 sharks (no ball) at half court',
@@ -272,7 +272,7 @@ window.DRILL_DATA.basketball = [
     id: 'zig-zag-dribble',
     name: 'Zig-Zag Dribble Moves',
     altNames: ['Cone Zig-Zag', 'Full-Court Change of Direction'],
-    objective: 'Change direction at speed using crossovers, between-the-legs, behind-the-back, and spin moves.',
+    description: 'Change direction at speed using crossovers, between-the-legs, behind-the-back, and spin moves.',
     setup: [
       '5–6 cones in a zig-zag up the court, about 4–5 yd apart',
       'Lines at the baseline with balls',
@@ -306,7 +306,7 @@ window.DRILL_DATA.basketball = [
     id: 'gauntlet',
     name: 'Gauntlet',
     altNames: ['Ball Security Gauntlet', 'Run the Gauntlet'],
-    objective: 'Dribble through defenders who try to swipe the ball — learn to protect the ball under pressure.',
+    description: 'Dribble through defenders who try to swipe the ball — learn to protect the ball under pressure.',
     setup: [
       'Lane-width channel the length of the court',
       '3–4 defenders spread along the channel; dribblers in a line at the baseline',
@@ -338,7 +338,7 @@ window.DRILL_DATA.basketball = [
     id: 'red-light-green-light-basketball',
     name: 'Red Light, Green Light (Basketball)',
     altNames: ['Stop and Go Dribble'],
-    objective: 'Dribble with control and stop on command without traveling — great for beginners.',
+    description: 'Dribble with control and stop on command without traveling — great for beginners.',
     setup: [
       'All players on the baseline with a ball; coach at half court or the far baseline',
     ],
@@ -372,7 +372,7 @@ window.DRILL_DATA.basketball = [
     id: 'partner-passing',
     name: 'Partner Passing',
     altNames: ['Chest, Bounce, Overhead', 'Passing Lines'],
-    objective: 'Learn the three basic passes with good technique and accuracy.',
+    description: 'Learn the three basic passes with good technique and accuracy.',
     setup: [
       'Partners face each other 10–15 ft apart, one ball per pair',
     ],
@@ -405,7 +405,7 @@ window.DRILL_DATA.basketball = [
     id: 'monkey-in-the-middle-basketball',
     name: 'Monkey in the Middle (Passing)',
     altNames: ['2v1 Passing', 'Keep Away Passing'],
-    objective: 'Pass around a defender using fakes and pivots.',
+    description: 'Pass around a defender using fakes and pivots.',
     setup: [
       'Groups of 3: two passers 12–15 ft apart, one defender in the middle',
     ],
@@ -437,7 +437,7 @@ window.DRILL_DATA.basketball = [
     id: 'triangle-passing-basketball',
     name: 'Triangle Passing',
     altNames: ['Pass and Follow'],
-    objective: 'Pass and move quickly — follow your pass to the next spot.',
+    description: 'Pass and move quickly — follow your pass to the next spot.',
     setup: [
       'Three cones in a triangle, 15 ft apart; 2 players at one cone, 1 at each other',
     ],
@@ -469,7 +469,7 @@ window.DRILL_DATA.basketball = [
     id: 'three-man-weave',
     name: '3-Man Weave',
     altNames: ['Weave', 'Three-Lane Weave'],
-    objective: 'Pass and fill lanes at speed up the court, finishing with a layup.',
+    description: 'Pass and fill lanes at speed up the court, finishing with a layup.',
     setup: [
       'Three lines on the baseline: middle (with ball), left, right',
     ],
@@ -502,7 +502,7 @@ window.DRILL_DATA.basketball = [
     id: 'drive-and-dish',
     name: 'Drive and Dish',
     altNames: ['Penetrate and Pitch', 'Kick-Out Drill'],
-    objective: 'Drive to draw a help defender, then pass to the open shooter.',
+    description: 'Drive to draw a help defender, then pass to the open shooter.',
     setup: [
       'Ball handler at the top; shooter in the corner (or wing); one help defender in the lane',
     ],
@@ -536,7 +536,7 @@ window.DRILL_DATA.basketball = [
     id: 'form-shooting',
     name: 'Form Shooting',
     altNames: ['BEEF Shooting', 'One-Hand Form Shooting'],
-    objective: 'Build a repeatable shooting motion close to the basket before adding distance.',
+    description: 'Build a repeatable shooting motion close to the basket before adding distance.',
     setup: [
       'Players at baskets in pairs (shooter + rebounder), starting 3–5 ft in front of the rim',
     ],
@@ -569,7 +569,7 @@ window.DRILL_DATA.basketball = [
     id: 'around-the-world-basketball',
     name: 'Around the World',
     altNames: ['Around the World Shooting'],
-    objective: 'Shoot from spots all around the key — accuracy from different angles in a game.',
+    description: 'Shoot from spots all around the key — accuracy from different angles in a game.',
     setup: [
       '5–7 spots marked around the lane (block, short corner, elbow, free throw, etc.)',
       '2–4 players per basket',
@@ -602,7 +602,7 @@ window.DRILL_DATA.basketball = [
     id: 'horse',
     name: 'H-O-R-S-E',
     altNames: ['PIG', 'Copycat Shooting'],
-    objective: 'Creative shooting game: copy the made shot or earn a letter.',
+    description: 'Creative shooting game: copy the made shot or earn a letter.',
     setup: [
       '2–5 players per basket, one ball',
     ],
@@ -634,7 +634,7 @@ window.DRILL_DATA.basketball = [
     id: 'partner-spot-shooting',
     name: 'Partner Spot Shooting',
     altNames: ['Shoot-Rebound-Pass', '5 Spot Shooting'],
-    objective: 'Get many game-speed catch-and-shoot reps from five spots with a partner rebounding.',
+    description: 'Get many game-speed catch-and-shoot reps from five spots with a partner rebounding.',
     setup: [
       'Pairs at a basket with one ball; 5 spots around the arc (corner, wing, top, wing, corner)',
     ],
@@ -666,7 +666,7 @@ window.DRILL_DATA.basketball = [
     id: 'free-throw-pressure',
     name: 'Free Throw Pressure',
     altNames: ['Free Throw Ladder', 'Make Two or Run'],
-    objective: 'Practice free throws when tired and under pressure, like in games.',
+    description: 'Practice free throws when tired and under pressure, like in games.',
     setup: [
       'Players spread across baskets, 2–3 per basket',
     ],
@@ -700,7 +700,7 @@ window.DRILL_DATA.basketball = [
     id: 'layup-lines',
     name: 'Layup Lines',
     altNames: ['Two-Line Layups', 'Warm-up Layups'],
-    objective: 'Get lots of layup reps from both sides with a rebounding line.',
+    description: 'Get lots of layup reps from both sides with a rebounding line.',
     setup: [
       'Shooting line on the right wing with balls; rebounding line on the left wing',
     ],
@@ -732,7 +732,7 @@ window.DRILL_DATA.basketball = [
     id: 'layup-footwork-progression',
     name: 'Layup Footwork Progression',
     altNames: ['1-2 Layup Steps', 'Big Step Little Step'],
-    objective: 'Teach young players correct layup footwork step by step.',
+    description: 'Teach young players correct layup footwork step by step.',
     setup: [
       'Mark spots on the floor (tape or poly spots) for the steps on each side of the basket',
     ],
@@ -766,7 +766,7 @@ window.DRILL_DATA.basketball = [
     id: 'circle-box-out',
     name: 'Circle Box Out',
     altNames: ['Box Out Drill', 'Ball in the Circle'],
-    objective: 'Teach players to find their opponent, make contact, and hold a box out.',
+    description: 'Teach players to find their opponent, make contact, and hold a box out.',
     setup: [
       'Ball placed in the center circle (or on the floor in the lane)',
       'Defenders face the ball just inside the circle; offensive players outside them',
@@ -799,7 +799,7 @@ window.DRILL_DATA.basketball = [
     id: 'rebound-and-outlet',
     name: 'Rebound and Outlet',
     altNames: ['Chin It and Outlet'],
-    objective: 'Secure the rebound and make a quick outlet pass to start the fast break.',
+    description: 'Secure the rebound and make a quick outlet pass to start the fast break.',
     setup: [
       'Rebounder in the lane; outlet receiver on the wing near the sideline; coach shoots',
     ],
@@ -833,7 +833,7 @@ window.DRILL_DATA.basketball = [
     id: 'jump-stop-and-pivot',
     name: 'Jump Stop and Pivot',
     altNames: ['Pivot Drill', 'Stop and Pivot'],
-    objective: 'Stop under control without traveling and pivot to protect the ball and find a pass.',
+    description: 'Stop under control without traveling and pivot to protect the ball and find a pass.',
     setup: [
       'Players in lines on the baseline, each with a ball',
     ],
@@ -865,7 +865,7 @@ window.DRILL_DATA.basketball = [
     id: 'triple-threat',
     name: 'Triple Threat Moves',
     altNames: ['Triple Threat Position', 'Jab and Go'],
-    objective: 'Catch in triple threat and use a jab step, shot fake, or drive to beat a defender.',
+    description: 'Catch in triple threat and use a jab step, shot fake, or drive to beat a defender.',
     setup: [
       'Players on the wings with balls; a coach or passive defender on each',
     ],
@@ -900,7 +900,7 @@ window.DRILL_DATA.basketball = [
     id: 'defensive-slides-zig-zag',
     name: 'Zig-Zag Defensive Slides',
     altNames: ['Zig-Zag Drill', 'Defensive Slides'],
-    objective: 'Build defensive stance and lateral movement by sliding in a zig-zag the length of the court.',
+    description: 'Build defensive stance and lateral movement by sliding in a zig-zag the length of the court.',
     setup: [
       'Cones in a zig-zag pattern up the court (or use the lane and sideline)',
       'Players in a line on the baseline',
@@ -932,7 +932,7 @@ window.DRILL_DATA.basketball = [
     id: 'closeout-drill',
     name: 'Closeout Drill',
     altNames: ['Close Out and Contest'],
-    objective: 'Sprint to a shooter, chop the feet, and contest without fouling or getting driven past.',
+    description: 'Sprint to a shooter, chop the feet, and contest without fouling or getting driven past.',
     setup: [
       'Defender under the basket with a ball; offensive player on the wing or corner',
     ],
@@ -964,7 +964,7 @@ window.DRILL_DATA.basketball = [
     id: 'shell-drill',
     name: 'Shell Drill',
     altNames: ['4-on-4 Shell', 'Help and Recover'],
-    objective: 'Teach team defense positions — on-ball, deny, and help — as the ball moves around the perimeter.',
+    description: 'Teach team defense positions — on-ball, deny, and help — as the ball moves around the perimeter.',
     setup: [
       '4 offensive players around the arc (two wings, two guards); 4 defenders',
     ],
@@ -996,7 +996,7 @@ window.DRILL_DATA.basketball = [
     id: 'mirror-drill-basketball',
     name: 'Mirror Drill',
     altNames: ['Shadow Defense'],
-    objective: 'Stay in front of an opponent with quick feet — no ball needed.',
+    description: 'Stay in front of an opponent with quick feet — no ball needed.',
     setup: [
       'Pairs facing each other in the lane (or between two cones 5 yd apart)',
     ],
@@ -1029,7 +1029,7 @@ window.DRILL_DATA.basketball = [
     id: 'one-on-one-full-court',
     name: '1v1 Full Court',
     altNames: ['Zig-Zag 1v1', 'Full-Court 1-on-1'],
-    objective: 'Handle full-court pressure and finish; defenders work on containing the ball.',
+    description: 'Handle full-court pressure and finish; defenders work on containing the ball.',
     setup: [
       'Court split down the middle (half width); lines at each baseline',
     ],
@@ -1060,7 +1060,7 @@ window.DRILL_DATA.basketball = [
     id: 'cutthroat-1v1',
     name: '1v1 from the Wing',
     altNames: ['Cutthroat 1v1', 'Make It Take It 1v1'],
-    objective: 'Short 1v1 battles from the wing: attack, read the defender, finish.',
+    description: 'Short 1v1 battles from the wing: attack, read the defender, finish.',
     setup: [
       'Half court; offensive line on the wing; defensive line under the basket',
     ],
@@ -1092,7 +1092,7 @@ window.DRILL_DATA.basketball = [
     id: 'two-on-one-fast-break',
     name: '2v1 Fast Break',
     altNames: ['2-on-1 Break'],
-    objective: 'Make the right decision in a 2v1: attack to make the defender commit, then pass or finish.',
+    description: 'Make the right decision in a 2v1: attack to make the defender commit, then pass or finish.',
     setup: [
       'Two offensive lines at half court (one with balls); one defender at the far free-throw line',
     ],
@@ -1124,7 +1124,7 @@ window.DRILL_DATA.basketball = [
     id: 'three-two-two-one-continuous',
     name: '3v2 to 2v1 Continuous',
     altNames: ['3-on-2, 2-on-1', '3v2 / 2v1'],
-    objective: 'A continuous fast-break drill: 3v2 one way, 2v1 back the other way.',
+    description: 'A continuous fast-break drill: 3v2 one way, 2v1 back the other way.',
     setup: [
       'Two defenders at one end (one at the top of the key, one in the lane)',
       'Three offensive players at the other end with a ball',
@@ -1159,7 +1159,7 @@ window.DRILL_DATA.basketball = [
     id: 'give-and-go-basketball',
     name: 'Give-and-Go',
     altNames: ['Pass and Cut', 'Give and Go Layups'],
-    objective: 'Pass to a teammate, cut hard to the basket, and get the ball back for a layup.',
+    description: 'Pass to a teammate, cut hard to the basket, and get the ball back for a layup.',
     setup: [
       'Line at the top of the key with balls; a passer on the wing',
     ],
@@ -1191,7 +1191,7 @@ window.DRILL_DATA.basketball = [
     id: 'three-on-three-half-court',
     name: '3v3 Half Court',
     altNames: ['3-on-3', 'Make It Take It'],
-    objective: 'Small-sided play with lots of touches, decisions, and cutting.',
+    description: 'Small-sided play with lots of touches, decisions, and cutting.',
     setup: [
       'Half court; teams of 3; extra teams waiting',
     ],
@@ -1224,7 +1224,7 @@ window.DRILL_DATA.basketball = [
     id: 'full-court-layup-race',
     name: 'Full-Court Layup Race',
     altNames: ['Speed Layups', 'Timed Layups'],
-    objective: 'Condition with the ball: full-court speed dribbles and layups against the clock.',
+    description: 'Condition with the ball: full-court speed dribbles and layups against the clock.',
     setup: [
       'Players with balls at one baseline; baskets at both ends',
     ],
@@ -1257,7 +1257,7 @@ window.DRILL_DATA.basketball = [
     id: 'post-moves-drop-step',
     name: 'Post Moves: Drop Step and Up-and-Under',
     altNames: ['Post Footwork', 'Drop Step Drill'],
-    objective: 'Teach basic low-post scoring moves: feel the defender, drop step to the rim, or shot fake and step through.',
+    description: 'Teach basic low-post scoring moves: feel the defender, drop step to the rim, or shot fake and step through.',
     setup: [
       'Player on the block with back to the basket; coach/passer on the wing with balls',
       'Optional passive defender behind the post player',
@@ -1290,7 +1290,7 @@ window.DRILL_DATA.basketball = [
     id: 'post-seal-and-entry',
     name: 'Seal and Entry Pass',
     altNames: ['Post Entry Drill', 'Seal the Defender'],
-    objective: 'Post player seals the defender to get open; the wing makes a safe entry pass.',
+    description: 'Post player seals the defender to get open; the wing makes a safe entry pass.',
     setup: [
       'Wing with ball; post player and defender on the block',
     ],
@@ -1324,7 +1324,7 @@ window.DRILL_DATA.basketball = [
     id: 'tip-drill',
     name: 'Backboard Tip Drill',
     altNames: ['Tip Line', 'Rebound Tips'],
-    objective: 'Time jumps and control the ball off the glass with fingertips — great for rebounding hands and timing.',
+    description: 'Time jumps and control the ball off the glass with fingertips — great for rebounding hands and timing.',
     setup: [
       'One line on the side of the lane facing the backboard; one ball',
     ],
@@ -1356,7 +1356,7 @@ window.DRILL_DATA.basketball = [
     id: 'box-out-the-shooter',
     name: 'Box Out the Shooter',
     altNames: ['Shooter Box-Out', 'Wing Box-Out'],
-    objective: 'Close out to a shooter, make contact, and keep them off the boards.',
+    description: 'Close out to a shooter, make contact, and keep them off the boards.',
     setup: [
       'Shooting line on the wing with balls; box-out (defense) line at the free-throw line',
     ],
@@ -1388,7 +1388,7 @@ window.DRILL_DATA.basketball = [
     id: 'closeout-box-out',
     name: 'Close Out Box Out',
     altNames: ['Closeout to Box-Out 1v1', 'Box-Out War'],
-    objective: 'A competitive 1v1 rebounding drill: close out, contest, box out, and secure the ball.',
+    description: 'A competitive 1v1 rebounding drill: close out, contest, box out, and secure the ball.',
     setup: [
       'Defender under the basket with the ball; offensive player at the wing or top',
     ],
@@ -1424,7 +1424,7 @@ window.DRILL_DATA.basketball = [
     id: 'fight-for-it',
     name: 'Fight For It',
     altNames: ['Rebound Battle', '3-Player Rebounding'],
-    objective: 'Go up strong and secure contested rebounds.',
+    description: 'Go up strong and secure contested rebounds.',
     setup: [
       '3 players in the lane; coach shoots from the elbow or free-throw line',
     ],
@@ -1456,7 +1456,7 @@ window.DRILL_DATA.basketball = [
     id: 'post-catch-face-up',
     name: 'Post Catch and Face-Up',
     altNames: ['Face-Up Series', 'Catch, Pivot, Read'],
-    objective: 'Post players catch on the block, pivot to face the basket, and read the defender.',
+    description: 'Post players catch on the block, pivot to face the basket, and read the defender.',
     setup: [
       'Post player on the block; passer at the wing; optional defender',
     ],
@@ -1488,7 +1488,7 @@ window.DRILL_DATA.basketball = [
     id: 'hook-shot-progression',
     name: 'Hook Shot Progression',
     altNames: ['Baby Hook', 'Jump Hook'],
-    objective: 'Learn a hook shot that is hard to block — both hands.',
+    description: 'Learn a hook shot that is hard to block — both hands.',
     setup: [
       'Player on the block, one ball, close to the rim',
     ],
@@ -1520,7 +1520,7 @@ window.DRILL_DATA.basketball = [
     id: 'deny-the-wing',
     name: 'Deny the Wing',
     altNames: ['Wing Denial', 'One Pass Away Deny'],
-    objective: 'Defend one pass away: deny the wing pass, and react to the back cut.',
+    description: 'Defend one pass away: deny the wing pass, and react to the back cut.',
     setup: [
       'Coach (passer) at the top; offensive player on the wing; defender in denial stance',
     ],
@@ -1552,7 +1552,7 @@ window.DRILL_DATA.basketball = [
     id: 'help-and-recover-2v2',
     name: 'Help and Recover 2v2',
     altNames: ['Bump and Contain', 'Help-Side 2v2'],
-    objective: 'Help stop the drive, then recover to your player when they pass.',
+    description: 'Help stop the drive, then recover to your player when they pass.',
     setup: [
       '2 offensive players (top and wing, or both wings); 2 defenders; half court',
     ],
@@ -1584,7 +1584,7 @@ window.DRILL_DATA.basketball = [
     id: 'pick-and-roll-2v2',
     name: 'Pick-and-Roll 2v2',
     altNames: ['Ball Screen 2v2', 'Screen and Roll'],
-    objective: 'Learn to set, use, and defend a ball screen.',
+    description: 'Learn to set, use, and defend a ball screen.',
     setup: [
       'Half court; ball handler at the top, screener at the elbow; 2 defenders',
     ],
@@ -1619,7 +1619,7 @@ window.DRILL_DATA.basketball = [
     id: 'pass-cut-replace',
     name: 'Pass, Cut, Replace',
     altNames: ['Motion Offense Basics', '4-Out Pass and Cut'],
-    objective: 'Learn motion offense spacing: after you pass, cut to the basket and others fill the spot.',
+    description: 'Learn motion offense spacing: after you pass, cut to the basket and others fill the spot.',
     setup: [
       '4 players around the arc (top left/right, wings); no defense first',
     ],
@@ -1651,7 +1651,7 @@ window.DRILL_DATA.basketball = [
     id: 'press-break-4v4',
     name: 'Press Break 4v4',
     altNames: ['Beat the Press', 'Inbound Under Pressure'],
-    objective: 'Inbound and advance the ball against full-court pressure without turnovers.',
+    description: 'Inbound and advance the ball against full-court pressure without turnovers.',
     setup: [
       'Full court; 4 offense with an inbounder under the basket; 4 defenders pressing',
     ],
@@ -1683,7 +1683,7 @@ window.DRILL_DATA.basketball = [
     id: 'eleven-man-break',
     name: '11-Man Break',
     altNames: ['11-Man Fast Break', 'Continuous 3v2'],
-    objective: 'Non-stop 3v2 fast breaks that build transition decisions and fitness.',
+    description: 'Non-stop 3v2 fast breaks that build transition decisions and fitness.',
     setup: [
       'Full court; 2 defenders at each end; outlet players at each elbow on the sideline; 3 attackers start at one end',
     ],
@@ -1715,7 +1715,7 @@ window.DRILL_DATA.basketball = [
     id: '2v1-half-court',
     name: '2v1 Half Court Drive and Kick',
     altNames: ['Draw and Kick 2v1', '2-on-1 Read'],
-    objective: 'Attack a lone defender: drive to draw help, then pass to the open teammate.',
+    description: 'Attack a lone defender: drive to draw help, then pass to the open teammate.',
     setup: [
       'Half court; 2 offensive players (top and wing); 1 defender in the lane',
     ],
@@ -1746,7 +1746,7 @@ window.DRILL_DATA.basketball = [
     id: '3v2-half-court',
     name: '3v2 Half Court Advantage',
     altNames: ['3-on-2 Half Court', 'Find the Open Player'],
-    objective: 'Move the ball faster than the defense can rotate to find the open shot.',
+    description: 'Move the ball faster than the defense can rotate to find the open shot.',
     setup: [
       'Half court; 3 offense (top and two wings); 2 defenders in tandem',
     ],
@@ -1777,7 +1777,7 @@ window.DRILL_DATA.basketball = [
     id: 'scramble-4v4',
     name: '4v4 Scramble',
     altNames: ['Advantage-Disadvantage Scramble', 'Chaos 4v4'],
-    objective: 'Small-sided play with fast changes — one team is always briefly short-handed.',
+    description: 'Small-sided play with fast changes — one team is always briefly short-handed.',
     setup: [
       'Full court; two teams of 4; coach with a ball on the sideline',
     ],
@@ -1809,7 +1809,7 @@ window.DRILL_DATA.basketball = [
     id: 'two-on-two-make-it-take-it',
     name: '2v2 Make It, Take It',
     altNames: ['2-on-2 King of the Court', '2v2 Winners Stay'],
-    objective: 'Competitive 2v2 games that make players use screens, cuts, and give-and-goes.',
+    description: 'Competitive 2v2 games that make players use screens, cuts, and give-and-goes.',
     setup: [
       'Half court; teams of 2 waiting in a line',
     ],
@@ -1841,7 +1841,7 @@ window.DRILL_DATA.basketball = [
     id: 'hot-shot',
     name: 'Hot Shot',
     altNames: ['Hot Spot', 'Point Spots'],
-    objective: 'A timed shooting game: pick spots with different point values.',
+    description: 'A timed shooting game: pick spots with different point values.',
     setup: [
       '5–7 spots marked around the lane, each worth 1–5 points (farther = more)',
     ],
@@ -1873,7 +1873,7 @@ window.DRILL_DATA.basketball = [
     id: 'hot-seat',
     name: 'Hot Seat',
     altNames: ['Hot Seat Shooting'],
-    objective: 'Shooting under pressure — misses send you to the hot seat.',
+    description: 'Shooting under pressure — misses send you to the hot seat.',
     setup: [
       'One line at a shooting spot; a cone ("hot seat") near the sideline',
     ],
@@ -1905,7 +1905,7 @@ window.DRILL_DATA.basketball = [
     id: '21-cones',
     name: '21 Cones',
     altNames: ['Cone 21', 'Team 21'],
-    objective: 'A team shooting race with some running built in — great practice finisher.',
+    description: 'A team shooting race with some running built in — great practice finisher.',
     setup: [
       'Two teams at two baskets; a pile of cones on the baseline',
     ],
@@ -1936,7 +1936,7 @@ window.DRILL_DATA.basketball = [
     id: 'four-square-shooting',
     name: 'Four Square Shooting',
     altNames: ['4-Spot Shooting', 'Box Shooting'],
-    objective: 'Timed spot shooting from four spots around the key — track makes to see improvement.',
+    description: 'Timed spot shooting from four spots around the key — track makes to see improvement.',
     setup: [
       'Four spots: both blocks and both elbows; one ball (two with a rebounder)',
     ],
@@ -1967,7 +1967,7 @@ window.DRILL_DATA.basketball = [
     id: 'dribble-limbo',
     name: 'Dribble Limbo',
     altNames: ['Limbo Dribble', 'Low Dribble Limbo'],
-    objective: 'Young players practice low, controlled dribbles by dribbling under a limbo stick.',
+    description: 'Young players practice low, controlled dribbles by dribbling under a limbo stick.',
     setup: [
       'Pool noodle or stick held by two coaches (or set on cones); every player with a ball',
     ],
@@ -1998,7 +1998,7 @@ window.DRILL_DATA.basketball = [
     id: 'seventeens',
     name: '17s',
     altNames: ['Sideline 17s', 'Sideline Sprints'],
-    objective: 'A classic basketball conditioning test: touch sideline to sideline 17 times.',
+    description: 'A classic basketball conditioning test: touch sideline to sideline 17 times.',
     setup: [
       'Players on one sideline of the court',
     ],
@@ -2032,7 +2032,7 @@ window.DRILL_DATA.basketball = [
     id: 'circle-layups',
     name: 'Circle Layups (No Ball)',
     altNames: ['Layup Footwork Circle', 'Right-Left-Up'],
-    objective: 'Young players learn layup footwork first, without a ball, so the steps become automatic.',
+    description: 'Young players learn layup footwork first, without a ball, so the steps become automatic.',
     setup: [
       'Players jog in a big circle around the half court (or around the center circle)',
     ],
@@ -2064,7 +2064,7 @@ window.DRILL_DATA.basketball = [
     id: 'speed-layup-chase',
     name: 'Speed Layup Chase',
     altNames: ['Beat the Defender', 'Chaser Layups'],
-    objective: 'Finish at full speed with a defender chasing from behind.',
+    description: 'Finish at full speed with a defender chasing from behind.',
     setup: [
       'Offense at half court with a ball; defender 2–3 steps behind',
     ],
@@ -2095,7 +2095,7 @@ window.DRILL_DATA.basketball = [
     id: 'euro-step-finishing',
     name: 'Euro Step Finishing',
     altNames: ['Euro Step', 'Two-Step Change of Direction'],
-    objective: 'Use a two-step change of direction to get around a defender at the rim.',
+    description: 'Use a two-step change of direction to get around a defender at the rim.',
     setup: [
       'Players in a line at the wing; a cone or pad holder in the lane',
     ],
@@ -2127,7 +2127,7 @@ window.DRILL_DATA.basketball = [
     id: 'reverse-layup',
     name: 'Reverse Layup',
     altNames: ['Reverse Finish', 'Use the Rim'],
-    objective: 'Finish on the other side of the rim so the rim shields the ball from shot blockers.',
+    description: 'Finish on the other side of the rim so the rim shields the ball from shot blockers.',
     setup: [
       'Line at the wing or baseline; one ball each',
     ],
@@ -2158,7 +2158,7 @@ window.DRILL_DATA.basketball = [
     id: 'power-layup',
     name: 'Power Layup',
     altNames: ['Two-Foot Finish', 'Jump Stop Power'],
-    objective: 'Finish strong through contact with a two-foot jump stop and power layup.',
+    description: 'Finish strong through contact with a two-foot jump stop and power layup.',
     setup: [
       'Line at the wing; coach with a pad near the block',
     ],
@@ -2190,7 +2190,7 @@ window.DRILL_DATA.basketball = [
     id: 'back-to-back-box-outs',
     name: 'Back-to-Back Box Outs',
     altNames: ['Partner Resistance Box Out', 'Push-Back Box Out'],
-    objective: 'Build box-out technique and leg strength with a partner pushing back.',
+    description: 'Build box-out technique and leg strength with a partner pushing back.',
     setup: [
       'Partners back to back inside the lane, or around a circle with a ball on the floor in the middle',
     ],
@@ -2225,7 +2225,7 @@ window.DRILL_DATA.basketball = [
     id: 'rebounding-3v3',
     name: '3v3 Rebounding Game',
     altNames: ['3-on-3 Rebound War', 'Box Out and Go'],
-    objective: 'Box out as a team in 3v3 and turn rebounds into quick offense.',
+    description: 'Box out as a team in 3v3 and turn rebounds into quick offense.',
     setup: [
       'Half court; 3 offense on the perimeter, 3 defenders guarding them; coach shoots',
     ],
@@ -2261,7 +2261,7 @@ window.DRILL_DATA.basketball = [
     id: 'superman-rebounding',
     name: 'Superman Rebounding',
     altNames: ['Glass to Glass', 'Rim to Rim Rebounds'],
-    objective: 'Rebounding timing and conditioning: throw it off the glass, jump across the lane, and catch it high.',
+    description: 'Rebounding timing and conditioning: throw it off the glass, jump across the lane, and catch it high.',
     setup: [
       'Player outside the lane on one block with a ball',
     ],
@@ -2293,7 +2293,7 @@ window.DRILL_DATA.basketball = [
     id: 'zone-offense-1-3-1',
     name: 'Zone Offense Basics (1-3-1 vs 2-3)',
     altNames: ['Beat the 2-3 Zone', 'Gaps and Short Corner'],
-    objective: 'Teach a simple way to attack a 2-3 zone: line up in the gaps, use the high post and short corner.',
+    description: 'Teach a simple way to attack a 2-3 zone: line up in the gaps, use the high post and short corner.',
     setup: [
       'Half court; 5 offense in a 1-3-1 (point, two wings, high post, baseline/short corner); 5 defenders in a 2-3 zone (or chairs/cones first)',
     ],
@@ -2328,7 +2328,7 @@ window.DRILL_DATA.basketball = [
     id: 'zone-defense-slides',
     name: '2-3 Zone Slides',
     altNames: ['Zone Shell', 'Zone Movement Drill'],
-    objective: 'Defenders learn where to move in a 2-3 zone as the ball moves.',
+    description: 'Defenders learn where to move in a 2-3 zone as the ball moves.',
     setup: [
       'Half court; 5 defenders in a 2-3 zone; 4–5 offensive players on the perimeter passing only',
     ],
@@ -2361,7 +2361,7 @@ window.DRILL_DATA.basketball = [
     id: 'blob-box-play',
     name: 'Baseline Out of Bounds — Box Set',
     altNames: ['BLOB Box', 'Box Inbounds Play'],
-    objective: 'A simple under-the-basket inbounds play that works against man or zone.',
+    description: 'A simple under-the-basket inbounds play that works against man or zone.',
     setup: [
       'Half court; inbounder on the baseline; 4 players in a box (two on the blocks, two at the elbows)',
     ],
@@ -2396,7 +2396,7 @@ window.DRILL_DATA.basketball = [
     id: 'shooting-off-screens',
     name: 'Shooting Off Screens',
     altNames: ['Pin-Down Shooting', 'Curl and Fade'],
-    objective: 'Read the defender and come off a down screen for a catch-and-shoot.',
+    description: 'Read the defender and come off a down screen for a catch-and-shoot.',
     setup: [
       'Shooter on the block; screener at the elbow (or a chair); passer at the top',
     ],
@@ -2428,7 +2428,7 @@ window.DRILL_DATA.basketball = [
     id: 'two-one-three-two-continuous',
     name: '2v1 into 3v2 Continuous',
     altNames: ['2 contra 1 + 3 contra 2', '2-1 / 3-2 Fast Break'],
-    objective: 'Read 2v1 and 3v2 breaks in a continuous full-court flow.',
+    description: 'Read 2v1 and 3v2 breaks in a continuous full-court flow.',
     setup: [
       'Full court; 2 attackers vs 1 defender at one end; 2 more players waiting at half court on the sidelines',
     ],
@@ -2459,7 +2459,7 @@ window.DRILL_DATA.basketball = [
     id: 'high-low-post-2v2',
     name: 'High-Low Post 2v2',
     altNames: ['High-Low Feed', 'Post Pass 2v2'],
-    objective: 'Two post players work together: high post feeds the low post sealing their defender.',
+    description: 'Two post players work together: high post feeds the low post sealing their defender.',
     setup: [
       'Half court; one post at the free-throw line, one on the block; 2 post defenders; coach on the wing',
     ],
@@ -2491,7 +2491,7 @@ window.DRILL_DATA.basketball = [
     id: 'three-on-three-cutthroat',
     name: '3v3 Cutthroat',
     altNames: ['3v3v3 Cutthroat', 'Winners Stay 3v3'],
-    objective: 'Fast, competitive 3v3 where the defense rotates in — everyone plays and competes.',
+    description: 'Fast, competitive 3v3 where the defense rotates in — everyone plays and competes.',
     setup: [
       'Half court; three teams of 3: one on offense, one on defense, one waiting at half court',
     ],
@@ -2523,7 +2523,7 @@ window.DRILL_DATA.basketball = [
     id: 'line-touch-dribble-sprints',
     name: 'Line Touch Dribble Sprints',
     altNames: ['Dribble Suicides', 'Ball Lines'],
-    objective: 'Conditioning with the ball: dribble sprints to each court line, switching hands.',
+    description: 'Conditioning with the ball: dribble sprints to each court line, switching hands.',
     setup: [
       'Players on the baseline, each with a ball',
     ],
