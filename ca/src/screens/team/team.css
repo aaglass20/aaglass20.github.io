@@ -1,4 +1,4 @@
-/* ── Team-based profile (Soccer): Home / Plan / Events / plan editor ── */
+/* ── Team-based profile (all team sports): Home / Teams / Plan / Events / plan editor ── */
 
 .team-dot {
   display: inline-block;
@@ -420,3 +420,226 @@
   .lineup-grid { grid-template-columns: 1fr 1fr; }
   .drill-picker { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Team setup: Teams list, New Team wizard, team page ── */
+.np-field select {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--surface);
+  color: var(--text-primary);
+  width: 100%;
+}
+.np-field select:focus { outline: none; border-color: var(--accent); }
+
+a.team-card { text-decoration: none; color: inherit; }
+.team-card.is-archived { opacity: 0.75; }
+.new-team-cta { display: block; text-decoration: none; color: var(--accent-dark); font-weight: 700; }
+.reset-demo { margin-top: 8px; font-size: 13px; color: var(--text-secondary); text-decoration: underline; }
+
+/* Wizard steps */
+.setup-steps { list-style: none; display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.setup-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 6px 10px 6px 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.setup-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+.setup-step.is-current { color: var(--text-primary); border-color: var(--accent); }
+.setup-step.is-current .setup-step-num,
+.setup-step.is-done .setup-step-num { background: var(--accent); color: #fff; }
+
+.setup-card { margin-bottom: 14px; }
+.setup-fields { display: flex; flex-direction: column; gap: 14px; }
+.setup-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.45; }
+.setup-nav { display: flex; justify-content: flex-end; gap: 10px; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 1.5px var(--border);
+  cursor: pointer;
+}
+.swatch.is-selected { box-shadow: 0 0 0 2.5px var(--text-primary); }
+
+.review { display: flex; flex-direction: column; gap: 10px; }
+.review > div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; font-size: 14px; }
+.review dt { font-weight: 600; color: var(--text-secondary); }
+.review dd { line-height: 1.45; }
+
+/* Format editor */
+.fmt-editor { display: flex; flex-direction: column; gap: 4px; }
+.fmt-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.fmt-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.fmt-option.is-selected { border-color: var(--accent); background: var(--accent-light); }
+.fmt-option-label { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+.fmt-option-sub   { font-size: 11px; color: var(--text-secondary); }
+.fmt-count { max-width: 220px; margin-bottom: 10px; }
+
+.fmt-unit { padding-top: 12px; margin-top: 4px; border-top: 1px solid var(--border); }
+.fmt-unit-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.fmt-unit-label { font-size: 14px; font-weight: 700; }
+.fmt-formations { margin-bottom: 10px; }
+
+.pos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 6px; }
+.pos-slot {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.pos-slot:focus-within { border-color: var(--accent); }
+.pos-slot input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  background: transparent;
+  color: var(--text-primary);
+}
+.pos-slot input:focus { outline: none; }
+.pos-slot button {
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  padding: 0 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.pos-slot button:disabled { opacity: 0.3; cursor: default; }
+.pos-add {
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Roster editor */
+.roster-editor { display: flex; flex-direction: column; gap: 8px; }
+.rollover { padding-bottom: 12px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+.rollover-pick { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 10px; }
+.bench-chip.is-add { font: inherit; font-size: 13px; cursor: pointer; color: var(--accent-dark); font-weight: 600; }
+.bench-chip.is-add:hover { border-color: var(--accent); }
+
+.roster-rows { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.roster-row { display: flex; align-items: center; gap: 6px; }
+.roster-row input {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 15px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.roster-row input:focus { outline: none; border-color: var(--accent); }
+.roster-num  { width: 56px; text-align: center; font-weight: 700; }
+.roster-name { flex: 1; min-width: 0; }
+.roster-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+.roster-remove {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.roster-add { align-self: flex-start; }
+
+@media (max-width: 480px) {
+  .roster-tag { display: none; }
+}
+
+/* Add event */
+.add-event { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+.add-event-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.add-event-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.np-add-event { margin-top: 10px; }
+
+/* Team page */
+.created-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent);
+  font-size: 14px;
+}
+.team-plan-btn { margin-top: 12px; }
+.save-bar {
+  position: sticky;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.save-bar span { flex: 1; }
+.save-bar .btn-ghost { color: #fff; border-color: rgba(255, 255, 255, 0.4); background: transparent; }
+.team-manage { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn-ghost.is-danger { color: #C23B22; border-color: #F0C4BB; }
+
+/* Plan editor additions */
+.lineup-edit { margin-left: 8px; font-weight: 600; color: var(--text-secondary); }
+.lineup-unit .lineup-grid { margin-bottom: 0; }
+.batting-add { margin-top: 10px; }

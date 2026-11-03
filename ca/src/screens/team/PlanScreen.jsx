@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { teamById, planSummary } from '../../data/teamMock'
+import { planSummary } from '../../data/teamMock'
 import { fmtRelative } from '../../data/dates'
 import { useTeams } from './TeamContext'
 import TeamScopeBar from './TeamScopeBar'
+import { AddEventForm } from './TeamSetupParts'
 import '../Screen.css'
 import '../shared.css'
 import './team.css'
 
 // Plan tab: start a new practice/game plan, and see upcoming events with their plan status.
 export default function PlanScreen() {
-  const { scopedUpcoming, planFor } = useTeams()
+  const { scopedUpcoming, planFor, activeTeams } = useTeams()
   const [creating, setCreating] = useState(false)
 
   const planned   = scopedUpcoming.filter(e => planFor(e))
@@ -23,10 +24,14 @@ export default function PlanScreen() {
           <div className="header-eyebrow">Builder</div>
           <h1>Plan</h1>
         </div>
-        {!creating && <button className="btn-primary" onClick={() => setCreating(true)}>+ New Plan</button>}
+        {!creating && activeTeams.length > 0 && <button className="btn-primary" onClick={() => setCreating(true)}>+ New Plan</button>}
       </div>
 
       <TeamScopeBar />
+
+      {!activeTeams.length && (
+        <div className="card empty-note">Plans belong to a team. <Link to="/teams/new">Set up a team</Link> first.</div>
+      )}
 
       {creating && <NewPlan onCancel={() => setCreating(false)} />}
 
@@ -34,21 +39,23 @@ export default function PlanScreen() {
         <h2 className="section-title">Upcoming Plans</h2>
         {planned.length
           ? <div className="plan-rows">{planned.map(e => <PlanRow key={e.id} event={e} />)}</div>
-          : <div className="card empty-note">No plans yet. Tap + New Plan to start one.</div>}
+          : activeTeams.length > 0 && <div className="card empty-note">No plans yet. Tap + New Plan to start one.</div>}
       </section>
 
       <section className="section">
         <h2 className="section-title">Needs a Plan</h2>
-        <div className="plan-rows">{unplanned.map(e => <PlanRow key={e.id} event={e} />)}</div>
+        {unplanned.length
+          ? <div className="plan-rows">{unplanned.map(e => <PlanRow key={e.id} event={e} />)}</div>
+          : <div className="card empty-note">Nothing on the schedule. Add games and practices from a team's page.</div>}
       </section>
     </div>
   )
 }
 
 function PlanRow({ event }) {
-  const { planFor } = useTeams()
+  const { planFor, teamById } = useTeams()
   const team = teamById(event.teamId)
-  const s = planSummary(event, planFor(event))
+  const s = planSummary(event, planFor(event), team)
   return (
     <Link to={`/plan/${event.id}`} className="plan-row">
       <span className={`type-pill is-${event.type}`}>{event.type === 'game' ? 'Game' : 'Practice'}</span>
@@ -68,10 +75,11 @@ function PlanRow({ event }) {
 
 // New plan: choose Practice or Game → team (if none selected) → which event
 function NewPlan({ onCancel }) {
-  const { teams, team, upcomingFor, ensurePlan } = useTeams()
+  const { activeTeams: teams, team, upcomingFor, ensurePlan, addEvent } = useTeams()
   const navigate = useNavigate()
   const [type, setType]     = useState(null)
   const [pickTeam, setPick] = useState(team?.id ?? null)
+  const [adding, setAdding] = useState(false)
   const teamIdForPlan = team?.id ?? pickTeam
 
   const options = teamIdForPlan ? upcomingFor(teamIdForPlan).filter(e => e.type === type) : []
@@ -134,8 +142,19 @@ function NewPlan({ onCancel }) {
                 <span className="chevron">›</span>
               </button>
             ))}
-            {!options.length && <div className="empty-note">No upcoming {type}s for this team.</div>}
+            {!options.length && !adding && <div className="empty-note">No upcoming {type}s for this team.</div>}
           </div>
+          {adding ? (
+            <AddEventForm
+              key={type}
+              teamId={teamIdForPlan}
+              defaultType={type}
+              onCancel={() => setAdding(false)}
+              onSave={ev => start({ ...ev, id: addEvent(ev) })}
+            />
+          ) : (
+            <button type="button" className="btn-ghost np-add-event" onClick={() => setAdding(true)}>+ Schedule a new {type}</button>
+          )}
         </>
       )}
     </div>

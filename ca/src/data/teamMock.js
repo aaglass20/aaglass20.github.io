@@ -1,39 +1,48 @@
-// Mock data for team-based profiles (Soccer for now).
-// Hierarchy: Account → Teams → Events (practice | game) → Plan (one per event).
-// Everything is dated relative to today so the demo always looks current. Nothing is persisted.
+// Demo data + plan helpers for team-based profiles.
+// Hierarchy: Account → Players (account-wide) → Teams (setup + roster) → Events (practice | game) → Plan (one per event).
+// Players live on the account so a roster can roll over to next season's team and keep the same kids.
+// Demo events are dated relative to today; teams, players, plans and added events are saved by teamStore.js.
 
 import { addDays, todayISO } from './dates'
+import { unitsFor, setupFor } from './sportFormats'
 
-// ── Small-sided format by age group (US Youth Soccer style) ──
-const FORMATS = {
-  '7v7':   { label: '7v7',   shape: '2-3-1', positions: ['GK', 'LB', 'RB', 'LM', 'CM', 'RM', 'ST'] },
-  '9v9':   { label: '9v9',   shape: '3-3-2', positions: ['GK', 'LB', 'CB', 'RB', 'LM', 'CM', 'RM', 'LS', 'RS'] },
-  '11v11': { label: '11v11', shape: '4-3-3', positions: ['GK', 'LB', 'LCB', 'RCB', 'RB', 'LCM', 'CDM', 'RCM', 'LW', 'ST', 'RW'] },
-}
-
-export const formatFor = team => FORMATS[team.format]
-
-export const TEAMS = [
-  { id: 't-u13', name: 'BDU U13 2026', age: 'U13', format: '11v11', color: '#00BDB0' },
-  { id: 't-u12', name: 'BDU U12 2025', age: 'U12', format: '9v9',   color: '#FF6B1A' },
-  { id: 't-u11', name: 'BDU U11 2024', age: 'U11', format: '9v9',   color: '#3B6FD8' },
-  { id: 't-u10', name: 'BDU U10 2025', age: 'U10', format: '7v7',   color: '#8E5BD0' },
+// ── Demo teams (Soccer demo login) ──
+const DEMO_TEAMS = [
+  { id: 't-u13', name: 'BDU U13 2026', ageGroup: 'U13', season: 'Fall 2026',   formatId: '11v11', color: '#00BDB0' },
+  { id: 't-u12', name: 'BDU U12 2025', ageGroup: 'U12', season: 'Fall 2026',   formatId: '9v9',   color: '#FF6B1A' },
+  { id: 't-u11', name: 'BDU U11 2024', ageGroup: 'U11', season: 'Fall 2026',   formatId: '9v9',   color: '#3B6FD8' },
+  { id: 't-u10', name: 'BDU U10 2025', ageGroup: 'U10', season: 'Fall 2026',   formatId: '7v7',   color: '#8E5BD0' },
+  // Last season's team — most of these kids rolled over to U13 2026
+  { id: 't-u12s', name: 'BDU U12 Spring', ageGroup: 'U12', season: 'Spring 2026', formatId: '9v9', color: '#5C7878', archived: true },
 ]
 
-export const teamById = id => TEAMS.find(t => t.id === id)
-
-// ── Rosters — generated from a name pool so each team has 14–16 players ──
 const FIRST = ['Aiden', 'Mason', 'Leo', 'Owen', 'Eli', 'Jayden', 'Lucas', 'Noah', 'Gavin', 'Isaac', 'Carter', 'Mateo', 'Ryan', 'Caleb', 'Diego', 'Henry', 'Jonah', 'Miles', 'Nolan', 'Theo', 'Asher', 'Ezra', 'Kai', 'Luca']
 const LAST  = 'ABCDEFGHJKLMNPRSTW'
 
-export const ROSTERS = Object.fromEntries(TEAMS.map((t, ti) => {
-  const size = [16, 14, 14, 12][ti]
-  return [t.id, Array.from({ length: size }, (_, i) => ({
-    id: `${t.id}-p${i + 1}`,
-    name: `${FIRST[(i * 5 + ti * 7) % FIRST.length]} ${LAST[(i * 3 + ti) % LAST.length]}.`,
-    number: ((i * 7 + ti * 3) % 23) + 2,
-  }))]
-}))
+export function seedTeamData() {
+  const players = {}
+  const teams = DEMO_TEAMS.map((t, ti) => {
+    let roster
+    if (t.id === 't-u12s') {
+      // 13 of U13's players (different numbers last season) + 2 who didn't come back
+      roster = Array.from({ length: 13 }, (_, i) => ({ playerId: `t-u13-p${i + 1}`, number: ((i * 5 + 4) % 23) + 2 }))
+      ;['Sam R.', 'Wyatt D.'].forEach((name, i) => {
+        const id = `t-u12s-p${i + 1}`
+        players[id] = { id, name }
+        roster.push({ playerId: id, number: 30 + i })
+      })
+    } else {
+      const size = [16, 14, 14, 12][ti]
+      roster = Array.from({ length: size }, (_, i) => {
+        const id = `${t.id}-p${i + 1}`
+        players[id] = { id, name: `${FIRST[(i * 5 + ti * 7) % FIRST.length]} ${LAST[(i * 3 + ti) % LAST.length]}.` }
+        return { playerId: id, number: ((i * 7 + ti * 3) % 23) + 2 }
+      })
+    }
+    return { ...t, sport: 'soccer', units: unitsFor('soccer', t.formatId), roster }
+  })
+  return { teams, players, plans: seedPlans(teams), events: [] }
+}
 
 // ── Soccer drill library for practice plans ──
 export const SOCCER_DRILLS = [
@@ -50,6 +59,8 @@ export const SOCCER_DRILLS = [
 ]
 
 export const drillById = id => SOCCER_DRILLS.find(d => d.id === id)
+// Only soccer has a practice drill library so far
+export const drillsForSport = sport => (sport === 'soccer' ? SOCCER_DRILLS : [])
 
 const OPPONENTS = ['Riverside United', 'North Valley SC', 'Lakeview FC', 'Eastside Rovers', 'Hillcrest Athletic', 'Prairie City FC']
 
@@ -61,11 +72,13 @@ const SCHEDULE = {
   't-u10': { practice: [5, 12, 19],           game: [4, 11, 18], pTime: '5:00 PM', gTime: '10:00 AM' },
 }
 
-export function seedTeamEvents() {
+// Demo schedule for whichever demo teams still exist on the account
+export function seedTeamEvents(teams) {
   const t = todayISO()
   const events = []
-  TEAMS.forEach((team, ti) => {
+  teams.forEach((team, ti) => {
     const s = SCHEDULE[team.id]
+    if (!s) return
     s.practice.forEach((off, i) => events.push({
       id: `${team.id}-pr${i + 1}`, teamId: team.id, type: 'practice',
       date: addDays(t, off), time: s.pTime, location: 'BDU Training Grounds · Field ' + (ti + 1),
@@ -80,7 +93,7 @@ export function seedTeamEvents() {
       })
     })
   })
-  return sortEvents(events)
+  return events
 }
 
 export const sortEvents = events =>
@@ -93,20 +106,27 @@ function toSortTime(t) {
   return `${String(hh).padStart(2, '0')}:${m}`
 }
 
+// "18:30" (from <input type="time">) → "6:30 PM"
+export function fromInputTime(v) {
+  const [h, m] = v.split(':').map(Number)
+  return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
+}
+
 // ── Plans: one per event, keyed by event id ──
 export function emptyPlan(event) {
   if (event.type === 'practice') return { type: 'practice', title: '', drillIds: [] }
   return {
     type: 'game',
-    lineup: {},                                   // position → playerId
+    lineup: {},                                   // position slot id → playerId
+    battingOrder: [],                             // playerIds (softball / baseball)
     points: { focus: '', strategy: '', opponent: '' },
-    stats: { us: 0, them: 0, players: {} },       // playerId → { goals, assists, shots, saves }
+    stats: { us: 0, them: 0, players: {} },       // playerId → { [stat id]: count }
   }
 }
 
-export function seedPlans() {
-  const u13 = ROSTERS['t-u13']
-  const pos = FORMATS['11v11'].positions
+function seedPlans(teams) {
+  const u13 = teams.find(t => t.id === 't-u13')
+  const slotIds = u13.units[0].positions.map(p => p.id)
   return {
     // Tomorrow's practice — the demo's "Next Event"
     't-u13-pr1': {
@@ -117,7 +137,8 @@ export function seedPlans() {
     // Saturday's game — lineup + game points started
     't-u13-g1': {
       type: 'game',
-      lineup: Object.fromEntries(pos.map((p, i) => [p, u13[i].id])),
+      lineup: Object.fromEntries(slotIds.map((s, i) => [s, u13.roster[i].playerId])),
+      battingOrder: [],
       points: {
         focus: 'Win the ball back within 5 seconds. Compact between the lines.',
         strategy: '4-3-3, high press on their center backs. Switch play early to the weak side.',
@@ -130,23 +151,23 @@ export function seedPlans() {
 }
 
 // Summary for an event card's plan strip
-export function planSummary(event, plan) {
+export function planSummary(event, plan, team) {
   if (!plan) return { label: event.type === 'game' ? 'Game Plan' : 'Practice Plan', title: 'Not planned yet', empty: true }
   if (plan.type === 'practice') {
-    const drills = plan.drillIds.map(drillById)
+    const drills = plan.drillIds.map(drillById).filter(Boolean)
     return {
       label: 'Practice Plan',
       title: plan.title || 'Untitled plan',
       meta: `${drills.reduce((s, d) => s + d.minutes, 0)} min · ${drills.length} drills`,
     }
   }
-  const team = teamById(event.teamId)
-  const slots = FORMATS[team.format].positions.length
-  const filled = Object.values(plan.lineup).filter(Boolean).length
+  const slotIds = team.units.flatMap(u => u.positions.map(p => p.id))
+  const filled = slotIds.filter(id => plan.lineup[id]).length
   const notes = Object.values(plan.points).filter(v => v.trim()).length
+  const order = setupFor(team.sport).battingOrder ? ` · ${plan.battingOrder?.length ?? 0} batting` : ''
   return {
     label: 'Game Plan',
-    title: filled === slots ? 'Lineup set' : `Lineup ${filled}/${slots}`,
-    meta: `${notes}/3 game points`,
+    title: filled === slotIds.length ? 'Lineup set' : `Lineup ${filled}/${slotIds.length}`,
+    meta: `${notes}/3 game points${order}`,
   }
 }

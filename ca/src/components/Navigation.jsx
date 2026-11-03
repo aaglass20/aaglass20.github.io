@@ -61,6 +61,16 @@ const NAV_ITEMS = [
     ),
   },
   {
+    to: '/teams',
+    label: 'Teams',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    ),
+  },
+  {
     to: '/plan',
     label: 'Plan',
     icon: (
@@ -98,16 +108,16 @@ const NAV_ITEMS = [
   },
 ]
 
-// Menu per account profile. Adaptive Sports is program-based; Soccer is team-based.
-// Other sports still get the original placeholder menu until they're designed.
+// Menu per account profile. Adaptive Sports is program-based; every other sport is team-based.
+// No sport yet (shouldn't happen after sign-up) falls back to the original placeholder menu.
 const MENUS = {
   adaptive: ['/', '/programs', '/events', '/tools'],
-  soccer:   ['/', '/plan', '/events', '/tools'],
+  team:     ['/', '/teams', '/plan', '/events', '/tools'],
   default:  ['/', '/drills', '/practice', '/roster', '/tools'],
 }
 
 export function menuFor(sport) {
-  const paths = MENUS[sport] ?? MENUS.default
+  const paths = !sport ? MENUS.default : (MENUS[sport] ?? MENUS.team)
   return paths.map(p => NAV_ITEMS.find(item => item.to === p))
 }
 

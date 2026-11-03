@@ -19,6 +19,9 @@ import TeamHomeScreen from './screens/team/TeamHomeScreen'
 import TeamEventsScreen from './screens/team/TeamEventsScreen'
 import PlanScreen from './screens/team/PlanScreen'
 import PlanEditor from './screens/team/PlanEditor'
+import TeamsScreen from './screens/team/TeamsScreen'
+import TeamSetup from './screens/team/TeamSetup'
+import TeamDetail from './screens/team/TeamDetail'
 import './App.css'
 
 export default function App() {
@@ -41,7 +44,8 @@ export default function App() {
   }
 
   const isAdaptive = account?.sport === 'adaptive'
-  const isSoccer   = account?.sport === 'soccer'
+  // Every sport except Adaptive is team-based (Teams → roster + format → events → plans)
+  const isTeamSport = !!account?.sport && !isAdaptive
 
   if (!account) {
     if (authView === 'landing') {
@@ -82,9 +86,12 @@ export default function App() {
               <Route path="/programs" element={<ProgramsScreen programs={programs} onCreate={p => setPrograms(ps => [p, ...ps])} />} />
               <Route path="/events"   element={<EventsScreen programs={programs} />} />
             </>
-          ) : isSoccer ? (
+          ) : isTeamSport ? (
             <>
               <Route path="/"              element={<TeamHomeScreen account={account} />} />
+              <Route path="/teams"         element={<TeamsScreen />} />
+              <Route path="/teams/new"     element={<TeamSetup />} />
+              <Route path="/teams/:teamId" element={<TeamDetail />} />
               <Route path="/plan"          element={<PlanScreen />} />
               <Route path="/plan/:eventId" element={<PlanEditor />} />
               <Route path="/events"        element={<TeamEventsScreen />} />
@@ -105,6 +112,6 @@ export default function App() {
     </div>
   )
 
-  // Team selection, events and plans live in TeamProvider; a fresh one per login
-  return isSoccer ? <TeamProvider key={account.email}>{shell}</TeamProvider> : shell
+  // Teams, rosters, events and plans live in TeamProvider (saved per account); a fresh one per login
+  return isTeamSport ? <TeamProvider key={account.email} account={account}>{shell}</TeamProvider> : shell
 }

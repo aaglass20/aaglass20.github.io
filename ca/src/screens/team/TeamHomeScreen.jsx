@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { firstNameOf, sportLabelOf } from '../../data/account'
-import { ROSTERS, formatFor } from '../../data/teamMock'
+import { Link } from 'react-router-dom'
+import { formatLabel } from '../../data/sportFormats'
 import { fmtRelative } from '../../data/dates'
 import { useTeams } from './TeamContext'
 import TeamEventCard from './TeamEventCard'
@@ -9,7 +10,7 @@ import '../shared.css'
 import './team.css'
 
 export default function TeamHomeScreen({ account }) {
-  const { teams, team, teamId, setTeamId, scopedUpcoming, upcomingFor } = useTeams()
+  const { activeTeams: teams, team, teamId, setTeamId, scopedUpcoming, upcomingFor } = useTeams()
   const [query, setQuery] = useState('')
 
   const next = scopedUpcoming[0]
@@ -30,11 +31,14 @@ export default function TeamHomeScreen({ account }) {
         </div>
         {next
           ? <TeamEventCard key={next.id} event={next} highlight defaultOpen />
-          : <div className="card empty-note">Nothing scheduled.</div>}
+          : <div className="card empty-note">Nothing scheduled.{teams.length ? '' : ' Start by setting up a team.'}</div>}
       </section>
 
       <section className="section">
-        <h2 className="section-title">Your Teams</h2>
+        <div className="section-title-row">
+          <h2 className="section-title">Your Teams</h2>
+          <Link to="/teams" className="section-link">Manage teams</Link>
+        </div>
         <input
           type="search"
           className="search-input"
@@ -59,11 +63,11 @@ export default function TeamHomeScreen({ account }) {
                 style={{ '--team': t.color }}
                 onClick={() => setTeamId(selected ? null : t.id)}
               >
-                <span className="team-badge">{t.age}</span>
+                <span className="team-badge">{t.ageGroup}</span>
                 <span className="team-card-main">
                   <span className="team-name">{t.name}</span>
                   <span className="team-sub">
-                    {formatFor(t).label} · {ROSTERS[t.id].length} players
+                    {formatLabel(t)} · {t.roster.length} players
                   </span>
                   {nextUp && (
                     <span className="team-next">
@@ -75,7 +79,9 @@ export default function TeamHomeScreen({ account }) {
               </button>
             )
           })}
-          {!shown.length && <div className="card empty-note">No teams match “{query}”.</div>}
+          {!shown.length && (teams.length
+            ? <div className="card empty-note">No teams match “{query}”.</div>
+            : <Link to="/teams/new" className="card empty-note new-team-cta">+ Set up your first team</Link>)}
         </div>
       </section>
     </div>

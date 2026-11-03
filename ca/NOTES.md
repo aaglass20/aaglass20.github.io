@@ -58,16 +58,29 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 - Demo data lives in `src/data/adaptiveMock.js` and is **dated relative to today**, so "Independence Soccer · Session 3" is always tomorrow. Seeded only when an account picks Adaptive Sports; new programs live in memory until logout.
 - Practice Plans / Drills screens are still the generic placeholders, reachable from Home quick actions (not in the Adaptive menu).
 
-### Profile: Soccer (team-based)
-- **Log In = Soccer demo account** (`LoginScreen` mocks `{ name: 'Coach', sport: 'soccer' }`). Sign-up with Soccer gets the same profile.
-- **Menu:** **Home · Plan · Events · Tools** (`MENUS.soccer`). Other team sports (Softball, Baseball, Football, Basketball) still use the old placeholder menu until designed.
-- **Hierarchy:** Account → **Teams** → **Events** (practice | game) → one **Plan** per event. Practice plan = ordered drills. Game plan = **Lineup**, **Game Points** (Focus / Strategy / About the opponent), **Stats** (score + per-player G/A/Sh/Sv).
+### Profile: team sports (Soccer, Football, Basketball, Softball, Baseball)
+- **Every sport except Adaptive is team-based** and gets the same profile. **Log In = Soccer demo account** (`LoginScreen` mocks `{ name: 'Coach', sport: 'soccer' }`) with demo teams; sign-up with any team sport starts with no teams.
+- **Menu:** **Home · Teams · Plan · Events · Tools** (`MENUS.team`).
+- **Hierarchy:** Account → **Players** (account-wide) → **Teams** (setup + roster) → **Events** (practice | game) → one **Plan** per event. Practice plan = ordered drills. Game plan = **Lineup**, **Game Points** (Focus / Strategy / About the opponent), **Stats** (score + per-player G/A/Sh/Sv).
 - **Team scope:** no team selected = every tab shows all teams. Selecting a team (on Home) scopes Home, Plan and Events to that team until cleared ("All teams ✕"). State lives in `TeamProvider` (`src/screens/team/TeamContext.jsx`), fresh per login.
 - **Home:** "Next Event" (all teams by default → BDU U13 2026 practice tomorrow; team-specific once selected), then **Your Teams** with search. Tap a team to select; tap again to clear.
 - **Plan:** + New Plan → Practice or Game → team (skipped if one is selected) → pick the event. Also lists Upcoming Plans and Needs a Plan. Editor at `/plan/:eventId`; edits save as you go.
 - **Events:** scope bar, All / Practices / Games filter, the same day strip as Adaptive, then the day's events and Coming Up.
-- **Lineup format follows age group:** U10 7v7 (2-3-1), U11–U12 9v9 (3-3-2), U13+ 11v11 (4-3-3). Positions per format are in `FORMATS` in `src/data/teamMock.js`.
-- Demo data (`src/data/teamMock.js`): teams BDU U13 2026, U12 2025, U11 2024, U10 2025; generated rosters; opponents are fictional; all dates relative to today, nothing scheduled today.
+- Demo data (`src/data/teamMock.js`): teams BDU U13 2026, U12 2025, U11 2024, U10 2025, plus archived **BDU U12 Spring** (Spring 2026, most of its kids are on U13 — the rollover demo). Opponents are fictional; all dates relative to today, nothing scheduled today. Teams → **Reset demo data** puts it back.
+
+### Team setup (Teams tab)
+- **Sport setup lives in `src/data/sportFormats.js`** (`SPORT_SETUP`): per sport → **formats** (how many play at a time) → **units** → **formations** → **default positions**. Plus a **Custom** format (pick a number). Add a formation or format there and it shows up in setup.
+  - Soccer 4v4 / 7v7 / 9v9 / 11v11 · Football 5v5 flag / 7v7 / 8v8 / 11v11 · Basketball 3v3 / 4v4 / 5v5 · Softball & Baseball 9 or 10 fielders.
+  - **Units:** soccer/basketball have one ("On the field"/"On the court"); **football has Offense + Defense**, each with its own formation; softball/baseball have Defense plus a **batting order** (`battingOrder: true`).
+  - `defaultFormat(age)` picks the format from the age group (e.g. soccer U9–U10 → 7v7).
+- **A team copies the default positions** when created and can then rename, add or remove them — team by team. Positions are **slots with stable ids** (`f1`, `o3`, `d7`…); lineups are keyed by slot id, so renaming "LS" → "ST" keeps the player there. Changing format/formation resets positions (warned on the team page).
+- **Players are account-wide; a roster points at them** (`{ playerId, number }`). Jersey numbers live on the roster entry, so a returning kid can change numbers. Rolling a roster over keeps the same player ids — the hook for career stats later. Editing a returning player's name renames them everywhere.
+- **New Team wizard** (`/teams/new`): 1 · Team (name, age group, season, color) → 2 · Format & positions → 3 · Roster (roll over from any team: **Add all** or pick players, then remove / add new) → 4 · Review → team page, team selected.
+- **Team page** (`/teams/:id`): schedule (+ Add event), info and format save as you go; **roster is a draft with Save / Discard** (otherwise every keystroke on a new name would create a player). Archive = past season (hidden from Home and scope; still available for rollover). Delete keeps the players on the account.
+- **Rolls into game plans:** adding a game on a new team's page opens its game plan. Plan → New Plan → Game also offers **+ Schedule a new game** when a team has none.
+- **Game plan per sport:** lineup sections per unit (a football player can be in both units, once per unit), batting order for bat sports, stats columns and strategy hint from `SPORT_SETUP` (soccer G/A/Sh/Sv, football TD/Tkl/INT/Sk, basketball Pts/Reb/Ast/Stl, softball/baseball H/R/RBI/BB).
+- **Saved in this browser** (`src/data/teamStore.js`, localStorage key `ca.teamData.v1:<email>`) until real accounts exist. Demo events are regenerated relative to today; events the coach adds are saved.
+- Practice drill library is soccer-only for now (`drillsForSport`); other sports show "coming soon".
 - Shared UI for both profiles: `components/EventCard.jsx`, `components/DayStrip.jsx`, `screens/shared.css`.
 
 ### Build, deploy & testing
@@ -87,8 +100,14 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 - [ ] Edit a single event's practice plan (swap drills, reorder, change minutes).
 - [ ] Adaptive drill library screen (filter by sport focus, accommodations).
 - [ ] Programs that meet more than once a week (e.g. Tue + Thu).
-- [ ] Soccer: create/edit teams and rosters (teams are fixed demo data today).
-- [ ] Soccer: add/edit events (schedule a practice or game) — events are fixed demo data today.
+- [x] ~~Create/edit teams and rosters~~ — Teams tab, New Team wizard with roster rollover.
+- [ ] Edit / delete a scheduled event (adding works; demo events are fixed).
+- [ ] Football special teams unit (kickoff, punt, returns) and package/formation per play.
+- [ ] Softball/baseball: defense by inning (who plays where each inning), DP/Flex, pitch counts.
+- [ ] Player details on the roster: preferred positions, guardian contact, medical notes; position eligibility in lineup dropdowns.
+- [ ] Career view per player across rolled-over teams (stats by season).
+- [ ] Practice drill libraries for every sport — pull from `/drills/data/<sport>.js`?
+- [ ] Assistant coaches per team; share a team between accounts.
 - [ ] Game day: live stats mode with a game clock, subs/minutes played, and a lineup pitch diagram.
 - [ ] Practice plan: drill details (diagram, coaching points, video) and custom drill minutes.
 - [ ] Show the selected team in the sidebar / top bar so scope is visible on every tab.
@@ -114,3 +133,4 @@ Add to it as we go: rules are things to keep doing, ideas are things we might do
 | 2026-10-21 | Sign-up became a 2-step wizard (Account → Sport); sport stored on the account, one sport per account. |
 | 2026-10-21 | Adaptive Sports profile: program-based menu (Home, Programs, Events, Tools); Program → Events (weekly) → Practice Plan → Drills. |
 | 2026-10-22 | Soccer profile (Log In demo): Home, Plan, Events, Tools; team selection scopes tabs; game plans = Lineup / Game Points / Stats. |
+| 2026-10-31 | Team setup for all team sports: Teams tab + New Team wizard (format → formation → editable positions, roster rollover). Players account-wide; saved in localStorage per email. Game plan reads the team's units/positions; batting order for softball/baseball. |

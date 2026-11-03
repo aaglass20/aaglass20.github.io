@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { teamById, ROSTERS, SOCCER_DRILLS, drillById, formatFor, emptyPlan } from '../../data/teamMock'
+import { drillsForSport, drillById, emptyPlan } from '../../data/teamMock'
+import { setupFor, formatLabel } from '../../data/sportFormats'
 import { fmtLong } from '../../data/dates'
 import { useTeams } from './TeamContext'
 import '../Screen.css'
@@ -10,7 +11,7 @@ import './team.css'
 // /plan/:eventId — edit the one plan attached to a practice or game. Changes save as you go (in memory).
 export default function PlanEditor() {
   const { eventId } = useParams()
-  const { eventById, planFor, savePlan } = useTeams()
+  const { eventById, planFor, savePlan, teamById } = useTeams()
   const event = eventById(eventId)
 
   if (!event) {
@@ -23,7 +24,7 @@ export default function PlanEditor() {
   }
 
   const team = teamById(event.teamId)
-  const plan = planFor(event) ?? emptyPlan(event)
+  const plan = { ...emptyPlan(event), ...planFor(event) }
   const save = next => savePlan(event.id, next)
   const isGame = event.type === 'game'
 
@@ -43,14 +44,15 @@ export default function PlanEditor() {
 
       {isGame
         ? <GamePlan team={team} plan={plan} onChange={save} />
-        : <PracticePlan plan={plan} onChange={save} />}
+        : <PracticePlan team={team} plan={plan} onChange={save} />}
     </div>
   )
 }
 
 // ── Practice: title + ordered drills picked from the library ──
-function PracticePlan({ plan, onChange }) {
-  const drills = plan.drillIds.map(drillById)
+function PracticePlan({ team, plan, onChange }) {
+  const library = drillsForSport(team.sport)
+  const drills = plan.drillIds.map(drillById).filter(Boolean)
   const total = drills.reduce((s, d) => s + d.minutes, 0)
 
   const move = (i, dir) => {
@@ -99,8 +101,9 @@ function PracticePlan({ plan, onChange }) {
 
       <section className="section">
         <h2 className="section-title">Drill Library</h2>
+        {!library.length && <div className="card empty-note">A drill library for this sport is coming soon.</div>}
         <div className="drill-picker">
-          {SOCCER_DRILLS.filter(d => !plan.drillIds.includes(d.id)).map(d => (
+          {library.filter(d => !plan.drillIds.includes(d.id)).map(d => (
             <button key={d.id} type="button" className="drill-pick" onClick={() => onChange({ ...plan, drillIds: [...plan.drillIds, d.id] })}>
               <span className="drill-pick-add">+</span>
               <span className="plan-drill-main">
@@ -141,57 +144,124 @@ function GamePlan({ team, plan, onChange }) {
         ))}
       </div>
       {tab === 'lineup' && <Lineup team={team} plan={plan} onChange={onChange} />}
-      {tab === 'points' && <GamePoints plan={plan} onChange={onChange} />}
+      {tab === 'points' && <GamePoints team={team} plan={plan} onChange={onChange} />}
       {tab === 'stats'  && <Stats team={team} plan={plan} onChange={onChange} />}
     </>
   )
 }
 
 function Lineup({ team, plan, onChange }) {
-  const roster = ROSTERS[team.id]
-  const fmt = formatFor(team)
-  const used = new Set(Object.values(plan.lineup).filter(Boolean))
-  const bench = roster.filter(p => !used.has(p.id))
+  const { rosterOf } = useTeams()
+  const roster = rosterOf(team)
+  const byId = Object.fromEntries(roster.map(p => [p.id, p]))
+  const inLineup = new Set(team.units.flatMap(u => u.positions.map(p => plan.lineup[p.id])).filter(Boolean))
+  const bench = roster.filter(p => !inLineup.has(p.id))
+  const batting = setupFor(team.sport).battingOrder
 
-  const setSlot = (pos, playerId) => onChange({ ...plan, lineup: { ...plan.lineup, [pos]: playerId || undefined } })
+  const setSlot = (slotId, playerId) => onChange({ ...plan, lineup: { ...plan.lineup, [slotId]: playerId || undefined } })
 
   return (
     <>
-      <div className="lineup-format">{fmt.label} · {fmt.shape}</div>
-      <div className="lineup-grid">
-        {fmt.positions.map(pos => (
-          <label key={pos} className="lineup-slot">
-            <span className="lineup-pos">{pos}</span>
-            <select value={plan.lineup[pos] ?? ''} onChange={e => setSlot(pos, e.target.value)}>
-              <option value="">— Select player —</option>
-              {roster.map(p => (
-                <option key={p.id} value={p.id} disabled={used.has(p.id) && plan.lineup[pos] !== p.id}>
-                  #{p.number} {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        ))}
+      <div className="lineup-format">
+        {formatLabel(team)} <Link to={`/teams/${team.id}`} className="lineup-edit">Edit positions</Link>
       </div>
+
+      {batting && <BattingOrder roster={roster} byId={byId} plan={plan} onChange={onChange} />}
+
+      {team.units.map(u => {
+        // A player can be in more than one unit (two-way football players), but only once per unit
+        const used = new Set(u.positions.map(p => plan.lineup[p.id]).filter(Boolean))
+        return (
+          <section key={u.id} className="section lineup-unit">
+            {(team.units.length > 1 || batting) && <h2 className="section-title">{u.label}</h2>}
+            <div className="lineup-grid">
+              {u.positions.map(pos => (
+                <label key={pos.id} className="lineup-slot">
+                  <span className="lineup-pos">{pos.label}</span>
+                  <select value={byId[plan.lineup[pos.id]] ? plan.lineup[pos.id] : ''} onChange={e => setSlot(pos.id, e.target.value)}>
+                    <option value="">— Select player —</option>
+                    {roster.map(p => (
+                      <option key={p.id} value={p.id} disabled={used.has(p.id) && plan.lineup[pos.id] !== p.id}>
+                        {p.number ? `#${p.number} ` : ''}{p.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+            </div>
+          </section>
+        )
+      })}
+
+      {!roster.length && <div className="card empty-note">This team has no players yet. <Link to={`/teams/${team.id}`}>Add your roster</Link>.</div>}
 
       <section className="section">
         <h2 className="section-title">Bench · {bench.length}</h2>
         <div className="bench">
-          {bench.map(p => <span key={p.id} className="bench-chip">#{p.number} {p.name}</span>)}
-          {!bench.length && <span className="empty-note">Everyone is in the lineup.</span>}
+          {bench.map(p => <span key={p.id} className="bench-chip">{p.number ? `#${p.number} ` : ''}{p.name}</span>)}
+          {!bench.length && roster.length > 0 && <span className="empty-note">Everyone is in the lineup.</span>}
         </div>
       </section>
     </>
   )
 }
 
+// Softball / baseball: batting order is its own list (everyone can bat, even players not in the field)
+function BattingOrder({ roster, byId, plan, onChange }) {
+  const order = plan.battingOrder.filter(id => byId[id])
+  const rest = roster.filter(p => !order.includes(p.id))
+  const setOrder = ids => onChange({ ...plan, battingOrder: ids })
+  const move = (i, dir) => {
+    const ids = [...order]
+    const j = i + dir
+    if (j < 0 || j >= ids.length) return
+    ;[ids[i], ids[j]] = [ids[j], ids[i]]
+    setOrder(ids)
+  }
+
+  return (
+    <section className="section">
+      <div className="section-title-row">
+        <h2 className="section-title">Batting Order · {order.length}</h2>
+        {rest.length > 0 && <button type="button" className="section-link link-btn" onClick={() => setOrder([...order, ...rest.map(p => p.id)])}>Add everyone</button>}
+      </div>
+      {order.length > 0 && (
+        <ol className="plan-drills">
+          {order.map((id, i) => (
+            <li key={id} className="plan-drill">
+              <span className="plan-drill-num">{i + 1}</span>
+              <span className="plan-drill-main">
+                <span className="plan-drill-name">{byId[id].number ? `#${byId[id].number} ` : ''}{byId[id].name}</span>
+              </span>
+              <span className="plan-drill-tools">
+                <button type="button" onClick={() => move(i, -1)} aria-label="Move up" disabled={i === 0}>↑</button>
+                <button type="button" onClick={() => move(i, 1)} aria-label="Move down" disabled={i === order.length - 1}>↓</button>
+                <button type="button" onClick={() => setOrder(order.filter(x => x !== id))} aria-label="Remove">✕</button>
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+      {rest.length > 0 && (
+        <div className="bench batting-add">
+          {rest.map(p => (
+            <button key={p.id} type="button" className="bench-chip is-add" onClick={() => setOrder([...order, p.id])}>
+              + {p.number ? `#${p.number} ` : ''}{p.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
 const POINTS = [
   { id: 'focus',    label: 'Focus',              hint: 'The 1–2 things we want to see today' },
-  { id: 'strategy', label: 'Strategy',           hint: 'Shape, pressing, build-up, set pieces' },
+  { id: 'strategy', label: 'Strategy' },
   { id: 'opponent', label: 'About the opponent', hint: 'Key players, tendencies, what worked last time' },
 ]
 
-function GamePoints({ plan, onChange }) {
+function GamePoints({ team, plan, onChange }) {
   return (
     <div className="points">
       {POINTS.map(p => (
@@ -199,7 +269,7 @@ function GamePoints({ plan, onChange }) {
           <span>{p.label}</span>
           <textarea
             rows={3}
-            placeholder={p.hint}
+            placeholder={p.hint ?? setupFor(team.sport).strategyHint}
             value={plan.points[p.id]}
             onChange={e => onChange({ ...plan, points: { ...plan.points, [p.id]: e.target.value } })}
           />
@@ -209,16 +279,11 @@ function GamePoints({ plan, onChange }) {
   )
 }
 
-const STAT_COLS = [
-  { id: 'goals',   label: 'G' },
-  { id: 'assists', label: 'A' },
-  { id: 'shots',   label: 'Sh' },
-  { id: 'saves',   label: 'Sv' },
-]
-
 function Stats({ team, plan, onChange }) {
-  const roster = ROSTERS[team.id]
-  const starters = new Set(Object.values(plan.lineup).filter(Boolean))
+  const { rosterOf } = useTeams()
+  const roster = rosterOf(team)
+  const STAT_COLS = setupFor(team.sport).stats
+  const starters = new Set(team.units.flatMap(u => u.positions.map(p => plan.lineup[p.id])).filter(Boolean))
   // Starters first, then the bench
   const players = [...roster.filter(p => starters.has(p.id)), ...roster.filter(p => !starters.has(p.id))]
 
@@ -232,7 +297,7 @@ function Stats({ team, plan, onChange }) {
   return (
     <>
       <div className="scoreboard">
-        {[['us', 'BDU'], ['them', 'Opponent']].map(([key, label]) => (
+        {[['us', 'Us'], ['them', 'Opponent']].map(([key, label]) => (
           <div key={key} className="score-side">
             <span className="score-label">{label}</span>
             <div className="score-ctrl">
@@ -253,7 +318,7 @@ function Stats({ team, plan, onChange }) {
           const row = plan.stats.players[p.id] ?? {}
           return (
             <div key={p.id} className={`stats-row ${starters.has(p.id) ? 'is-starter' : ''}`} role="row">
-              <span className="stats-player" role="cell">#{p.number} {p.name}</span>
+              <span className="stats-player" role="cell">{p.number ? `#${p.number} ` : ''}{p.name}</span>
               {STAT_COLS.map(c => (
                 <button
                   key={c.id}
