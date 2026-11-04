@@ -159,6 +159,14 @@ When adding a new compliance rule: add to `evaluate()`, return it in the `rules`
 - **Run setup.sql once** in Supabase SQL editor to create `wip_projects`, `wip_epics`, `wip_items`
 - **Conventions:** Tickets/bugs may be unlinked (`epic_id` NULL). Deleting a project cascades to its epics; deleting an epic unlinks its items. A DB trigger stamps `done_at` when an item enters Done; the board hides Done items older than `DONE_VISIBLE_DAYS` (7, in `config.js`) — they're kept in the DB and shown via "Show archived"
 
+### /balance — Recurring Charges & "Where Does It Leak" Tracker
+- **What:** Household tool to justify recurring charges (streaming, phone, insurance, payoffs) and watch discretionary "fun money" (restaurants, treats, beer). Tabs: Dashboard (Action needed + charts), Timeline (scrolling events, auto-jumps to today), Month (calendar), Recurring (cards w/ justification, worth, verdict), Spending (quick log + comfort levels), Review (flags that don't make sense, streaming rotation)
+- **Stack:** Vanilla HTML/CSS/JS; Supabase (`fpnmnlrwhwnuefbnehuf.supabase.co`) — **auth required** (email magic link + `balance_members` allow-list), unlike the other public tables
+- **Key files:** `index.html`, `js/engine.js` (pure logic: occurrences, events, flags, actions), `js/app.js` (UI + storage), `js/charts.js`, `js/data.js` (categories + demo seed), `js/config.js`, `setup.sql`
+- **Setup:** edit member emails in `setup.sql`, run it once; add the site URL to Supabase Auth → Redirect URLs
+- **Sample mode:** `/balance/?demo` — localStorage only, no cloud
+- **Conventions:** recurring charges store one `anchor_date` + `cadence`; every billing date is computed. Action rules live in `buildActions()`, "doesn't make sense" flags in `flagsFor()` (both `engine.js`)
+
 ### /signs — Google Sheets Form Utility
 - **What:** Small utility/form that integrates with Google Sheets
 - **Stack:** HTML + Google Apps Script (`Code.gs`)
