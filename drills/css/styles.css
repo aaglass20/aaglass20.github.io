@@ -159,3 +159,10 @@ select {
   .grid { grid-template-columns: 1fr; }
   .d-head h2 { font-size: 26px; }
 }
+
+/* Adaptive program notes: why we do this + volunteer / facilitator tips */
+.d-sec.why p { background: var(--accent-light, #E0F7F5); border-radius: 8px; padding: 10px 12px; }
+.d-tips { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 18px; }
+.d-tips .d-sec h4 { margin-top: 0; }
+.d-tips .d-sec { margin-bottom: 0; background: #FFF7EC; border: 1px solid #F5DEC0; border-radius: 8px; padding: 10px 12px; }
+@media (min-width: 640px) { .d-tips { grid-template-columns: 1fr 1fr; } }

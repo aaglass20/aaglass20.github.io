@@ -62,6 +62,9 @@ and copy a drill's export straight into Coach Approach.
   players: '5 per group',                          // how many it needs
   duration: '10–15 min',
   adaptations: ['…'],                              // how to adjust for athletes with disabilities / mixed ability
+  purpose: 'Why we do this — one or two sentences an athlete or parent could hear.',   // Adaptive: required
+  volunteerTip: 'One tip for the buddy / peer volunteer working with an athlete.',      // Adaptive: required
+  facilitatorTip: 'One tip for the coach running the station.',                         // Adaptive: required
   sportFocus: ['Any', 'Soccer'],                   // which program sports it fits — list in js/sports.js (SPORT_FOCUS); mainly for Adaptive
   status: 'candidate',                             // 'candidate' (default) | 'approved' | 'rejected'
   sources: [{ name: 'Site or book', url: 'https://…' }],
@@ -79,6 +82,13 @@ and copy a drill's export straight into Coach Approach.
   Need a new category? Add it to `js/sports.js` and note it in the decision log below.
 - **Adaptive Sports drills** always fill `adaptations` (wheelchair, visual/hearing, sensory, buddy support) and `sportFocus`
   (`Any` for general movement; a sport when it builds toward that sport, e.g. Basket Drop → Basketball).
+- **Adaptive Sports drills** also always fill three program notes (the validator checks):
+  - `purpose` — **Why We Do This.** 1–2 upbeat sentences in "we" voice that a coach can read aloud to athletes or parents.
+  - `volunteerTip` — for the **buddy / peer volunteer** paired with an athlete ("you" voice).
+  - `facilitatorTip` — for the **coach running the drill**: setup, pacing, when to progress.
+- **Write for any program (public).** No program-specific names or roles in drill text: say *buddy* or *peer volunteer*
+  (not "BDU players"), *athletes* (not "ES players" / "participants"), *coach* (not "Director"), *newer / experienced athletes*
+  (not "Beginners group"). Credit the program in `sources` only.
 - **`ages`** use the shared bands: `U6, U8, U10, U12, U14, HS, Adult`.
 - **`status`** starts as `candidate`. Aaron decides; Claude flips to `approved`/`rejected`
   when told. Rejected drills stay in the file (so we don't re-add them) but are hidden by default.
@@ -130,6 +140,7 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Drills can have several categories (primary first) so 1v1 + Attacking style tags both work. |
 | 2026-10-29 | Soccer batch 1: 31 drills added (36 total). Heading drills are U12+ only (US Soccer rules). |
 | 2026-10-29 | Soccer batch 2: 32 drills from BDU pages + 15 from the web (83 total). BDU sources link as `../BDU/<page>.html`. BDU technique videos skipped (moves, not drills). |
+| 2026-11-05 | Adaptive: imported the Empower Playbook export (Supabase `ep_drills`, 77 rows). 50 new drills, 11 merged into same-game drills we already had (Red Light Green Light, Circle Passing → Pass and Name, Scrimmages → Buddy Scrimmage, Tee Hitting, Balloon Drills, Knock It Down, Color Spot Agility, Penalty/Longest Shot → Goal Kick Party, Passing with Movement, QB Nets → Foam Football Toss, Kickball Scrimmage → Mini Kickball). 2 test rows skipped. New adaptive fields `purpose` / `volunteerTip` / `facilitatorTip` (required, shown as Why We Do This / Volunteer Tip / Facilitator Tip; in Copy Text and JSON); written for all 49 existing drills too. Added `Pickleball` and `Kickball` to `SPORT_FOCUS`. 99 adaptive drills. |
 | 2026-10-29 | Adaptive batch 1: 29 drills (30 total). Added optional `sportFocus` (Coach Approach adaptive programs have a sport focus). |
 | 2026-10-29 | Renamed `instructions` → `directions` (field, UI label, Copy Text, JSON export). |
 | 2026-10-29 | Basketball batch 1: 38 drills (40 total), covering every basketball category. |

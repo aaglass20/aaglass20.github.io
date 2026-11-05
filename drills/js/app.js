@@ -37,7 +37,7 @@
   const sportById = id => SPORTS.find(s => s.id === id);
 
   const haystack = d => [
-    d.name, ...(d.altNames || []), d.description, ...(d.categories || []), ...(d.setup || []),
+    d.name, ...(d.altNames || []), d.description, d.purpose, d.volunteerTip, d.facilitatorTip, ...(d.categories || []), ...(d.setup || []),
     ...(d.directions || []), ...(d.variations || []), ...(d.coachingPoints || []),
     ...(d.equipment || []), ...(d.adaptations || []), ...(d.sportFocus || []), d.players, d.notes,
   ].join(' ').toLowerCase();
@@ -85,10 +85,13 @@
       d.duration ? `Duration: ${d.duration}` : '',
       d.sportFocus && d.sportFocus.length ? `Sport focus: ${d.sportFocus.join(', ')}` : '',
       `\nDESCRIPTION\n${d.description}\n`,
+      d.purpose ? `WHY WE DO THIS\n${d.purpose}\n` : '',
       list('SETUP', d.setup),
       list('DIRECTIONS', d.directions, true),
       list('VARIATIONS', d.variations),
       list('COACHING POINTS', d.coachingPoints),
+      d.volunteerTip ? `VOLUNTEER TIP\n${d.volunteerTip}\n` : '',
+      d.facilitatorTip ? `FACILITATOR TIP\n${d.facilitatorTip}\n` : '',
       list('EQUIPMENT', d.equipment),
       list('ADAPTATIONS', d.adaptations),
     ].filter(x => x !== '').join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
@@ -206,10 +209,15 @@
           ${d.sportFocus && d.sportFocus.length ? `<div class="fact"><b>Sport focus</b>${esc(d.sportFocus.join(', '))}</div>` : ''}
         </div>
         <section class="d-sec"><h4>Description</h4><p>${esc(d.description)}</p></section>
+        ${d.purpose ? `<section class="d-sec why"><h4>Why We Do This</h4><p>${esc(d.purpose)}</p></section>` : ''}
         ${section('Setup', d.setup)}
         ${section('Directions', d.directions, true)}
         ${section('Variations', d.variations)}
         ${section('Coaching Points', d.coachingPoints)}
+        ${d.volunteerTip || d.facilitatorTip ? `<div class="d-tips">
+          ${d.volunteerTip ? `<section class="d-sec tip"><h4>Volunteer Tip</h4><p>${esc(d.volunteerTip)}</p></section>` : ''}
+          ${d.facilitatorTip ? `<section class="d-sec tip"><h4>Facilitator Tip</h4><p>${esc(d.facilitatorTip)}</p></section>` : ''}
+        </div>` : ''}
         ${section('Equipment', d.equipment)}
         ${section('Adaptations', d.adaptations)}
         ${(d.sources && d.sources.length) || d.notes ? `

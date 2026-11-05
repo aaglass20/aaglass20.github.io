@@ -15,6 +15,8 @@ for (const s of window.SPORTS) {
     if (ids.has(d.id)) err.push('dup id'); ids.add(d.id);
     (d.categories||[]).forEach(c => !s.categories.includes(c) && err.push('bad cat ' + c));
     (d.ages||[]).forEach(a => !window.AGE_BANDS.includes(a) && err.push('bad age ' + a));
+    // Adaptive drills also need sport focus, adaptations, and the three program notes
+    if (s.id === 'adaptive') ['purpose','volunteerTip','facilitatorTip','adaptations','sportFocus'].forEach(k => !d[k] && err.push('missing ' + k));
     (d.sportFocus||[]).forEach(f => !window.SPORT_FOCUS.includes(f) && err.push('bad sportFocus ' + f));
     if (err.length) { bad++; console.log(s.id, d.id, err.join('; ')); }
   }

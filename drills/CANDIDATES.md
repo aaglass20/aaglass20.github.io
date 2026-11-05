@@ -397,8 +397,8 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Flag Guarding Avoidance (offense) |  |  |
 | ⬜ | Zone Coverage Drops |  |  |
 
-## Adaptive Sports — 49 written
-Last column = `sportFocus`.
+## Adaptive Sports — 99 written
+Last column = `sportFocus`. Every adaptive drill also has `purpose` (Why We Do This), `volunteerTip`, and `facilitatorTip`.
 
 | Status | Drill | Categories | Sport focus / Notes |
 |---|---|---|---|
@@ -444,6 +444,56 @@ Last column = `sportFocus`.
 | ✅ | Flag Pull Buddy Game | Fun, Teamwork | Football |
 | ✅ | Target Kick Wall | Kicking | Soccer |
 | ✅ | Sensory Path | Sensory-Friendly, Locomotor | Any |
+| ✅ | Ball Touch Station | Ball Skills, Kicking | Soccer — Empower Playbook |
+| ✅ | Pick-Your-Level Dribble Course | Ball Skills, Kicking | Soccer — Empower Playbook |
+| ✅ | Dribble to Music | Ball Skills, Following Directions | Soccer — Empower Playbook |
+| ✅ | Make Your Move | Ball Skills, Kicking | Soccer — Empower Playbook |
+| ✅ | Passing Lines | Kicking, Teamwork | Soccer — Empower Playbook |
+| ✅ | Step-Back Partner Passing | Kicking, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Triangle Passing and Wall Pass | Kicking, Teamwork | Soccer — Empower Playbook |
+| ✅ | Pass to Shot | Kicking, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Dribble to Shot | Kicking, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Pass and Finish from Angles | Kicking, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Call Your Shot | Kicking, Following Directions | Soccer — Empower Playbook |
+| ✅ | Goalie Introduction | Throwing & Catching, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Dribble, Pass, Score! | Kicking, Ball Skills | Soccer — Empower Playbook |
+| ✅ | Gate Goals → Shoot! | Ball Skills, Kicking | Soccer — Empower Playbook |
+| ✅ | Silly Relays and Team Target | Teamwork, Fun | Soccer — Empower Playbook |
+| ✅ | Build-a-Goal | Teamwork, Kicking | Soccer — Empower Playbook |
+| ✅ | Calling All Teammates | Teamwork, Following Directions | Soccer — Empower Playbook |
+| ✅ | Everybody Scores | Teamwork, Fun | Soccer — Empower Playbook |
+| ✅ | Hungry Hungry Hippos | Fun, Ball Skills | Soccer, Basketball — Empower Playbook |
+| ✅ | Construction Zone | Ball Skills, Fun | Soccer — Empower Playbook |
+| ✅ | Ready, Aim, Fire! | Kicking, Following Directions | Soccer — Empower Playbook |
+| ✅ | 100 Goals Together | Teamwork, Kicking | Soccer — Empower Playbook |
+| ✅ | Stationary Dribble Skills | Ball Skills, Warmup | Basketball — Empower Playbook |
+| ✅ | Dribble Relay | Ball Skills, Teamwork | Basketball — Empower Playbook |
+| ✅ | Ladder and Hurdle Agility | Locomotor, Balance & Coordination | Any, Basketball, Football — Empower Playbook |
+| ✅ | Partner Chest Pass | Throwing & Catching, Teamwork | Basketball — Empower Playbook |
+| ✅ | Pass, Cut, and Shoot | Throwing & Catching, Teamwork | Basketball — Empower Playbook |
+| ✅ | Target Net Passing | Throwing & Catching, Following Directions | Basketball — Empower Playbook |
+| ✅ | Around the World | Throwing & Catching, Ball Skills | Basketball — Empower Playbook |
+| ✅ | 5-4-3-2-1 Shooting | Throwing & Catching, Following Directions | Basketball — Empower Playbook |
+| ✅ | Layup Lines | Throwing & Catching, Locomotor | Basketball — Empower Playbook |
+| ✅ | Dribble, Pass, and Shoot | Ball Skills, Teamwork | Basketball — Empower Playbook |
+| ✅ | Loose Ball Hustle | Locomotor, Following Directions | Basketball — Empower Playbook |
+| ✅ | Pass-to-Unfreeze Tag | Ball Skills, Teamwork | Basketball — Empower Playbook |
+| ✅ | Sharks and Minnows | Fun, Ball Skills | Basketball, Football, Any — Empower Playbook |
+| ✅ | Ground Ball to First | Throwing & Catching, Ball Skills | Baseball/Softball — Empower Playbook |
+| ✅ | Base Running Lap | Locomotor, Following Directions | Baseball/Softball, Kickball — Empower Playbook |
+| ✅ | Pop Fly Catch | Throwing & Catching, Ball Skills | Baseball/Softball — Empower Playbook |
+| ✅ | Partner Catch Step-Back | Throwing & Catching, Teamwork | Baseball/Softball — Empower Playbook |
+| ✅ | Partner Ground Balls | Throwing & Catching, Ball Skills | Baseball/Softball — Empower Playbook |
+| ✅ | Kickball Bucket Drill | Throwing & Catching, Following Directions | Kickball, Baseball/Softball — Empower Playbook |
+| ✅ | Route to Touchdown | Throwing & Catching, Locomotor | Football — Empower Playbook |
+| ✅ | Handoff to Touchdown | Locomotor, Balance & Coordination | Football — Empower Playbook |
+| ✅ | Paddle Challenges | Striking, Balance & Coordination | Pickleball — Empower Playbook |
+| ✅ | Wall Ball Rally | Striking, Ball Skills | Pickleball — Empower Playbook |
+| ✅ | Underhand Target Toss | Throwing & Catching, Following Directions | Pickleball — Empower Playbook |
+| ✅ | Serve into Buckets | Striking, Following Directions | Pickleball — Empower Playbook |
+| ✅ | Partner Volley Rally | Striking, Teamwork | Pickleball — Empower Playbook |
+| ✅ | React and Return | Striking, Following Directions | Pickleball — Empower Playbook |
+| ✅ | Pickleball Buddy Game | Striking, Teamwork | Pickleball — Empower Playbook |
 | ⬜ | Young Athletes lesson plans 2–4 / 5–7 (full harvest) | — | https://media.specialolympics.org/resources/community-building/young-athletes/lesson-plans/YA_LessonPlans_5to7_July2024_INTRO.pdf |
 | ✅ | Goalball Roll | Sensory-Friendly, Throwing & Catching | TSBVI — blind/low-vision |
 | ✅ | Balloon Racket Tennis | Striking | Tennis |
