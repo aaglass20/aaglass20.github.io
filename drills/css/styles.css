@@ -83,7 +83,9 @@ select {
 .chip[aria-pressed="true"] .n { color: #ffffffcc; }
 .chip:disabled { opacity: .4; cursor: default; }
 
-.result-count { color: var(--text-2); font-size: 13px; margin: 6px 0 12px; }
+.result-count { color: var(--text-2); font-size: 13px; margin: 0; }
+.result-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 6px 0 12px; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
 
 /* ── Cards ── */
 .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }

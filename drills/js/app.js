@@ -11,7 +11,7 @@
     tabs: $('#sportTabs'), search: $('#search'), age: $('#ageFilter'), status: $('#statusFilter'),
     starOnly: $('#starOnly'), chips: $('#catChips'), list: $('#list'), count: $('#resultCount'),
     detail: $('#detail'), detailBody: $('#detailBody'), toast: $('#toast'),
-    shortCount: $('#shortCount'), copyShortlist: $('#copyShortlist'),
+    shortCount: $('#shortCount'), copyShortlist: $('#copyShortlist'), copyAllText: $('#copyAllText'),
   };
 
   const state = { sport: SPORTS[0].id, q: '', cats: new Set(), age: '', status: 'active', starOnly: false };
@@ -316,6 +316,15 @@
     SPORTS.forEach(s => drillsFor(s.id).forEach(d => { if (stars.has(starKey(s.id, d))) out.push(exportObj(s.id, d)); }));
     if (!out.length) return toast('Shortlist is empty — tap ★ on a drill');
     copy(JSON.stringify(out, null, 2), `Copied ${out.length} shortlisted drill${out.length === 1 ? '' : 's'} as JSON`);
+  });
+
+  // Copy Text for every drill in the current list (sport tab + filters), separated by a divider line
+  els.copyAllText.addEventListener('click', () => {
+    const items = filtered();
+    if (!items.length) return toast('No drills in this list');
+    const label = sportById(state.sport).label;
+    const text = items.map(d => exportText(state.sport, d)).join('\n' + '='.repeat(60) + '\n\n');
+    copy(text, `Copied ${items.length} ${label} drill${items.length === 1 ? '' : 's'} as text`);
   });
 
   window.addEventListener('hashchange', readHash);
