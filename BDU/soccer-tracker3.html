@@ -904,7 +904,11 @@
        ============================================================ */
     const SUPABASE_URL = 'https://fpnmnlrwhwnuefbnehuf.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih';
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Always query as anon: don't pick up a login saved by another page on this
+    // origin (e.g. /balance), or RLS "to anon" policies return zero rows.
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
 
     const TOTAL_SESSIONS = 365;
     const GOAL1_END  = 200;                 // cells 1..200 count toward Goal 1
