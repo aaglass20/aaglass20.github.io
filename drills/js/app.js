@@ -4,17 +4,17 @@
   const AGES = window.AGE_BANDS;
   const DATA = window.DRILL_DATA || {};
   const STAR_KEY = 'drillLab.shortlist';
-  const REVIEW_ONLY = ['status', 'notes'];          // left out of the Coach Approach export
+  const REVIEW_ONLY = ['status', 'notes', 'added'];          // left out of the Coach Approach export
 
   const $ = sel => document.querySelector(sel);
   const els = {
     tabs: $('#sportTabs'), search: $('#search'), age: $('#ageFilter'), status: $('#statusFilter'),
-    starOnly: $('#starOnly'), chips: $('#catChips'), list: $('#list'), count: $('#resultCount'),
+    starOnly: $('#starOnly'), since: $('#addedSince'), clearSince: $('#clearSince'), chips: $('#catChips'), list: $('#list'), count: $('#resultCount'),
     detail: $('#detail'), detailBody: $('#detailBody'), toast: $('#toast'),
     shortCount: $('#shortCount'), copyShortlist: $('#copyShortlist'), copyAllText: $('#copyAllText'),
   };
 
-  const state = { sport: SPORTS[0].id, q: '', cats: new Set(), age: '', status: 'active', starOnly: false };
+  const state = { sport: SPORTS[0].id, q: '', cats: new Set(), age: '', status: 'active', starOnly: false, since: '' };
 
   // ── Shortlist (per-browser convenience; keys are "sport/id") ──
   let stars = new Set();
@@ -56,6 +56,7 @@
       matchesStatus(d) &&
       (!state.age || (d.ages || []).includes(state.age)) &&
       (!state.starOnly || stars.has(starKey(state.sport, d))) &&
+      (!state.since || (d.added || '') >= state.since) &&
       (!terms.length || (h => terms.every(t => h.includes(t)))(haystack(d)))
     );
   };
@@ -148,9 +149,13 @@
           ${(d.categories || []).map((c, i) => `<span class="tag${i === 0 ? ' primary' : ''}">${esc(c)}</span>`).join('')}
           <span class="tag age">${esc(ageRange(d.ages))}</span>
           ${st !== 'candidate' ? `<span class="tag status-${st}">${st}</span>` : ''}
+          ${state.since && d.added ? `<span class="tag new">New · ${esc(shortDate(d.added))}</span>` : ''}
         </div>
       </div>`;
   }
+
+  // '2026-11-07' → 'Nov 7, 2026'
+  const shortDate = iso => new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
   // ['U8','U10','U12'] → "U8–U12"; non-contiguous lists are joined.
   function ageRange(ages) {
@@ -194,6 +199,7 @@
         <div class="meta">
           ${(d.categories || []).map((c, i) => `<span class="tag${i === 0 ? ' primary' : ''}">${esc(c)}</span>`).join('')}
           <span class="tag status-${st}">${st}</span>
+          ${d.added ? `<span class="tag">Added ${esc(shortDate(d.added))}</span>` : ''}
         </div>
         <div class="d-actions">
           <button class="btn" type="button" data-copy="json">Copy JSON</button>
@@ -267,6 +273,12 @@
   els.search.addEventListener('input', () => { state.q = els.search.value; renderChips(); renderList(); });
   els.age.addEventListener('change', () => { state.age = els.age.value; renderChips(); renderList(); });
   els.status.addEventListener('change', () => { state.status = els.status.value; renderChips(); renderList(); });
+  const setSince = v => {
+    state.since = v; els.since.value = v; els.clearSince.hidden = !v;
+    renderChips(); renderList();
+  };
+  els.since.addEventListener('change', () => setSince(els.since.value));
+  els.clearSince.addEventListener('click', () => setSince(''));
   els.starOnly.addEventListener('change', () => { state.starOnly = els.starOnly.checked; renderChips(); renderList(); });
   els.chips.addEventListener('click', e => {
     const b = e.target.closest('[data-cat]');

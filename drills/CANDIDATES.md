@@ -152,7 +152,7 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Throw-In Routines | Attacking | |
 | ⬜ | 3v1 Rondo to 3v2 Transition | 3v1, 3v2, Transition | still thin |
 
-## Basketball — 78 written
+## Basketball — 81 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Mikan Drill | Finishing, Footwork | |
@@ -238,6 +238,9 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Sideline Out of Bounds Play | Team Offense | |
 | ⬜ | Free Throw Routine + Pressure Ladder | Shooting | |
 | ⬜ | 1-2-2 / 2-2-1 Press Basics | Defense, Transition | HS+ |
+| ✅ | 7-Up | Shooting, Fun, Conditioning | Added by Aaron |
+| ✅ | Swish, Make, Miss Ladder | Shooting, Fun | Added by Aaron |
+| ✅ | King / Queen of the Court Shootout | Shooting, Fun | Added by Aaron |
 
 ## Softball — 46 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).

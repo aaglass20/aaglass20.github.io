@@ -5,7 +5,7 @@ const dir = require("path").resolve(__dirname, "..");
 require(dir + '/js/sports.js');
 const fs = require('fs');
 fs.readdirSync(dir + '/data').forEach(f => require(dir + '/data/' + f));
-const REQ = ['id','name','altNames','description','setup','directions','variations','coachingPoints','equipment','ages','categories'];
+const REQ = ['id','name','altNames','description','setup','directions','variations','coachingPoints','equipment','ages','categories','added'];
 let bad = 0;
 for (const s of window.SPORTS) {
   const list = window.DRILL_DATA[s.id] || [], ids = new Set();
@@ -15,6 +15,7 @@ for (const s of window.SPORTS) {
     if (ids.has(d.id)) err.push('dup id'); ids.add(d.id);
     (d.categories||[]).forEach(c => !s.categories.includes(c) && err.push('bad cat ' + c));
     (d.ages||[]).forEach(a => !window.AGE_BANDS.includes(a) && err.push('bad age ' + a));
+    if (d.added && !/^\d{4}-\d{2}-\d{2}$/.test(d.added)) err.push('bad added date ' + d.added);
     // Adaptive drills also need sport focus, adaptations, and the three program notes
     if (s.id === 'adaptive') ['purpose','volunteerTip','facilitatorTip','adaptations','sportFocus'].forEach(k => !d[k] && err.push('missing ' + k));
     (d.sportFocus||[]).forEach(f => !window.SPORT_FOCUS.includes(f) && err.push('bad sportFocus ' + f));

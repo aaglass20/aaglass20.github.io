@@ -66,6 +66,7 @@ and copy a drill's export straight into Coach Approach.
   volunteerTip: 'One tip for the buddy / peer volunteer working with an athlete.',      // Adaptive: required
   facilitatorTip: 'One tip for the coach running the station.',                         // Adaptive: required
   sportFocus: ['Any', 'Soccer'],                   // which program sports it fits — list in js/sports.js (SPORT_FOCUS); mainly for Adaptive
+  added: '2026-11-07',                             // date the drill was added (YYYY-MM-DD) — drives the "Added since" filter
   status: 'candidate',                             // 'candidate' (default) | 'approved' | 'rejected'
   sources: [{ name: 'Site or book', url: 'https://…' }],
   notes: 'Why we picked it / anything to watch.'
@@ -74,7 +75,7 @@ and copy a drill's export straight into Coach Approach.
 
 ### Field rules
 - **Required:** `id, name, altNames, description, setup, directions, variations,
-  coachingPoints, equipment, ages, categories`. Use `[]` when there truly are none.
+  coachingPoints, equipment, ages, categories, added`. Use `[]` when there truly are none.
 - **Lists are arrays of short strings** — one idea per line, no paragraphs.
 - **`directions`** read as a sequence of play: start → how it runs → scoring/rotation → end.
 - **`coachingPoints`**: 3–6 short cues a coach can shout ("Eyes up", "Low and wide").
@@ -89,6 +90,9 @@ and copy a drill's export straight into Coach Approach.
 - **Write for any program (public).** No program-specific names or roles in drill text: say *buddy* or *peer volunteer*
   (not "BDU players"), *athletes* (not "ES players" / "participants"), *coach* (not "Director"), *newer / experienced athletes*
   (not "Beginners group"). Credit the program in `sources` only.
+- **`added`** is today's date (`YYYY-MM-DD`) when a drill is first written, placed just before `status`. Never change it
+  when editing a drill. Drills from before 2026-11-07 were backfilled from the git commit that first added them.
+  It's review-only: left out of Copy JSON and Copy Text.
 - **`ages`** use the shared bands: `U6, U8, U10, U12, U14, HS, Adult`.
 - **`status`** starts as `candidate`. Aaron decides; Claude flips to `approved`/`rejected`
   when told. Rejected drills stay in the file (so we don't re-add them) but are hidden by default.
@@ -117,8 +121,10 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 
 ## Export (copy to clipboard)
 - **Copy JSON** — the drill object exactly as in the data file, minus review-only fields
-  (`status`, `notes`), plus `sport`. This is what gets pasted into Coach Approach.
+  (`status`, `notes`, `added`), plus `sport`. This is what gets pasted into Coach Approach.
 - **Copy Text** — a plain-text version for notes, emails, or practice plans.
+- **Copy all as text** — Copy Text for every drill in the current list (sport tab + filters), separated by `====` lines.
+  Pair it with **Added since** to grab only the drills added after your last import.
 - **Shortlist** (★) is saved in this browser only (localStorage) — a convenience while reviewing.
   "Copy shortlist" exports all starred drills as one JSON array. Final decisions go in `status`.
 
@@ -154,3 +160,4 @@ Skip drills that are unsafe for youth, need special gear, or duplicate one we ha
 | 2026-10-29 | Soccer batch 3: 16 drills filling thin categories, 100 total (Heading, Conditioning, Transition, 2v1/3v1/3v2). Heading drills are U12+ with a light ball and low volume, and note league heading rules. |
 | 2026-10-29 | Football batch: 36 drills covering every football category (flag + tackle). Tackling drills follow USA Football's Shoulder Tackling System (near foot, near shoulder; bags/wheels, limited live contact); notes say "Flag", "Tackle", or both. |
 | 2026-10-29 | Added optional `adaptations` field to support Coach Approach's Adaptive Sports profile. |
+| 2026-11-07 | Added `added` date (required) to every drill, backfilled from git history, plus an "Added since" filter so new drills can be pulled into Coach Approach in batches. |
