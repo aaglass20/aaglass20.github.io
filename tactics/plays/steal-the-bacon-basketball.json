@@ -1,0 +1,662 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:22:26",
+  "sport": "basketball",
+  "field": "horizontal",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "hoop",
+      "size": 3,
+      "rotation": 0,
+      "color": "#3b82f6"
+    },
+    {
+      "id": 1,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 2,
+      "type": "player",
+      "size": 4,
+      "rotation": 0,
+      "color": "#000000",
+      "number": "C"
+    },
+    {
+      "id": 3,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "1"
+    },
+    {
+      "id": 4,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "2"
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "3"
+    },
+    {
+      "id": 6,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "4"
+    },
+    {
+      "id": 7,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "5"
+    },
+    {
+      "id": 8,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "1"
+    },
+    {
+      "id": 9,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "2"
+    },
+    {
+      "id": 10,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "3"
+    },
+    {
+      "id": 11,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "4"
+    },
+    {
+      "id": 12,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "5"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 420,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 420,
+          "y": 72
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 420,
+          "y": 472
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 420,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 420,
+          "y": 72
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 420,
+          "y": 472
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Coach calls a number: “3!”",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 420,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 404,
+          "y": 236
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 440,
+          "y": 310
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Both 3s sprint to the ball",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 286,
+          "y": 260
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 270,
+          "y": 250
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 196,
+          "y": 266
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Blue 3 scoops it with two hands and attacks · yellow 3 defends",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 47,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 100,
+          "y": 296
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 88,
+          "y": 236
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Play to a score, a steal + score, or about 15 seconds",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 420,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 180,
+          "y": 72
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 420,
+          "y": 72
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 660,
+          "y": 472
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 420,
+          "y": 472
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Ball back to the hoop, players back to their sidelines",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 272
+        },
+        "1": {
+          "x": 420,
+          "y": 272
+        },
+        "2": {
+          "x": 24,
+          "y": 120
+        },
+        "3": {
+          "x": 380,
+          "y": 244
+        },
+        "4": {
+          "x": 300,
+          "y": 72
+        },
+        "5": {
+          "x": 420,
+          "y": 72
+        },
+        "6": {
+          "x": 540,
+          "y": 72
+        },
+        "7": {
+          "x": 660,
+          "y": 72
+        },
+        "8": {
+          "x": 460,
+          "y": 300
+        },
+        "9": {
+          "x": 540,
+          "y": 472
+        },
+        "10": {
+          "x": 420,
+          "y": 472
+        },
+        "11": {
+          "x": 300,
+          "y": 472
+        },
+        "12": {
+          "x": 180,
+          "y": 472
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "New number: “1!” — the 1s start at opposite ends, so it’s a race",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [
+    {
+      "id": 0,
+      "type": "dashed-arrow",
+      "mode": "straight",
+      "color": "#3b82f6",
+      "thickness": 3,
+      "points": [
+        250,
+        110,
+        110,
+        170
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dashed-arrow",
+      "mode": "straight",
+      "color": "#facc15",
+      "thickness": 3,
+      "points": [
+        590,
+        434,
+        730,
+        374
+      ]
+    }
+  ],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Steal the Bacon",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 521,
+      "text": "Setup: teams on opposite sidelines, same numbers · ball in a hoop at center",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 150,
+      "y": 196,
+      "text": "blue attacks this basket",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 3,
+      "x": 690,
+      "y": 350,
+      "text": "yellow attacks this basket",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 13,
+    "draw": 2,
+    "shape": 0,
+    "text": 4
+  },
+  "notes": {
+    "title": "Steal the Bacon (Basketball) (also: Numbers 1v1, Race to the Ball)",
+    "category": "1v1, Conditioning, Fun",
+    "ages": "U6, U8, U10",
+    "players": "6–14",
+    "duration": "8–10 min",
+    "objective": "Two teams, numbered players, and a ball in the middle — when a number is called, the two players race for the ball and play 1v1.",
+    "setup": [
+      "Two teams on opposite sidelines, each player with a number (both teams use the same numbers)",
+      "Ball on the center circle (or in a hula hoop)",
+      "Each team attacks the basket on its right"
+    ],
+    "rules": [
+      "Coach calls a number.",
+      "Those two players sprint to the ball; whoever gets it attacks; the other defends.",
+      "Play until a score, a steal plus a score, or ~15 seconds.",
+      "Return the ball to the circle; call a new number."
+    ],
+    "variations": [
+      "Easier: two balls — each player grabs one and races to score (no defense).",
+      "Harder: call two numbers for 2v2.",
+      "Harder: call a math problem (\"2 + 1!\") for the number."
+    ],
+    "coaching": [
+      "Get low and scoop the ball with two hands.",
+      "Dribble with your head up.",
+      "On defense, beat them back and get in front."
+    ],
+    "equipment": [
+      "1 ball",
+      "Optional hula hoop",
+      "2 baskets"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "title": "Rebound, Outlet, Go!",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "R0",
+      "type": "player-t1",
+      "label": "R"
+    },
+    {
+      "key": "R1",
+      "type": "player-t1",
+      "label": "R"
+    },
+    {
+      "key": "R2",
+      "type": "player-t1",
+      "label": "R"
+    },
+    {
+      "key": "O0",
+      "type": "player-t2",
+      "label": "O"
+    },
+    {
+      "key": "O1",
+      "type": "player-t2",
+      "label": "O"
+    },
+    {
+      "key": "O2",
+      "type": "player-t2",
+      "label": "O"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: rebound line under the basket · outlet line on the wing · coach at the free-throw line",
+      "at": {
+        "C": [
+          175,
+          312
+        ],
+        "ball": [
+          191,
+          322
+        ],
+        "R0": [
+          72,
+          226
+        ],
+        "R1": [
+          40,
+          186
+        ],
+        "R2": [
+          40,
+          146
+        ],
+        "O0": [
+          172,
+          430
+        ],
+        "O1": [
+          132,
+          450
+        ],
+        "O2": [
+          92,
+          470
+        ]
+      }
+    },
+    {
+      "caption": "1. Coach tosses the ball off the backboard",
+      "at": {
+        "ball": [
+          52,
+          262
+        ]
+      }
+    },
+    {
+      "caption": "2. Rebounder grabs it, chins it, pivots to the wing and calls the outlet’s name",
+      "at": {
+        "R0": [
+          66,
+          256
+        ],
+        "ball": [
+          84,
+          262
+        ]
+      }
+    },
+    {
+      "caption": "Outlet pass — the outlet catches facing the sideline",
+      "at": {
+        "O0": [
+          190,
+          420
+        ],
+        "ball": [
+          194,
+          402
+        ]
+      }
+    },
+    {
+      "caption": "3. Outlet dribbles up the wing · rebounder sprints up the middle",
+      "at": {
+        "O0": [
+          520,
+          410
+        ],
+        "ball": [
+          536,
+          420
+        ],
+        "R0": [
+          480,
+          252
+        ]
+      }
+    },
+    {
+      "caption": "4. Pass back to the rebounder near the far basket…",
+      "at": {
+        "O0": [
+          650,
+          400
+        ],
+        "R0": [
+          700,
+          290
+        ],
+        "ball": [
+          716,
+          300
+        ]
+      }
+    },
+    {
+      "caption": "…for a layup — not a long shot",
+      "at": {
+        "R0": [
+          762,
+          290
+        ],
+        "ball": [
+          793,
+          272
+        ]
+      }
+    },
+    {
+      "caption": "5. Switch lines · next pair is up",
+      "at": {
+        "R0": [
+          92,
+          470
+        ],
+        "O0": [
+          40,
+          146
+        ],
+        "R1": [
+          72,
+          226
+        ],
+        "R2": [
+          40,
+          186
+        ],
+        "O1": [
+          172,
+          430
+        ],
+        "O2": [
+          132,
+          450
+        ],
+        "ball": [
+          191,
+          322
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "rebound line",
+      "at": [
+        96,
+        116
+      ],
+      "size": 13
+    },
+    {
+      "text": "outlet line",
+      "at": [
+        250,
+        470
+      ],
+      "size": 13
+    },
+    {
+      "text": "run wide · stay in your lane",
+      "at": [
+        560,
+        448
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Rebound, Outlet, Go! (also: Outlet Race, Coach Rebound Break, Two-Player Break)",
+    "category": "Transition, Rebounding, Passing",
+    "ages": "U8, U10",
+    "players": "6–12",
+    "duration": "8–10 min",
+    "objective": "The first fast-break pattern for young players: rebound, pass out to the side, and run the floor for a layup.",
+    "setup": [
+      "Rebound line under the basket; outlet line on the right wing, near the free-throw line extended",
+      "Coach at the free-throw line with a ball"
+    ],
+    "rules": [
+      "Coach tosses the ball off the backboard.",
+      "Rebounder grabs it, chins it, pivots to the wing, and calls the outlet player’s name.",
+      "Outlet player catches facing the sideline, then dribbles up the court; the rebounder sprints up the middle.",
+      "Outlet player passes back to the rebounder near the far basket for a layup (or shoots it themselves at U6).",
+      "Players switch lines."
+    ],
+    "variations": [
+      "Easier: walk-through speed; outlet player dribbles all the way and shoots.",
+      "Harder: add a chaser defender who starts at the free-throw line after the outlet pass.",
+      "Harder: outlet to the left side too."
+    ],
+    "coaching": [
+      "Chin it, pivot, pass — then RUN.",
+      "Outlet player: hands up, call for it.",
+      "Run wide; stay in your lane.",
+      "Finish with a layup, not a long shot."
+    ],
+    "equipment": [
+      "1–2 balls",
+      "1 full court (or half court with a cone as the \"far basket\")"
+    ]
+  }
+}

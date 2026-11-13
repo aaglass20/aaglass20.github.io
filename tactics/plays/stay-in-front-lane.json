@@ -1,0 +1,991 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:22:26",
+  "sport": "basketball",
+  "field": "horizontal",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 1,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 2,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 3,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 4,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 5,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 6,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 7,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 8,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 9,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 10,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 11,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 12,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 13,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 14,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 15,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 16,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 17,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 18,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 19,
+      "type": "cone",
+      "size": 2,
+      "rotation": 0,
+      "color": "#f97316"
+    },
+    {
+      "id": 20,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "A"
+    },
+    {
+      "id": 21,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "X"
+    },
+    {
+      "id": 22,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 23,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "B"
+    },
+    {
+      "id": 24,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "Y"
+    },
+    {
+      "id": 25,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 812,
+          "y": 170
+        },
+        "22": {
+          "x": 790,
+          "y": 182
+        },
+        "21": {
+          "x": 760,
+          "y": 170
+        },
+        "23": {
+          "x": 812,
+          "y": 374
+        },
+        "25": {
+          "x": 790,
+          "y": 386
+        },
+        "24": {
+          "x": 760,
+          "y": 374
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 720,
+          "y": 198
+        },
+        "22": {
+          "x": 698,
+          "y": 210
+        },
+        "21": {
+          "x": 668,
+          "y": 198
+        },
+        "23": {
+          "x": 720,
+          "y": 346
+        },
+        "25": {
+          "x": 698,
+          "y": 358
+        },
+        "24": {
+          "x": 668,
+          "y": 346
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Dribbler walks forward, zig-zagging side to side",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 620,
+          "y": 142
+        },
+        "22": {
+          "x": 598,
+          "y": 154
+        },
+        "21": {
+          "x": 568,
+          "y": 142
+        },
+        "23": {
+          "x": 620,
+          "y": 402
+        },
+        "25": {
+          "x": 598,
+          "y": 414
+        },
+        "24": {
+          "x": 568,
+          "y": 402
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Defender slides to stay in front — chest on the ball, no reaching",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 520,
+          "y": 198
+        },
+        "22": {
+          "x": 498,
+          "y": 210
+        },
+        "21": {
+          "x": 468,
+          "y": 198
+        },
+        "23": {
+          "x": 520,
+          "y": 346
+        },
+        "25": {
+          "x": 498,
+          "y": 358
+        },
+        "24": {
+          "x": 468,
+          "y": 346
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Slide, slide — beat them to the spot with your feet",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 492,
+          "y": 170
+        },
+        "22": {
+          "x": 462,
+          "y": 182
+        },
+        "21": {
+          "x": 440,
+          "y": 170
+        },
+        "23": {
+          "x": 492,
+          "y": 374
+        },
+        "25": {
+          "x": 462,
+          "y": 386
+        },
+        "24": {
+          "x": 440,
+          "y": 374
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. At half court, swap roles and come back",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 800,
+          "y": 122
+        },
+        "1": {
+          "x": 800,
+          "y": 218
+        },
+        "2": {
+          "x": 700,
+          "y": 122
+        },
+        "3": {
+          "x": 700,
+          "y": 218
+        },
+        "4": {
+          "x": 600,
+          "y": 122
+        },
+        "5": {
+          "x": 600,
+          "y": 218
+        },
+        "6": {
+          "x": 500,
+          "y": 122
+        },
+        "7": {
+          "x": 500,
+          "y": 218
+        },
+        "8": {
+          "x": 420,
+          "y": 122
+        },
+        "9": {
+          "x": 420,
+          "y": 218
+        },
+        "10": {
+          "x": 800,
+          "y": 326
+        },
+        "11": {
+          "x": 800,
+          "y": 422
+        },
+        "12": {
+          "x": 700,
+          "y": 326
+        },
+        "13": {
+          "x": 700,
+          "y": 422
+        },
+        "14": {
+          "x": 600,
+          "y": 326
+        },
+        "15": {
+          "x": 600,
+          "y": 422
+        },
+        "16": {
+          "x": 500,
+          "y": 326
+        },
+        "17": {
+          "x": 500,
+          "y": 422
+        },
+        "18": {
+          "x": 420,
+          "y": 326
+        },
+        "19": {
+          "x": 420,
+          "y": 422
+        },
+        "20": {
+          "x": 612,
+          "y": 142
+        },
+        "22": {
+          "x": 582,
+          "y": 154
+        },
+        "21": {
+          "x": 560,
+          "y": 142
+        },
+        "23": {
+          "x": 612,
+          "y": 402
+        },
+        "25": {
+          "x": 582,
+          "y": 414
+        },
+        "24": {
+          "x": 560,
+          "y": 402
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Round 2: dribbler may jog · defender cuts off the path with the body = 1 point",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Stay in Front (Lane 1v1)",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 521,
+      "text": "Setup: cone lanes 3–4 steps wide, baseline to half court · defender faces the dribbler",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 620,
+      "y": 104,
+      "text": "lane 1",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 3,
+      "x": 620,
+      "y": 452,
+      "text": "lane 2",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 4,
+      "x": 420,
+      "y": 272,
+      "text": "half court",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 5,
+      "x": 800,
+      "y": 272,
+      "text": "baseline",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 26,
+    "draw": 0,
+    "shape": 0,
+    "text": 6
+  },
+  "notes": {
+    "title": "Stay in Front (Lane 1v1) (also: Wall Defense, Mirror Lane 1v1, Walk-Dribble Defense)",
+    "category": "Defense, 1v1, Footwork",
+    "ages": "U6, U8, U10",
+    "players": "Pairs",
+    "duration": "6–8 min",
+    "objective": "Young defenders learn to slide and keep the dribbler in front of them inside a narrow lane, at a walking pace first.",
+    "setup": [
+      "Lanes about 3–4 steps wide marked with cones, from baseline to half court",
+      "Pairs: one dribbler, one defender facing them at the baseline"
+    ],
+    "rules": [
+      "Dribbler walks forward, zig-zagging from side to side of the lane.",
+      "Defender slides to stay in front, chest to the ball — no reaching.",
+      "At half court, swap roles and come back.",
+      "Round 2: dribbler may jog; defender scores a point for each time they stop the dribbler’s path with their body (not hands)."
+    ],
+    "variations": [
+      "Easier: dribbler carries the ball (no dribble) and just walks.",
+      "Harder: narrower lane; dribbler may go full speed and try to beat the defender to the half-court line.",
+      "Harder: defender may try to tap the ball once it’s past their hip — \"poke from behind\"."
+    ],
+    "coaching": [
+      "Nose on the ball.",
+      "Slide, slide — don’t cross your feet.",
+      "Beat them to the spot with your feet, not your hands.",
+      "Stay low the whole lane."
+    ],
+    "equipment": [
+      "1 ball per pair",
+      "Cones"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

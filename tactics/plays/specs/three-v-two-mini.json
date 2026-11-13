@@ -1,0 +1,221 @@
+{
+  "title": "3v2 Pass and Score",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "A",
+      "type": "player-t1",
+      "label": "A"
+    },
+    {
+      "key": "B",
+      "type": "player-t1",
+      "label": "B"
+    },
+    {
+      "key": "Cx",
+      "type": "player-t1",
+      "label": "C"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "X",
+      "type": "player-t2",
+      "label": "X"
+    },
+    {
+      "key": "Y",
+      "type": "player-t2",
+      "label": "Y"
+    },
+    {
+      "key": "K",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: three attackers near half court (one ball) · two defenders in the lane",
+      "at": {
+        "A": [
+          260,
+          140
+        ],
+        "B": [
+          420,
+          130
+        ],
+        "ball": [
+          436,
+          140
+        ],
+        "Cx": [
+          580,
+          140
+        ],
+        "X": [
+          380,
+          380
+        ],
+        "Y": [
+          460,
+          380
+        ],
+        "K": [
+          770,
+          300
+        ]
+      }
+    },
+    {
+      "caption": "1. Bring it in and spread out — three spots, three players",
+      "at": {
+        "A": [
+          210,
+          310
+        ],
+        "B": [
+          420,
+          220
+        ],
+        "ball": [
+          436,
+          230
+        ],
+        "Cx": [
+          630,
+          310
+        ],
+        "X": [
+          420,
+          270
+        ],
+        "Y": [
+          480,
+          380
+        ]
+      }
+    },
+    {
+      "caption": "Pass! — X is on the ball, so find the friend nobody is guarding",
+      "at": {
+        "ball": [
+          226,
+          320
+        ],
+        "X": [
+          270,
+          320
+        ],
+        "Y": [
+          400,
+          360
+        ]
+      }
+    },
+    {
+      "caption": "Y slides over to help… so C is open — fast pass!",
+      "at": {
+        "Y": [
+          300,
+          360
+        ],
+        "ball": [
+          646,
+          320
+        ]
+      }
+    },
+    {
+      "caption": "3. Layup — score = 2 points · after 3 passes = 3",
+      "at": {
+        "Cx": [
+          500,
+          462
+        ],
+        "ball": [
+          420,
+          483
+        ]
+      }
+    },
+    {
+      "caption": "2. Coach asks: “Who was open?”",
+      "at": {}
+    },
+    {
+      "caption": "4. Rotate: two attackers defend · defenders join the attack line",
+      "at": {
+        "A": [
+          380,
+          380
+        ],
+        "Cx": [
+          460,
+          380
+        ],
+        "X": [
+          260,
+          140
+        ],
+        "Y": [
+          580,
+          140
+        ],
+        "B": [
+          420,
+          130
+        ],
+        "ball": [
+          436,
+          140
+        ]
+      }
+    }
+  ],
+  "notes": {
+    "title": "3v2 Pass and Score (also: 3-on-2 Keep Away to Score, Mini 3v2, Find the Open Friend)",
+    "category": "3v2, Team Offense, Passing",
+    "ages": "U8, U10",
+    "players": "5–10",
+    "duration": "8–10 min",
+    "objective": "Three attackers vs two defenders in a half court — young players learn there is always one open teammate.",
+    "setup": [
+      "Half court, low basket if possible",
+      "Three attackers at half court (one ball); two defenders in the lane"
+    ],
+    "rules": [
+      "Attackers bring the ball in and try to score; defenders guard.",
+      "Coach asks after each play: \"Who was open?\"",
+      "Score = 2 points; score after 3 passes = 3 points.",
+      "Rotate: two attackers become defenders, defenders join the attack line."
+    ],
+    "variations": [
+      "Easier: defenders must stay in the lane (zone).",
+      "Harder: defenders may come out anywhere.",
+      "Harder: shot clock of 10 seconds — count it out loud."
+    ],
+    "coaching": [
+      "Spread out — three spots, three players.",
+      "Look for the player nobody is guarding.",
+      "Fast passes beat defenders."
+    ],
+    "equipment": [
+      "1 ball",
+      "1 basket",
+      "Pinnies"
+    ]
+  }
+}

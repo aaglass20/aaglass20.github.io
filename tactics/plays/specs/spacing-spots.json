@@ -1,0 +1,230 @@
+{
+  "title": "Spacing Spots",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "s1",
+      "type": "marker2",
+      "label": "T",
+      "size": 2
+    },
+    {
+      "key": "s2",
+      "type": "marker2",
+      "label": "W",
+      "size": 2
+    },
+    {
+      "key": "s3",
+      "type": "marker2",
+      "label": "W",
+      "size": 2
+    },
+    {
+      "key": "s4",
+      "type": "marker2",
+      "label": "C",
+      "size": 2
+    },
+    {
+      "key": "s5",
+      "type": "marker2",
+      "label": "C",
+      "size": 2
+    },
+    {
+      "key": "A",
+      "type": "player-t1",
+      "label": "A"
+    },
+    {
+      "key": "B",
+      "type": "player-t1",
+      "label": "B"
+    },
+    {
+      "key": "Cc",
+      "type": "player-t1",
+      "label": "C"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: 5 spots — top, two wings, two corners · ball at the top",
+      "at": {
+        "s1": [
+          420,
+          200
+        ],
+        "s2": [
+          210,
+          300
+        ],
+        "s3": [
+          630,
+          300
+        ],
+        "s4": [
+          165,
+          494
+        ],
+        "s5": [
+          675,
+          494
+        ],
+        "A": [
+          420,
+          196
+        ],
+        "ball": [
+          436,
+          210
+        ],
+        "B": [
+          210,
+          296
+        ],
+        "Cc": [
+          675,
+          490
+        ]
+      }
+    },
+    {
+      "caption": "1. Pass 1: A → B…",
+      "at": {
+        "ball": [
+          226,
+          310
+        ]
+      }
+    },
+    {
+      "caption": "2. …then A moves to an empty spot",
+      "at": {
+        "A": [
+          630,
+          296
+        ]
+      }
+    },
+    {
+      "caption": "Pass 2: B → C, then B fills the top",
+      "at": {
+        "ball": [
+          691,
+          504
+        ],
+        "B": [
+          420,
+          196
+        ]
+      }
+    },
+    {
+      "caption": "Pass 3: C → A, then C fills the left corner",
+      "at": {
+        "ball": [
+          646,
+          310
+        ],
+        "Cc": [
+          165,
+          490
+        ]
+      }
+    },
+    {
+      "caption": "3. Never two on a spot · never next to the ball · pass 4: A → B",
+      "at": {
+        "ball": [
+          436,
+          210
+        ],
+        "A": [
+          675,
+          490
+        ]
+      }
+    },
+    {
+      "caption": "Pass 5: B → C",
+      "at": {
+        "ball": [
+          181,
+          504
+        ],
+        "B": [
+          210,
+          296
+        ]
+      }
+    },
+    {
+      "caption": "4. The player who catches pass 5 dribbles to the rim for a layup",
+      "at": {
+        "Cc": [
+          360,
+          470
+        ],
+        "ball": [
+          420,
+          483
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "T = top · W = wing · C = corner",
+      "at": [
+        420,
+        130
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Spacing Spots (also: Find Your Spot, Five Spots, Spread Out Game)",
+    "category": "Team Offense, Passing",
+    "ages": "U6, U8, U10",
+    "players": "3–4 per basket",
+    "duration": "6–8 min",
+    "objective": "Young players learn spacing by moving to floor spots and passing to whoever is open — the start of team offense.",
+    "setup": [
+      "Half court with 5 poly spots: top, both wings, both corners",
+      "Groups of 3 (one ball) — or 4 at U8"
+    ],
+    "rules": [
+      "Each player starts on a spot; the ball starts at the top.",
+      "Pass to a teammate on a spot, then go to an empty spot.",
+      "Rule: never two players on the same spot, and never stand next to the ball.",
+      "After 5 passes, the player who catches the 5th pass dribbles to the rim for a layup."
+    ],
+    "variations": [
+      "Easier: coach says the spot to move to.",
+      "Harder: add one passive defender who tries to touch passes.",
+      "Harder: pass and cut to the basket first, then fill an empty spot."
+    ],
+    "coaching": [
+      "One player, one spot.",
+      "Pass, then move.",
+      "Spread out so your teammate can see you."
+    ],
+    "equipment": [
+      "1 ball per group",
+      "5 poly spots per basket"
+    ]
+  }
+}

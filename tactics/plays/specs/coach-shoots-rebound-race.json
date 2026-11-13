@@ -1,0 +1,231 @@
+{
+  "title": "Coach Shoots, You Rebound",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "L0",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "L1",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "L2",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "L3",
+      "type": "player-t1",
+      "label": "4"
+    },
+    {
+      "key": "R0",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "R1",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "R2",
+      "type": "player-t2",
+      "label": "3"
+    },
+    {
+      "key": "R3",
+      "type": "player-t2",
+      "label": "4"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: two lines just outside the blocks · coach at the free-throw line with a ball",
+      "at": {
+        "C": [
+          420,
+          324
+        ],
+        "ball": [
+          436,
+          334
+        ],
+        "L0": [
+          295,
+          455
+        ],
+        "L1": [
+          255,
+          438
+        ],
+        "L2": [
+          215,
+          421
+        ],
+        "L3": [
+          175,
+          404
+        ],
+        "R0": [
+          545,
+          455
+        ],
+        "R1": [
+          585,
+          438
+        ],
+        "R2": [
+          625,
+          421
+        ],
+        "R3": [
+          665,
+          404
+        ]
+      }
+    },
+    {
+      "caption": "1. Coach shoots — missing on purpose is fine",
+      "at": {
+        "ball": [
+          470,
+          470
+        ]
+      }
+    },
+    {
+      "caption": "2. First player from each line goes for the rebound",
+      "at": {
+        "L0": [
+          400,
+          440
+        ],
+        "R0": [
+          470,
+          446
+        ],
+        "ball": [
+          474,
+          428
+        ]
+      }
+    },
+    {
+      "caption": "3. Yellow grabs it, chins it, goes straight back up · blue defends",
+      "at": {
+        "R0": [
+          450,
+          462
+        ],
+        "L0": [
+          410,
+          452
+        ],
+        "ball": [
+          420,
+          483
+        ]
+      }
+    },
+    {
+      "caption": "4. Score = 1 point · two-hand rebound = bonus point",
+      "at": {}
+    },
+    {
+      "caption": "Both go to the back of the OTHER line · next two are up",
+      "at": {
+        "R0": [
+          175,
+          404
+        ],
+        "L0": [
+          665,
+          404
+        ],
+        "L1": [
+          295,
+          455
+        ],
+        "L2": [
+          255,
+          438
+        ],
+        "L3": [
+          215,
+          421
+        ],
+        "R1": [
+          545,
+          455
+        ],
+        "R2": [
+          585,
+          438
+        ],
+        "R3": [
+          625,
+          421
+        ],
+        "ball": [
+          436,
+          334
+        ]
+      }
+    }
+  ],
+  "notes": {
+    "title": "Coach Shoots, You Rebound (also: Rebound Race, Rebound and Score 1v1, Get the Board)",
+    "category": "Rebounding, 1v1, Fun",
+    "ages": "U6, U8, U10",
+    "players": "4–12",
+    "duration": "6–10 min",
+    "objective": "A fun two-line race where kids react to a missed shot, go get the rebound, and score — the first live rebounding game for young players.",
+    "setup": [
+      "Two lines on either side of the lane, just outside the blocks",
+      "Coach at the free-throw line with a ball"
+    ],
+    "rules": [
+      "Coach shoots (missing on purpose is fine).",
+      "First player from each line goes for the rebound.",
+      "Whoever gets it tries to score; the other player defends.",
+      "A score is 1 point; a rebound grabbed with two hands is a bonus point. Both go to the back of the other line."
+    ],
+    "variations": [
+      "Easier: no defense — the player who grabs it just shoots.",
+      "Harder: before the shot, each player must touch the other player (box-out contact) first.",
+      "Harder: rebounder must outlet to a coach on the wing and get it back before scoring."
+    ],
+    "coaching": [
+      "Every shot is a miss — go get it!",
+      "Two hands on the ball.",
+      "Chin it before you go back up.",
+      "Go straight back up strong."
+    ],
+    "equipment": [
+      "1–2 balls",
+      "1 basket"
+    ]
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "title": "Big Target Post Catch",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "sp",
+      "type": "marker2",
+      "label": "P",
+      "size": 2
+    },
+    {
+      "key": "post",
+      "type": "player-t2",
+      "label": "P"
+    },
+    {
+      "key": "w1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "w2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "w3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: post player on a spot by the block · passers on the wing with a ball",
+      "at": {
+        "sp": [
+          536,
+          456
+        ],
+        "post": [
+          536,
+          440
+        ],
+        "w1": [
+          650,
+          300
+        ],
+        "ball": [
+          666,
+          310
+        ],
+        "w2": [
+          690,
+          260
+        ],
+        "w3": [
+          730,
+          220
+        ]
+      }
+    },
+    {
+      "caption": "1. Post: wide and low like a sumo wrestler, one hand up — “Ball!”",
+      "at": {}
+    },
+    {
+      "caption": "2. Wing passes to the target hand (bounce pass at U6)",
+      "at": {
+        "ball": [
+          558,
+          424
+        ]
+      }
+    },
+    {
+      "caption": "3. Catch with two hands and chin it — look at the rim",
+      "at": {
+        "ball": [
+          536,
+          420
+        ]
+      }
+    },
+    {
+      "caption": "4. One power step to the rim, shoot off the backboard",
+      "at": {
+        "post": [
+          468,
+          470
+        ],
+        "ball": [
+          420,
+          483
+        ]
+      }
+    },
+    {
+      "caption": "5. Rotate: passer → post · post → back of the passer line",
+      "at": {
+        "w1": [
+          536,
+          440
+        ],
+        "post": [
+          730,
+          220
+        ],
+        "w2": [
+          650,
+          300
+        ],
+        "w3": [
+          690,
+          260
+        ],
+        "ball": [
+          666,
+          310
+        ]
+      }
+    },
+    {
+      "caption": "Switch to the other block after a few turns",
+      "at": {}
+    }
+  ],
+  "labels": [
+    {
+      "text": "block",
+      "at": [
+        600,
+        476
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Big Target Post Catch (also: Show Your Hands, Post Target Drill, Wide and Strong)",
+    "category": "Post Play, Finishing, Passing",
+    "ages": "U6, U8, U10",
+    "players": "2–6 per basket",
+    "duration": "6–8 min",
+    "objective": "Young players learn the basic post position: wide base, big target hands, catch, chin the ball, and score off the backboard.",
+    "setup": [
+      "One player on the block (a poly spot marks it)",
+      "One passer on the wing with a ball"
+    ],
+    "rules": [
+      "Post player gets wide and low on the spot, one hand up as a target, and calls \"Ball!\".",
+      "Wing passes (bounce pass at U6) to the target hand.",
+      "Post catches with two hands and chins it.",
+      "Post makes one power step toward the rim (no dribble at U6) and shoots off the backboard.",
+      "Rotate: passer to post, post to the back of the passer line. Switch blocks."
+    ],
+    "variations": [
+      "Easier: coach hands the ball to the post player.",
+      "Harder: one dribble power move to the rim.",
+      "Harder: add a defender behind the post holding a pad or pool noodle for light contact."
+    ],
+    "coaching": [
+      "Big feet — wide like a sumo wrestler.",
+      "Show your hand: \"Pass here!\"",
+      "Catch, chin, look at the rim.",
+      "Shoot off the box on the backboard."
+    ],
+    "equipment": [
+      "1 ball per pair",
+      "1 basket",
+      "Poly spots"
+    ]
+  }
+}

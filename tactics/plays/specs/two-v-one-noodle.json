@@ -1,0 +1,234 @@
+{
+  "title": "2v1 Noodle Defender",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "A",
+      "type": "player-t1",
+      "label": "A"
+    },
+    {
+      "key": "B",
+      "type": "player-t1",
+      "label": "B"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "X",
+      "type": "player-t2",
+      "label": "X"
+    },
+    {
+      "key": "n",
+      "type": "pole",
+      "color": "green",
+      "size": 2
+    },
+    {
+      "key": "W1",
+      "type": "player-t1",
+      "label": "A",
+      "color": "gray"
+    },
+    {
+      "key": "W2",
+      "type": "player-t1",
+      "label": "A",
+      "color": "gray"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: two attackers near half court with a ball · defender with a noodle at the free-throw line",
+      "at": {
+        "A": [
+          340,
+          140
+        ],
+        "ball": [
+          356,
+          150
+        ],
+        "B": [
+          520,
+          140
+        ],
+        "X": [
+          420,
+          324
+        ],
+        "n": [
+          444,
+          318
+        ],
+        "W1": [
+          180,
+          130
+        ],
+        "W2": [
+          140,
+          130
+        ]
+      }
+    },
+    {
+      "caption": "1. Attackers bring the ball up — dribble right at the defender",
+      "at": {
+        "A": [
+          380,
+          236
+        ],
+        "ball": [
+          396,
+          246
+        ],
+        "B": [
+          620,
+          280
+        ]
+      }
+    },
+    {
+      "caption": "2. Defender uses the noodle to block passes and shots — no hitting players",
+      "at": {
+        "X": [
+          398,
+          290
+        ],
+        "n": [
+          422,
+          284
+        ]
+      }
+    },
+    {
+      "caption": "3. Defender comes to you? Pass to the open teammate!",
+      "at": {
+        "ball": [
+          616,
+          340
+        ],
+        "B": [
+          600,
+          330
+        ]
+      }
+    },
+    {
+      "caption": "Layups win this game",
+      "at": {
+        "B": [
+          500,
+          466
+        ],
+        "ball": [
+          420,
+          483
+        ],
+        "X": [
+          450,
+          390
+        ],
+        "n": [
+          474,
+          384
+        ]
+      }
+    },
+    {
+      "caption": "4. Rotate: shooter takes the noodle · defender joins the attack line",
+      "at": {
+        "B": [
+          420,
+          324
+        ],
+        "n": [
+          444,
+          318
+        ],
+        "X": [
+          100,
+          130
+        ],
+        "A": [
+          180,
+          130
+        ],
+        "W1": [
+          340,
+          140
+        ],
+        "W2": [
+          520,
+          140
+        ],
+        "ball": [
+          356,
+          150
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "noodle",
+      "at": [
+        470,
+        300
+      ],
+      "size": 13
+    },
+    {
+      "text": "attack line",
+      "at": [
+        160,
+        170
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "2v1 Noodle Defender (also: 2-on-1 with a Pool Noodle, Pass Around the Noodle, Beat the Noodle)",
+    "category": "2v1, Passing, Team Offense",
+    "ages": "U6, U8, U10",
+    "players": "3–9",
+    "duration": "8–10 min",
+    "objective": "Two attackers vs one defender holding a pool noodle — the first 2v1 for young players, where they learn to pass when the defender comes.",
+    "setup": [
+      "Half court; two attackers start at half court with one ball",
+      "One defender with a pool noodle starts at the free-throw line"
+    ],
+    "rules": [
+      "Attackers bring the ball up and try to score.",
+      "Defender uses the noodle to block passes and shots (no hitting players).",
+      "If the defender commits to the dribbler, the dribbler passes to the open teammate.",
+      "Rotate: shooter becomes the next defender; defender joins the attack line."
+    ],
+    "variations": [
+      "Easier: defender must stay inside the lane.",
+      "Harder: defender drops the noodle and plays with hands.",
+      "Harder: second defender chases from half court after 3 seconds (becomes 2v2)."
+    ],
+    "coaching": [
+      "Dribble right at the defender.",
+      "Defender comes to you? Pass!",
+      "Teammate: stay wide and hands up.",
+      "Layups win this game."
+    ],
+    "equipment": [
+      "1 ball",
+      "1 pool noodle",
+      "1 basket"
+    ]
+  }
+}

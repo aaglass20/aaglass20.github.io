@@ -1,0 +1,650 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:22:26",
+  "sport": "basketball",
+  "field": "half",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player",
+      "size": 4,
+      "rotation": 0,
+      "color": "#000000",
+      "number": "C"
+    },
+    {
+      "id": 1,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 2,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "W"
+    },
+    {
+      "id": 3,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "1"
+    },
+    {
+      "id": 4,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "2"
+    },
+    {
+      "id": 6,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 7,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "3"
+    },
+    {
+      "id": 8,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 9,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "4"
+    },
+    {
+      "id": 10,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 440,
+          "y": 528
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 200,
+          "y": 210
+        },
+        "4": {
+          "x": 216,
+          "y": 220
+        },
+        "5": {
+          "x": 330,
+          "y": 210
+        },
+        "6": {
+          "x": 346,
+          "y": 220
+        },
+        "7": {
+          "x": 510,
+          "y": 210
+        },
+        "8": {
+          "x": 526,
+          "y": 220
+        },
+        "9": {
+          "x": 640,
+          "y": 210
+        },
+        "10": {
+          "x": 656,
+          "y": 220
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 440,
+          "y": 528
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 200,
+          "y": 210
+        },
+        "4": {
+          "x": 200,
+          "y": 170
+        },
+        "5": {
+          "x": 330,
+          "y": 210
+        },
+        "6": {
+          "x": 330,
+          "y": 170
+        },
+        "7": {
+          "x": 510,
+          "y": 210
+        },
+        "8": {
+          "x": 510,
+          "y": 170
+        },
+        "9": {
+          "x": 640,
+          "y": 210
+        },
+        "10": {
+          "x": 640,
+          "y": 170
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Toss it a little above your head, jump, grab it with two hands at the top",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 440,
+          "y": 528
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 200,
+          "y": 210
+        },
+        "4": {
+          "x": 200,
+          "y": 232
+        },
+        "5": {
+          "x": 330,
+          "y": 210
+        },
+        "6": {
+          "x": 330,
+          "y": 232
+        },
+        "7": {
+          "x": 510,
+          "y": 210
+        },
+        "8": {
+          "x": 510,
+          "y": 232
+        },
+        "9": {
+          "x": 640,
+          "y": 210
+        },
+        "10": {
+          "x": 640,
+          "y": 232
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Land with the ball under your chin, elbows out — yell “Ball!”",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 440,
+          "y": 528
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 560,
+          "y": 430
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 600,
+          "y": 400
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 640,
+          "y": 370
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 680,
+          "y": 340
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Part 2: line up by the block · put your balls away",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 456,
+          "y": 500
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 560,
+          "y": 430
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 600,
+          "y": 400
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 640,
+          "y": 370
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 680,
+          "y": 340
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Coach tosses the ball off the backboard",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 480,
+          "y": 446
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 480,
+          "y": 466
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 600,
+          "y": 400
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 640,
+          "y": 370
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 680,
+          "y": 340
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Player 1 jumps, grabs it with two hands and chins it",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 440,
+          "y": 528
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 720,
+          "y": 310
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 560,
+          "y": 430
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 600,
+          "y": 400
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 640,
+          "y": 370
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Hand it back to the coach and go to the back of the line",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 480,
+          "y": 446
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 720,
+          "y": 310
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 480,
+          "y": 466
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 600,
+          "y": 400
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 640,
+          "y": 370
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Part 3: coach tosses · player 2 grabs it and chins it",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 520
+        },
+        "1": {
+          "x": 226,
+          "y": 340
+        },
+        "2": {
+          "x": 210,
+          "y": 330
+        },
+        "3": {
+          "x": 720,
+          "y": 310
+        },
+        "4": {
+          "x": 150,
+          "y": 512
+        },
+        "5": {
+          "x": 470,
+          "y": 456
+        },
+        "6": {
+          "x": 172,
+          "y": 512
+        },
+        "7": {
+          "x": 600,
+          "y": 400
+        },
+        "8": {
+          "x": 150,
+          "y": 534
+        },
+        "9": {
+          "x": 640,
+          "y": 370
+        },
+        "10": {
+          "x": 172,
+          "y": 534
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Pivot away and pass to the teammate on the wing",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Grab It, Chin It",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 76,
+      "text": "Part 1 (self-toss): everyone has a ball · coach with a ball under the basket",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 210,
+      "y": 290,
+      "text": "wing",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 11,
+    "draw": 0,
+    "shape": 0,
+    "text": 3
+  },
+  "notes": {
+    "title": "Grab It, Chin It (also: Two-Hand Rebound Drill, Rebound Toss, Chin It)",
+    "category": "Rebounding",
+    "ages": "U6, U8, U10",
+    "players": "Any",
+    "duration": "5–8 min",
+    "objective": "Teaches the first rebound habits: jump, grab with two hands at the top, and protect the ball under the chin.",
+    "setup": [
+      "Players in a line near the block, or in pairs anywhere on the court",
+      "Coach with a ball under the basket"
+    ],
+    "rules": [
+      "Part 1 (self-toss): each player tosses the ball a little above their head, jumps, catches it with two hands, and lands with the ball under their chin, elbows out, yelling \"Ball!\".",
+      "Part 2 (coach toss): coach tosses the ball off the backboard; the first player in line jumps, grabs it with two hands, chins it, and hands it back.",
+      "Part 3: after the grab, pivot away and make a pass to a teammate on the wing."
+    ],
+    "variations": [
+      "Easier: catch the ball after one bounce.",
+      "Harder: two players go for the coach’s toss — whoever chins it gets a point.",
+      "Harder: rebound, chin it, then score a power layup."
+    ],
+    "coaching": [
+      "Two hands, grab it hard.",
+      "Catch it at the top of your jump.",
+      "Chin it — elbows out.",
+      "Yell \"Ball!\"."
+    ],
+    "equipment": [
+      "1 ball per player or pair",
+      "1 basket"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "title": "Block Bank Shots",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "s1",
+      "type": "marker2",
+      "label": "1",
+      "size": 2
+    },
+    {
+      "key": "s2",
+      "type": "marker2",
+      "label": "2",
+      "size": 2
+    },
+    {
+      "key": "s3",
+      "type": "marker2",
+      "label": "3",
+      "size": 2
+    },
+    {
+      "key": "s4",
+      "type": "marker2",
+      "label": "4",
+      "size": 2
+    },
+    {
+      "key": "s5",
+      "type": "marker2",
+      "label": "5",
+      "size": 2
+    },
+    {
+      "key": "A",
+      "type": "player-t1",
+      "label": "A"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "Q",
+      "type": "player-t2",
+      "label": "Q"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: 5 spots by the basket — short corners, blocks, middle of the lane",
+      "at": {
+        "s1": [
+          222,
+          500
+        ],
+        "s2": [
+          300,
+          446
+        ],
+        "s3": [
+          420,
+          404
+        ],
+        "s4": [
+          540,
+          446
+        ],
+        "s5": [
+          618,
+          500
+        ],
+        "A": [
+          222,
+          486
+        ],
+        "ball": [
+          238,
+          496
+        ],
+        "Q": [
+          420,
+          250
+        ]
+      }
+    },
+    {
+      "caption": "1. Shoot from spot 1 — aim for the top corner of the box",
+      "at": {
+        "ball": [
+          420,
+          483
+        ]
+      }
+    },
+    {
+      "caption": "2. Make it → move to the next spot",
+      "at": {
+        "A": [
+          300,
+          432
+        ],
+        "ball": [
+          316,
+          442
+        ]
+      }
+    },
+    {
+      "caption": "Miss → rebound…",
+      "at": {
+        "ball": [
+          356,
+          520
+        ]
+      }
+    },
+    {
+      "caption": "…and try again from the same spot",
+      "at": {
+        "A": [
+          340,
+          510
+        ],
+        "ball": [
+          356,
+          520
+        ]
+      }
+    },
+    {
+      "caption": "Back on spot 2 · soft shot — kiss it off the glass",
+      "at": {
+        "A": [
+          300,
+          432
+        ],
+        "ball": [
+          316,
+          442
+        ]
+      }
+    },
+    {
+      "caption": "3. Keep going through spot 5 · how many in 60 seconds?",
+      "at": {
+        "A": [
+          420,
+          390
+        ],
+        "ball": [
+          436,
+          400
+        ]
+      }
+    },
+    {
+      "caption": "4. Round 2: catch from a partner, chin it, then shoot",
+      "at": {
+        "ball": [
+          436,
+          260
+        ]
+      }
+    },
+    {
+      "caption": "Pass in…",
+      "at": {
+        "ball": [
+          436,
+          380
+        ]
+      }
+    },
+    {
+      "caption": "…chin it, square up to the backboard, shoot",
+      "at": {
+        "ball": [
+          420,
+          483
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "partner",
+      "at": [
+        420,
+        212
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Block Bank Shots (also: Bank It In, Box Shooting, Little Hook Spots)",
+    "category": "Post Play, Finishing, Shooting",
+    "ages": "U6, U8, U10",
+    "players": "2–4 per basket",
+    "duration": "5–8 min",
+    "objective": "Short bank shots from the blocks and short corners build post touch and confidence for young players.",
+    "setup": [
+      "Five spots close to the basket: both blocks, both short corners (low), middle of the lane",
+      "One ball per player or pair"
+    ],
+    "rules": [
+      "Shoot from each spot, aiming for the top corner of the backboard box.",
+      "Make it, move to the next spot; miss, rebound and try again.",
+      "Count how many spots you finish in 60 seconds.",
+      "Round 2: catch from a partner, chin it, then shoot."
+    ],
+    "variations": [
+      "Easier: lower basket or smaller ball; stand closer.",
+      "Harder: one-hand baby hook from the blocks.",
+      "Harder: drop-step from each block before the shot."
+    ],
+    "coaching": [
+      "Aim for the top corner of the box.",
+      "Square your shoulders to the backboard.",
+      "Soft shot — kiss it off the glass."
+    ],
+    "equipment": [
+      "1 ball per player or pair",
+      "1 basket",
+      "Poly spots"
+    ]
+  }
+}

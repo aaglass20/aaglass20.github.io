@@ -1,0 +1,445 @@
+{
+  "title": "Stay in Front (Lane 1v1)",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "k0",
+      "type": "cone"
+    },
+    {
+      "key": "k1",
+      "type": "cone"
+    },
+    {
+      "key": "k2",
+      "type": "cone"
+    },
+    {
+      "key": "k3",
+      "type": "cone"
+    },
+    {
+      "key": "k4",
+      "type": "cone"
+    },
+    {
+      "key": "k5",
+      "type": "cone"
+    },
+    {
+      "key": "k6",
+      "type": "cone"
+    },
+    {
+      "key": "k7",
+      "type": "cone"
+    },
+    {
+      "key": "k8",
+      "type": "cone"
+    },
+    {
+      "key": "k9",
+      "type": "cone"
+    },
+    {
+      "key": "k10",
+      "type": "cone"
+    },
+    {
+      "key": "k11",
+      "type": "cone"
+    },
+    {
+      "key": "k12",
+      "type": "cone"
+    },
+    {
+      "key": "k13",
+      "type": "cone"
+    },
+    {
+      "key": "k14",
+      "type": "cone"
+    },
+    {
+      "key": "k15",
+      "type": "cone"
+    },
+    {
+      "key": "k16",
+      "type": "cone"
+    },
+    {
+      "key": "k17",
+      "type": "cone"
+    },
+    {
+      "key": "k18",
+      "type": "cone"
+    },
+    {
+      "key": "k19",
+      "type": "cone"
+    },
+    {
+      "key": "A",
+      "type": "player-t1",
+      "label": "A"
+    },
+    {
+      "key": "X",
+      "type": "player-t2",
+      "label": "X"
+    },
+    {
+      "key": "b1",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "B",
+      "type": "player-t1",
+      "label": "B"
+    },
+    {
+      "key": "Y",
+      "type": "player-t2",
+      "label": "Y"
+    },
+    {
+      "key": "b2",
+      "type": "basketball",
+      "size": 2
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: cone lanes 3–4 steps wide, baseline to half court · defender faces the dribbler",
+      "at": {
+        "k0": [
+          800,
+          122
+        ],
+        "k1": [
+          800,
+          218
+        ],
+        "k2": [
+          700,
+          122
+        ],
+        "k3": [
+          700,
+          218
+        ],
+        "k4": [
+          600,
+          122
+        ],
+        "k5": [
+          600,
+          218
+        ],
+        "k6": [
+          500,
+          122
+        ],
+        "k7": [
+          500,
+          218
+        ],
+        "k8": [
+          420,
+          122
+        ],
+        "k9": [
+          420,
+          218
+        ],
+        "k10": [
+          800,
+          326
+        ],
+        "k11": [
+          800,
+          422
+        ],
+        "k12": [
+          700,
+          326
+        ],
+        "k13": [
+          700,
+          422
+        ],
+        "k14": [
+          600,
+          326
+        ],
+        "k15": [
+          600,
+          422
+        ],
+        "k16": [
+          500,
+          326
+        ],
+        "k17": [
+          500,
+          422
+        ],
+        "k18": [
+          420,
+          326
+        ],
+        "k19": [
+          420,
+          422
+        ],
+        "A": [
+          812,
+          170
+        ],
+        "b1": [
+          790,
+          182
+        ],
+        "X": [
+          760,
+          170
+        ],
+        "B": [
+          812,
+          374
+        ],
+        "b2": [
+          790,
+          386
+        ],
+        "Y": [
+          760,
+          374
+        ]
+      }
+    },
+    {
+      "caption": "1. Dribbler walks forward, zig-zagging side to side",
+      "at": {
+        "A": [
+          720,
+          198
+        ],
+        "b1": [
+          698,
+          210
+        ],
+        "X": [
+          668,
+          198
+        ],
+        "B": [
+          720,
+          346
+        ],
+        "b2": [
+          698,
+          358
+        ],
+        "Y": [
+          668,
+          346
+        ]
+      }
+    },
+    {
+      "caption": "2. Defender slides to stay in front — chest on the ball, no reaching",
+      "at": {
+        "A": [
+          620,
+          142
+        ],
+        "b1": [
+          598,
+          154
+        ],
+        "X": [
+          568,
+          142
+        ],
+        "B": [
+          620,
+          402
+        ],
+        "b2": [
+          598,
+          414
+        ],
+        "Y": [
+          568,
+          402
+        ]
+      }
+    },
+    {
+      "caption": "Slide, slide — beat them to the spot with your feet",
+      "at": {
+        "A": [
+          520,
+          198
+        ],
+        "b1": [
+          498,
+          210
+        ],
+        "X": [
+          468,
+          198
+        ],
+        "B": [
+          520,
+          346
+        ],
+        "b2": [
+          498,
+          358
+        ],
+        "Y": [
+          468,
+          346
+        ]
+      }
+    },
+    {
+      "caption": "3. At half court, swap roles and come back",
+      "at": {
+        "X": [
+          440,
+          170
+        ],
+        "b1": [
+          462,
+          182
+        ],
+        "A": [
+          492,
+          170
+        ],
+        "Y": [
+          440,
+          374
+        ],
+        "b2": [
+          462,
+          386
+        ],
+        "B": [
+          492,
+          374
+        ]
+      }
+    },
+    {
+      "caption": "4. Round 2: dribbler may jog · defender cuts off the path with the body = 1 point",
+      "at": {
+        "X": [
+          560,
+          142
+        ],
+        "b1": [
+          582,
+          154
+        ],
+        "A": [
+          612,
+          142
+        ],
+        "Y": [
+          560,
+          402
+        ],
+        "b2": [
+          582,
+          414
+        ],
+        "B": [
+          612,
+          402
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "lane 1",
+      "at": [
+        620,
+        104
+      ],
+      "size": 13
+    },
+    {
+      "text": "lane 2",
+      "at": [
+        620,
+        452
+      ],
+      "size": 13
+    },
+    {
+      "text": "half court",
+      "at": [
+        420,
+        272
+      ],
+      "size": 13
+    },
+    {
+      "text": "baseline",
+      "at": [
+        800,
+        272
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Stay in Front (Lane 1v1) (also: Wall Defense, Mirror Lane 1v1, Walk-Dribble Defense)",
+    "category": "Defense, 1v1, Footwork",
+    "ages": "U6, U8, U10",
+    "players": "Pairs",
+    "duration": "6–8 min",
+    "objective": "Young defenders learn to slide and keep the dribbler in front of them inside a narrow lane, at a walking pace first.",
+    "setup": [
+      "Lanes about 3–4 steps wide marked with cones, from baseline to half court",
+      "Pairs: one dribbler, one defender facing them at the baseline"
+    ],
+    "rules": [
+      "Dribbler walks forward, zig-zagging from side to side of the lane.",
+      "Defender slides to stay in front, chest to the ball — no reaching.",
+      "At half court, swap roles and come back.",
+      "Round 2: dribbler may jog; defender scores a point for each time they stop the dribbler’s path with their body (not hands)."
+    ],
+    "variations": [
+      "Easier: dribbler carries the ball (no dribble) and just walks.",
+      "Harder: narrower lane; dribbler may go full speed and try to beat the defender to the half-court line.",
+      "Harder: defender may try to tap the ball once it’s past their hip — \"poke from behind\"."
+    ],
+    "coaching": [
+      "Nose on the ball.",
+      "Slide, slide — don’t cross your feet.",
+      "Beat them to the spot with your feet, not your hands.",
+      "Stay low the whole lane."
+    ],
+    "equipment": [
+      "1 ball per pair",
+      "Cones"
+    ]
+  }
+}

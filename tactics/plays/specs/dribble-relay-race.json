@@ -1,0 +1,266 @@
+{
+  "title": "Dribble Relay Race",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "ac",
+      "type": "cone"
+    },
+    {
+      "key": "ab",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "a1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "a2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "a3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "bc",
+      "type": "cone"
+    },
+    {
+      "key": "bb",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "b1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "b2",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "b3",
+      "type": "player-t2",
+      "label": "3"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: teams on the baseline, one ball each · turnaround cone at the free-throw line",
+      "at": {
+        "ac": [
+          220,
+          324
+        ],
+        "a1": [
+          220,
+          500
+        ],
+        "a2": [
+          184,
+          532
+        ],
+        "a3": [
+          256,
+          532
+        ],
+        "ab": [
+          236,
+          510
+        ],
+        "bc": [
+          620,
+          324
+        ],
+        "b1": [
+          620,
+          500
+        ],
+        "b2": [
+          584,
+          532
+        ],
+        "b3": [
+          656,
+          532
+        ],
+        "bb": [
+          636,
+          510
+        ]
+      }
+    },
+    {
+      "caption": "1. First player dribbles to the cone…",
+      "at": {
+        "a1": [
+          220,
+          372
+        ],
+        "ab": [
+          236,
+          382
+        ],
+        "b1": [
+          620,
+          372
+        ],
+        "bb": [
+          636,
+          382
+        ]
+      }
+    },
+    {
+      "caption": "…around it — slow down to turn…",
+      "at": {
+        "a1": [
+          254,
+          300
+        ],
+        "ab": [
+          270,
+          310
+        ],
+        "b1": [
+          654,
+          300
+        ],
+        "bb": [
+          670,
+          310
+        ]
+      }
+    },
+    {
+      "caption": "…then speed up back to the line",
+      "at": {
+        "a1": [
+          190,
+          470
+        ],
+        "ab": [
+          206,
+          480
+        ],
+        "b1": [
+          590,
+          470
+        ],
+        "bb": [
+          606,
+          480
+        ]
+      }
+    },
+    {
+      "caption": "2. Hand the ball to the next player — don’t throw it",
+      "at": {
+        "a2": [
+          220,
+          500
+        ],
+        "ab": [
+          236,
+          510
+        ],
+        "a1": [
+          184,
+          532
+        ],
+        "b2": [
+          620,
+          500
+        ],
+        "bb": [
+          636,
+          510
+        ],
+        "b1": [
+          584,
+          532
+        ]
+      }
+    },
+    {
+      "caption": "3. New rule each round: right hand · left hand · crossover at the cone · backwards back",
+      "at": {
+        "a2": [
+          220,
+          372
+        ],
+        "ab": [
+          236,
+          382
+        ],
+        "b2": [
+          620,
+          372
+        ],
+        "bb": [
+          636,
+          382
+        ]
+      }
+    },
+    {
+      "caption": "4. Last player back? Team sits down with the ball — first team seated wins",
+      "at": {}
+    }
+  ],
+  "labels": [
+    {
+      "text": "free-throw line",
+      "at": [
+        420,
+        300
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Dribble Relay Race (also: Dribble Relays, Cone and Back Relay)",
+    "category": "Conditioning, Ball Handling, Fun",
+    "ages": "U6, U8, U10",
+    "players": "3–4 per team",
+    "duration": "5–8 min",
+    "objective": "Team relay races up and down the court that build dribbling under speed and a little conditioning.",
+    "setup": [
+      "Teams of 3–4 in lines on the baseline, one ball per team",
+      "Turnaround cone at the free-throw line (U6) or half court (U8)"
+    ],
+    "rules": [
+      "First player dribbles to the cone, around it, and back.",
+      "Hand the ball (don’t throw it) to the next player.",
+      "Each round uses a new rule: right hand, left hand, crossover at the cone, backwards on the way back.",
+      "First team seated with the ball wins the round."
+    ],
+    "variations": [
+      "Easier: carry the ball out and dribble back.",
+      "Harder: stop at the cone and make 5 stationary dribbles, or a jump stop and pivot.",
+      "Harder: finish with a layup before tagging the next player."
+    ],
+    "coaching": [
+      "Push the ball out in front when you run.",
+      "Fingertips, not your palm.",
+      "Slow down to turn, then speed up."
+    ],
+    "equipment": [
+      "1 ball per team",
+      "Cones"
+    ]
+  }
+}

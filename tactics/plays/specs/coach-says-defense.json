@@ -1,0 +1,336 @@
+{
+  "title": "Coach Says: Defense",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "p1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "p2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "p3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "p4",
+      "type": "player-t1",
+      "label": "4"
+    },
+    {
+      "key": "p5",
+      "type": "player-t1",
+      "label": "5"
+    },
+    {
+      "key": "p6",
+      "type": "player-t1",
+      "label": "6"
+    },
+    {
+      "key": "p7",
+      "type": "player-t1",
+      "label": "7"
+    },
+    {
+      "key": "p8",
+      "type": "player-t1",
+      "label": "8"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: spread out facing the coach · arm’s length of space all around",
+      "at": {
+        "C": [
+          420,
+          150
+        ],
+        "p1": [
+          240,
+          260
+        ],
+        "p5": [
+          240,
+          370
+        ],
+        "p2": [
+          360,
+          260
+        ],
+        "p6": [
+          360,
+          370
+        ],
+        "p3": [
+          480,
+          260
+        ],
+        "p7": [
+          480,
+          370
+        ],
+        "p4": [
+          600,
+          260
+        ],
+        "p8": [
+          600,
+          370
+        ]
+      }
+    },
+    {
+      "caption": "1. Teach the words: Stance · Slide · Hands up · Hands low · Back up · Sprint",
+      "at": {}
+    },
+    {
+      "caption": "2. “Coach says stance!” — feet wide, knees bent, hands out",
+      "at": {}
+    },
+    {
+      "caption": "“Coach says slide left!” — slide, don’t cross your feet",
+      "at": {
+        "p1": [
+          180,
+          260
+        ],
+        "p5": [
+          180,
+          370
+        ],
+        "p2": [
+          300,
+          260
+        ],
+        "p6": [
+          300,
+          370
+        ],
+        "p3": [
+          420,
+          260
+        ],
+        "p7": [
+          420,
+          370
+        ],
+        "p4": [
+          540,
+          260
+        ],
+        "p8": [
+          540,
+          370
+        ]
+      }
+    },
+    {
+      "caption": "“Coach says slide right!”",
+      "at": {
+        "p1": [
+          290,
+          260
+        ],
+        "p5": [
+          290,
+          370
+        ],
+        "p2": [
+          410,
+          260
+        ],
+        "p6": [
+          410,
+          370
+        ],
+        "p3": [
+          530,
+          260
+        ],
+        "p7": [
+          530,
+          370
+        ],
+        "p4": [
+          650,
+          260
+        ],
+        "p8": [
+          650,
+          370
+        ]
+      }
+    },
+    {
+      "caption": "3. Trick call: “Back up!” — #6 moved, so 3 quick toe-taps and stay in",
+      "at": {
+        "p6": [
+          410,
+          400
+        ]
+      }
+    },
+    {
+      "caption": "“Coach says back up!” — everyone backs up, still low",
+      "at": {
+        "p1": [
+          290,
+          290
+        ],
+        "p5": [
+          290,
+          400
+        ],
+        "p2": [
+          410,
+          290
+        ],
+        "p6": [
+          410,
+          400
+        ],
+        "p3": [
+          530,
+          290
+        ],
+        "p7": [
+          530,
+          400
+        ],
+        "p4": [
+          650,
+          290
+        ],
+        "p8": [
+          650,
+          400
+        ]
+      }
+    },
+    {
+      "caption": "4. “Coach says shot!” — jump, one hand straight up to contest",
+      "at": {
+        "p1": [
+          240,
+          260
+        ],
+        "p5": [
+          240,
+          370
+        ],
+        "p2": [
+          360,
+          260
+        ],
+        "p6": [
+          360,
+          370
+        ],
+        "p3": [
+          480,
+          260
+        ],
+        "p7": [
+          480,
+          370
+        ],
+        "p4": [
+          600,
+          260
+        ],
+        "p8": [
+          600,
+          370
+        ]
+      }
+    },
+    {
+      "caption": "New round · harder: hand signals only, no talking",
+      "at": {}
+    }
+  ],
+  "arrows": [
+    {
+      "kind": "dashed-arrow",
+      "from": [
+        400,
+        456
+      ],
+      "to": [
+        290,
+        456
+      ]
+    },
+    {
+      "kind": "dashed-arrow",
+      "from": [
+        440,
+        456
+      ],
+      "to": [
+        550,
+        456
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "text": "slide — don’t cross your feet",
+      "at": [
+        420,
+        438
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Coach Says: Defense (also: Simon Says Defense, Defensive Stance Freeze)",
+    "category": "Defense, Footwork, Fun",
+    "ages": "U6, U8",
+    "players": "Any",
+    "duration": "5 min",
+    "objective": "A Simon Says game that teaches young players a real defensive stance, slides, and active hands without it feeling like a drill.",
+    "setup": [
+      "Players spread out on the baseline or in a loose grid, facing the coach",
+      "Arm’s length of space all around each player"
+    ],
+    "rules": [
+      "Teach the commands first: \"Stance\" (feet wide, knees bent, hands out), \"Slide left / right\", \"Hands up\", \"Hands down low\", \"Back up\", \"Sprint\".",
+      "Coach calls \"Coach says stance!\" and players drop into stance.",
+      "Mix in commands with and without \"Coach says\"; anyone who moves on a trick call does 3 quick toe-taps and stays in.",
+      "Finish each round with \"Coach says shot!\" — players jump with one hand straight up to contest."
+    ],
+    "variations": [
+      "Easier: coach does every move with the players (follow the leader).",
+      "Harder: point instead of talking — players react to hand signals only.",
+      "Harder: add a ball — on \"Steal!\", players jab-tap a ball the coach holds out."
+    ],
+    "coaching": [
+      "Wide feet, low hips — sit in a chair.",
+      "Slide, don’t cross your feet.",
+      "Hands busy — like a goalie.",
+      "Eyes on the ball (or the coach’s belly button)."
+    ],
+    "equipment": [
+      "None (optional ball for the coach)"
+    ]
+  }
+}

@@ -1,0 +1,510 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:27:28",
+  "sport": "basketball",
+  "field": "horizontal",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player",
+      "size": 4,
+      "rotation": 0,
+      "color": "#000000",
+      "number": "C"
+    },
+    {
+      "id": 1,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "R"
+    },
+    {
+      "id": 3,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "R"
+    },
+    {
+      "id": 4,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "R"
+    },
+    {
+      "id": 5,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "O"
+    },
+    {
+      "id": 6,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "O"
+    },
+    {
+      "id": 7,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "O"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 191,
+          "y": 322
+        },
+        "2": {
+          "x": 72,
+          "y": 226
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 172,
+          "y": 430
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 52,
+          "y": 262
+        },
+        "2": {
+          "x": 72,
+          "y": 226
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 172,
+          "y": 430
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Coach tosses the ball off the backboard",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 84,
+          "y": 262
+        },
+        "2": {
+          "x": 66,
+          "y": 256
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 172,
+          "y": 430
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Rebounder grabs it, chins it, pivots to the wing and calls the outlet’s name",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 194,
+          "y": 402
+        },
+        "2": {
+          "x": 66,
+          "y": 256
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 190,
+          "y": 420
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Outlet pass — the outlet catches facing the sideline",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 536,
+          "y": 420
+        },
+        "2": {
+          "x": 480,
+          "y": 252
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 520,
+          "y": 410
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Outlet dribbles up the wing · rebounder sprints up the middle",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 716,
+          "y": 300
+        },
+        "2": {
+          "x": 700,
+          "y": 290
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 650,
+          "y": 400
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Pass back to the rebounder near the far basket…",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 793,
+          "y": 272
+        },
+        "2": {
+          "x": 762,
+          "y": 290
+        },
+        "3": {
+          "x": 40,
+          "y": 186
+        },
+        "4": {
+          "x": 40,
+          "y": 146
+        },
+        "5": {
+          "x": 650,
+          "y": 400
+        },
+        "6": {
+          "x": 132,
+          "y": 450
+        },
+        "7": {
+          "x": 92,
+          "y": 470
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "…for a layup — not a long shot",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 175,
+          "y": 312
+        },
+        "1": {
+          "x": 191,
+          "y": 322
+        },
+        "2": {
+          "x": 92,
+          "y": 470
+        },
+        "3": {
+          "x": 72,
+          "y": 226
+        },
+        "4": {
+          "x": 40,
+          "y": 186
+        },
+        "5": {
+          "x": 40,
+          "y": 146
+        },
+        "6": {
+          "x": 172,
+          "y": 430
+        },
+        "7": {
+          "x": 132,
+          "y": 450
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "5. Switch lines · next pair is up",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Rebound, Outlet, Go!",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 521,
+      "text": "Setup: rebound line under the basket · outlet line on the wing · coach at the free-throw line",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 96,
+      "y": 116,
+      "text": "rebound line",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 3,
+      "x": 250,
+      "y": 470,
+      "text": "outlet line",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 4,
+      "x": 560,
+      "y": 448,
+      "text": "run wide · stay in your lane",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 8,
+    "draw": 0,
+    "shape": 0,
+    "text": 5
+  },
+  "notes": {
+    "title": "Rebound, Outlet, Go! (also: Outlet Race, Coach Rebound Break, Two-Player Break)",
+    "category": "Transition, Rebounding, Passing",
+    "ages": "U8, U10",
+    "players": "6–12",
+    "duration": "8–10 min",
+    "objective": "The first fast-break pattern for young players: rebound, pass out to the side, and run the floor for a layup.",
+    "setup": [
+      "Rebound line under the basket; outlet line on the right wing, near the free-throw line extended",
+      "Coach at the free-throw line with a ball"
+    ],
+    "rules": [
+      "Coach tosses the ball off the backboard.",
+      "Rebounder grabs it, chins it, pivots to the wing, and calls the outlet player’s name.",
+      "Outlet player catches facing the sideline, then dribbles up the court; the rebounder sprints up the middle.",
+      "Outlet player passes back to the rebounder near the far basket for a layup (or shoots it themselves at U6).",
+      "Players switch lines."
+    ],
+    "variations": [
+      "Easier: walk-through speed; outlet player dribbles all the way and shoots.",
+      "Harder: add a chaser defender who starts at the free-throw line after the outlet pass.",
+      "Harder: outlet to the left side too."
+    ],
+    "coaching": [
+      "Chin it, pivot, pass — then RUN.",
+      "Outlet player: hands up, call for it.",
+      "Run wide; stay in your lane.",
+      "Finish with a layup, not a long shot."
+    ],
+    "equipment": [
+      "1–2 balls",
+      "1 full court (or half court with a cone as the \"far basket\")"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

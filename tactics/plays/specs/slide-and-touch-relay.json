@@ -1,0 +1,276 @@
+{
+  "title": "Slide and Touch Relay",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "ac0",
+      "type": "cone"
+    },
+    {
+      "key": "ac1",
+      "type": "cone"
+    },
+    {
+      "key": "ac2",
+      "type": "cone"
+    },
+    {
+      "key": "ac3",
+      "type": "cone"
+    },
+    {
+      "key": "a1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "a2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "a3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "bc0",
+      "type": "cone"
+    },
+    {
+      "key": "bc1",
+      "type": "cone"
+    },
+    {
+      "key": "bc2",
+      "type": "cone"
+    },
+    {
+      "key": "bc3",
+      "type": "cone"
+    },
+    {
+      "key": "b1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "b2",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "b3",
+      "type": "player-t2",
+      "label": "3"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: teams on the baseline · 4 cones in a zig-zag up to the free-throw line",
+      "at": {
+        "ac0": [
+          170,
+          470
+        ],
+        "ac1": [
+          270,
+          425
+        ],
+        "ac2": [
+          170,
+          375
+        ],
+        "ac3": [
+          270,
+          324
+        ],
+        "a1": [
+          220,
+          505
+        ],
+        "a2": [
+          184,
+          532
+        ],
+        "a3": [
+          256,
+          532
+        ],
+        "bc0": [
+          570,
+          470
+        ],
+        "bc1": [
+          670,
+          425
+        ],
+        "bc2": [
+          570,
+          375
+        ],
+        "bc3": [
+          670,
+          324
+        ],
+        "b1": [
+          620,
+          505
+        ],
+        "b2": [
+          584,
+          532
+        ],
+        "b3": [
+          656,
+          532
+        ]
+      }
+    },
+    {
+      "caption": "1. “Go!” — slide to cone 1 and touch it with the outside hand",
+      "at": {
+        "a1": [
+          194,
+          474
+        ],
+        "b1": [
+          594,
+          474
+        ]
+      }
+    },
+    {
+      "caption": "Slide to the next cone — step-slide, don’t cross your feet",
+      "at": {
+        "a1": [
+          246,
+          429
+        ],
+        "b1": [
+          646,
+          429
+        ]
+      }
+    },
+    {
+      "caption": "Stay low — your head shouldn’t bob up",
+      "at": {
+        "a1": [
+          194,
+          379
+        ],
+        "b1": [
+          594,
+          379
+        ]
+      }
+    },
+    {
+      "caption": "Touch the last cone — don’t knock it over",
+      "at": {
+        "a1": [
+          246,
+          328
+        ],
+        "b1": [
+          646,
+          328
+        ]
+      }
+    },
+    {
+      "caption": "2. Sprint straight back and high-five the next teammate",
+      "at": {
+        "a1": [
+          196,
+          480
+        ],
+        "b1": [
+          596,
+          480
+        ],
+        "a2": [
+          220,
+          505
+        ],
+        "b2": [
+          620,
+          505
+        ]
+      }
+    },
+    {
+      "caption": "Player 2 goes · player 1 to the back of the line",
+      "at": {
+        "a2": [
+          194,
+          474
+        ],
+        "b2": [
+          594,
+          474
+        ],
+        "a1": [
+          184,
+          532
+        ],
+        "b1": [
+          584,
+          532
+        ]
+      }
+    },
+    {
+      "caption": "3. First team done sits down in stance · best of 3",
+      "at": {}
+    }
+  ],
+  "labels": [
+    {
+      "text": "free-throw line",
+      "at": [
+        420,
+        300
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Slide and Touch Relay (also: Defensive Slide Relay, Cone Slide Race)",
+    "category": "Conditioning, Defense, Fun",
+    "ages": "U6, U8, U10",
+    "players": "3–4 per team",
+    "duration": "5–8 min",
+    "objective": "A relay race that sneaks in defensive slides and conditioning — kids slide cone to cone and touch each one.",
+    "setup": [
+      "Teams of 3–4 in lines on the baseline",
+      "In front of each team, 4 cones in a zig-zag about 3 steps apart, ending at the free-throw line"
+    ],
+    "rules": [
+      "On \"Go\", the first player slides (no crossing feet) to each cone and touches it with the outside hand.",
+      "After the last cone, sprint straight back and high-five the next teammate.",
+      "First team to finish sits down in stance; play best of 3."
+    ],
+    "variations": [
+      "Easier: fewer cones, wider spacing.",
+      "Harder: carry a ball in two hands on the way out, dribble it back.",
+      "Harder: backpedal between cones instead of sprinting the return."
+    ],
+    "coaching": [
+      "Push off the back foot — step-slide.",
+      "Stay low; your head shouldn’t bob up.",
+      "Touch the cone, don’t knock it over."
+    ],
+    "equipment": [
+      "Cones",
+      "Optional 1 ball per team"
+    ]
+  }
+}

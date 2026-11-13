@@ -1,0 +1,313 @@
+{
+  "title": "Grab It, Chin It",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "cb",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "W",
+      "type": "player-t2",
+      "label": "W"
+    },
+    {
+      "key": "p0",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "b0",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "p1",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "b1",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "p2",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "b2",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "p3",
+      "type": "player-t1",
+      "label": "4"
+    },
+    {
+      "key": "b3",
+      "type": "basketball",
+      "size": 2
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Part 1 (self-toss): everyone has a ball · coach with a ball under the basket",
+      "at": {
+        "C": [
+          420,
+          520
+        ],
+        "cb": [
+          440,
+          528
+        ],
+        "W": [
+          210,
+          330
+        ],
+        "p0": [
+          200,
+          210
+        ],
+        "b0": [
+          216,
+          220
+        ],
+        "p1": [
+          330,
+          210
+        ],
+        "b1": [
+          346,
+          220
+        ],
+        "p2": [
+          510,
+          210
+        ],
+        "b2": [
+          526,
+          220
+        ],
+        "p3": [
+          640,
+          210
+        ],
+        "b3": [
+          656,
+          220
+        ]
+      }
+    },
+    {
+      "caption": "1. Toss it a little above your head, jump, grab it with two hands at the top",
+      "at": {
+        "b0": [
+          200,
+          170
+        ],
+        "b1": [
+          330,
+          170
+        ],
+        "b2": [
+          510,
+          170
+        ],
+        "b3": [
+          640,
+          170
+        ]
+      }
+    },
+    {
+      "caption": "Land with the ball under your chin, elbows out — yell “Ball!”",
+      "at": {
+        "b0": [
+          200,
+          232
+        ],
+        "b1": [
+          330,
+          232
+        ],
+        "b2": [
+          510,
+          232
+        ],
+        "b3": [
+          640,
+          232
+        ]
+      }
+    },
+    {
+      "caption": "Part 2: line up by the block · put your balls away",
+      "at": {
+        "p0": [
+          560,
+          430
+        ],
+        "p1": [
+          600,
+          400
+        ],
+        "p2": [
+          640,
+          370
+        ],
+        "p3": [
+          680,
+          340
+        ],
+        "b0": [
+          150,
+          512
+        ],
+        "b1": [
+          172,
+          512
+        ],
+        "b2": [
+          150,
+          534
+        ],
+        "b3": [
+          172,
+          534
+        ]
+      }
+    },
+    {
+      "caption": "2. Coach tosses the ball off the backboard",
+      "at": {
+        "cb": [
+          456,
+          500
+        ]
+      }
+    },
+    {
+      "caption": "Player 1 jumps, grabs it with two hands and chins it",
+      "at": {
+        "p0": [
+          480,
+          466
+        ],
+        "cb": [
+          480,
+          446
+        ]
+      }
+    },
+    {
+      "caption": "Hand it back to the coach and go to the back of the line",
+      "at": {
+        "cb": [
+          440,
+          528
+        ],
+        "p0": [
+          720,
+          310
+        ],
+        "p1": [
+          560,
+          430
+        ],
+        "p2": [
+          600,
+          400
+        ],
+        "p3": [
+          640,
+          370
+        ]
+      }
+    },
+    {
+      "caption": "Part 3: coach tosses · player 2 grabs it and chins it",
+      "at": {
+        "p1": [
+          480,
+          466
+        ],
+        "cb": [
+          480,
+          446
+        ]
+      }
+    },
+    {
+      "caption": "3. Pivot away and pass to the teammate on the wing",
+      "at": {
+        "p1": [
+          470,
+          456
+        ],
+        "cb": [
+          226,
+          340
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "wing",
+      "at": [
+        210,
+        290
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Grab It, Chin It (also: Two-Hand Rebound Drill, Rebound Toss, Chin It)",
+    "category": "Rebounding",
+    "ages": "U6, U8, U10",
+    "players": "Any",
+    "duration": "5–8 min",
+    "objective": "Teaches the first rebound habits: jump, grab with two hands at the top, and protect the ball under the chin.",
+    "setup": [
+      "Players in a line near the block, or in pairs anywhere on the court",
+      "Coach with a ball under the basket"
+    ],
+    "rules": [
+      "Part 1 (self-toss): each player tosses the ball a little above their head, jumps, catches it with two hands, and lands with the ball under their chin, elbows out, yelling \"Ball!\".",
+      "Part 2 (coach toss): coach tosses the ball off the backboard; the first player in line jumps, grabs it with two hands, chins it, and hands it back.",
+      "Part 3: after the grab, pivot away and make a pass to a teammate on the wing."
+    ],
+    "variations": [
+      "Easier: catch the ball after one bounce.",
+      "Harder: two players go for the coach’s toss — whoever chins it gets a point.",
+      "Harder: rebound, chin it, then score a power layup."
+    ],
+    "coaching": [
+      "Two hands, grab it hard.",
+      "Catch it at the top of your jump.",
+      "Chin it — elbows out.",
+      "Yell \"Ball!\"."
+    ],
+    "equipment": [
+      "1 ball per player or pair",
+      "1 basket"
+    ]
+  }
+}

@@ -1,0 +1,489 @@
+{
+  "title": "Ball Scramble",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "hb",
+      "type": "hoop",
+      "size": 3,
+      "color": "blue"
+    },
+    {
+      "key": "b1",
+      "type": "player-t1",
+      "label": "1",
+      "color": "blue"
+    },
+    {
+      "key": "b2",
+      "type": "player-t1",
+      "label": "2",
+      "color": "blue"
+    },
+    {
+      "key": "hy",
+      "type": "hoop",
+      "size": 3,
+      "color": "yellow"
+    },
+    {
+      "key": "y1",
+      "type": "player-t1",
+      "label": "1",
+      "color": "yellow"
+    },
+    {
+      "key": "y2",
+      "type": "player-t1",
+      "label": "2",
+      "color": "yellow"
+    },
+    {
+      "key": "hr",
+      "type": "hoop",
+      "size": 3,
+      "color": "red"
+    },
+    {
+      "key": "r1",
+      "type": "player-t1",
+      "label": "1",
+      "color": "red"
+    },
+    {
+      "key": "r2",
+      "type": "player-t1",
+      "label": "2",
+      "color": "red"
+    },
+    {
+      "key": "hg",
+      "type": "hoop",
+      "size": 3,
+      "color": "green"
+    },
+    {
+      "key": "g1",
+      "type": "player-t1",
+      "label": "1",
+      "color": "green"
+    },
+    {
+      "key": "g2",
+      "type": "player-t1",
+      "label": "2",
+      "color": "green"
+    },
+    {
+      "key": "x0",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x1",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x2",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x3",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x4",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x5",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x6",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x7",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x8",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x9",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x10",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "x11",
+      "type": "basketball",
+      "size": 2
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: balls scattered in the middle · each team’s home base is a hoop in a corner",
+      "at": {
+        "hb": [
+          70,
+          92
+        ],
+        "b1": [
+          120,
+          92
+        ],
+        "b2": [
+          70,
+          142
+        ],
+        "hy": [
+          770,
+          92
+        ],
+        "y1": [
+          720,
+          92
+        ],
+        "y2": [
+          770,
+          142
+        ],
+        "hr": [
+          70,
+          452
+        ],
+        "r1": [
+          120,
+          452
+        ],
+        "r2": [
+          70,
+          402
+        ],
+        "hg": [
+          770,
+          452
+        ],
+        "g1": [
+          720,
+          452
+        ],
+        "g2": [
+          770,
+          402
+        ],
+        "x0": [
+          340,
+          200
+        ],
+        "x1": [
+          420,
+          180
+        ],
+        "x2": [
+          500,
+          200
+        ],
+        "x3": [
+          300,
+          272
+        ],
+        "x4": [
+          380,
+          250
+        ],
+        "x5": [
+          460,
+          250
+        ],
+        "x6": [
+          540,
+          272
+        ],
+        "x7": [
+          380,
+          300
+        ],
+        "x8": [
+          460,
+          300
+        ],
+        "x9": [
+          340,
+          344
+        ],
+        "x10": [
+          420,
+          364
+        ],
+        "x11": [
+          500,
+          344
+        ]
+      }
+    },
+    {
+      "caption": "1. “Go!” — run out and pick up one ball",
+      "at": {
+        "b1": [
+          326,
+          190
+        ],
+        "b2": [
+          286,
+          262
+        ],
+        "y1": [
+          486,
+          190
+        ],
+        "y2": [
+          526,
+          262
+        ],
+        "r1": [
+          326,
+          334
+        ],
+        "r2": [
+          366,
+          240
+        ],
+        "g1": [
+          486,
+          334
+        ],
+        "g2": [
+          446,
+          290
+        ]
+      }
+    },
+    {
+      "caption": "2. Dribble it back to home base — the whole way, head up",
+      "at": {
+        "b1": [
+          114,
+          104
+        ],
+        "x0": [
+          56,
+          84
+        ],
+        "b2": [
+          114,
+          140
+        ],
+        "x3": [
+          70,
+          84
+        ],
+        "y1": [
+          726,
+          104
+        ],
+        "x2": [
+          756,
+          84
+        ],
+        "y2": [
+          726,
+          140
+        ],
+        "x6": [
+          770,
+          84
+        ],
+        "r1": [
+          114,
+          440
+        ],
+        "x9": [
+          56,
+          444
+        ],
+        "r2": [
+          114,
+          404
+        ],
+        "x4": [
+          70,
+          444
+        ],
+        "g1": [
+          726,
+          440
+        ],
+        "x11": [
+          756,
+          444
+        ],
+        "g2": [
+          726,
+          404
+        ],
+        "x8": [
+          770,
+          444
+        ]
+      }
+    },
+    {
+      "caption": "One ball at a time · go get another",
+      "at": {
+        "b1": [
+          406,
+          170
+        ],
+        "y1": [
+          446,
+          240
+        ],
+        "r1": [
+          366,
+          290
+        ],
+        "g1": [
+          406,
+          354
+        ]
+      }
+    },
+    {
+      "caption": "Dribble it home too",
+      "at": {
+        "b1": [
+          114,
+          104
+        ],
+        "x1": [
+          84,
+          84
+        ],
+        "y1": [
+          726,
+          104
+        ],
+        "x5": [
+          784,
+          84
+        ],
+        "r1": [
+          114,
+          440
+        ],
+        "x7": [
+          84,
+          444
+        ],
+        "g1": [
+          726,
+          440
+        ],
+        "x10": [
+          784,
+          444
+        ]
+      }
+    },
+    {
+      "caption": "3. Middle empty? Take one from another team’s base — no guarding",
+      "at": {
+        "b2": [
+          744,
+          140
+        ],
+        "x2": [
+          760,
+          150
+        ],
+        "y2": [
+          96,
+          140
+        ],
+        "x3": [
+          112,
+          150
+        ]
+      }
+    },
+    {
+      "caption": "Dribble it home",
+      "at": {
+        "b2": [
+          120,
+          130
+        ],
+        "y2": [
+          720,
+          130
+        ],
+        "x3": [
+          56,
+          98
+        ],
+        "x2": [
+          756,
+          98
+        ]
+      }
+    },
+    {
+      "caption": "4. Stop after 60–90 seconds · most balls wins",
+      "at": {}
+    }
+  ],
+  "notes": {
+    "title": "Ball Scramble (also: Fill the Basket, Clean Up the Court, Treasure Dribble)",
+    "category": "Conditioning, Ball Handling, Fun",
+    "ages": "U6, U8, U10",
+    "players": "6–16 (2–4 teams)",
+    "duration": "6–8 min",
+    "objective": "A high-energy team game: every ball on the floor must be dribbled back to your team’s home base — tons of running and dribbling.",
+    "setup": [
+      "All balls scattered around the center of the court",
+      "Each team has a home base (a corner or a hula hoop) in a corner of the court"
+    ],
+    "rules": [
+      "On \"Go\", players run out, pick up one ball, and dribble it back to home base.",
+      "Only one ball at a time, and it must be dribbled the whole way.",
+      "When the middle is empty, players may take balls from other teams’ bases (no guarding the base).",
+      "After 60–90 seconds, stop; most balls wins."
+    ],
+    "variations": [
+      "Easier: carrying allowed for U6 on the first round.",
+      "Harder: weak hand only.",
+      "Harder: to bring a ball home, you must first make a layup with it."
+    ],
+    "coaching": [
+      "Head up — watch for traffic.",
+      "Protect the ball with your body.",
+      "Keep moving; there’s always another ball."
+    ],
+    "equipment": [
+      "1–2 balls per player",
+      "Cones or hula hoops for bases"
+    ]
+  }
+}

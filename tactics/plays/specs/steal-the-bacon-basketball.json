@@ -1,0 +1,296 @@
+{
+  "title": "Steal the Bacon",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "h",
+      "type": "hoop",
+      "size": 3
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "B1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "B2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "B3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "B4",
+      "type": "player-t1",
+      "label": "4"
+    },
+    {
+      "key": "B5",
+      "type": "player-t1",
+      "label": "5"
+    },
+    {
+      "key": "Y1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "Y2",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "Y3",
+      "type": "player-t2",
+      "label": "3"
+    },
+    {
+      "key": "Y4",
+      "type": "player-t2",
+      "label": "4"
+    },
+    {
+      "key": "Y5",
+      "type": "player-t2",
+      "label": "5"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: teams on opposite sidelines, same numbers · ball in a hoop at center",
+      "at": {
+        "h": [
+          420,
+          272
+        ],
+        "ball": [
+          420,
+          272
+        ],
+        "C": [
+          24,
+          120
+        ],
+        "B1": [
+          180,
+          72
+        ],
+        "B2": [
+          300,
+          72
+        ],
+        "B3": [
+          420,
+          72
+        ],
+        "B4": [
+          540,
+          72
+        ],
+        "B5": [
+          660,
+          72
+        ],
+        "Y1": [
+          660,
+          472
+        ],
+        "Y2": [
+          540,
+          472
+        ],
+        "Y3": [
+          420,
+          472
+        ],
+        "Y4": [
+          300,
+          472
+        ],
+        "Y5": [
+          180,
+          472
+        ]
+      }
+    },
+    {
+      "caption": "1. Coach calls a number: “3!”",
+      "at": {}
+    },
+    {
+      "caption": "2. Both 3s sprint to the ball",
+      "at": {
+        "B3": [
+          404,
+          236
+        ],
+        "Y3": [
+          440,
+          310
+        ]
+      }
+    },
+    {
+      "caption": "Blue 3 scoops it with two hands and attacks · yellow 3 defends",
+      "at": {
+        "B3": [
+          270,
+          250
+        ],
+        "ball": [
+          286,
+          260
+        ],
+        "Y3": [
+          196,
+          266
+        ]
+      }
+    },
+    {
+      "caption": "3. Play to a score, a steal + score, or about 15 seconds",
+      "at": {
+        "B3": [
+          100,
+          296
+        ],
+        "Y3": [
+          88,
+          236
+        ],
+        "ball": [
+          47,
+          272
+        ]
+      }
+    },
+    {
+      "caption": "4. Ball back to the hoop, players back to their sidelines",
+      "at": {
+        "B3": [
+          420,
+          72
+        ],
+        "Y3": [
+          420,
+          472
+        ],
+        "ball": [
+          420,
+          272
+        ]
+      }
+    },
+    {
+      "caption": "New number: “1!” — the 1s start at opposite ends, so it’s a race",
+      "at": {
+        "B1": [
+          380,
+          244
+        ],
+        "Y1": [
+          460,
+          300
+        ]
+      }
+    }
+  ],
+  "arrows": [
+    {
+      "kind": "dashed-arrow",
+      "color": "blue",
+      "from": [
+        250,
+        110
+      ],
+      "to": [
+        110,
+        170
+      ]
+    },
+    {
+      "kind": "dashed-arrow",
+      "color": "yellow",
+      "from": [
+        590,
+        434
+      ],
+      "to": [
+        730,
+        374
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "text": "blue attacks this basket",
+      "at": [
+        150,
+        196
+      ],
+      "size": 13
+    },
+    {
+      "text": "yellow attacks this basket",
+      "at": [
+        690,
+        350
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Steal the Bacon (Basketball) (also: Numbers 1v1, Race to the Ball)",
+    "category": "1v1, Conditioning, Fun",
+    "ages": "U6, U8, U10",
+    "players": "6–14",
+    "duration": "8–10 min",
+    "objective": "Two teams, numbered players, and a ball in the middle — when a number is called, the two players race for the ball and play 1v1.",
+    "setup": [
+      "Two teams on opposite sidelines, each player with a number (both teams use the same numbers)",
+      "Ball on the center circle (or in a hula hoop)",
+      "Each team attacks the basket on its right"
+    ],
+    "rules": [
+      "Coach calls a number.",
+      "Those two players sprint to the ball; whoever gets it attacks; the other defends.",
+      "Play until a score, a steal plus a score, or ~15 seconds.",
+      "Return the ball to the circle; call a new number."
+    ],
+    "variations": [
+      "Easier: two balls — each player grabs one and races to score (no defense).",
+      "Harder: call two numbers for 2v2.",
+      "Harder: call a math problem (\"2 + 1!\") for the number."
+    ],
+    "coaching": [
+      "Get low and scoop the ball with two hands.",
+      "Dribble with your head up.",
+      "On defense, beat them back and get in front."
+    ],
+    "equipment": [
+      "1 ball",
+      "Optional hula hoop",
+      "2 baskets"
+    ]
+  }
+}

@@ -1,0 +1,569 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:22:27",
+  "sport": "basketball",
+  "field": "half",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "marker2",
+      "size": 2,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "1"
+    },
+    {
+      "id": 1,
+      "type": "marker2",
+      "size": 2,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "2"
+    },
+    {
+      "id": 2,
+      "type": "marker2",
+      "size": 2,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "3"
+    },
+    {
+      "id": 3,
+      "type": "marker2",
+      "size": 2,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "4"
+    },
+    {
+      "id": 4,
+      "type": "marker2",
+      "size": 2,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "5"
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "A"
+    },
+    {
+      "id": 6,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 7,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "Q"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 222,
+          "y": 486
+        },
+        "6": {
+          "x": 238,
+          "y": 496
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 222,
+          "y": 486
+        },
+        "6": {
+          "x": 420,
+          "y": 483
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Shoot from spot 1 — aim for the top corner of the box",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 300,
+          "y": 432
+        },
+        "6": {
+          "x": 316,
+          "y": 442
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Make it → move to the next spot",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 300,
+          "y": 432
+        },
+        "6": {
+          "x": 356,
+          "y": 520
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Miss → rebound…",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 340,
+          "y": 510
+        },
+        "6": {
+          "x": 356,
+          "y": 520
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "…and try again from the same spot",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 300,
+          "y": 432
+        },
+        "6": {
+          "x": 316,
+          "y": 442
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Back on spot 2 · soft shot — kiss it off the glass",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 420,
+          "y": 390
+        },
+        "6": {
+          "x": 436,
+          "y": 400
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Keep going through spot 5 · how many in 60 seconds?",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 420,
+          "y": 390
+        },
+        "6": {
+          "x": 436,
+          "y": 260
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Round 2: catch from a partner, chin it, then shoot",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 420,
+          "y": 390
+        },
+        "6": {
+          "x": 436,
+          "y": 380
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Pass in…",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 222,
+          "y": 500
+        },
+        "1": {
+          "x": 300,
+          "y": 446
+        },
+        "2": {
+          "x": 420,
+          "y": 404
+        },
+        "3": {
+          "x": 540,
+          "y": 446
+        },
+        "4": {
+          "x": 618,
+          "y": 500
+        },
+        "5": {
+          "x": 420,
+          "y": 390
+        },
+        "6": {
+          "x": 420,
+          "y": 483
+        },
+        "7": {
+          "x": 420,
+          "y": 250
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "…chin it, square up to the backboard, shoot",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Block Bank Shots",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 76,
+      "text": "Setup: 5 spots by the basket — short corners, blocks, middle of the lane",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    },
+    {
+      "id": 2,
+      "x": 420,
+      "y": 212,
+      "text": "partner",
+      "fontSize": 13,
+      "fontStyle": "italic",
+      "fill": "#ffffff",
+      "background": "transparent",
+      "transition": "none",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 8,
+    "draw": 0,
+    "shape": 0,
+    "text": 3
+  },
+  "notes": {
+    "title": "Block Bank Shots (also: Bank It In, Box Shooting, Little Hook Spots)",
+    "category": "Post Play, Finishing, Shooting",
+    "ages": "U6, U8, U10",
+    "players": "2–4 per basket",
+    "duration": "5–8 min",
+    "objective": "Short bank shots from the blocks and short corners build post touch and confidence for young players.",
+    "setup": [
+      "Five spots close to the basket: both blocks, both short corners (low), middle of the lane",
+      "One ball per player or pair"
+    ],
+    "rules": [
+      "Shoot from each spot, aiming for the top corner of the backboard box.",
+      "Make it, move to the next spot; miss, rebound and try again.",
+      "Count how many spots you finish in 60 seconds.",
+      "Round 2: catch from a partner, chin it, then shoot."
+    ],
+    "variations": [
+      "Easier: lower basket or smaller ball; stand closer.",
+      "Harder: one-hand baby hook from the blocks.",
+      "Harder: drop-step from each block before the shot."
+    ],
+    "coaching": [
+      "Aim for the top corner of the box.",
+      "Square your shoulders to the backboard.",
+      "Soft shot — kiss it off the glass."
+    ],
+    "equipment": [
+      "1 ball per player or pair",
+      "1 basket",
+      "Poly spots"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

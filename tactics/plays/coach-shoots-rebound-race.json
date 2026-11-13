@@ -1,0 +1,453 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:27:28",
+  "sport": "basketball",
+  "field": "half",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player",
+      "size": 4,
+      "rotation": 0,
+      "color": "#000000",
+      "number": "C"
+    },
+    {
+      "id": 1,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "1"
+    },
+    {
+      "id": 3,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "2"
+    },
+    {
+      "id": 4,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "3"
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "4"
+    },
+    {
+      "id": 6,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "1"
+    },
+    {
+      "id": 7,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "2"
+    },
+    {
+      "id": 8,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "3"
+    },
+    {
+      "id": 9,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "4"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 436,
+          "y": 334
+        },
+        "2": {
+          "x": 295,
+          "y": 455
+        },
+        "3": {
+          "x": 255,
+          "y": 438
+        },
+        "4": {
+          "x": 215,
+          "y": 421
+        },
+        "5": {
+          "x": 175,
+          "y": 404
+        },
+        "6": {
+          "x": 545,
+          "y": 455
+        },
+        "7": {
+          "x": 585,
+          "y": 438
+        },
+        "8": {
+          "x": 625,
+          "y": 421
+        },
+        "9": {
+          "x": 665,
+          "y": 404
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 470,
+          "y": 470
+        },
+        "2": {
+          "x": 295,
+          "y": 455
+        },
+        "3": {
+          "x": 255,
+          "y": 438
+        },
+        "4": {
+          "x": 215,
+          "y": 421
+        },
+        "5": {
+          "x": 175,
+          "y": 404
+        },
+        "6": {
+          "x": 545,
+          "y": 455
+        },
+        "7": {
+          "x": 585,
+          "y": 438
+        },
+        "8": {
+          "x": 625,
+          "y": 421
+        },
+        "9": {
+          "x": 665,
+          "y": 404
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Coach shoots — missing on purpose is fine",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 474,
+          "y": 428
+        },
+        "2": {
+          "x": 400,
+          "y": 440
+        },
+        "3": {
+          "x": 255,
+          "y": 438
+        },
+        "4": {
+          "x": 215,
+          "y": 421
+        },
+        "5": {
+          "x": 175,
+          "y": 404
+        },
+        "6": {
+          "x": 470,
+          "y": 446
+        },
+        "7": {
+          "x": 585,
+          "y": 438
+        },
+        "8": {
+          "x": 625,
+          "y": 421
+        },
+        "9": {
+          "x": 665,
+          "y": 404
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. First player from each line goes for the rebound",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 420,
+          "y": 483
+        },
+        "2": {
+          "x": 410,
+          "y": 452
+        },
+        "3": {
+          "x": 255,
+          "y": 438
+        },
+        "4": {
+          "x": 215,
+          "y": 421
+        },
+        "5": {
+          "x": 175,
+          "y": 404
+        },
+        "6": {
+          "x": 450,
+          "y": 462
+        },
+        "7": {
+          "x": 585,
+          "y": 438
+        },
+        "8": {
+          "x": 625,
+          "y": 421
+        },
+        "9": {
+          "x": 665,
+          "y": 404
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Yellow grabs it, chins it, goes straight back up · blue defends",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 420,
+          "y": 483
+        },
+        "2": {
+          "x": 410,
+          "y": 452
+        },
+        "3": {
+          "x": 255,
+          "y": 438
+        },
+        "4": {
+          "x": 215,
+          "y": 421
+        },
+        "5": {
+          "x": 175,
+          "y": 404
+        },
+        "6": {
+          "x": 450,
+          "y": 462
+        },
+        "7": {
+          "x": 585,
+          "y": 438
+        },
+        "8": {
+          "x": 625,
+          "y": 421
+        },
+        "9": {
+          "x": 665,
+          "y": 404
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Score = 1 point · two-hand rebound = bonus point",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 420,
+          "y": 324
+        },
+        "1": {
+          "x": 436,
+          "y": 334
+        },
+        "2": {
+          "x": 665,
+          "y": 404
+        },
+        "3": {
+          "x": 295,
+          "y": 455
+        },
+        "4": {
+          "x": 255,
+          "y": 438
+        },
+        "5": {
+          "x": 215,
+          "y": 421
+        },
+        "6": {
+          "x": 175,
+          "y": 404
+        },
+        "7": {
+          "x": 545,
+          "y": 455
+        },
+        "8": {
+          "x": 585,
+          "y": 438
+        },
+        "9": {
+          "x": 625,
+          "y": 421
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Both go to the back of the OTHER line · next two are up",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Coach Shoots, You Rebound",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 76,
+      "text": "Setup: two lines just outside the blocks · coach at the free-throw line with a ball",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 10,
+    "draw": 0,
+    "shape": 0,
+    "text": 2
+  },
+  "notes": {
+    "title": "Coach Shoots, You Rebound (also: Rebound Race, Rebound and Score 1v1, Get the Board)",
+    "category": "Rebounding, 1v1, Fun",
+    "ages": "U6, U8, U10",
+    "players": "4–12",
+    "duration": "6–10 min",
+    "objective": "A fun two-line race where kids react to a missed shot, go get the rebound, and score — the first live rebounding game for young players.",
+    "setup": [
+      "Two lines on either side of the lane, just outside the blocks",
+      "Coach at the free-throw line with a ball"
+    ],
+    "rules": [
+      "Coach shoots (missing on purpose is fine).",
+      "First player from each line goes for the rebound.",
+      "Whoever gets it tries to score; the other player defends.",
+      "A score is 1 point; a rebound grabbed with two hands is a bonus point. Both go to the back of the other line."
+    ],
+    "variations": [
+      "Easier: no defense — the player who grabs it just shoots.",
+      "Harder: before the shot, each player must touch the other player (box-out contact) first.",
+      "Harder: rebounder must outlet to a coach on the wing and get it back before scoring."
+    ],
+    "coaching": [
+      "Every shot is a miss — go get it!",
+      "Two hands on the ball.",
+      "Chin it before you go back up.",
+      "Go straight back up strong."
+    ],
+    "equipment": [
+      "1–2 balls",
+      "1 basket"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

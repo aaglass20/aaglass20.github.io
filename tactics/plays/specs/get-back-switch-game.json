@@ -1,0 +1,235 @@
+{
+  "title": "Get Back! Switch Game",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "C",
+      "type": "player",
+      "label": "C",
+      "color": "black"
+    },
+    {
+      "key": "b1",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "b2",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "B1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "B2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "Y1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "Y2",
+      "type": "player-t2",
+      "label": "2"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: 2v2 full court · coach on the sideline with a spare ball",
+      "at": {
+        "C": [
+          680,
+          26
+        ],
+        "b2": [
+          700,
+          34
+        ],
+        "B1": [
+          440,
+          230
+        ],
+        "b1": [
+          456,
+          240
+        ],
+        "B2": [
+          500,
+          380
+        ],
+        "Y1": [
+          580,
+          230
+        ],
+        "Y2": [
+          620,
+          360
+        ]
+      }
+    },
+    {
+      "caption": "1. Blue starts on offense, attacking the right basket",
+      "at": {
+        "B1": [
+          610,
+          210
+        ],
+        "b1": [
+          626,
+          220
+        ],
+        "B2": [
+          690,
+          390
+        ],
+        "Y1": [
+          670,
+          236
+        ],
+        "Y2": [
+          722,
+          340
+        ]
+      }
+    },
+    {
+      "caption": "2. Whistle! Coach passes a new ball to yellow — the old ball is dead",
+      "at": {
+        "b1": [
+          810,
+          120
+        ],
+        "b2": [
+          686,
+          246
+        ]
+      }
+    },
+    {
+      "caption": "Yellow attacks the other basket · blue sprints back — don’t stop to be sad!",
+      "at": {
+        "Y1": [
+          450,
+          230
+        ],
+        "b2": [
+          466,
+          240
+        ],
+        "Y2": [
+          470,
+          370
+        ],
+        "B1": [
+          380,
+          214
+        ],
+        "B2": [
+          390,
+          330
+        ]
+      }
+    },
+    {
+      "caption": "Every blue player back past half court before the ball crosses = bonus point",
+      "at": {}
+    },
+    {
+      "caption": "3. Find the ball first, then your player",
+      "at": {
+        "Y1": [
+          230,
+          236
+        ],
+        "b2": [
+          246,
+          246
+        ],
+        "Y2": [
+          250,
+          370
+        ],
+        "B1": [
+          150,
+          250
+        ],
+        "B2": [
+          160,
+          330
+        ]
+      }
+    },
+    {
+      "caption": "4. Score = 1 point · a score, a steal or the whistle flips it again",
+      "at": {
+        "Y1": [
+          120,
+          300
+        ],
+        "b2": [
+          47,
+          272
+        ],
+        "B1": [
+          96,
+          250
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "half court",
+      "at": [
+        420,
+        272
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "Get Back! Switch Game (also: Whistle Switch, Turnover Switch 2v2, Offense to Defense)",
+    "category": "Transition, Small-Sided Game, Conditioning",
+    "ages": "U8, U10",
+    "players": "4–6",
+    "duration": "8–12 min",
+    "objective": "A 2v2 or 3v3 game where the coach’s whistle flips possession — kids learn to sprint back on defense the moment they lose the ball.",
+    "setup": [
+      "Full court (or two half courts back to back with low baskets)",
+      "Two teams of 2–3; coach on the sideline with a spare ball"
+    ],
+    "rules": [
+      "Team A starts on offense attacking one basket.",
+      "Play normally; on a score, a steal, or the coach’s whistle, the other team immediately attacks the other basket.",
+      "On the whistle, the coach passes a new ball to the team that was on defense.",
+      "Point for scoring; bonus point for a team that has every player back past half court before the ball crosses."
+    ],
+    "variations": [
+      "Easier: 2v1 waves — one defender always sprints back to stop two attackers.",
+      "Harder: whistle at random, even mid-shot.",
+      "Harder: 3v3 with a 3-pass rule before shooting."
+    ],
+    "coaching": [
+      "Lose the ball? Sprint back — don’t stop to be sad!",
+      "Find the ball first, then your player.",
+      "Run to the basket, then turn and look."
+    ],
+    "equipment": [
+      "2 balls",
+      "2 baskets",
+      "Pinnies"
+    ]
+  }
+}

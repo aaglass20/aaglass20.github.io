@@ -1,0 +1,1086 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:27:28",
+  "sport": "basketball",
+  "field": "horizontal",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "hoop",
+      "size": 3,
+      "rotation": 0,
+      "color": "#3b82f6"
+    },
+    {
+      "id": 1,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "1"
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "2"
+    },
+    {
+      "id": 3,
+      "type": "hoop",
+      "size": 3,
+      "rotation": 0,
+      "color": "#facc15"
+    },
+    {
+      "id": 4,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "1"
+    },
+    {
+      "id": 5,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "2"
+    },
+    {
+      "id": 6,
+      "type": "hoop",
+      "size": 3,
+      "rotation": 0,
+      "color": "#ef4444"
+    },
+    {
+      "id": 7,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#ef4444",
+      "number": "1"
+    },
+    {
+      "id": 8,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#ef4444",
+      "number": "2"
+    },
+    {
+      "id": 9,
+      "type": "hoop",
+      "size": 3,
+      "rotation": 0,
+      "color": "#22c55e"
+    },
+    {
+      "id": 10,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#22c55e",
+      "number": "1"
+    },
+    {
+      "id": 11,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#22c55e",
+      "number": "2"
+    },
+    {
+      "id": 12,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 13,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 14,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 15,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 16,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 17,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 18,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 19,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 20,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 21,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 22,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 23,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 120,
+          "y": 92
+        },
+        "2": {
+          "x": 70,
+          "y": 142
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 720,
+          "y": 92
+        },
+        "5": {
+          "x": 770,
+          "y": 142
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 120,
+          "y": 452
+        },
+        "8": {
+          "x": 70,
+          "y": 402
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 720,
+          "y": 452
+        },
+        "11": {
+          "x": 770,
+          "y": 402
+        },
+        "12": {
+          "x": 340,
+          "y": 200
+        },
+        "13": {
+          "x": 420,
+          "y": 180
+        },
+        "14": {
+          "x": 500,
+          "y": 200
+        },
+        "15": {
+          "x": 300,
+          "y": 272
+        },
+        "16": {
+          "x": 380,
+          "y": 250
+        },
+        "17": {
+          "x": 460,
+          "y": 250
+        },
+        "18": {
+          "x": 540,
+          "y": 272
+        },
+        "19": {
+          "x": 380,
+          "y": 300
+        },
+        "20": {
+          "x": 460,
+          "y": 300
+        },
+        "21": {
+          "x": 340,
+          "y": 344
+        },
+        "22": {
+          "x": 420,
+          "y": 364
+        },
+        "23": {
+          "x": 500,
+          "y": 344
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 326,
+          "y": 190
+        },
+        "2": {
+          "x": 286,
+          "y": 262
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 486,
+          "y": 190
+        },
+        "5": {
+          "x": 526,
+          "y": 262
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 326,
+          "y": 334
+        },
+        "8": {
+          "x": 366,
+          "y": 240
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 486,
+          "y": 334
+        },
+        "11": {
+          "x": 446,
+          "y": 290
+        },
+        "12": {
+          "x": 340,
+          "y": 200
+        },
+        "13": {
+          "x": 420,
+          "y": 180
+        },
+        "14": {
+          "x": 500,
+          "y": 200
+        },
+        "15": {
+          "x": 300,
+          "y": 272
+        },
+        "16": {
+          "x": 380,
+          "y": 250
+        },
+        "17": {
+          "x": 460,
+          "y": 250
+        },
+        "18": {
+          "x": 540,
+          "y": 272
+        },
+        "19": {
+          "x": 380,
+          "y": 300
+        },
+        "20": {
+          "x": 460,
+          "y": 300
+        },
+        "21": {
+          "x": 340,
+          "y": 344
+        },
+        "22": {
+          "x": 420,
+          "y": 364
+        },
+        "23": {
+          "x": 500,
+          "y": 344
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. “Go!” — run out and pick up one ball",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 114,
+          "y": 104
+        },
+        "2": {
+          "x": 114,
+          "y": 140
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 726,
+          "y": 104
+        },
+        "5": {
+          "x": 726,
+          "y": 140
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 114,
+          "y": 440
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 726,
+          "y": 440
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 420,
+          "y": 180
+        },
+        "14": {
+          "x": 756,
+          "y": 84
+        },
+        "15": {
+          "x": 70,
+          "y": 84
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 460,
+          "y": 250
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 380,
+          "y": 300
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 420,
+          "y": 364
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Dribble it back to home base — the whole way, head up",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 406,
+          "y": 170
+        },
+        "2": {
+          "x": 114,
+          "y": 140
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 446,
+          "y": 240
+        },
+        "5": {
+          "x": 726,
+          "y": 140
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 366,
+          "y": 290
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 406,
+          "y": 354
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 420,
+          "y": 180
+        },
+        "14": {
+          "x": 756,
+          "y": 84
+        },
+        "15": {
+          "x": 70,
+          "y": 84
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 460,
+          "y": 250
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 380,
+          "y": 300
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 420,
+          "y": 364
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "One ball at a time · go get another",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 114,
+          "y": 104
+        },
+        "2": {
+          "x": 114,
+          "y": 140
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 726,
+          "y": 104
+        },
+        "5": {
+          "x": 726,
+          "y": 140
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 114,
+          "y": 440
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 726,
+          "y": 440
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 84,
+          "y": 84
+        },
+        "14": {
+          "x": 756,
+          "y": 84
+        },
+        "15": {
+          "x": 70,
+          "y": 84
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 784,
+          "y": 84
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 84,
+          "y": 444
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 784,
+          "y": 444
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Dribble it home too",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 114,
+          "y": 104
+        },
+        "2": {
+          "x": 744,
+          "y": 140
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 726,
+          "y": 104
+        },
+        "5": {
+          "x": 96,
+          "y": 140
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 114,
+          "y": 440
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 726,
+          "y": 440
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 84,
+          "y": 84
+        },
+        "14": {
+          "x": 760,
+          "y": 150
+        },
+        "15": {
+          "x": 112,
+          "y": 150
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 784,
+          "y": 84
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 84,
+          "y": 444
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 784,
+          "y": 444
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Middle empty? Take one from another team’s base — no guarding",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 114,
+          "y": 104
+        },
+        "2": {
+          "x": 120,
+          "y": 130
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 726,
+          "y": 104
+        },
+        "5": {
+          "x": 720,
+          "y": 130
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 114,
+          "y": 440
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 726,
+          "y": 440
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 84,
+          "y": 84
+        },
+        "14": {
+          "x": 756,
+          "y": 98
+        },
+        "15": {
+          "x": 56,
+          "y": 98
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 784,
+          "y": 84
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 84,
+          "y": 444
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 784,
+          "y": 444
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Dribble it home",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 70,
+          "y": 92
+        },
+        "1": {
+          "x": 114,
+          "y": 104
+        },
+        "2": {
+          "x": 120,
+          "y": 130
+        },
+        "3": {
+          "x": 770,
+          "y": 92
+        },
+        "4": {
+          "x": 726,
+          "y": 104
+        },
+        "5": {
+          "x": 720,
+          "y": 130
+        },
+        "6": {
+          "x": 70,
+          "y": 452
+        },
+        "7": {
+          "x": 114,
+          "y": 440
+        },
+        "8": {
+          "x": 114,
+          "y": 404
+        },
+        "9": {
+          "x": 770,
+          "y": 452
+        },
+        "10": {
+          "x": 726,
+          "y": 440
+        },
+        "11": {
+          "x": 726,
+          "y": 404
+        },
+        "12": {
+          "x": 56,
+          "y": 84
+        },
+        "13": {
+          "x": 84,
+          "y": 84
+        },
+        "14": {
+          "x": 756,
+          "y": 98
+        },
+        "15": {
+          "x": 56,
+          "y": 98
+        },
+        "16": {
+          "x": 70,
+          "y": 444
+        },
+        "17": {
+          "x": 784,
+          "y": 84
+        },
+        "18": {
+          "x": 770,
+          "y": 84
+        },
+        "19": {
+          "x": 84,
+          "y": 444
+        },
+        "20": {
+          "x": 770,
+          "y": 444
+        },
+        "21": {
+          "x": 56,
+          "y": 444
+        },
+        "22": {
+          "x": 784,
+          "y": 444
+        },
+        "23": {
+          "x": 756,
+          "y": 444
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Stop after 60–90 seconds · most balls wins",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "Ball Scramble",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 521,
+      "text": "Setup: balls scattered in the middle · each team’s home base is a hoop in a corner",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 24,
+    "draw": 0,
+    "shape": 0,
+    "text": 2
+  },
+  "notes": {
+    "title": "Ball Scramble (also: Fill the Basket, Clean Up the Court, Treasure Dribble)",
+    "category": "Conditioning, Ball Handling, Fun",
+    "ages": "U6, U8, U10",
+    "players": "6–16 (2–4 teams)",
+    "duration": "6–8 min",
+    "objective": "A high-energy team game: every ball on the floor must be dribbled back to your team’s home base — tons of running and dribbling.",
+    "setup": [
+      "All balls scattered around the center of the court",
+      "Each team has a home base (a corner or a hula hoop) in a corner of the court"
+    ],
+    "rules": [
+      "On \"Go\", players run out, pick up one ball, and dribble it back to home base.",
+      "Only one ball at a time, and it must be dribbled the whole way.",
+      "When the middle is empty, players may take balls from other teams’ bases (no guarding the base).",
+      "After 60–90 seconds, stop; most balls wins."
+    ],
+    "variations": [
+      "Easier: carrying allowed for U6 on the first round.",
+      "Harder: weak hand only.",
+      "Harder: to bring a ball home, you must first make a layup with it."
+    ],
+    "coaching": [
+      "Head up — watch for traffic.",
+      "Protect the ball with your body.",
+      "Keep moving; there’s always another ball."
+    ],
+    "equipment": [
+      "1–2 balls per player",
+      "Cones or hula hoops for bases"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}

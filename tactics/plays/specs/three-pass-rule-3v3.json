@@ -1,0 +1,286 @@
+{
+  "title": "3-Pass Rule 3v3",
+  "sport": "basketball",
+  "field": "half",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    76
+  ],
+  "objects": [
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "O1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "O2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "O3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "D1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "D2",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "D3",
+      "type": "player-t2",
+      "label": "3"
+    },
+    {
+      "key": "G1",
+      "type": "player-t1",
+      "label": "1",
+      "color": "green"
+    },
+    {
+      "key": "G2",
+      "type": "player-t1",
+      "label": "2",
+      "color": "green"
+    },
+    {
+      "key": "G3",
+      "type": "player-t1",
+      "label": "3",
+      "color": "green"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: 3v3 on a half court · next team waits on the side",
+      "at": {
+        "O1": [
+          420,
+          200
+        ],
+        "ball": [
+          436,
+          210
+        ],
+        "O2": [
+          220,
+          320
+        ],
+        "O3": [
+          620,
+          320
+        ],
+        "D1": [
+          420,
+          248
+        ],
+        "D2": [
+          270,
+          360
+        ],
+        "D3": [
+          570,
+          360
+        ],
+        "G1": [
+          780,
+          220
+        ],
+        "G2": [
+          780,
+          290
+        ],
+        "G3": [
+          780,
+          360
+        ]
+      }
+    },
+    {
+      "caption": "1. Pass 1! — everyone counts out loud",
+      "at": {
+        "ball": [
+          236,
+          330
+        ],
+        "O3": [
+          670,
+          470
+        ],
+        "D3": [
+          610,
+          450
+        ],
+        "D1": [
+          380,
+          300
+        ],
+        "D2": [
+          256,
+          352
+        ]
+      }
+    },
+    {
+      "caption": "Pass 2! — pass and move, don’t stand still",
+      "at": {
+        "O1": [
+          330,
+          210
+        ],
+        "ball": [
+          346,
+          220
+        ],
+        "D1": [
+          350,
+          256
+        ]
+      }
+    },
+    {
+      "caption": "Pass 3! — now you can shoot",
+      "at": {
+        "ball": [
+          686,
+          480
+        ],
+        "D3": [
+          636,
+          450
+        ]
+      }
+    },
+    {
+      "caption": "3. Score = 2 points · a basket after 5+ passes = 3",
+      "at": {
+        "ball": [
+          420,
+          483
+        ],
+        "O3": [
+          600,
+          476
+        ]
+      }
+    },
+    {
+      "caption": "2. Drop or steal? Count goes back to 0 · defense takes it out past the arc",
+      "at": {
+        "D1": [
+          420,
+          170
+        ],
+        "ball": [
+          436,
+          180
+        ],
+        "O1": [
+          420,
+          230
+        ],
+        "O2": [
+          260,
+          300
+        ],
+        "O3": [
+          580,
+          300
+        ],
+        "D2": [
+          230,
+          250
+        ],
+        "D3": [
+          610,
+          250
+        ]
+      }
+    },
+    {
+      "caption": "4. Winners (yellow) stay · losing team rotates off, next team in",
+      "at": {
+        "O1": [
+          60,
+          220
+        ],
+        "O2": [
+          60,
+          290
+        ],
+        "O3": [
+          60,
+          360
+        ],
+        "G1": [
+          420,
+          240
+        ],
+        "G2": [
+          270,
+          330
+        ],
+        "G3": [
+          570,
+          330
+        ]
+      }
+    }
+  ],
+  "labels": [
+    {
+      "text": "next team",
+      "at": [
+        780,
+        180
+      ],
+      "size": 13
+    }
+  ],
+  "notes": {
+    "title": "3-Pass Rule 3v3 (also: Pass Before You Shoot, Three Passes Then Score, Pass Count Game)",
+    "category": "Team Offense, Small-Sided Game, Passing",
+    "ages": "U6, U8, U10",
+    "players": "6–9",
+    "duration": "10–15 min",
+    "objective": "A 3v3 game where the team must make three passes before it can shoot — teaches young players to share the ball and get open.",
+    "setup": [
+      "Half court, low basket if available",
+      "Two teams of 3 (extra players rotate in on a score)"
+    ],
+    "rules": [
+      "Offense must complete 3 passes (counted out loud by everyone) before any shot.",
+      "A dropped or stolen pass resets the count to zero; a steal gives the ball to the defense, who must take it out past the 3-point line.",
+      "Score = 2 points; a basket after 5+ passes = 3 points.",
+      "Winners stay; losing team rotates off."
+    ],
+    "variations": [
+      "Easier: 2 passes; defenders can’t steal passes, only guard the shooter.",
+      "Harder: no dribbling at all — pass and cut only.",
+      "Harder: every player must touch the ball before a shot."
+    ],
+    "coaching": [
+      "Pass and move — don’t stand still.",
+      "Hands up, call for it.",
+      "Spread out — don’t all chase the ball.",
+      "Count out loud!"
+    ],
+    "equipment": [
+      "1 ball",
+      "1 basket",
+      "Pinnies"
+    ]
+  }
+}

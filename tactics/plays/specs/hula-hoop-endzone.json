@@ -1,0 +1,245 @@
+{
+  "title": "Hula Hoop End Zone",
+  "sport": "basketball",
+  "field": "horizontal",
+  "speed": 0.75,
+  "captionAt": [
+    420,
+    521
+  ],
+  "objects": [
+    {
+      "key": "hB",
+      "type": "hoop",
+      "size": 3,
+      "color": "blue"
+    },
+    {
+      "key": "hY",
+      "type": "hoop",
+      "size": 3,
+      "color": "yellow"
+    },
+    {
+      "key": "ball",
+      "type": "basketball",
+      "size": 2
+    },
+    {
+      "key": "B1",
+      "type": "player-t1",
+      "label": "1"
+    },
+    {
+      "key": "B2",
+      "type": "player-t1",
+      "label": "2"
+    },
+    {
+      "key": "B3",
+      "type": "player-t1",
+      "label": "3"
+    },
+    {
+      "key": "Y1",
+      "type": "player-t2",
+      "label": "1"
+    },
+    {
+      "key": "Y2",
+      "type": "player-t2",
+      "label": "2"
+    },
+    {
+      "key": "Y3",
+      "type": "player-t2",
+      "label": "3"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Setup: blue scores in the hoop on the right baseline · yellow in the hoop on the left",
+      "at": {
+        "hB": [
+          800,
+          410
+        ],
+        "hY": [
+          40,
+          134
+        ],
+        "B1": [
+          300,
+          272
+        ],
+        "ball": [
+          316,
+          282
+        ],
+        "B2": [
+          340,
+          140
+        ],
+        "B3": [
+          340,
+          400
+        ],
+        "Y1": [
+          380,
+          260
+        ],
+        "Y2": [
+          440,
+          170
+        ],
+        "Y3": [
+          460,
+          380
+        ]
+      }
+    },
+    {
+      "caption": "1. Pass and dribble toward your hoop — look up before you pass",
+      "at": {
+        "B1": [
+          480,
+          272
+        ],
+        "ball": [
+          496,
+          282
+        ],
+        "B2": [
+          600,
+          150
+        ],
+        "B3": [
+          620,
+          400
+        ],
+        "Y1": [
+          550,
+          250
+        ],
+        "Y2": [
+          650,
+          190
+        ],
+        "Y3": [
+          680,
+          360
+        ]
+      }
+    },
+    {
+      "caption": "Pass!",
+      "at": {
+        "ball": [
+          616,
+          160
+        ],
+        "Y2": [
+          640,
+          210
+        ]
+      }
+    },
+    {
+      "caption": "2. Teammate steps into the hoop (3 seconds max) · catch the pass = 1 point",
+      "at": {
+        "B3": [
+          800,
+          410
+        ],
+        "ball": [
+          816,
+          420
+        ],
+        "Y3": [
+          740,
+          360
+        ]
+      }
+    },
+    {
+      "caption": "3. Bonus shot at the basket = 1 more point",
+      "at": {
+        "B3": [
+          760,
+          340
+        ],
+        "ball": [
+          793,
+          272
+        ]
+      }
+    },
+    {
+      "caption": "4. Yellow starts with the ball from the other end",
+      "at": {
+        "Y1": [
+          740,
+          200
+        ],
+        "ball": [
+          756,
+          210
+        ],
+        "Y2": [
+          660,
+          120
+        ],
+        "Y3": [
+          640,
+          380
+        ],
+        "B1": [
+          600,
+          230
+        ],
+        "B2": [
+          560,
+          130
+        ],
+        "B3": [
+          560,
+          360
+        ]
+      }
+    }
+  ],
+  "notes": {
+    "title": "Hula Hoop End Zone (also: Pass to the Hoop, End Zone Basketball, Hoop Ball)",
+    "category": "Small-Sided Game, Passing, Fun",
+    "ages": "U6, U8",
+    "players": "4–6",
+    "duration": "8–12 min",
+    "objective": "A small-sided passing game for the youngest players: score by passing to a teammate standing in a hula hoop — then earn a bonus shot.",
+    "setup": [
+      "Half court or a smaller area",
+      "Two hula hoops on the baseline (one per team; or one at each end)",
+      "Teams of 2–3"
+    ],
+    "rules": [
+      "Teams pass and dribble toward their hoop.",
+      "A point is scored when a teammate standing in the hoop catches a pass (they may stay in the hoop for 3 seconds max).",
+      "After a point, the catcher gets one bonus shot at the basket (1 extra point).",
+      "The other team starts with the ball from the opposite end."
+    ],
+    "variations": [
+      "Easier: no defense on passes — defenders may only block the hoop.",
+      "Harder: no dribbling allowed.",
+      "Harder: move the hoops to the wings so players must spread out."
+    ],
+    "coaching": [
+      "Look up before you pass.",
+      "Show your hands to the passer.",
+      "Move to where your teammate can see you."
+    ],
+    "equipment": [
+      "1 ball",
+      "2 hula hoops",
+      "Pinnies"
+    ]
+  }
+}

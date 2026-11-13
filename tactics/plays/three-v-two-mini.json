@@ -1,0 +1,395 @@
+{
+  "format": "tactics-board",
+  "version": 1,
+  "savedAt": "2026-11-13T13:22:27",
+  "sport": "basketball",
+  "field": "half",
+  "playSpeed": 0.75,
+  "placedObjects": [
+    {
+      "id": 0,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "A"
+    },
+    {
+      "id": 1,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "B"
+    },
+    {
+      "id": 2,
+      "type": "player-t1",
+      "size": 4,
+      "rotation": 0,
+      "color": "#3b82f6",
+      "number": "C"
+    },
+    {
+      "id": 3,
+      "type": "basketball",
+      "size": 2,
+      "rotation": 0
+    },
+    {
+      "id": 4,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "X"
+    },
+    {
+      "id": 5,
+      "type": "player-t2",
+      "size": 4,
+      "rotation": 0,
+      "color": "#facc15",
+      "number": "Y"
+    },
+    {
+      "id": 6,
+      "type": "player",
+      "size": 4,
+      "rotation": 0,
+      "color": "#000000",
+      "number": "C"
+    }
+  ],
+  "frames": [
+    {
+      "positions": {
+        "0": {
+          "x": 260,
+          "y": 140
+        },
+        "1": {
+          "x": 420,
+          "y": 130
+        },
+        "3": {
+          "x": 436,
+          "y": 140
+        },
+        "2": {
+          "x": 580,
+          "y": 140
+        },
+        "4": {
+          "x": 380,
+          "y": 380
+        },
+        "5": {
+          "x": 460,
+          "y": 380
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 310
+        },
+        "1": {
+          "x": 420,
+          "y": 220
+        },
+        "3": {
+          "x": 436,
+          "y": 230
+        },
+        "2": {
+          "x": 630,
+          "y": 310
+        },
+        "4": {
+          "x": 420,
+          "y": 270
+        },
+        "5": {
+          "x": 480,
+          "y": 380
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "1. Bring it in and spread out — three spots, three players",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 310
+        },
+        "1": {
+          "x": 420,
+          "y": 220
+        },
+        "3": {
+          "x": 226,
+          "y": 320
+        },
+        "2": {
+          "x": 630,
+          "y": 310
+        },
+        "4": {
+          "x": 270,
+          "y": 320
+        },
+        "5": {
+          "x": 400,
+          "y": 360
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Pass! — X is on the ball, so find the friend nobody is guarding",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 310
+        },
+        "1": {
+          "x": 420,
+          "y": 220
+        },
+        "3": {
+          "x": 646,
+          "y": 320
+        },
+        "2": {
+          "x": 630,
+          "y": 310
+        },
+        "4": {
+          "x": 270,
+          "y": 320
+        },
+        "5": {
+          "x": 300,
+          "y": 360
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "Y slides over to help… so C is open — fast pass!",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 310
+        },
+        "1": {
+          "x": 420,
+          "y": 220
+        },
+        "3": {
+          "x": 420,
+          "y": 483
+        },
+        "2": {
+          "x": 500,
+          "y": 462
+        },
+        "4": {
+          "x": 270,
+          "y": 320
+        },
+        "5": {
+          "x": 300,
+          "y": 360
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "3. Layup — score = 2 points · after 3 passes = 3",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 210,
+          "y": 310
+        },
+        "1": {
+          "x": 420,
+          "y": 220
+        },
+        "3": {
+          "x": 420,
+          "y": 483
+        },
+        "2": {
+          "x": 500,
+          "y": 462
+        },
+        "4": {
+          "x": 270,
+          "y": 320
+        },
+        "5": {
+          "x": 300,
+          "y": 360
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "2. Coach asks: “Who was open?”",
+          "hidden": false
+        }
+      }
+    },
+    {
+      "positions": {
+        "0": {
+          "x": 380,
+          "y": 380
+        },
+        "1": {
+          "x": 420,
+          "y": 130
+        },
+        "3": {
+          "x": 436,
+          "y": 140
+        },
+        "2": {
+          "x": 460,
+          "y": 380
+        },
+        "4": {
+          "x": 260,
+          "y": 140
+        },
+        "5": {
+          "x": 580,
+          "y": 140
+        },
+        "6": {
+          "x": 770,
+          "y": 300
+        }
+      },
+      "texts": {
+        "1": {
+          "text": "4. Rotate: two attackers defend · defenders join the attack line",
+          "hidden": false
+        }
+      }
+    }
+  ],
+  "freePaths": {},
+  "drawings": [],
+  "shapes": [],
+  "textItems": [
+    {
+      "id": 0,
+      "x": 420,
+      "y": 28,
+      "text": "3v2 Pass and Score",
+      "fontSize": 26,
+      "fontStyle": "bold",
+      "fill": "#ffffff",
+      "background": "rgba(0,20,60,0.6)",
+      "transition": "none",
+      "anchor": "center"
+    },
+    {
+      "id": 1,
+      "x": 420,
+      "y": 76,
+      "text": "Setup: three attackers near half court (one ball) · two defenders in the lane",
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "fill": "#ffffff",
+      "background": "rgba(0,0,0,0.55)",
+      "transition": "type",
+      "anchor": "center"
+    }
+  ],
+  "nextIds": {
+    "object": 7,
+    "draw": 0,
+    "shape": 0,
+    "text": 2
+  },
+  "notes": {
+    "title": "3v2 Pass and Score (also: 3-on-2 Keep Away to Score, Mini 3v2, Find the Open Friend)",
+    "category": "3v2, Team Offense, Passing",
+    "ages": "U8, U10",
+    "players": "5–10",
+    "duration": "8–10 min",
+    "objective": "Three attackers vs two defenders in a half court — young players learn there is always one open teammate.",
+    "setup": [
+      "Half court, low basket if possible",
+      "Three attackers at half court (one ball); two defenders in the lane"
+    ],
+    "rules": [
+      "Attackers bring the ball in and try to score; defenders guard.",
+      "Coach asks after each play: \"Who was open?\"",
+      "Score = 2 points; score after 3 passes = 3 points.",
+      "Rotate: two attackers become defenders, defenders join the attack line."
+    ],
+    "variations": [
+      "Easier: defenders must stay in the lane (zone).",
+      "Harder: defenders may come out anywhere.",
+      "Harder: shot clock of 10 seconds — count it out loud."
+    ],
+    "coaching": [
+      "Spread out — three spots, three players.",
+      "Look for the player nobody is guarding.",
+      "Fast passes beat defenders."
+    ],
+    "equipment": [
+      "1 ball",
+      "1 basket",
+      "Pinnies"
+    ],
+    "source": "Drawn by Claude from the drill text"
+  }
+}
