@@ -22,7 +22,7 @@ alternate names — many drills go by several names.
 
 ---
 
-## Soccer — 116 written
+## Soccer — 128 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Rondo 4v1 | Possession, Passing |  |
@@ -151,8 +151,20 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ⬜ | Free Kick Wall Practice | Shooting, Goalkeeping | set pieces |
 | ⬜ | Throw-In Routines | Attacking | |
 | ⬜ | 3v1 Rondo to 3v2 Transition | 3v1, 3v2, Transition | still thin |
+| ✅ | Switch! Game | Transition, Small-Sided Game, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Attack Then Defend | Transition, 1v1, Shooting | U6/U8 batch 2026-11-13 |
+| ✅ | Knock Down the Cones | Shooting, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Dribble, Gate, Shoot | Shooting, Dribbling | U6/U8 batch 2026-11-13 |
+| ✅ | Shooting Relay Race | Shooting, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Goalie Hands: Basket and W | Goalkeeping | U6/U8 batch 2026-11-13 |
+| ✅ | Everyone Keeps | Goalkeeping, Shooting, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Pounce on the Ball | Goalkeeping | U6/U8 batch 2026-11-13 |
+| ✅ | Partners vs Pirate | 2v1, Passing, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | 2v1 Gate Game | 2v1, Attacking, Dribbling | U6/U8 batch 2026-11-13 |
+| ✅ | 3v2 End Line Game | 3v2, Attacking, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | 3v2 Keep Away | 3v2, Possession, Passing | U6/U8 batch 2026-11-13 |
 
-## Basketball — 81 written
+## Basketball — 98 written
 | Status | Drill | Categories | Notes |
 |---|---|---|---|
 | ✅ | Mikan Drill | Finishing, Footwork | |
@@ -241,8 +253,25 @@ Skipped from BDU: technique/move videos (Cruyff turn, Glitch, 7 ways to turn, bo
 | ✅ | 7-Up | Shooting, Fun, Conditioning | Added by Aaron |
 | ✅ | Swish, Make, Miss Ladder | Shooting, Fun | Added by Aaron |
 | ✅ | King / Queen of the Court Shootout | Shooting, Fun | Added by Aaron |
+| ✅ | Coach Says: Defense | Defense, Footwork, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Stay in Front (Lane 1v1) | Defense, 1v1, Footwork | U6/U8 batch 2026-11-13 |
+| ✅ | Slide and Touch Relay | Conditioning, Defense, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Grab It, Chin It | Rebounding | U6/U8 batch 2026-11-13 |
+| ✅ | Coach Shoots, You Rebound | Rebounding, 1v1, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Steal the Bacon (Basketball) | 1v1, Conditioning, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Dribble Relay Race | Conditioning, Ball Handling, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Ball Scramble | Conditioning, Ball Handling, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Rebound, Outlet, Go! | Transition, Rebounding, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | Get Back! Switch Game | Transition, Small-Sided Game, Conditioning | U6/U8 batch 2026-11-13 |
+| ✅ | 3-Pass Rule 3v3 | Team Offense, Small-Sided Game, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | Spacing Spots | Team Offense, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | 2v1 Noodle Defender | 2v1, Passing, Team Offense | U6/U8 batch 2026-11-13 |
+| ✅ | 3v2 Pass and Score | 3v2, Team Offense, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | Hula Hoop End Zone | Small-Sided Game, Passing, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Big Target Post Catch | Post Play, Finishing, Passing | U6/U8 batch 2026-11-13 |
+| ✅ | Block Bank Shots | Post Play, Finishing, Shooting | U6/U8 batch 2026-11-13 |
 
-## Softball — 46 written
+## Softball — 58 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
 
 | Status | Drill | Categories | Notes |
@@ -296,8 +325,20 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Rise Ball Spin | Pitching | HS+ |
 | ⬜ | Running Slap (Slapper Progression 2) | Hitting, Baserunning | |
 | ⬜ | Slapper Defense | Team Defense | |
+| ✅ | Rainbow Arm Circles | Pitching, Throwing | U6/U8 batch 2026-11-13 |
+| ✅ | Bullseye Pitching | Pitching, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Point, Step, Throw | Throwing, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Target Toss | Throwing, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Thumbs and Pinkies | Catching, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Tennis Ball Catch Ladder | Catching, Warmup, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Sky Ball Catch | Catching, Outfield | U6/U8 batch 2026-11-13 |
+| ✅ | Beat the Ball | Team Defense, Baserunning, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Run to Your Spot | Team Defense, Infield | U6/U8 batch 2026-11-13 |
+| ✅ | Batting Stance Check | Hitting, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Big Ball Batting | Hitting, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Tee Derby Zones | Hitting, Fun | U6/U8 batch 2026-11-13 |
 
-## Baseball — 47 written
+## Baseball — 58 written
 Most drills exist in both softball and baseball with the same `id` (see RULES.md).
 
 | Status | Drill | Categories | Notes |
@@ -352,6 +393,17 @@ Most drills exist in both softball and baseball with the same `id` (see RULES.md
 | ⬜ | Wall Drill (pitching) | Pitching | CoachTube |
 | ⬜ | 1st & 3rd Defense | Team Defense | Dugout Captain |
 | ⬜ | Baseball Conditioning: Base Sprints | Conditioning | |
+| ✅ | Bullseye Pitching | Pitching, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Point, Step, Throw | Throwing, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Target Toss | Throwing, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Thumbs and Pinkies | Catching, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Tennis Ball Catch Ladder | Catching, Warmup, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Sky Ball Catch | Catching, Outfield | U6/U8 batch 2026-11-13 |
+| ✅ | Beat the Ball | Team Defense, Baserunning, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Run to Your Spot | Team Defense, Infield | U6/U8 batch 2026-11-13 |
+| ✅ | Batting Stance Check | Hitting, Warmup | U6/U8 batch 2026-11-13 |
+| ✅ | Big Ball Batting | Hitting, Fun | U6/U8 batch 2026-11-13 |
+| ✅ | Tee Derby Zones | Hitting, Fun | U6/U8 batch 2026-11-13 |
 
 ## Football — 36 written
 | Status | Drill | Categories | Notes |
