@@ -322,6 +322,7 @@
     .prog-block.is-warmup { background: #fef9c3; } .prog-block.is-break { background: #e0f2fe; } .prog-block.is-closing { background: #f3e8ff; }
     .prog-block.is-missing { background: #fee2e2; color: #991b1b; }
     .prog-block-min { font-weight: 700; color: #4a5568; font-variant-numeric: tabular-nums; }
+    .hs-badge { display: inline-block; vertical-align: middle; margin-left: .3rem; font-size: .6rem; font-weight: 800; letter-spacing: .05em; line-height: 1; background: #003366; color: #FFD700; padding: .2rem .38rem; border-radius: 5px; }
     .prog-block small { display: block; color: #718096; font-size: .76rem; }
     .prog-note { font-size: .85rem; color: #4a5568; line-height: 1.5; margin: 0; }
     .prog-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
@@ -747,7 +748,7 @@ function programBlock([type, id, minutes], week, isLastGame) {
   return {
     type, id: r.id, name: r.name, icon: r.icon || '⚽',
     desc: (r.description || '') + (isLastGame ? ` This week: ${week.twist}` : ''),
-    coaching: points.slice(0, 3), duration: minutes, hasVariant: false,
+    coaching: points.slice(0, 3), duration: minutes, hasVariant: false, fromHs: !!r.from_hs,
     videoFile: r.video_url || r.video_file || null,
     setup: (r.setup || []).length ? r.setup : null,
     howToPlay: (r.directions || []).length ? r.directions : null,
@@ -787,7 +788,7 @@ function renderPrograms() {
           const at = clock; clock += b.duration;
           return `<div class="prog-block is-${b.type}${b.missing ? ' is-missing' : ''}">
             <span class="prog-block-min">${at}′</span><span aria-hidden="true">${esc(b.icon)}</span>
-            <span>${esc(b.missing ? `Drill “${b.id}” isn't in the library` : b.name)} <small>${b.duration} min</small></span></div>`;
+            <span>${esc(b.missing ? `Drill “${b.id}” isn't in the library` : b.name)}${b.fromHs ? ' <span class="hs-badge" title="From the high school program">HS</span>' : ''} <small>${b.duration} min</small></span></div>`;
         }).join('');
         return `<details class="prog-week">
           <summary><span class="prog-week-num">Week ${i + 1}</span>

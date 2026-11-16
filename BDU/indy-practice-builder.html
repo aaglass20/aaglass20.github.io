@@ -263,6 +263,7 @@
     }
     .info-modal-close:hover { background: var(--gray-100); }
     .info-modal-body { padding: 1.4rem; }
+    .hs-badge { display: inline-block; vertical-align: middle; margin-left: .4rem; font-size: .62rem; font-weight: 800; letter-spacing: .05em; line-height: 1; background: #003366; color: #FFD700; padding: .22rem .4rem; border-radius: 5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .info-section { margin-bottom: 1.4rem; }
     .info-section:last-child { margin-bottom: 0; }
     .info-section-head {
@@ -790,6 +791,7 @@ function drillFromRow(r) {
     equipment: r.equipment || [], purpose: r.description || '',
     ageGroups: [...ages.slice(Math.max(0, ages.indexOf(r.min_age)), r.max_age ? ages.indexOf(r.max_age) + 1 : ages.length), ...(r.max_age ? [] : ['Mixed'])],
     focusAreas: r.focus_areas || [],
+    fromHs: !!r.from_hs,
     shuttleData: extra.shuttleData || null,
     variants: {
       ...(extra.variants || {}),   // age-specific versions (U8, U10 …), when a drill has them
@@ -819,6 +821,7 @@ async function loadDrillBank() {
     else { DRILL_BANK = []; drillBankState = 'error'; }
   }
   buildDrillBank();
+  if (state.ageGroup && state.plan.length) renderTimeline();   // HS badges for a plan that was already on screen
 }
 
 
@@ -1023,7 +1026,7 @@ function renderTimeline() {
       <span class="drag-handle" title="Drag to reorder">⠿</span>
       <span class="block-icon">${esc(block.icon)}</span>
       <div class="block-body">
-        <span class="block-type-tag tag-${block.type}">${block.type}</span>
+        <span class="block-type-tag tag-${block.type}">${block.type}</span>${isHsBlock(block) ? '<span class="hs-badge" title="From the high school program">HS</span>' : ''}
         <div class="block-name">${esc(block.name)}</div>
         <div class="block-desc">${esc(block.desc)}</div>
         ${ageBadge}
@@ -1128,6 +1131,7 @@ function wireModal() {
       howToPlay: variant.howToPlay || null,
       coachingPoints: variant.coachingPoints || null,
       variations: variant.variations || null,
+      fromHs: !!drill.fromHs,
       shuttleData: drill.shuttleData || null,
     });
     closeModal();
@@ -1316,6 +1320,14 @@ function buildDrillBank() {
   }
 
   renderDrillCards();
+}
+
+// A block is from the high school program if it says so, or (plans saved before the badge) if its drill is.
+function isHsBlock(block) {
+  if (block.type === 'break' || block.type === 'closing') return false;
+  if (typeof block.fromHs === 'boolean') return block.fromHs;
+  const d = DRILL_BANK.find(x => x.id === block.id);
+  return !!(d && d.fromHs);
 }
 
 function getDrillVariant(drill, ageGroup) {
