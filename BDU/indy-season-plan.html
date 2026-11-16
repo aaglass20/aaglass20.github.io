@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Season Plan — The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    :root {
+      --navy: #1a1a2e; --g: #00ff88; --g-dark: #00b368; --blue: #0779e4;
+      --gray-100: #f7fafc; --gray-200: #edf2f7; --gray-300: #e2e8f0; --gray-400: #a0aec0; --gray-500: #718096; --gray-600: #4a5568;
+      --white: #fff; --shadow-sm: 0 1px 4px rgba(0,0,0,.07); --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --radius: 12px; --radius-sm: 8px;
+    }
+    .se-hero { background: linear-gradient(135deg, #003366 0%, #0779e4 100%); color: #fff; text-align: center; padding: 2rem 1.5rem 1.75rem; position: relative; overflow: hidden; }
+    .se-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 75% 50%, rgba(0,255,136,.15) 0%, transparent 60%); pointer-events: none; }
+    .se-badge { display: inline-block; background: rgba(0,255,136,.15); border: 1px solid rgba(0,255,136,.35); color: var(--g); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: .3rem .9rem; border-radius: 99px; margin-bottom: .75rem; position: relative; }
+    .se-hero h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; margin: 0 0 .4rem; position: relative; color: #fff; }
+    .se-hero h2 span { color: var(--g); }
+    .se-hero p { font-size: .95rem; opacity: .85; margin: 0 auto; max-width: 660px; position: relative; }
+    .se-wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+    .se-tabs { display: flex; flex-wrap: wrap; gap: .5rem; padding: 1.25rem 0 .5rem; align-items: center; }
+    .se-tab { padding: .5rem 1.05rem; border-radius: 99px; border: 2px solid var(--gray-300); background: var(--white); font: inherit; font-size: .88rem; font-weight: 700; color: var(--gray-600); cursor: pointer; }
+    .se-tab:hover { border-color: var(--g-dark); color: var(--g-dark); }
+    .se-tab[aria-selected="true"] { background: var(--navy); border-color: var(--navy); color: var(--g); }
+    .se-print { margin-left: auto; background: none; border: 2px solid var(--gray-300); color: var(--gray-600); font: inherit; font-size: .82rem; font-weight: 700; padding: .4rem .9rem; border-radius: 99px; cursor: pointer; }
+    @media (max-width: 700px) { .se-tabs { flex-wrap: nowrap; overflow-x: auto; } .se-tab { flex: none; } .se-print { display: none; } }
+
+    .se-intro { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); border-left: 5px solid #003366; padding: 1rem 1.2rem; margin: .5rem 0 1.25rem; }
+    .se-intro h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; color: var(--navy); margin: 0 0 .3rem; }
+    .se-intro p { font-size: .92rem; color: var(--gray-600); line-height: 1.6; margin: 0 0 .35rem; }
+    .se-intro p:last-child { margin: 0; }
+    .se-intro b { color: var(--navy); }
+
+    .se-title { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); margin: 1.75rem 0 .25rem; }
+    .se-sub { font-size: .88rem; color: var(--gray-500); margin: 0 0 .9rem; }
+
+    /* ── The six blocks ── */
+    .se-blocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    @media (max-width: 980px) { .se-blocks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .se-blocks { grid-template-columns: minmax(0, 1fr); } }
+    .se-block { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); border-top: 5px solid var(--bc, #003366); padding: .95rem 1rem; display: grid; gap: .6rem; align-content: start; min-width: 0; }
+    .se-block-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+    .se-block-num { font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--bc, #003366); }
+    .se-block-when { font-size: .72rem; font-weight: 700; color: var(--gray-500); text-align: right; }
+    .se-block h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; color: var(--navy); margin: 0; }
+    .se-why { font-size: .86rem; color: var(--gray-600); line-height: 1.5; margin: 0; }
+    .se-slot { display: block; text-decoration: none; border: 2px solid var(--gray-200); border-radius: var(--radius-sm); padding: .55rem .7rem; color: inherit; }
+    a.se-slot:hover { border-color: var(--g-dark); }
+    .se-slot-label { font-size: .64rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); display: flex; justify-content: space-between; gap: .4rem; }
+    .se-slot-title { font-weight: 700; color: var(--navy); font-size: .95rem; display: block; margin-top: .1rem; }
+    .se-slot-focus { font-size: .72rem; font-weight: 700; color: #1e40af; background: #dbeafe; padding: .1rem .5rem; border-radius: 99px; display: inline-block; margin-top: .25rem; }
+    .se-again { color: #b45309; }
+    .se-slot.is-keeper { background: #fdf2f8; border-color: #fbcfe8; }
+    .se-slot.is-keeper .se-slot-focus { background: #fce7f3; color: #9d174d; }
+
+    /* ── Week by week ── */
+    .se-table-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow-x: auto; }
+    .se-table { width: 100%; border-collapse: collapse; font-size: .87rem; min-width: 560px; }
+    .se-table th { text-align: left; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); background: var(--gray-100); padding: .55rem .75rem; border-bottom: 2px solid var(--gray-300); }
+    .se-table td { padding: .5rem .75rem; border-bottom: 1px solid var(--gray-200); vertical-align: top; color: var(--gray-600); }
+    .se-table tr.is-first td { border-top: 3px solid var(--gray-300); }
+    .se-wk { font-weight: 700; color: var(--navy); white-space: nowrap; }
+    .se-table td b { color: var(--navy); display: block; }
+    .se-table td small { color: var(--gray-500); }
+    .se-blk { font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #003366; white-space: nowrap; }
+    .se-foot { font-size: .84rem; color: var(--gray-500); margin: 1rem 0 0; line-height: 1.6; }
+
+    @media print {
+      header, .waffle-menu-toggle, #waffleMenuContainer, #shared-footer, .se-tabs, .se-hero { display: none !important; }
+      .se-block, .se-intro, .se-table-wrap { box-shadow: none; border: 1px solid #ccc; }
+      .se-block { break-inside: avoid; }
+      .se-table tr { break-inside: avoid; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>Season Plan</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<div class="se-hero">
+  <div class="se-badge">The Indy Way</div>
+  <h2>Season Plan — <span>The Year at a Glance</span></h2>
+  <p>Which weekly program to run when, for every age group: six four-week blocks, two focused sessions a week, each block building on the last.</p>
+</div>
+
+<div class="se-wrap">
+  <div class="se-tabs" role="tablist" aria-label="Age group" id="seTabs"></div>
+  <div id="seBody"></div>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+<script src="scripts/indy-programs.js"></script>
+<script src="scripts/indy-seasons.js"></script>
+<script>
+// The season for one age group: its six blocks, then every week of the year.
+// Data: scripts/indy-seasons.js (the layout) + scripts/indy-programs.js (the programs).
+(function () {
+  const SEASONS = window.INDY_SEASONS || [];
+  const PROGRAMS = new Map((window.INDY_PROGRAMS || []).map(p => [p.id, p]));
+  const COLORS = ['#00b368', '#0779e4', '#7c3aed', '#0891b2', '#d97706', '#dc2626'];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const link = (p, age) => `indy-saved-plans.html?age=${encodeURIComponent(age)}#prog-${encodeURIComponent(p.id)}`;
+
+  const tabs = document.getElementById('seTabs');
+  tabs.innerHTML = SEASONS.map(s => `<button type="button" class="se-tab" role="tab" data-age="${esc(s.age)}">${esc(s.label)}</button>`).join('')
+    + '<button type="button" class="se-print" onclick="window.print()">🖨 Print this season</button>';
+
+  function slot(label, id, season, seen) {
+    const p = PROGRAMS.get(id);
+    if (!p) return `<div class="se-slot"><span class="se-slot-label">${label}</span><span class="se-slot-title">Program “${esc(id)}” is missing</span></div>`;
+    const again = seen.has(id); seen.add(id);
+    return `<a class="se-slot" href="${link(p, season.age)}">
+      <span class="se-slot-label"><span>${label} · ${p.minutes} min</span>${again ? '<span class="se-again">second time</span>' : ''}</span>
+      <span class="se-slot-title">${esc(p.title)}</span>
+      <span class="se-slot-focus">${esc(p.focus)}</span></a>`;
+  }
+
+  function show(age) {
+    const season = SEASONS.find(s => s.age.toLowerCase() === String(age).toLowerCase()) || SEASONS[0];
+    tabs.querySelectorAll('.se-tab').forEach(t => t.setAttribute('aria-selected', t.dataset.age === season.age ? 'true' : 'false'));
+    if (location.hash.slice(1).toLowerCase() !== season.age.toLowerCase()) history.replaceState(null, '', '#' + season.age.toLowerCase());
+    const keeper = PROGRAMS.get(season.keeperProgram);
+    const seen = new Set();
+    const blocks = season.blocks.map((b, i) => `
+      <article class="se-block" style="--bc:${COLORS[i]}">
+        <div class="se-block-head"><span class="se-block-num">Block ${i + 1}</span><span class="se-block-when">${esc(b.when)}</span></div>
+        <h4>${esc(b.name)}</h4>
+        <p class="se-why">${esc(b.why)}</p>
+        ${slot('Session A', b.a, season, seen)}
+        ${slot('Session B', b.b, season, seen)}
+        ${keeper && season.keeperBlocks.includes(i + 1) ? `<a class="se-slot is-keeper" href="${link(keeper, season.age)}">
+          <span class="se-slot-label"><span>${season.age === 'U8' ? 'Whole team' : 'Keepers'} · ${keeper.minutes} min block</span></span>
+          <span class="se-slot-title">${esc(keeper.title)}</span><span class="se-slot-focus">${esc(keeper.focus)}</span></a>` : ''}
+      </article>`).join('');
+
+    let week = 0;
+    const rows = season.blocks.map((b, i) => {
+      const a = PROGRAMS.get(b.a), bb = PROGRAMS.get(b.b);
+      return [0, 1, 2, 3].map(w => {
+        week++;
+        const cell = p => p ? `<b>${esc(p.weeks[w].theme)}</b><small>${esc(p.title)} · week ${w + 1}</small>` : '—';
+        return `<tr class="${w === 0 ? 'is-first' : ''}">
+          <td class="se-wk">Week ${week}</td>
+          <td class="se-blk">${w === 0 ? esc(b.name) : ''}</td>
+          <td>${cell(a)}</td><td>${cell(bb)}</td></tr>`;
+      }).join('');
+    }).join('');
+
+    document.getElementById('seBody').innerHTML = `
+      <div class="se-intro">
+        <h3>${esc(season.label)}</h3>
+        <p>${esc(season.summary)}</p>
+        <p><b>Sessions:</b> ${esc(season.sessions)}</p>
+        <p><a href="indy-player-pathway.html#${season.age === 'U16' ? 'hs' : season.age.toLowerCase()}">See what this age group should be learning →</a></p>
+      </div>
+      <h3 class="se-title">The six blocks</h3>
+      <p class="se-sub">Each block is four weeks. Tap a program to see its sessions and open them in the builder.</p>
+      <div class="se-blocks">${blocks}</div>
+      <h3 class="se-title">Week by week</h3>
+      <p class="se-sub">The theme of each focused session, all ${week} weeks.</p>
+      <div class="se-table-wrap"><table class="se-table">
+        <thead><tr><th>Week</th><th>Block</th><th>Session A</th><th>Session B</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+      <p class="se-foot">This is a guide, not a contract. In a game week, keep Session A and make Session B lighter. If the team hasn't got a block's idea yet, stay on it another week. A program marked “second time” should be run with its drills' Harder variations.</p>`;
+  }
+
+  tabs.querySelectorAll('.se-tab').forEach(t => t.addEventListener('click', () => show(t.dataset.age)));
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+  show(location.hash.slice(1) || new URLSearchParams(location.search).get('age') || 'U8');
+})();
+</script>
+</body>
+</html>

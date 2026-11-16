@@ -290,6 +290,54 @@
     }
     .btn-load-plan:hover { background: #002244; transform: scale(1.03); }
     .btn-load-plan i { font-size: .78rem; }
+
+    /* ── Weekly programs ── */
+    .sp-section-title { max-width: 1100px; margin: 1.75rem auto .25rem; padding: 0 1.5rem; font-family: 'Rajdhani', sans-serif; font-size: 1.45rem; font-weight: 700; color: var(--navy, #1a1a2e); }
+    .sp-section-sub { max-width: 1100px; margin: 0 auto 1rem; padding: 0 1.5rem; font-size: .9rem; color: #718096; }
+    .prog-grid { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: start; }
+    @media (max-width: 860px) { .prog-grid { grid-template-columns: minmax(0, 1fr); } }
+    .prog-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); border-top: 5px solid #003366; padding: 1.15rem 1.2rem 1rem; min-width: 0; }
+    .prog-kicker { font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #0779e4; }
+    .prog-title { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #1a1a2e; margin: .1rem 0 .45rem; line-height: 1.2; }
+    .prog-chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .6rem; }
+    .prog-chip { font-size: .7rem; font-weight: 700; padding: .15rem .55rem; border-radius: 99px; background: #edf2f7; color: #4a5568; }
+    .prog-chip.is-age { background: #003366; color: #FFD700; }
+    .prog-chip.is-focus { background: #dbeafe; color: #1e40af; }
+    .prog-goal { font-size: .88rem; color: #4a5568; line-height: 1.55; margin: 0 0 .8rem; }
+    .prog-goal b { color: #1a1a2e; }
+    .prog-week { border-top: 1px solid #edf2f7; }
+    .prog-week summary { list-style: none; cursor: pointer; padding: .65rem 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .65rem; align-items: center; }
+    .prog-week summary::-webkit-details-marker { display: none; }
+    .prog-week-num { font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #1a1a2e; padding: .2rem .5rem; border-radius: 6px; white-space: nowrap; }
+    .prog-week-theme { font-weight: 700; color: #1a1a2e; font-size: .95rem; }
+    .prog-week-obj { display: block; font-weight: 400; font-size: .82rem; color: #718096; }
+    .prog-week-caret { color: #a0aec0; transition: transform .15s; }
+    .prog-week[open] .prog-week-caret { transform: rotate(90deg); }
+    .prog-week-body { padding: 0 0 .9rem; }
+    .prog-label { font-size: .66rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #a0aec0; margin: .7rem 0 .3rem; }
+    .prog-keys { margin: 0; padding-left: 1.1rem; list-style: disc; }
+    .prog-keys li { display: list-item; font-size: .86rem; color: #4a5568; line-height: 1.5; }
+    .prog-blocks { display: grid; gap: .3rem; }
+    .prog-block { display: grid; grid-template-columns: 3.1rem 1.5rem minmax(0, 1fr); gap: .45rem; align-items: baseline; font-size: .87rem; color: #1a1a2e; padding: .3rem .5rem; border-radius: 6px; background: #f7fafc; }
+    .prog-block.is-warmup { background: #fef9c3; } .prog-block.is-break { background: #e0f2fe; } .prog-block.is-closing { background: #f3e8ff; }
+    .prog-block.is-missing { background: #fee2e2; color: #991b1b; }
+    .prog-block-min { font-weight: 700; color: #4a5568; font-variant-numeric: tabular-nums; }
+    .prog-block small { display: block; color: #718096; font-size: .76rem; }
+    .prog-note { font-size: .85rem; color: #4a5568; line-height: 1.5; margin: 0; }
+    .prog-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+    .prog-foot { display: flex; justify-content: flex-end; border-top: 1px solid #edf2f7; padding-top: .7rem; margin-top: .2rem; }
+    .btn-prog-print { background: none; border: 2px solid #e2e8f0; color: #4a5568; font: inherit; font-size: .8rem; font-weight: 700; padding: .35rem .8rem; border-radius: 99px; cursor: pointer; }
+    .prog-msg { grid-column: 1 / -1; text-align: center; color: #718096; padding: 1.5rem 1rem; font-size: .92rem; }
+    @media print {
+      body.print-program header, body.print-program .waffle-menu-toggle, body.print-program #waffleMenuContainer, body.print-program .sp-hero,
+      body.print-program .sp-toolbar, body.print-program .sp-count, body.print-program #planGrid, body.print-program .sp-section-title,
+      body.print-program .sp-section-sub, body.print-program #shared-footer, body.print-program .prog-card:not(.is-printing),
+      body.print-program .prog-actions, body.print-program .prog-foot, body.print-program .prog-week-caret { display: none !important; }
+      body.print-program .prog-grid { display: block; padding: 0; }
+      body.print-program .prog-card { box-shadow: none; border: none; padding: 0; }
+      body.print-program .prog-week { break-inside: avoid; }
+      body.print-program * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
   </style>
 </head>
 <body>
@@ -315,7 +363,7 @@
   <a href="indy-way.html" class="sp-hero-back"><i class="fas fa-arrow-left"></i> The Indy Way</a>
   <div class="sp-hero-badge">Practice Plans</div>
   <h1>Saved <span>Practice Plans</span></h1>
-  <p>Pre-built practice plans ready to load and print. Click any plan to open it in the builder and make it your own.</p>
+  <p>Weekly programs and single practice plans, ready to load and print. Open any of them in the builder and make it your own.</p>
 </div>
 
 <div class="sp-toolbar">
@@ -326,6 +374,11 @@
   <div class="sp-filters" id="filterRow"></div>
 </div>
 
+<h2 class="sp-section-title">Weekly Programs</h2>
+<p class="sp-section-sub">Not sure which to run when? See the <a href="indy-season-plan.html">Season Plan</a>. Four-week programs by age group. Each one builds a single focus area week by week — learn it, add pressure, game situations, then put it in the game. Open any week in the builder to adjust it.</p>
+<div class="prog-grid" id="programGrid"></div>
+
+<h2 class="sp-section-title">Single-Session Plans</h2>
 <div class="sp-count" id="planCount"></div>
 
 <div class="sp-grid" id="planGrid"></div>
@@ -337,6 +390,8 @@
     .then(html => { document.getElementById('shared-footer').innerHTML = html; });
 </script>
 <script src="scripts/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/indy-programs.js"></script>
 
 <script>
 // ══════════════════════════════════════════════
@@ -548,13 +603,14 @@ function buildFilters() {
   const row = document.getElementById('filterRow');
   AGE_FILTERS.forEach(age => {
     const btn = document.createElement('button');
-    btn.className = 'sp-filter-btn' + (age === 'All' ? ' active' : '');
+    btn.className = 'sp-filter-btn' + (age === activeAge ? ' active' : '');
     btn.textContent = age;
     btn.addEventListener('click', () => {
       document.querySelectorAll('.sp-filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeAge = age;
       renderGrid();
+      renderPrograms();
     });
     row.appendChild(btn);
   });
@@ -642,15 +698,189 @@ function loadPlan(planId) {
 
 function filterPlans() {
   renderGrid();
+  renderPrograms();
 }
 
 // ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
 
+// ══════════════════════════════════════════════
+//  WEEKLY PROGRAMS  (data: scripts/indy-programs.js; drills: Supabase table bdu_drills)
+// ══════════════════════════════════════════════
+
+const PROG_CFG = {
+  SUPABASE_URL:      'https://fpnmnlrwhwnuefbnehuf.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih',
+};
+const DRILLS_CACHE_KEY = 'bdu_indy_drills_cache_v1';   // shared with the practice builder
+const PLAN_KEY = 'bdu_indy_plan_v1';
+const PROGRAMS = window.INDY_PROGRAMS || [];
+let DRILL_ROWS = null;      // id → drill row; null while loading
+let drillsFrom = 'loading'; // 'loading' | 'ready' | 'cached' | 'error'
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+async function loadProgramDrills() {
+  let rows = null;
+  try {
+    const sb = window.supabase.createClient(PROG_CFG.SUPABASE_URL, PROG_CFG.SUPABASE_ANON_KEY);
+    const { data, error } = await sb.from('bdu_drills').select('*');
+    if (error) throw error;
+    rows = data || []; drillsFrom = 'ready';
+    try { localStorage.setItem(DRILLS_CACHE_KEY, JSON.stringify(rows)); } catch (e) { /* storage full / blocked */ }
+  } catch (e) {
+    try { rows = JSON.parse(localStorage.getItem(DRILLS_CACHE_KEY) || 'null'); } catch (e2) { rows = null; }
+    drillsFrom = Array.isArray(rows) && rows.length ? 'cached' : 'error';
+  }
+  DRILL_ROWS = new Map((rows || []).map(r => [r.id, r]));
+  renderPrograms();
+}
+
+// One block of a week → the block the practice builder uses
+function programBlock([type, id, minutes], week, isLastGame) {
+  if (type === 'break') return { type: 'break', id: 'break', name: 'Water Break', icon: '💧', desc: 'Rest and hydration.', duration: minutes, hasVariant: false };
+  if (type === 'closing') return { type: 'closing', id: 'team-talk', name: 'Team Huddle & Recap', icon: '🗣️', desc: `Ask the team: ${week.check}`, duration: minutes, hasVariant: false };
+  const r = DRILL_ROWS && DRILL_ROWS.get(id);
+  if (!r) return { type, id, name: id, icon: '❓', desc: '', duration: minutes, missing: true };
+  const points = r.coaching_points || [];
+  return {
+    type, id: r.id, name: r.name, icon: r.icon || '⚽',
+    desc: (r.description || '') + (isLastGame ? ` This week: ${week.twist}` : ''),
+    coaching: points.slice(0, 3), duration: minutes, hasVariant: false,
+    videoFile: r.video_url || r.video_file || null,
+    setup: (r.setup || []).length ? r.setup : null,
+    howToPlay: (r.directions || []).length ? r.directions : null,
+    variations: (r.variations || []).length ? r.variations : null,
+    coachingPoints: points.length ? points : null,
+    shuttleData: (r.extra && r.extra.shuttleData) || null,
+  };
+}
+
+function weekBlocks(week) {
+  let last = -1;
+  week.blocks.forEach((b, i) => { if (b[0] === 'drill') last = i; });
+  return week.blocks.map((b, i) => programBlock(b, week, i === last));
+}
+
+function getFilteredPrograms() {
+  const q = document.getElementById('planSearch').value.toLowerCase().trim();
+  return PROGRAMS.filter(p => {
+    if (activeAge !== 'All' && !p.ages.includes(activeAge)) return false;
+    if (!q) return true;
+    return [p.title, p.focus, p.goal, ...p.ages, ...p.weeks.flatMap(w => [w.theme, w.objective])].join(' ').toLowerCase().includes(q);
+  });
+}
+
+function renderPrograms() {
+  const grid = document.getElementById('programGrid');
+  if (drillsFrom === 'loading') { grid.innerHTML = '<div class="prog-msg">Loading programs…</div>'; return; }
+  const list = getFilteredPrograms();
+  if (!list.length) { grid.innerHTML = '<div class="prog-msg">No weekly programs match. Try another age group or search.</div>'; return; }
+  grid.innerHTML = (drillsFrom === 'error' ? '<div class="prog-msg" style="color:#b91c1c">The drill library couldn\'t load, so the sessions below only show what is planned. Check your connection and reload to open a week in the builder.</div>' : '')
+    + list.map(p => {
+      const weeks = p.weeks.map((w, i) => {
+        const blocks = weekBlocks(w);
+        const missing = blocks.filter(b => b.missing).length;
+        let clock = 0;
+        const rows = blocks.map(b => {
+          const at = clock; clock += b.duration;
+          return `<div class="prog-block is-${b.type}${b.missing ? ' is-missing' : ''}">
+            <span class="prog-block-min">${at}′</span><span aria-hidden="true">${esc(b.icon)}</span>
+            <span>${esc(b.missing ? `Drill “${b.id}” isn't in the library` : b.name)} <small>${b.duration} min</small></span></div>`;
+        }).join('');
+        return `<details class="prog-week">
+          <summary><span class="prog-week-num">Week ${i + 1}</span>
+            <span class="prog-week-theme">${esc(w.theme)}<span class="prog-week-obj">${esc(w.objective)}</span></span>
+            <span class="prog-week-caret" aria-hidden="true">›</span></summary>
+          <div class="prog-week-body">
+            <div class="prog-label">Coach this</div>
+            <ul class="prog-keys">${w.keys.map(k => `<li>${esc(k)}</li>`).join('')}</ul>
+            <div class="prog-label">Session · ${p.minutes} min</div>
+            <div class="prog-blocks">${rows}</div>
+            <div class="prog-label">This week's twist</div>
+            <p class="prog-note">${esc(w.twist)}</p>
+            <div class="prog-label">Ask in the huddle</div>
+            <p class="prog-note">${esc(w.check)}</p>
+            <div class="prog-actions">
+              <button class="btn-load-plan" data-program="${esc(p.id)}" data-week="${i}" ${missing || drillsFrom === 'error' ? 'disabled' : ''}>
+                <i class="fas fa-arrow-right"></i> Open Week ${i + 1} in the builder</button>
+            </div>
+          </div></details>`;
+      }).join('');
+      return `<article class="prog-card" id="prog-${esc(p.id)}">
+        <div class="prog-kicker">${p.weeks.length}-week program</div>
+        <h3 class="prog-title">${esc(p.title)}</h3>
+        <div class="prog-chips">
+          <span class="prog-chip is-age">${esc(p.ages.join(' · '))}</span>
+          <span class="prog-chip is-focus">${esc(p.focus)}</span>
+          <span class="prog-chip">${p.minutes} min a session</span>
+        </div>
+        <p class="prog-goal"><b>By week ${p.weeks.length}:</b> ${esc(p.goal)}</p>
+        ${p.note ? `<p class="prog-goal" style="font-style:italic">${esc(p.note)}</p>` : ''}
+        ${weeks}
+        <div class="prog-foot"><button class="btn-prog-print" data-print="${esc(p.id)}">🖨 Print program</button></div>
+      </article>`;
+    }).join('');
+  grid.querySelectorAll('[data-week]').forEach(b => b.addEventListener('click', () => loadProgramWeek(b.dataset.program, Number(b.dataset.week))));
+  grid.querySelectorAll('[data-print]').forEach(b => b.addEventListener('click', () => printProgram(b.dataset.print)));
+  jumpToProgram();
+}
+
+// A link from the Season Plan page (…#prog-finishing-u12) scrolls to that program and opens its first week — once.
+let jumped = false;
+function jumpToProgram() {
+  if (jumped || !location.hash.startsWith('#prog-') || drillsFrom === 'loading') return;
+  const card = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!card) return;
+  jumped = true;
+  const first = card.querySelector('details');
+  if (first) first.open = true;
+  card.style.boxShadow = '0 0 0 3px #00b368';
+  card.scrollIntoView({ block: 'start' });
+}
+
+function loadProgramWeek(programId, weekIndex) {
+  const p = PROGRAMS.find(x => x.id === programId);
+  if (!p) return;
+  let current = null;
+  try { current = JSON.parse(localStorage.getItem(PLAN_KEY) || 'null'); } catch (e) { /* ignore */ }
+  if (current && Array.isArray(current.plan) && current.plan.length
+      && !confirm('Opening this week replaces the plan that is in your builder now. Continue?')) return;
+  const state = {
+    ageGroup: p.ages.includes(activeAge) ? activeAge : p.ages[0],
+    duration: p.minutes,
+    plan: weekBlocks(p.weeks[weekIndex]),
+  };
+  localStorage.setItem(PLAN_KEY, JSON.stringify(state));
+  window.location.href = 'indy-practice-builder.html';
+}
+
+function printProgram(programId) {
+  const card = document.getElementById('prog-' + programId);
+  if (!card) return;
+  const weeks = [...card.querySelectorAll('details')];
+  const wasOpen = weeks.map(d => d.open);
+  weeks.forEach(d => { d.open = true; });
+  card.classList.add('is-printing');
+  document.body.classList.add('print-program');
+  const done = () => {
+    document.body.classList.remove('print-program');
+    card.classList.remove('is-printing');
+    weeks.forEach((d, i) => { d.open = wasOpen[i]; });
+    window.removeEventListener('afterprint', done);
+  };
+  window.addEventListener('afterprint', done);
+  window.print();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  const wanted = new URLSearchParams(location.search).get('age');
+  if (AGE_FILTERS.includes(wanted)) activeAge = wanted;   // e.g. a link from the Player Pathway page
   buildFilters();
   renderGrid();
+  renderPrograms();
+  loadProgramDrills();
 });
 </script>
 

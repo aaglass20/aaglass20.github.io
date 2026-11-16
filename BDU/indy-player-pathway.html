@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Pathway — The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    :root {
+      --navy: #1a1a2e; --g: #00ff88; --g-dark: #00b368; --g-light: #f0fff8; --blue: #0779e4;
+      --gray-100: #f7fafc; --gray-200: #edf2f7; --gray-300: #e2e8f0; --gray-400: #a0aec0; --gray-500: #718096; --gray-600: #4a5568;
+      --white: #fff; --shadow-sm: 0 1px 4px rgba(0,0,0,.07); --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --radius: 12px; --radius-sm: 8px;
+    }
+    .pw-hero { background: linear-gradient(135deg, #003366 0%, #0779e4 100%); color: #fff; text-align: center; padding: 2rem 1.5rem 1.75rem; position: relative; overflow: hidden; }
+    .pw-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 75% 50%, rgba(0,255,136,.15) 0%, transparent 60%); pointer-events: none; }
+    .pw-badge { display: inline-block; background: rgba(0,255,136,.15); border: 1px solid rgba(0,255,136,.35); color: var(--g); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: .3rem .9rem; border-radius: 99px; margin-bottom: .75rem; position: relative; }
+    .pw-hero h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; margin: 0 0 .4rem; position: relative; color: #fff; }
+    .pw-hero h2 span { color: var(--g); }
+    .pw-hero p { font-size: .95rem; opacity: .85; margin: 0 auto; max-width: 640px; position: relative; }
+
+    .pw-wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    .pw-section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.45rem; font-weight: 700; color: var(--navy); margin: 2.25rem 0 .3rem; }
+    .pw-section-sub { font-size: .9rem; color: var(--gray-500); margin: 0 0 1.1rem; }
+
+    /* ── The four stages ── */
+    .stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    @media (max-width: 980px) { .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .stages { grid-template-columns: minmax(0, 1fr); } }
+    .stage { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); border-top: 5px solid var(--sc); padding: 1rem 1rem .75rem; }
+    .stage-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+    .stage-num { font-size: .68rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--sc); }
+    .stage-ages { font-size: .72rem; font-weight: 700; color: var(--gray-500); background: var(--gray-100); padding: .15rem .55rem; border-radius: 99px; }
+    .stage h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; color: var(--navy); margin: .35rem 0 .7rem; }
+    .stage-pillar { border-top: 1px solid var(--gray-200); padding: .6rem 0; }
+    .stage-pillar strong { display: block; font-size: .9rem; color: var(--navy); margin: .3rem 0 .2rem; }
+    .stage-pillar ul, .focus-box ul, .plain-box ul { margin: 0; padding-left: 1.1rem; list-style: disc; }
+    .stage-pillar li { display: list-item; font-size: .8rem; color: var(--gray-600); line-height: 1.5; }
+    .pill-tag { font-size: .62rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: .12rem .5rem; border-radius: 99px; color: #fff; }
+    .pt-technical { background: #0779e4; } .pt-tactical { background: #d97706; } .pt-physical { background: #16a34a; } .pt-psychosocial { background: #7c3aed; }
+
+    /* ── Training balance ── */
+    .ratio-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem 1.1rem; display: grid; gap: .45rem; }
+    .ratio-legend { display: flex; gap: 1rem; font-size: .76rem; font-weight: 700; color: var(--gray-500); margin-bottom: .2rem; }
+    .ratio-legend i { display: inline-block; width: .7rem; height: .7rem; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+    .ratio-row { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); align-items: center; gap: .6rem; background: none; border: none; padding: .1rem 0; font: inherit; cursor: pointer; text-align: left; }
+    .ratio-row:hover .ratio-age, .ratio-row:focus-visible .ratio-age { color: var(--blue); text-decoration: underline; }
+    .ratio-age { font-size: .82rem; font-weight: 700; color: var(--navy); white-space: nowrap; }
+    .ratio-bar { display: flex; height: 1.55rem; border-radius: 99px; overflow: hidden; font-size: .72rem; font-weight: 700; color: #fff; min-width: 0; }
+    .ratio-tech { background: #0779e4; display: flex; align-items: center; padding-left: .6rem; white-space: nowrap; }
+    .ratio-tact { background: #d97706; flex: 1; display: flex; align-items: center; justify-content: flex-end; padding-right: .6rem; white-space: nowrap; }
+
+    /* ── Age tabs ── */
+    .age-tabs { display: flex; flex-wrap: wrap; gap: .5rem; position: sticky; top: 0; z-index: 20; background: var(--gray-100, #f7fafc); padding: .75rem 0; }
+    .age-tab { padding: .5rem 1.05rem; border-radius: 99px; border: 2px solid var(--gray-300); background: var(--white); font: inherit; font-size: .88rem; font-weight: 700; color: var(--gray-600); cursor: pointer; transition: all .15s; }
+    .age-tab:hover { border-color: var(--g-dark); color: var(--g-dark); }
+    .age-tab[aria-selected="true"] { background: var(--navy); border-color: var(--navy); color: var(--g); }
+
+    @media (max-width: 700px) { .age-tabs { position: static; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: .9rem; } .age-tab { flex: none; } .pw-print { display: none; } }
+
+    /* ── One age group ── */
+    .age-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md); border-top: 6px solid var(--sc); padding: 1.4rem 1.4rem 1.3rem; margin-bottom: 1.5rem; }
+    .js .age-card { display: none; }
+    .js .age-card.is-open { display: block; }
+    .age-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+    .age-kicker { font-size: .7rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--sc); }
+    .age-card h2 { font-family: 'Rajdhani', sans-serif; font-size: 2rem; line-height: 1.1; color: var(--navy); margin: .15rem 0 .1rem; }
+    .age-card h2 span { font-size: 1rem; font-weight: 600; color: var(--gray-500); margin-left: .35rem; }
+    .age-phase { font-size: .95rem; font-weight: 700; color: var(--gray-600); }
+    .age-facts { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .age-facts div { background: var(--gray-100); border-radius: var(--radius-sm); padding: .5rem .8rem; font-size: .86rem; font-weight: 700; color: var(--navy); }
+    .age-facts span { display: block; font-size: .64rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); }
+    .age-theme { margin: 1.1rem 0 .9rem; font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--navy); line-height: 1.25; }
+    .age-theme span { display: block; font-family: 'Roboto', sans-serif; font-size: .66rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--gray-400); }
+    .age-ratio { display: grid; gap: .3rem; margin-bottom: 1.2rem; }
+    .ratio-label { font-size: .66rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--gray-400); }
+    .focus-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; }
+    @media (max-width: 900px) { .focus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .focus-grid { grid-template-columns: minmax(0, 1fr); } .age-card { padding: 1.1rem 1rem; } .age-card h2 { font-size: 1.7rem; } }
+    .focus-box { border-radius: var(--radius-sm); padding: .85rem .95rem; border-left: 4px solid var(--fc); background: var(--fb); }
+    .focus-box h4, .attack-box h4, .plain-box h4 { font-size: .74rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; margin: 0 0 .45rem; color: var(--fc, var(--gray-500)); }
+    .focus-box li, .plain-box li { display: list-item; font-size: .87rem; color: var(--gray-600); line-height: 1.55; margin-bottom: .15rem; }
+    .fb-technical { --fc: #0666c4; --fb: #eef6fe; } .fb-tactical { --fc: #b45309; --fb: #fef6e7; } .fb-physical { --fc: #15803d; --fb: #edf9f0; }
+    .fb-mental { --fc: #6d28d9; --fb: #f4f0fe; } .fb-social { --fc: #0f766e; --fb: #e9f8f6; }
+    .attack-box { margin-top: .9rem; background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: .95rem 1.1rem; }
+    .attack-box h4 { color: var(--g); }
+    .attack-box p { margin: 0; font-size: .95rem; line-height: 1.6; color: #fff; }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; margin-top: .9rem; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+    .plain-box { border: 2px solid var(--gray-200); border-radius: var(--radius-sm); padding: .85rem .95rem; }
+    .age-actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.1rem; }
+    .btn-go { background: var(--g); color: var(--navy); font-weight: 700; font-size: .88rem; padding: .6rem 1.1rem; border-radius: var(--radius-sm); text-decoration: none; }
+    .btn-go:hover { background: #00e67a; }
+    .btn-ghost { border: 2px solid var(--navy); color: var(--navy); font-weight: 700; font-size: .88rem; padding: .5rem 1.1rem; border-radius: var(--radius-sm); text-decoration: none; }
+    .btn-ghost:hover { background: var(--navy); color: var(--g); }
+    .pw-print { background: none; border: 2px solid var(--gray-300); color: var(--gray-600); font: inherit; font-size: .82rem; font-weight: 700; padding: .4rem .9rem; border-radius: 99px; cursor: pointer; margin-left: auto; }
+    .pw-foot { font-size: .82rem; color: var(--gray-500); margin: .5rem 0 3rem; }
+
+    @media print {
+      header, .waffle-menu-toggle, #waffleMenuContainer, #shared-footer, .age-tabs, .age-actions, .pw-print { display: none !important; }
+      .js .age-card { display: block; }
+      .age-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+      .stage, .ratio-card { box-shadow: none; border: 1px solid #ccc; }
+      .attack-box { background: #fff; color: #000; border: 2px solid #000; } .attack-box p, .attack-box h4 { color: #000; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="highlight-banner">
+    <img src="images/INDEPENDENCE%20BDU_SHIELD_WHITE_small.png" alt="BDU Logo">
+    <h1>Player Pathway</h1>
+  </div>
+</header>
+
+<div class="waffle-menu-toggle" onclick="toggleWaffleMenu()">
+  <span></span><span></span><span></span>
+</div>
+<div id="waffleMenuContainer"></div>
+<script>
+  fetch('menus/waffle-menu.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('waffleMenuContainer').innerHTML = html; });
+</script>
+
+<div class="pw-hero">
+  <div class="pw-badge">The Indy Way</div>
+  <h2>Player Pathway — <span>Focus by Age Group</span></h2>
+  <p>What every BDU player should be learning at each age, from a first touch on the ball to the high school game — so every coach teaches the same way along the journey.</p>
+</div>
+
+<div class="pw-wrap">
+
+  <h2 class="pw-section-title">The four stages</h2>
+  <p class="pw-section-sub">The big picture, U5 to U18. Each stage builds on the one before it.</p>
+  <div class="stages">
+    <div class="stage" style="--sc:#00b368">
+      <div class="stage-head"><span class="stage-num">Stage 1</span><span class="stage-ages">U5–U9</span></div>
+      <h3>Loving the Game</h3>
+      <div class="stage-pillar"><span class="pill-tag pt-technical">Technical</span><strong>Loving the Game</strong><ul><li>Fun with the ball &amp; friends</li><li>Basic enjoyment of soccer</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-technical">Technical</span><strong>Ball Mastery</strong><ul><li>Dribbling, turns</li><li>Passing &amp; receiving</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-physical">Physical</span><strong>Movement Fundamentals</strong><ul><li>Concentration, balance</li><li>Coordination</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-psychosocial">Psychosocial</span><strong>Learning to Learn</strong><ul><li>Discipline &amp; focus</li><li>Emotional control &amp; growth mindset</li></ul></div>
+    </div>
+    <div class="stage" style="--sc:#0779e4">
+      <div class="stage-head"><span class="stage-num">Stage 2</span><span class="stage-ages">U10–U12</span></div>
+      <h3>Skill Under Pressure</h3>
+      <div class="stage-pillar"><span class="pill-tag pt-technical">Technical</span><strong>Skill Under Pressure</strong><ul><li>1v1, passing/receiving, shielding</li><li>Shooting, decision making, creativity</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-tactical">Tactical</span><strong>Small Group Tactics</strong><ul><li>Attacking &amp; defending</li><li>When &amp; where to apply tactics</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-physical">Physical</span><strong>Agility &amp; Body Control</strong><ul><li>Quick feet, change of direction</li><li>Speed with the ball</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-psychosocial">Psychosocial</span><strong>Student of the Game</strong><ul><li>Watch, read &amp; play</li><li>Learning to train &amp; compete</li></ul></div>
+    </div>
+    <div class="stage" style="--sc:#7c3aed">
+      <div class="stage-head"><span class="stage-num">Stage 3</span><span class="stage-ages">U13–U14</span></div>
+      <h3>Team &amp; Identity</h3>
+      <div class="stage-pillar"><span class="pill-tag pt-technical">Technical</span><strong>Technical &amp; Tactical</strong><ul><li>Large-sided tactics</li><li>Develop style of play</li><li>Position specific training</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-physical">Physical</span><strong>Athletic Development</strong><ul><li>Power &amp; explosion</li><li>SAQ (speed, agility, quickness)</li><li>Nutrition</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-psychosocial">Psychosocial</span><strong>Leadership</strong><ul><li>Respect for coaches &amp; game</li><li>Winning mentality</li></ul></div>
+    </div>
+    <div class="stage" style="--sc:#d97706">
+      <div class="stage-head"><span class="stage-num">Stage 4</span><span class="stage-ages">U15–U18</span></div>
+      <h3>Playing the Game</h3>
+      <div class="stage-pillar"><span class="pill-tag pt-technical">Technical</span><strong>Playing the Game</strong><ul><li>Excelling under pressure</li><li>Achieving winning results</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-physical">Physical</span><strong>Peak Conditioning</strong><ul><li>Strength, speed, power</li><li>Comprehensive conditioning</li></ul></div><div class="stage-pillar"><span class="pill-tag pt-psychosocial">Psychosocial</span><strong>Ownership</strong><ul><li>Self-driven habits</li><li>Leading and mentoring younger players</li></ul></div>
+    </div>
+  </div>
+
+  <h2 class="pw-section-title">How training time shifts</h2>
+  <p class="pw-section-sub">Young players need the ball; older players need the game. Tap an age to jump to it.</p>
+  <div class="ratio-card">
+    <div class="ratio-legend"><span><i style="background:#0779e4"></i>Technical</span><span><i style="background:#d97706"></i>Tactical</span></div>
+    <button type="button" class="ratio-row" data-age="u8" aria-label="U8–U9: 80% technical, 20% tactical">
+      <span class="ratio-age">U8–U9</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:80%">80%</span><span class="ratio-tact">20%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u10" aria-label="U10: 70% technical, 30% tactical">
+      <span class="ratio-age">U10</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:70%">70%</span><span class="ratio-tact">30%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u11" aria-label="U11: 60% technical, 40% tactical">
+      <span class="ratio-age">U11</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:60%">60%</span><span class="ratio-tact">40%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u12" aria-label="U12: 50% technical, 50% tactical">
+      <span class="ratio-age">U12</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:50%">50%</span><span class="ratio-tact">50%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u13" aria-label="U13: 40% technical, 60% tactical">
+      <span class="ratio-age">U13</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:40%">40%</span><span class="ratio-tact">60%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u14" aria-label="U14: 35% technical, 65% tactical">
+      <span class="ratio-age">U14</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:35%">35%</span><span class="ratio-tact">65%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="u15" aria-label="U15: 30% technical, 70% tactical">
+      <span class="ratio-age">U15</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:30%">30%</span><span class="ratio-tact">70%</span></span>
+    </button>
+    <button type="button" class="ratio-row" data-age="hs" aria-label="U16–U18: 25% technical, 75% tactical">
+      <span class="ratio-age">U16–U18</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:25%">25%</span><span class="ratio-tact">75%</span></span>
+    </button>
+  </div>
+
+  <h2 class="pw-section-title">Focus by age group</h2>
+  <p class="pw-section-sub">Pick your team's age for its theme, what to teach, and what a player should be able to do by the end of the season.</p>
+  <div class="age-tabs" role="tablist" aria-label="Age group"><button type="button" class="age-tab" role="tab" id="tab-u8" aria-controls="age-u8" data-age="u8">U8–U9</button><button type="button" class="age-tab" role="tab" id="tab-u10" aria-controls="age-u10" data-age="u10">U10</button><button type="button" class="age-tab" role="tab" id="tab-u11" aria-controls="age-u11" data-age="u11">U11</button><button type="button" class="age-tab" role="tab" id="tab-u12" aria-controls="age-u12" data-age="u12">U12</button><button type="button" class="age-tab" role="tab" id="tab-u13" aria-controls="age-u13" data-age="u13">U13</button><button type="button" class="age-tab" role="tab" id="tab-u14" aria-controls="age-u14" data-age="u14">U14</button><button type="button" class="age-tab" role="tab" id="tab-u15" aria-controls="age-u15" data-age="u15">U15</button><button type="button" class="age-tab" role="tab" id="tab-hs" aria-controls="age-hs" data-age="hs">U16–U18</button><button type="button" class="pw-print" onclick="window.print()">🖨 Print all ages</button></div>
+
+  <section class="age-card" id="age-u8" role="tabpanel" aria-labelledby="tab-u8" style="--sc:#00b368">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 1 · Loving the Game</div>
+        <h2>U8–U9 <span>Ages 6–8</span></h2>
+        <div class="age-phase">Discovery Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>4v4, no goalkeepers (7v7 at U9)</div>
+        <div><span>Sessions</span>45–60 min · 1–2 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Love of the Game and a Ball at Every Foot</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:80%">80% technical</span><span class="ratio-tact">20% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Dribbling with both feet</li><li>Turns: pull-back, inside cut, outside cut</li><li>Stopping and starting with the ball</li><li>Short passing and receiving with the inside of the foot</li><li>Striking a still ball at goal</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Go to goal</li><li>Spread out — don&#x27;t bunch around the ball</li><li>Attack one way, defend the other</li><li>1v1 and 2v1</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Balance and coordination</li><li>Running, jumping, skipping, tag games</li><li>Change of direction</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Concentration in short bursts</li><li>Trying new things without fear of mistakes</li><li>Listening for one instruction at a time</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Fun with the ball and friends</li><li>Sharing and taking turns</li><li>Encouraging teammates</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Be brave with the ball: every player dribbles at goal and shoots without fear of losing it.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Dribbles with either foot and looks up between touches</li><li>Turns away from pressure with at least two different turns</li><li>Passes to a teammate 5 yards away and controls the ball coming back</li><li>Can&#x27;t wait for the next practice</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>A ball for every player, and games instead of lines</li><li>Explain in 30 seconds, then let them play</li><li>Praise effort and bravery, not the score</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U8">🗂️ See drills a U8 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u8">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U8">📅 Weekly programs for U8</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u10" role="tabpanel" aria-labelledby="tab-u10" style="--sc:#0779e4">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 2 · Skill Under Pressure</div>
+        <h2>U10 <span>Ages 8–9</span></h2>
+        <div class="age-phase">Foundation Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>7v7</div>
+        <div><span>Sessions</span>60 min · 2 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Fundamentals, Fun, and Confidence with the Ball</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:70%">70% technical</span><span class="ratio-tact">30% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Dribbling with all foot surfaces</li><li>Basic passing and receiving</li><li>Shooting technique</li><li>Shielding</li><li>Introduction to the weak foot</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>1v1 play</li><li>Spacing</li><li>Basic positions</li><li>Triangle passing</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Coordination and balance</li><li>Quick feet and agility</li><li>Movement fundamentals</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Focus and effort</li><li>Discipline</li><li>Emotional control and a growth mindset</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Teamwork and empathy</li><li>Winning and losing gracefully</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Develop an aggressive mindset through decisive movement, quick decisions and an explosive first step, staying composed under pressure on both sides of the ball. Always be aware of the chance to score, with the confidence to take calculated risks.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Beats a defender 1v1 with a move they chose</li><li>Receives across the body and passes with either foot over 10 yards</li><li>Shields the ball for 3 seconds under pressure</li><li>Knows the job of at least two positions</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Let players solve 1v1s on their own before stepping in</li><li>Rotate every player through every position, goalkeeper included</li><li>Ask questions (&quot;where is the space?&quot;) more than you give answers</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U10">🗂️ See drills a U10 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u10">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U10">📅 Weekly programs for U10</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u11" role="tabpanel" aria-labelledby="tab-u11" style="--sc:#0779e4">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 2 · Skill Under Pressure</div>
+        <h2>U11 <span>Ages 9–10</span></h2>
+        <div class="age-phase">Expansion Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>9v9</div>
+        <div><span>Sessions</span>75 min · 2 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Speed of Play and Team Shape</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:60%">60% technical</span><span class="ratio-tact">40% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>First touch</li><li>Passing variety</li><li>Crossing</li><li>Defensive footwork</li><li>Weak-foot passing</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Formations</li><li>Support angles</li><li>Pressure, cover, balance</li><li>Transition</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Endurance, built through games</li><li>Agility and quickness</li><li>Acceleration over 5–10 yards</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Confidence</li><li>Focus</li><li>Looking after their own gear and preparation</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Talking on the field: names, &quot;man on&quot;, &quot;time&quot;</li><li>Picking a teammate up after a mistake</li><li>Learning to train and compete</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Play forward first: look for the forward pass or dribble before the safe one, and be the first to react when the ball changes hands.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Takes a first touch away from pressure</li><li>Shows pressure, cover and balance in 2v2 and 3v3</li><li>Knows their role in the team&#x27;s 9v9 formation</li><li>Reacts within 3 seconds when possession changes</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Teach the 9v9 shape through small-sided games, not lectures</li><li>Coach in the flow; stop the game only for the session&#x27;s one big idea</li><li>Count transition moments out loud — &quot;3 seconds to win it back&quot;</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U10">🗂️ See drills a U10 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u10">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U10">📅 Weekly programs for U10</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u12" role="tabpanel" aria-labelledby="tab-u12" style="--sc:#0779e4">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 2 · Skill Under Pressure</div>
+        <h2>U12 <span>Ages 10–11</span></h2>
+        <div class="age-phase">Reinforcement Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>9v9</div>
+        <div><span>Sessions</span>75–90 min · 2–3 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Game Understanding and Technical Maturity</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:50%">50% technical</span><span class="ratio-tact">50% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>One- and two-touch play</li><li>Volleys</li><li>Advanced dribbling</li><li>Long passes</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Playing in lines</li><li>Zonal defending</li><li>Give-and-go</li><li>Switching play</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Speed and agility</li><li>Core strength and body control through growth</li><li>Repeat sprints with the ball</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Problem-solving on the field</li><li>Growth mindset</li><li>Preparing themselves for training and games</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Student of the game: watch, read and play</li><li>Giving and taking feedback from teammates</li><li>Competing hard and fairly</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Combine to break lines: give-and-gos, third-player runs and switches of play to get behind the defense, then finish early.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Plays two-touch under pressure</li><li>Switches play with a 25-yard pass</li><li>Defends a zone as part of a unit</li><li>Can explain why a decision was right or wrong</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Set problems (&quot;score after a switch&quot;) and let the group find the answer</li><li>Demand quality on the weaker foot in every exercise</li><li>Give players a voice: ask what they saw before telling them</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U12">🗂️ See drills a U12 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u12">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U12">📅 Weekly programs for U12</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u13" role="tabpanel" aria-labelledby="tab-u13" style="--sc:#7c3aed">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 3 · Team &amp; Identity</div>
+        <h2>U13 <span>Ages 11–12</span></h2>
+        <div class="age-phase">Transition to 11v11</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>11v11</div>
+        <div><span>Sessions</span>90 min · 3 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Positional Play and Tactical Identity</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:40%">40% technical</span><span class="ratio-tact">60% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Crisp passing</li><li>First-touch direction</li><li>Finishing</li><li>Aerial control</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Full 11v11 shape</li><li>Off-ball movement</li><li>Pressing</li><li>Compactness</li><li>The offside line</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Fitness for the full-size field</li><li>Speed, agility, quickness (SAQ)</li><li>Coordination through growth spurts</li><li>Introduction to bodyweight strength</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Emotional control</li><li>Accountability</li><li>Patience with a bigger field and a new role</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Respect for coaches, referees and the game</li><li>Responsibility to their line (defense, midfield, attack)</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Attack as a unit: time runs off the ball, arrive in the box in numbers, and press at once to win it back high.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Knows their role in the 11v11 shape with and without the ball</li><li>Times runs to stay onside</li><li>Presses on a trigger together with teammates</li><li>Controls a ball out of the air and plays it on</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Walk through the 11v11 shape in and out of possession before playing it</li><li>Keep small-sided games in every session — the big field hides players</li><li>Watch for growth spurts: adjust the load and expect a clumsy month</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U12">🗂️ See drills a U12 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u12">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U12">📅 Weekly programs for U12</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u14" role="tabpanel" aria-labelledby="tab-u14" style="--sc:#7c3aed">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 3 · Team &amp; Identity</div>
+        <h2>U14 <span>Ages 12–13</span></h2>
+        <div class="age-phase">Player Identity Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>11v11</div>
+        <div><span>Sessions</span>90 min · 3 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Player Specialization and Performance Goals</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:35%">35% technical</span><span class="ratio-tact">65% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Precision</li><li>Using both feet</li><li>Position-specific skills</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Advanced team tactics</li><li>Adaptive decisions</li><li>Fluid roles</li><li>The team&#x27;s style of play</li><li>Set pieces</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Strength training (bodyweight first, then supervised)</li><li>Power and explosion</li><li>Speed, agility, quickness (SAQ)</li><li>Nutrition</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Leadership</li><li>Toughness</li><li>Setting and owning personal goals</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Winning mentality</li><li>Respect for coaches and the game</li><li>Leading by example in training</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Know your weapon: every player builds a signature strength in the final third and uses it to decide games.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Plays a primary and a secondary position well</li><li>Uses both feet under pressure</li><li>Adjusts when the opponent changes shape</li><li>Has a personal development goal and tracks it</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Give each player a primary and a secondary position and train both</li><li>Set individual goals with each player and revisit them</li><li>Hand over parts of the session: captains run warmups, players call set pieces</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U14">🗂️ See drills a U14 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u14">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U14">📅 Weekly programs for U14</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-u15" role="tabpanel" aria-labelledby="tab-u15" style="--sc:#d97706">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 4 · Playing the Game</div>
+        <h2>U15 <span>Ages 13–14</span></h2>
+        <div class="age-phase">Competitive Performance Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>11v11</div>
+        <div><span>Sessions</span>90 min · 3–4 a week</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Execution, Maturity, and Game Impact</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:30%">30% technical</span><span class="ratio-tact">70% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Execution at speed</li><li>Ball mastery</li><li>Tactical finishing</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Systems of play</li><li>Mid-game adjustments</li><li>Leadership on the field</li><li>Game management</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Strength, speed and power</li><li>Conditioning</li><li>Recovery habits: sleep, hydration, cool-down</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Self-driven growth</li><li>Excelling under pressure</li><li>Honest self-review after games</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Team culture</li><li>Holding teammates to the standard</li><li>Mentoring younger players</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Be ruthless and efficient: recognize the moment to speed up, create the high-percentage chance and finish it.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Executes technique at full game speed</li><li>Plays in more than one system</li><li>Recognizes and makes adjustments during a game</li><li>Takes care of their own recovery and preparation</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Train at game speed with game consequences</li><li>Use film or a whiteboard to review decisions, not just effort</li><li>Let players solve in-game problems before you call the change</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U14">🗂️ See drills a U14 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u14">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U14">📅 Weekly programs for U14</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+  <section class="age-card" id="age-hs" role="tabpanel" aria-labelledby="tab-hs" style="--sc:#d97706">
+    <div class="age-head">
+      <div>
+        <div class="age-kicker">Stage 4 · Playing the Game</div>
+        <h2>U16–U18 <span>Ages 14–18 · High school</span></h2>
+        <div class="age-phase">Performance Phase</div>
+      </div>
+      <div class="age-facts">
+        <div><span>Game format</span>11v11</div>
+        <div><span>Sessions</span>90–120 min · 4–5 a week in season</div>
+      </div>
+    </div>
+    <p class="age-theme"><span>Theme</span>Playing the Game: Excel Under Pressure and Win</p>
+    <div class="age-ratio">
+      <span class="ratio-label">Training ratio</span>
+      <span class="ratio-bar"><span class="ratio-tech" style="width:25%">25% technical</span><span class="ratio-tact">75% tactical</span></span>
+    </div>
+    <div class="focus-grid">
+        <div class="focus-box fb-technical">
+          <h4><span aria-hidden="true">⚽</span> Technical Focus</h4>
+          <ul><li>Execution at game speed under pressure</li><li>Mastery of their position</li><li>Set-piece delivery and finishing</li><li>A weak foot they can rely on</li></ul>
+        </div>
+        <div class="focus-box fb-tactical">
+          <h4><span aria-hidden="true">🧠</span> Tactical Concepts</h4>
+          <ul><li>Several systems of play</li><li>The team&#x27;s game model</li><li>Plans for a specific opponent</li><li>Managing a game: protecting a lead, chasing a goal</li><li>Set pieces</li></ul>
+        </div>
+        <div class="focus-box fb-physical">
+          <h4><span aria-hidden="true">🏃</span> Physical</h4>
+          <ul><li>Peak conditioning</li><li>Strength, speed, power</li><li>Comprehensive conditioning</li><li>Recovery, sleep and nutrition</li><li>Injury prevention</li></ul>
+        </div>
+        <div class="focus-box fb-mental">
+          <h4><span aria-hidden="true">🎯</span> Mental</h4>
+          <ul><li>Excelling under pressure</li><li>Achieving winning results</li><li>Self-analysis from film</li></ul>
+        </div>
+        <div class="focus-box fb-social">
+          <h4><span aria-hidden="true">🤝</span> Social</h4>
+          <ul><li>Leading and mentoring younger BDU players</li><li>Representing the program</li><li>Planning their own path: school, club, college</li></ul>
+        </div>
+    </div>
+    <div class="attack-box">
+      <h4>⚡ Attack Mentality</h4>
+      <p>Win the game: impose the team&#x27;s style, manage momentum, and take the decisive action when it matters.</p>
+    </div>
+    <div class="two-col">
+      <div class="plain-box">
+        <h4>By the end of the season, a player…</h4>
+        <ul><li>Performs their role in the game model at speed</li><li>Stays composed and effective in big moments</li><li>Leads teammates on and off the field</li><li>Trains and recovers like an athlete</li></ul>
+      </div>
+      <div class="plain-box">
+        <h4>Coaching this age</h4>
+        <ul><li>Prepare for the opponent: each week has a game plan</li><li>Demand standards; let the captains enforce them</li><li>Manage the load across the week: hard, medium, light, game</li></ul>
+      </div>
+    </div>
+    <div class="age-actions">
+      <a class="btn-go" href="indy-drill-library.html?age=U16">🗂️ See drills a U16 team can run</a>
+      <a class="btn-ghost" href="indy-season-plan.html#u16">🗓️ Season plan</a>
+      <a class="btn-ghost" href="indy-saved-plans.html?age=U16">📅 Weekly programs for U16</a>
+      <a class="btn-ghost" href="indy-practice-builder.html">📋 Build a practice plan</a>
+    </div>
+  </section>
+
+  <p class="pw-foot">Ages are a guide, not a gate: coach the players in front of you. A group that has mastered its age's focus can borrow from the next one; a group that hasn't should stay until it has.</p>
+</div>
+
+<div id="shared-footer"></div>
+<script>
+  fetch('menus/shared-footer.html')
+    .then(r => r.text())
+    .then(html => { document.getElementById('shared-footer').innerHTML = html; });
+</script>
+<script src="scripts/scripts.js"></script>
+<script>
+// One age group shows at a time; the choice is kept in the address (#u12) so it can be linked.
+(function () {
+  document.documentElement.classList.add('js');
+  const tabs = [...document.querySelectorAll('.age-tab')];
+  const ids = tabs.map(t => t.dataset.age);
+  function show(id, scroll) {
+    if (!ids.includes(id)) id = ids[0];
+    tabs.forEach(t => {
+      const on = t.dataset.age === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById('age-' + t.dataset.age).classList.toggle('is-open', on);
+    });
+    if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
+    if (scroll) document.querySelector('.age-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(t.dataset.age));
+    t.addEventListener('keydown', e => {
+      const move = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (!move) return;
+      const next = tabs[(i + move + tabs.length) % tabs.length];
+      show(next.dataset.age); next.focus();
+    });
+  });
+  document.querySelectorAll('.ratio-row').forEach(r => r.addEventListener('click', () => show(r.dataset.age, true)));
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+  show(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>
