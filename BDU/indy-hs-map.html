@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>HS Drill Map — The Indy Way — BDU Soccer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    :root { --navy: #1a1a2e; --g: #00ff88; --g-dark: #00b368; --gray-100: #f7fafc; --gray-200: #edf2f7; --gray-300: #e2e8f0; --gray-400: #a0aec0; --gray-500: #718096; --gray-600: #4a5568; --hs: #003366; --gold: #FFD700; }
+    body { background: var(--gray-100); }
+    .hm-wrap { max-width: 1150px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+    .hm-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem 1rem; }
+    .hm-top h1 { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; color: var(--navy); margin: 0; }
+    .hm-hidden { font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: #fef3c7; color: #92400e; padding: .2rem .55rem; border-radius: 99px; }
+    .hm-lead { font-size: .92rem; color: var(--gray-600); line-height: 1.6; margin: .4rem 0 1.1rem; max-width: 780px; }
+    .hm-lead a { color: #0779e4; }
+    .hs-badge { display: inline-block; vertical-align: middle; font-size: .62rem; font-weight: 800; letter-spacing: .05em; line-height: 1; background: var(--hs); color: var(--gold); padding: .22rem .4rem; border-radius: 5px; }
+
+    .hm-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-bottom: 1.2rem; }
+    @media (max-width: 760px) { .hm-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .hm-stat { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.07); padding: .85rem 1rem; }
+    .hm-stat b { display: block; font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; line-height: 1.1; color: var(--hs); }
+    .hm-stat span { font-size: .78rem; color: var(--gray-500); font-weight: 700; }
+
+    .hm-controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 1rem 0; }
+    .hm-pill { padding: .42rem .95rem; border-radius: 99px; border: 2px solid var(--gray-300); background: #fff; font: inherit; font-size: .84rem; font-weight: 700; color: var(--gray-600); cursor: pointer; }
+    .hm-pill[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--g); }
+    .hm-sep { width: 1px; height: 1.4rem; background: var(--gray-300); margin: 0 .3rem; }
+    .hm-label { font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); }
+
+    .hm-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow-x: auto; margin-bottom: 1.25rem; }
+    .hm-card h2 { font-family: 'Rajdhani', sans-serif; font-size: 1.25rem; color: var(--navy); margin: 0; padding: .9rem 1rem .2rem; }
+    .hm-card p.hm-note { font-size: .82rem; color: var(--gray-500); margin: 0; padding: 0 1rem .7rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+    th { text-align: left; font-size: .67rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-500); background: var(--gray-100); padding: .5rem .7rem; border-bottom: 2px solid var(--gray-300); white-space: nowrap; }
+    td { padding: .5rem .7rem; border-bottom: 1px solid var(--gray-200); vertical-align: top; color: var(--gray-600); }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td b { color: var(--navy); }
+    .hm-use { display: inline-block; font-size: .74rem; font-weight: 700; background: #e6eef7; color: var(--hs); padding: .12rem .5rem; border-radius: 99px; margin: .1rem .2rem .1rem 0; text-decoration: none; white-space: nowrap; }
+    a.hm-use:hover { background: var(--hs); color: var(--gold); }
+    .hm-none { color: #b91c1c; font-weight: 700; font-size: .8rem; }
+    .hm-bar { display: inline-block; height: .55rem; border-radius: 99px; background: var(--hs); vertical-align: middle; margin-right: .4rem; min-width: 2px; }
+    /* program grid: a cell per week */
+    .hm-wk { text-align: center; min-width: 3.4rem; }
+    .hm-cell { display: inline-block; min-width: 2.6rem; padding: .25rem .3rem; border-radius: 6px; font-weight: 700; font-size: .8rem; font-variant-numeric: tabular-nums; color: var(--gray-400); background: var(--gray-100); cursor: default; }
+    .hm-cell.h1 { background: #dbe7f5; color: var(--hs); } .hm-cell.h2 { background: #9dbbe0; color: #001f40; } .hm-cell.h3 { background: var(--hs); color: var(--gold); }
+    .hm-names { font-size: .76rem; color: var(--gray-500); }
+    .hm-msg { padding: 2rem 1rem; text-align: center; color: var(--gray-500); }
+    @media print { .hm-controls, .hm-hidden { display: none; } .hm-card, .hm-stat { box-shadow: none; border: 1px solid #ccc; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+<div class="hm-wrap">
+  <div class="hm-top"><h1>HS Drill Map</h1><span class="hm-hidden">Hidden page · not in the menu</span></div>
+  <p class="hm-lead">Where the high school program's drills <span class="hs-badge">HS</span> show up across the weekly programs — which drills carry into which ages and weeks, and which aren't used yet.
+    <a href="indy-saved-plans.html">Weekly programs</a> · <a href="indy-season-plan.html">Season plan</a> · <a href="indy-drill-library.html">Drill library</a></p>
+  <div id="hmBody"><div class="hm-msg">Loading…</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/indy-programs.js"></script>
+<script src="scripts/indy-seasons.js"></script>
+<script>
+// Hidden admin view: where HS drills (bdu_drills.from_hs) sit in the weekly programs
+// (scripts/indy-programs.js) and the season plans (scripts/indy-seasons.js). Read-only.
+(async function () {
+  const CFG = { SUPABASE_URL: 'https://fpnmnlrwhwnuefbnehuf.supabase.co', SUPABASE_ANON_KEY: 'sb_publishable_NXTAP09deRk87WsP_KdyXg_e1k2Dsih' };
+  const PROGRAMS = window.INDY_PROGRAMS || [];
+  const SEASONS = window.INDY_SEASONS || [];
+  const AGES = ['U8', 'U10', 'U12', 'U14', 'U16'];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const body = document.getElementById('hmBody');
+
+  let rows;
+  try {
+    const sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+    const { data, error } = await sb.from('bdu_drills').select('id,name,category,min_age,max_age,from_hs,focus_areas,sort_order').order('sort_order');
+    if (error) throw error;
+    rows = data || [];
+  } catch (e) {
+    body.innerHTML = '<div class="hm-msg" style="color:#b91c1c">The drill library couldn\'t load. Check your connection and reload.</div>';
+    return;
+  }
+  const drills = new Map(rows.map(r => [r.id, r]));
+  const hsDrills = rows.filter(r => r.from_hs);
+
+  // every drill block in every program
+  const uses = [];
+  PROGRAMS.forEach(p => p.weeks.forEach((w, wi) => w.blocks.forEach(([type, id, min]) => {
+    if (type !== 'warmup' && type !== 'drill') return;
+    const d = drills.get(id);
+    uses.push({ program: p, week: wi + 1, type, id, min, hs: !!(d && d.from_hs), name: d ? d.name : id });
+  })));
+
+  let view = 'drill', age = 'All';
+  const inAge = p => age === 'All' || p.ages.includes(age);
+  const link = p => `indy-saved-plans.html?age=${encodeURIComponent(age !== 'All' && p.ages.includes(age) ? age : p.ages[0])}#prog-${encodeURIComponent(p.id)}`;
+  const pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '—';
+
+  function render() {
+    const U = uses.filter(u => inAge(u.program));
+    const hsU = U.filter(u => u.hs);
+    const usedIds = new Set(hsU.map(u => u.id));
+    const progs = PROGRAMS.filter(inAge);
+    const progsWith = progs.filter(p => hsU.some(u => u.program === p)).length;
+    const eligible = hsDrills.filter(d => age === 'All' || (AGES.indexOf(d.min_age) <= AGES.indexOf(age) && (!d.max_age || AGES.indexOf(age) <= AGES.indexOf(d.max_age))));
+
+    const stats = `<div class="hm-stats">
+      <div class="hm-stat"><b>${usedIds.size} of ${eligible.length}</b><span>HS drills used in ${age === 'All' ? 'any' : age} program${age === 'All' ? '' : 's'}</span></div>
+      <div class="hm-stat"><b>${hsU.length}</b><span>HS drill slots (of ${U.length} drill slots · ${pct(hsU.length, U.length)})</span></div>
+      <div class="hm-stat"><b>${progsWith} of ${progs.length}</b><span>programs with at least one HS drill</span></div>
+      <div class="hm-stat"><b>${eligible.length - usedIds.size}</b><span>HS drills not used yet${age === 'All' ? '' : ' at ' + age}</span></div>
+    </div>`;
+
+    const controls = `<div class="hm-controls">
+      <span class="hm-label">View</span>
+      ${[['drill', 'By HS drill'], ['program', 'By program'], ['age', 'By age & focus']].map(([v, l]) => `<button class="hm-pill" data-view="${v}" aria-pressed="${view === v}">${l}</button>`).join('')}
+      <span class="hm-sep"></span><span class="hm-label">Age</span>
+      ${['All', ...AGES].map(a => `<button class="hm-pill" data-age="${a}" aria-pressed="${age === a}">${a === 'All' ? 'All ages' : a}</button>`).join('')}
+    </div>`;
+
+    let main = '';
+    if (view === 'drill') {
+      const max = Math.max(1, ...eligible.map(d => hsU.filter(u => u.id === d.id).length));
+      const list = eligible.map(d => ({ d, u: hsU.filter(u => u.id === d.id) })).sort((a, b) => b.u.length - a.u.length || a.d.name.localeCompare(b.d.name));
+      main = `<div class="hm-card"><h2>Every HS drill and where it is used</h2>
+        <p class="hm-note">Most used first. Each tag is a program week; tap it to open that program.</p>
+        <table><thead><tr><th>HS drill</th><th>Ages</th><th class="num">Uses</th><th>Where</th></tr></thead><tbody>
+        ${list.map(({ d, u }) => `<tr>
+          <td><b>${esc(d.name)}</b><br><small>${esc(d.category)}</small></td>
+          <td>${esc(d.max_age ? d.min_age + '–' + d.max_age : d.min_age + '+')}</td>
+          <td class="num"><span class="hm-bar" style="width:${Math.round(60 * u.length / max)}px"></span>${u.length}</td>
+          <td>${u.length ? u.map(x => `<a class="hm-use" href="${link(x.program)}">${esc(x.program.ages.join('–'))} · ${esc(x.program.focus)} · wk ${x.week}</a>`).join('') : '<span class="hm-none">Not in any program' + (age === 'All' ? '' : ' at ' + age) + '</span>'}</td>
+        </tr>`).join('')}
+        </tbody></table></div>`;
+    } else if (view === 'program') {
+      main = `<div class="hm-card"><h2>HS drills by program and week</h2>
+        <p class="hm-note">Each cell is one session: HS drill slots out of all drill slots. Darker = more HS drills.</p>
+        <table><thead><tr><th>Program</th><th>Ages</th><th>Focus</th>${[1, 2, 3, 4].map(n => `<th class="hm-wk">Wk ${n}</th>`).join('')}<th class="num">HS share</th><th>HS drills in it</th></tr></thead><tbody>
+        ${progs.map(p => {
+          const pu = U.filter(u => u.program === p), ph = pu.filter(u => u.hs);
+          const cells = [1, 2, 3, 4].map(n => {
+            const all = pu.filter(u => u.week === n), h = all.filter(u => u.hs);
+            return `<td class="hm-wk"><span class="hm-cell h${Math.min(3, h.length)}" title="${esc(h.map(x => x.name).join(', ') || 'No HS drills')}">${h.length}/${all.length}</span></td>`;
+          }).join('');
+          return `<tr><td><a href="${link(p)}"><b>${esc(p.title)}</b></a></td><td>${esc(p.ages.join('–'))}</td><td>${esc(p.focus)}</td>${cells}
+            <td class="num">${pct(ph.length, pu.length)}</td>
+            <td class="hm-names">${esc([...new Set(ph.map(x => x.name))].join(' · ')) || '<span class="hm-none">None</span>'}</td></tr>`;
+        }).join('')}
+        </tbody></table></div>`;
+    } else {
+      const focuses = [...new Set(PROGRAMS.map(p => p.focus))];
+      const cell = (f, a) => {
+        const cu = uses.filter(u => u.program.focus === f && u.program.ages.includes(a)), h = cu.filter(u => u.hs);
+        if (!cu.length) return '<td class="hm-wk">—</td>';
+        const share = h.length / cu.length;
+        return `<td class="hm-wk"><span class="hm-cell h${share === 0 ? 0 : share < .15 ? 1 : share < .35 ? 2 : 3}" title="${h.length} of ${cu.length} drill slots">${pct(h.length, cu.length)}</span></td>`;
+      };
+      const seasonRows = SEASONS.map(s => {
+        const ids = new Set(s.blocks.flatMap(b => [b.a, b.b]));
+        let total = 0, hs = 0;
+        s.blocks.forEach(b => [b.a, b.b].forEach(id => uses.filter(u => u.program.id === id).forEach(u => { total++; if (u.hs) hs++; })));
+        const names = new Set(); s.blocks.forEach(b => [b.a, b.b].forEach(id => uses.filter(u => u.program.id === id && u.hs).forEach(u => names.add(u.name))));
+        return `<tr><td><b>${esc(s.label)}</b></td><td class="num">${hs}</td><td class="num">${total}</td><td class="num">${pct(hs, total)}</td><td class="hm-names">${esc([...names].join(' · ')) || '<span class="hm-none">None</span>'}</td></tr>`;
+      }).join('');
+      main = `<div class="hm-card"><h2>Share of drill slots that are HS drills</h2>
+        <p class="hm-note">By focus area and age group, across the four weeks of each program.</p>
+        <table><thead><tr><th>Focus area</th>${AGES.map(a => `<th class="hm-wk">${a}</th>`).join('')}</tr></thead><tbody>
+        ${focuses.map(f => `<tr><td><b>${esc(f)}</b></td>${AGES.map(a => cell(f, a)).join('')}</tr>`).join('')}
+        </tbody></table></div>
+        <div class="hm-card"><h2>Across a full season</h2>
+        <p class="hm-note">Counting every session in the 24-week season plan for each age group (repeated programs count twice).</p>
+        <table><thead><tr><th>Age group</th><th class="num">HS slots</th><th class="num">All slots</th><th class="num">Share</th><th>HS drills a player meets</th></tr></thead><tbody>${seasonRows}</tbody></table></div>`;
+    }
+    body.innerHTML = stats + controls + main;
+    body.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { view = b.dataset.view; render(); }));
+    body.querySelectorAll('[data-age]').forEach(b => b.addEventListener('click', () => { age = b.dataset.age; render(); }));
+  }
+  render();
+})();
+</script>
+</body>
+</html>
