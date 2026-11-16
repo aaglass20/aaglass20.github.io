@@ -299,7 +299,9 @@
       transition: background .15s;
     }
     .btn-watch:hover { background: #00e67a; }
-    .btn-watch.no-video { background: var(--gray-200); color: var(--gray-400); cursor: default; }
+    /* no video: still opens the drill — a quieter button, but clearly a button */
+    .btn-watch.no-video { background: #e6eef7; color: #003366; cursor: pointer; }
+    .btn-watch.no-video:hover { background: #003366; color: #fff; }
 
     .btn-plan {
       display: flex;
@@ -744,7 +746,7 @@ function buildCards() {
       <div class="card-desc">${esc(drill.description)}</div>
       <div class="equip-row">${(drill.equipment || []).map(e => `<span class="equip-tag">${esc(e)}</span>`).join('')}</div>
       <div class="card-actions">
-        <button type="button" class="btn-watch${hasVideo ? '' : ' no-video'}">${hasVideo ? '▶ Watch & read' : 'View drill'}</button>
+        <button type="button" class="btn-watch${hasVideo ? '' : ' no-video'}">${hasVideo ? '▶ Watch & read' : '📋 View drill'}</button>
         <a class="btn-plan" href="indy-practice-builder.html">→ Build Plan</a>
       </div>`;
     card.querySelector('.btn-watch').addEventListener('click', () => openModal(drill.id));
