@@ -699,69 +699,59 @@ const AGE_GROUPS = [
   { id: 'Mixed', label: 'Mixed', sub: 'Multi-age' },
 ];
 
-const WARMUP_BANK = [
+// Warmups and closings that aren't drills in the library. Every one carries the same detail a
+// library drill does (setup, how to run it, variations, coaching points), so its block in a plan
+// has a "Drill info" button like any other.
+const BUILTIN_WARMUPS = [
   {
-    id: 'dynamic-warmup',
-    name: 'Dynamic Movement Warmup',
-    icon: '🏃',
-    videoFile: null,
-    desc: 'Jogging, high knees, butt kicks, lateral shuffles, and light stretching to prepare the body for training.',
-  },
-  {
-    id: 'rondo',
-    name: 'Rondo / Possession Circle',
-    icon: '🔵',
-    videoFile: null,
+    id: 'rondo', name: 'Rondo / Possession Circle', icon: '🔵', videoFile: null,
     desc: 'Small-group keep-away circle to warm up passing, movement, and decision-making before the main session.',
+    setup: ['Groups of 5–6 with 1 ball', 'A circle or square about 8–10 yds across, marked with cones', '4–5 players around the outside, 1 defender in the middle'],
+    howToPlay: ['The outside players pass the ball around and across the circle.', 'The defender tries to win it or knock it out.', 'Start at a jog with two touches; build to full speed as bodies warm up.', 'Whoever gives the ball away swaps with the defender.', 'Every 2 minutes, change something: one touch, weaker foot, or two defenders.'],
+    variations: ['Easier: three touches, or a bigger circle.', 'Easier: the defender walks for the first round.', 'Harder: one touch only.', 'Harder: two defenders — ten passes in a row scores a point.'],
+    coachingPoints: ['On your toes, ready to move along your side of the circle', 'Open your body so you can see two teammates', 'Pass firmly to the foot furthest from the defender'],
+    coaching: ['On your toes, ready to move', 'Open your body to see two teammates', 'Pass to the foot furthest from the defender'],
   },
   {
-    id: 'dribble-activate',
-    name: 'Dribbling Activation',
-    icon: '⚽',
-    videoFile: null,
+    id: 'dribble-activate', name: 'Dribbling Activation', icon: '⚽', videoFile: null,
     desc: 'Players dribble freely through a grid, performing coach-called moves (stop, turn, fast, slow) to warm up ball control.',
-  },
-  {
-    id: '4-person-movement-warmup',
-    name: '4 Person Movement Warmup',
-    icon: '🏃',
-    videoFile: '4 person Movement Warmup.mp4',
-    desc: '4 players move continuously, progressing from two-touch to one-bounce juggle. Avoid circular patterns.',
-  },
-  {
-    id: 'circle-passing-warmup',
-    name: 'Circle Passing Warmup',
-    icon: '⭕',
-    videoFile: 'circlePassingWarmup.mp4',
-    desc: 'Coach feeds 5 balls into a cone circle. Players receive, pass one direction, and sprint to the next cone. Add balls as rhythm builds.',
-  },
-  {
-    id: 'shadow-dribbling',
-    name: 'Shadow Dribbling',
-    icon: '👥',
-    videoFile: null,
-    desc: 'In pairs, the leader dribbles freely while the follower mirrors their movements as closely as possible. Roles swap on the whistle.',
+    setup: ['A grid about 20×20 yds marked with cones (bigger for more than 14 players)', 'Every player has a ball', 'Coach stands where everyone can hear'],
+    howToPlay: ['Players dribble anywhere in the grid at a jog, avoiding each other.', 'The coach calls a command every 10–15 seconds: "stop" (sole on the ball), "turn" (change direction), "fast" (burst for five yards), "slow" (walk with the ball).', 'After two minutes, add a call: "left foot only", "right foot only", or "swap" (leave your ball and find another).', 'Finish with 30 seconds of free dribbling at full speed.'],
+    variations: ['Easier: fewer commands, and walk the first minute.', 'Easier: a bigger grid.', 'Harder: add a named move to each call (scissors, pull-back, step-over).', 'Harder: two players without a ball try to knock balls out of the grid.'],
+    coachingPoints: ['Small touches — keep the ball within one step', 'Head up between touches to find space', 'React on the call, not a second later'],
+    coaching: ['Small touches — keep the ball close', 'Head up to find space', 'React on the call'],
   },
 ];
+// The warmup picker: the two above + every library drill that works as a warmup (see refreshWarmupBank)
+let WARMUP_BANK = BUILTIN_WARMUPS.slice();
 
 const CLOSING_BANK = [
   {
-    id: 'team-talk',
-    name: 'Team Huddle & Recap',
-    icon: '🗣️',
+    id: 'team-talk', name: 'Team Huddle & Recap', icon: '🗣️',
     desc: 'Gather the team for a quick session review. Ask players what they learned and reinforce the day\'s coaching theme.',
+    setup: ['Players in a tight half-circle facing the coach, away from the sun and from parents', 'Everyone takes a knee or sits, with water', 'Balls collected and still'],
+    howToPlay: ['Ask one question about the session\'s theme and let two or three players answer.', 'Name one thing the team did well — and one player who showed it.', 'Give one thing to work on at home this week.', 'Cover the practical details: the next practice or game, time and place.', 'Finish with a team cheer. Keep the whole huddle under three minutes.'],
+    variations: ['Younger players: ask them to show you instead of tell you.', 'Older players: let a captain lead the review.', 'After a hard session: start with what went well before anything else.'],
+    coachingPoints: ['Ask, don\'t lecture — one question beats a speech', 'One message only: the theme of the day', 'End on something positive'],
+    coaching: ['Ask, don\'t lecture', 'One message only', 'End on something positive'],
   },
   {
-    id: 'cool-down',
-    name: 'Cool-Down Stretch',
-    icon: '🧘',
+    id: 'cool-down', name: 'Cool-Down Stretch', icon: '🧘',
     desc: 'Light static stretching — quads, hamstrings, calves, hips. Helps recovery and gives players a calm finish to training.',
+    setup: ['Players spread out in a circle or lines with room to lie down', 'Water within reach', 'One player or the coach at the front to lead'],
+    howToPlay: ['Start with a slow two-minute jog or walk across the field and back.', 'Calves: lean into a step, back heel down. 20 seconds each side.', 'Quads: stand and pull one heel to your backside. 20 seconds each side.', 'Hamstrings: sit with one leg out and reach toward the toes. 20 seconds each side.', 'Hips and groin: butterfly sit, then a lunge with the back knee down. 20 seconds each.', 'Finish with three slow, deep breaths.'],
+    variations: ['Younger players (U8–U10): keep it to two minutes and three stretches.', 'After a game or a hard session: hold each stretch for 30 seconds.', 'Let a different player lead each week.'],
+    coachingPoints: ['Ease into the stretch and hold it — no bouncing', 'It should feel like a pull, never a pain', 'Breathe slowly; this is the calm part of practice'],
+    coaching: ['Hold it — no bouncing', 'A pull, never a pain', 'Breathe slowly'],
   },
   {
-    id: 'finishing-game',
-    name: 'Finishing Game',
-    icon: '🥅',
+    id: 'finishing-game', name: 'Finishing Game', icon: '🥅',
     desc: 'Small-sided finishing competition to close practice on a high. Teams compete to score; first to 5 wins.',
+    setup: ['A short field about 30×25 yds with a goal at each end (goalkeepers if you have them)', 'Two teams of 3–5 in pinnies; extra players wait behind the goals', 'A supply of balls beside each goal for fast restarts'],
+    howToPlay: ['Play a normal small-sided game.', 'When the ball goes out, the nearest goalkeeper or player restarts at once with a new ball.', 'Shoot whenever you can see the goal — the field is short on purpose.', 'First team to 5 goals wins. Losers collect the cones.', 'With extra players, the winning team stays on and a new team comes in.'],
+    variations: ['Easier: no goalkeepers, or bigger goals.', 'Easier: play 3v3 for more touches and more shots.', 'Harder: two-touch maximum.', 'Harder: goals from a first-time finish count double.'],
+    coachingPoints: ['Shoot early — don\'t wait for the perfect chance', 'Follow every shot for the rebound', 'Restart quickly: catch the other team switching off'],
+    coaching: ['Shoot early', 'Follow every shot', 'Restart quickly'],
   },
 ];
 
@@ -1017,6 +1007,7 @@ function renderTimeline() {
       coachingHTML = `<ul class="block-coaching">${block.coaching.map(c => `<li>${esc(c)}</li>`).join('')}</ul>`;
     }
 
+    block = withDetail(block);   // older plans and program blocks get their detail from the library
     const hasInfo = block.setup || block.howToPlay || block.variations || block.coachingPoints;
     const watchBtn  = block.videoFile ? `<button class="block-watch-btn">▶ Watch video</button>` : '';
     const infoBtn   = hasInfo ? `<button class="block-info-btn">📋 Drill info</button>` : '';
@@ -1109,7 +1100,7 @@ function wireModal() {
     const sel = WARMUP_BANK.find(w => w.id === selectedWarmup);
     if (!sel) return;
     const dur = parseInt(document.getElementById('warmupTime').value) || 10;
-    state.plan.push({ type: 'warmup', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false });
+    state.plan.push({ type: 'warmup', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false, ...detailOf(sel) });
     closeModal();
     renderTimeline();
   });
@@ -1162,7 +1153,7 @@ function wireModal() {
     const sel = CLOSING_BANK.find(c => c.id === selectedClosing);
     if (!sel) return;
     const dur = parseInt(document.getElementById('closingTime').value) || 10;
-    state.plan.push({ type: 'closing', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false });
+    state.plan.push({ type: 'closing', id: sel.id, name: sel.name, icon: sel.icon, desc: sel.desc, duration: dur, hasVariant: false, ...detailOf(sel) });
     closeModal();
     renderTimeline();
   });
@@ -1174,6 +1165,7 @@ let selectedClosing = null;
 
 function buildBankGrid(containerId, bank, selVar) {
   const grid = document.getElementById(containerId);
+  grid.innerHTML = '';
   bank.forEach(item => {
     const card = document.createElement('div');
     card.className = 'bank-card';
@@ -1181,9 +1173,9 @@ function buildBankGrid(containerId, bank, selVar) {
     card.innerHTML = `
       <span class="bank-icon">${item.icon}</span>
       <div class="bank-info">
-        <div class="bank-name">${item.name}</div>
-        <div class="bank-desc">${item.desc}</div>
-        ${item.videoFile ? `<div class="bank-card-actions"><button class="btn-vid-preview" data-vid="${item.videoFile}" data-name="${item.name}">▶ Watch</button></div>` : ''}
+        <div class="bank-name">${esc(item.name)}${item.fromHs ? ' <span class="hs-badge" title="From the high school program">HS</span>' : ''}</div>
+        <div class="bank-desc">${esc(item.desc)}</div>
+        ${item.videoFile ? `<div class="bank-card-actions"><button class="btn-vid-preview">▶ Watch</button></div>` : ''}
       </div>
       <span class="bank-check">✓</span>
     `;
@@ -1330,6 +1322,44 @@ function isHsBlock(block) {
   return !!(d && d.fromHs);
 }
 
+// The detail a bank item carries, in the shape a plan block uses
+function detailOf(item) {
+  return {
+    coaching: item.coaching || [], setup: item.setup || null, howToPlay: item.howToPlay || null,
+    variations: item.variations || null, coachingPoints: item.coachingPoints || null,
+    videoFile: item.videoFile || null, fromHs: !!item.fromHs,
+  };
+}
+
+// A block with no detail of its own (a plan saved before this, or a hard-coded saved plan) borrows it:
+// from the library drill with the same id, else from the built-in warmups and closings.
+function withDetail(block) {
+  if (block.type === 'break' || block.setup || block.howToPlay || block.variations || block.coachingPoints) return block;
+  const drill = DRILL_BANK.find(d => d.id === block.id);
+  const src = drill ? { ...drill.variants.default, videoFile: drill.videoFile, fromHs: drill.fromHs }
+    : [...BUILTIN_WARMUPS, ...CLOSING_BANK].find(x => x.id === block.id);
+  if (!src) return block;
+  return {
+    ...block,
+    setup: src.setup || null, howToPlay: src.howToPlay || null, variations: src.variations || null,
+    coachingPoints: src.coachingPoints || null,
+    coaching: block.coaching && block.coaching.length ? block.coaching : (src.coaching || []),
+    videoFile: block.videoFile || src.videoFile || null,
+  };
+}
+
+// The warmup picker: the built-in warmups + every library drill filed or tagged as a warmup that
+// suits the plan's age group. Rebuilt each time the Add Block window opens.
+function refreshWarmupBank() {
+  const age = state.ageGroup;
+  const fromLibrary = DRILL_BANK
+    .filter(d => (d.category === 'Warmup' || d.focusAreas.includes('Warmup')) && (!age || age === 'Mixed' || d.ageGroups.includes(age)))
+    .map(d => ({ id: d.id, name: d.name, icon: d.icon, desc: d.variants.default.desc, videoFile: d.videoFile, fromHs: d.fromHs,
+                 ...d.variants.default }));
+  WARMUP_BANK = [...BUILTIN_WARMUPS, ...fromLibrary];
+  buildBankGrid('warmupBank', WARMUP_BANK, 'warmup');
+}
+
 function getDrillVariant(drill, ageGroup) {
   if (drill.variants[ageGroup]) return drill.variants[ageGroup];
   // Fallback: closest age group
@@ -1343,6 +1373,7 @@ function getDrillVariant(drill, ageGroup) {
 
 function openModal() {
   selectedWarmup = selectedDrill = selectedClosing = null;
+  refreshWarmupBank();
   document.getElementById('confirmWarmup').disabled  = true;
   document.getElementById('confirmDrill').disabled   = true;
   document.getElementById('confirmClosing').disabled = true;
