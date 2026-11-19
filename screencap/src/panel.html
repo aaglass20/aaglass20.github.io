@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self' blob: mediastream:; style-src 'self' 'unsafe-inline'">
+<style>
+  html, body { margin:0; height:100%; overflow:hidden; background:#1d2027; color:#e8eaf0; font:13px -apple-system, sans-serif; user-select:none; }
+  body { display:flex; align-items:center; gap:10px; padding:0 12px; box-sizing:border-box; -webkit-app-region:drag; }
+  #dot { width:12px; height:12px; border-radius:50%; background:#ff453a; flex:none; }
+  #dot.live { animation:pulse 1.2s infinite; }
+  #dot.warn { background:#ffb020; }
+  @keyframes pulse { 50% { opacity:.3; } }
+  #status { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  button { -webkit-app-region:no-drag; font:inherit; color:#e8eaf0; background:#2c313c; border:1px solid #3a4150; border-radius:7px; padding:6px 12px; cursor:pointer; }
+  #stop { background:#ff453a; border-color:#ff453a; color:#fff; font-weight:600; }
+</style>
+</head>
+<body>
+<span id="dot"></span>
+<span id="status">Starting…</span>
+<button id="stop">Stop</button>
+<button id="cancel">Cancel</button>
+<script src="panel.js"></script>
+</body>
+</html>

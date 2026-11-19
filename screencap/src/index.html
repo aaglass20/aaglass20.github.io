@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data: blob:; media-src 'self' file: blob:; style-src 'self' 'unsafe-inline'">
+<title>ScreenCap</title>
+<style>
+  :root { --bg:#15171c; --card:#1d2027; --line:#2c313c; --text:#e8eaf0; --dim:#9099a8; --accent:#4c8dff; --warn:#ffb020; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 -apple-system, BlinkMacSystemFont, sans-serif; user-select:none; }
+  main { max-width:980px; margin:0 auto; padding:22px 24px 40px; }
+  header { display:flex; align-items:baseline; gap:12px; margin-bottom:18px; }
+  h1 { font-size:22px; margin:0; }
+  h2 { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); margin:28px 0 10px; }
+  .sub { color:var(--dim); }
+  button { font:inherit; color:var(--text); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  .banner { background:#3a2c10; border:1px solid var(--warn); border-radius:10px; padding:12px 14px; display:flex; gap:12px; align-items:center; margin-bottom:16px; }
+  .banner span { flex:1; }
+  .modes { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; }
+  .mode { display:flex; flex-direction:column; align-items:center; gap:6px; padding:16px 8px 12px; border-radius:12px; }
+  .mode .ico { font-size:26px; line-height:1; height:28px; }
+  .mode .lbl { font-weight:600; text-align:center; }
+  .mode .key { color:var(--dim); font-size:12px; letter-spacing:.06em; }
+  .mode.video .ico { color:#ff453a; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:12px; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; cursor:pointer; position:relative; }
+  .tile:hover { border-color:var(--accent); }
+  .tile .thumb { height:118px; background:#0d0f13; display:flex; align-items:center; justify-content:center; }
+  .tile img, .tile video { max-width:100%; max-height:118px; display:block; }
+  .tile .name { padding:7px 9px; font-size:12px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tile .acts { position:absolute; top:6px; right:6px; display:none; gap:4px; }
+  .tile:hover .acts { display:flex; }
+  .tile .acts button { padding:2px 7px; font-size:12px; background:#000a; }
+  .tile .badge { position:absolute; top:6px; left:6px; background:#ff453a; color:#fff; font-size:10px; font-weight:700; border-radius:4px; padding:1px 5px; }
+  .empty { color:var(--dim); padding:18px 0; }
+  .rowhead { display:flex; align-items:center; justify-content:space-between; }
+  .rowhead h2 { margin-bottom:10px; }
+  .set { display:grid; grid-template-columns:200px 1fr; gap:10px 14px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .set .k { color:var(--dim); }
+  .keybtn { min-width:130px; letter-spacing:.06em; }
+  .keybtn.rec { border-color:var(--accent); color:var(--accent); }
+  .keybtn.bad { border-color:var(--warn); color:var(--warn); }
+  .path { color:var(--dim); font-size:12px; margin-left:10px; user-select:text; }
+  label.chk { display:flex; gap:8px; align-items:center; }
+  .note { color:var(--dim); font-size:12px; margin-top:10px; }
+</style>
+</head>
+<body>
+<main>
+  <header><h1>ScreenCap</h1><span class="sub">Capture, mark up, record</span></header>
+
+  <div id="perm" class="banner" hidden>
+    <span>ScreenCap needs <b>Screen Recording</b> permission. Turn it on in System Settings, then quit and reopen ScreenCap.</span>
+    <button id="permBtn">Open System Settings</button>
+  </div>
+
+  <section id="modes" class="modes"></section>
+
+  <section id="picker" hidden>
+    <div class="rowhead"><h2>Pick a window to capture</h2><button id="pickCancel">Cancel</button></div>
+    <div id="pickGrid" class="grid"></div>
+  </section>
+
+  <section>
+    <div class="rowhead"><h2>Recent captures</h2><button id="openDir">Open folder</button></div>
+    <div id="recents" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Settings</h2>
+    <div class="set" id="settings"></div>
+    <div class="note">Click a shortcut, then press the new key combination. Esc cancels, Delete clears it. Shortcuts work from any app while ScreenCap is running (look for ◎ in the menu bar).</div>
+  </section>
+</main>
+<script src="index.js"></script>
+</body>
+</html>

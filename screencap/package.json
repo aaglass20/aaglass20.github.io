@@ -1,0 +1,17 @@
+{
+  "name": "screencap",
+  "productName": "ScreenCap",
+  "version": "1.0.0",
+  "description": "Screen capture, markup and region video recording for troubleshooting",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "smoke": "SCREENCAP_SMOKE=1 electron .",
+    "build": "electron-packager . ScreenCap --platform=darwin --out=dist --overwrite --app-bundle-id=com.screencap.app --ignore=\"^/dist\" && codesign --force --deep --sign - dist/ScreenCap-darwin-*/ScreenCap.app"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.6",
+    "electron": "^39.0.0"
+  }
+}

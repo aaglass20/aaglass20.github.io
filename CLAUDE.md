@@ -167,6 +167,16 @@ When adding a new compliance rule: add to `evaluate()`, return it in the `rules`
 - **Sample mode:** `/balance/?demo` — localStorage only, no cloud
 - **Conventions:** recurring charges store one `anchor_date` + `cadence`; every billing date is computed. Action rules live in `buildActions()`, "doesn't make sense" flags in `flagsFor()` (both `engine.js`)
 
+### /screencap — ScreenCap (Mac screen capture + markup + region video)
+- **What:** Desktop app for troubleshooting captures — region / scrolling region / window / full screen screenshots with global shortcuts, a markup editor (arrows, highlight, box, pen, text), and region video recording
+- **Stack:** Electron (vanilla HTML/JS pages, no framework); not a GitHub Pages site — `node_modules/` and `dist/` are git-ignored
+- **Dev:** `cd screencap && npm start`; `npm run smoke` for a quick no-permission launch check
+- **Build:** `npm run build` → `dist/ScreenCap-darwin-arm64/ScreenCap.app`
+- **See `screencap/README.md`** for the file map and how scroll stitching / recording work
+
+### /tactics — OLD copy of the tactics board (don't use for drills)
+- **Drills → plays and videos go ONLY to the new board repo `/Users/aaronglass/git/tactics`** (`Coach-Approach/tactics`), in `plays/<sport>/`. Never write specs, plays or videos into `aaglass20.github.io/tactics/`. See `/drill-to-play`.
+
 ### /signs — Google Sheets Form Utility
 - **What:** Small utility/form that integrates with Google Sheets
 - **Stack:** HTML + Google Apps Script (`Code.gs`)

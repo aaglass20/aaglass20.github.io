@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob:; style-src 'self' 'unsafe-inline'">
+<style>
+  html, body { margin:0; height:100%; overflow:hidden; background:#000; cursor:crosshair; user-select:none; }
+  #shot { position:absolute; -webkit-user-drag:none; pointer-events:none; }
+  #dim { position:fixed; inset:0; background:rgba(0,0,0,.28); pointer-events:none; }
+  #sel { position:absolute; border:1px solid #fff; box-shadow:0 0 0 99999px rgba(0,0,0,.5); pointer-events:none; }
+  #size { position:absolute; left:0; top:100%; margin-top:6px; background:#000c; color:#fff; font:12px -apple-system, sans-serif; padding:2px 7px; border-radius:5px; white-space:nowrap; }
+  #hint { position:fixed; left:50%; top:64px; transform:translateX(-50%); background:#000c; color:#fff; font:14px -apple-system, sans-serif; padding:9px 16px; border-radius:10px; pointer-events:none; white-space:nowrap; }
+</style>
+</head>
+<body>
+<img id="shot" alt="">
+<div id="dim"></div>
+<div id="sel" hidden><span id="size"></span></div>
+<div id="hint"></div>
+<script src="overlay.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'">
+<title>ScreenCap</title>
+<style>
+  :root { --bg:#15171c; --card:#1d2027; --line:#2c313c; --text:#e8eaf0; --dim:#9099a8; --accent:#4c8dff; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; display:flex; flex-direction:column; background:var(--bg); color:var(--text); font:13px -apple-system, BlinkMacSystemFont, sans-serif; user-select:none; }
+  #bar { display:flex; align-items:center; gap:6px; padding:8px 10px; background:var(--card); border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .grp { display:flex; gap:4px; align-items:center; padding-right:8px; margin-right:2px; border-right:1px solid var(--line); }
+  .grp:last-child { border-right:0; margin-right:0; padding-right:0; }
+  .spacer { flex:1; }
+  button { font:inherit; color:var(--text); background:#262a33; border:1px solid var(--line); border-radius:7px; padding:5px 10px; cursor:pointer; white-space:nowrap; }
+  button:hover { border-color:var(--accent); }
+  button.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  button:disabled { opacity:.4; cursor:default; }
+  .sw { width:20px; height:20px; border-radius:50%; border:2px solid #0006; padding:0; }
+  .sw.on { outline:2px solid #fff; outline-offset:1px; background-clip:padding-box; }
+  #zoomLbl { color:var(--dim); min-width:42px; text-align:center; }
+  #stage { flex:1; overflow:auto; padding:18px; display:flex; }
+  #wrap { position:relative; margin:auto; flex:none; box-shadow:0 4px 24px #000a; background:#fff; }
+  #wrap canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  #ink { cursor:crosshair; touch-action:none; }
+  #text { position:absolute; background:#fff3; border:1px dashed #fff; outline:none; padding:0 2px; margin:0; font-family:-apple-system, Helvetica, sans-serif; font-weight:600; min-width:60px; line-height:1.2; }
+  #toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#000d; color:#fff; padding:8px 16px; border-radius:9px; opacity:0; transition:opacity .2s; pointer-events:none; }
+  #toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <div class="grp" id="tools">
+    <button data-tool="arrow" title="Arrow (A)">↗ Arrow</button>
+    <button data-tool="hl" title="Highlight (H)">▮ Highlight</button>
+    <button data-tool="box" title="Box (R)">▢ Box</button>
+    <button data-tool="pen" title="Pen (P)">✎ Pen</button>
+    <button data-tool="text" title="Text (T)">T Text</button>
+  </div>
+  <div class="grp" id="colors"></div>
+  <div class="grp" id="sizes">
+    <button data-size="0" title="Thin">S</button>
+    <button data-size="1" title="Medium">M</button>
+    <button data-size="2" title="Thick">L</button>
+  </div>
+  <div class="grp">
+    <button id="undo" title="Undo (⌘Z)">↶ Undo</button>
+    <button id="redo" title="Redo (⇧⌘Z)">↷ Redo</button>
+  </div>
+  <div class="grp">
+    <button id="zoomOut" title="Zoom out">−</button>
+    <span id="zoomLbl">100%</span>
+    <button id="zoomIn" title="Zoom in">+</button>
+    <button id="zoomFit" title="Fit to window">Fit</button>
+  </div>
+  <span class="spacer"></span>
+  <div class="grp">
+    <button id="copy" title="Copy image (⌘C)">Copy</button>
+    <button id="saveAs">Save As…</button>
+    <button id="reveal" title="Show in Finder">Show</button>
+    <button id="save" class="primary" title="Save (⌘S)">Save</button>
+  </div>
+</div>
+<div id="stage">
+  <div id="wrap">
+    <canvas id="base"></canvas>
+    <canvas id="ink"></canvas>
+    <input id="text" hidden spellcheck="false">
+  </div>
+</div>
+<div id="toast"></div>
+<script src="editor.js"></script>
+</body>
+</html>
